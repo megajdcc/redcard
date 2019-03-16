@@ -3,14 +3,24 @@ namespace assets\libs;
 use PDO;
 
 class connection {
-	private $host = 'localhost';
-	private $dbname = 'redcard';
-	private $username = 'root';
-	private $password = '20464273';
-	private $options = array(PDO::ATTR_EMULATE_PREPARES => false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
-	public $con = null;
+	private $file;
+	private $driver,$port,$host,$dbname,$usuario,$contrasena;
+    private $idconexion;
+    private $dsn;
+    private $pdo;
 
-	function __construct(){
+	private $options = array(PDO::ATTR_EMULATE_PREPARES => false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
+	public $con;
+
+	function __construct($archi = 'config.ini'){
+
+		 $this->file = $archi;
+            // echo "conexion extosa";
+            if(!$this->con = parse_ini_file($this->file, TRUE)) throw new Exception("No se pudo abrir".$file.'.');
+
+				$this->cargar_dsn();
+				$this->cargar_usuario();
+
 		$this->connect();
 		$this->check_block();
 		$this->check_role();
@@ -20,15 +30,42 @@ class connection {
 		return;
 	}
 
+	/**
+       * [aca terminamos de cargar los datos de usuario y contrasena ... ]
+       */
+      private function cargar_usuario(){
+        $this->usuario = $this->con['redcard']['usuario'];
+        $this->contrasena = $this->con['redcard']['contrasena'];
+      }
+
+	   /**
+       * [aca asociamos los valores contenido en mi arichivo config.ini que alamacena los datos para la conexion en las variables locales
+       * de mi objeto Conexion.php]
+       */
+      private function cargar_dsn(){
+
+        $this->driver = $this->con['redcard']['driver'];
+        $this->host = $this->con['redcard']['host'];
+        (!empty($this->con['redcard']['port'])) ? $this->port = $this->con['redcard']['port'] : $this->port = '3306';
+         // el puerto es 3306
+        $this->dbname = $this->con['redcard']['dbname'];
+        $caracter = $this->con['redcard']['charset'];
+        $this->dsn =  $this->driver . ':host='.$this->host.';port='.$this->port.';charset='.$caracter.';dbname='.$this->dbname; 
+      }
+
+
 	public function connect(){
-		try{
-			$this->con = new PDO("mysql:host=$this->host;dbname=$this->dbname;charset=utf8", $this->username, $this->password, $this->options);
-			$this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->con->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-		}catch(\PDOException $ex){
-			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
-			die('Failed to connect to the database.');
-		}
+
+		   try {
+         		
+         		$this->con = new PDO($this->dsn,$this->usuario,$this->contrasena,$this->options);
+              	$this->con->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+                $this->con->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+            }catch (PDOException $e) {
+                  die("ERROR DE CONEXION CON LA BASE DE DATO");
+            }
+
 	}
 
 	private function check_block(){
