@@ -1,0 +1,71 @@
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+$con = new assets\libs\connection();
+
+if(!isset($_SESSION['user'])){
+	header('Location: '.HOST.'/login');
+	die();
+}
+if(!isset($_SESSION['user']['id_usuario'])){
+	header('Location: '.HOST.'/login');
+	die();
+}
+
+$home = new socio\libs\user_esmarties($con);
+
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
+$rpp = 20;
+$options = $home->load_data($page, $rpp);
+
+$paging = new assets\libraries\pagination\pagination($options['page'], $options['total']);
+$paging->setRPP($rpp);
+$paging->setCrumbs(10);
+
+$includes = new assets\libs\includes($con);
+$properties['title'] = 'Mis eSmartties | eSmart Club';
+$properties['description'] = '';
+echo $header = $includes->get_no_indexing_header($properties);
+echo $navbar = $includes->get_main_navbar(); ?>
+	<div class="main">
+		<div class="main-inner">
+			<div class="container">
+				<?php echo $con->get_notify();?>
+				<div class="row">
+					<div class="col-sm-4 col-lg-3">
+						<div class="sidebar">
+							<?php echo $includes->get_user_sidebar();?>
+						</div><!-- /.sidebar -->
+					</div><!-- /.col-* -->
+					<div class="col-sm-8 col-lg-9">
+						<div class="content">
+							<div class="row">
+								<div class="col-xs-6 col-xs-offset-3 col-sm-offset-0 col-sm-4">
+									<div class="widget">
+										<div class="user-photo">
+											<?php echo $home->get_image();?>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-8">
+									<div class="p30">
+										<div class="page-title">
+											<h1><?php echo $home->get_header_title();?></h1>
+											<h4><?php echo $home->get_location();?></h4>
+										</div><!-- /.page-title -->
+										<h2><span class="mr20">e$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">eSmartties</label></h2>
+										<h5>Amigos invitados a eSmart Club: <span class="mr20"><?php echo $home->get_invited();?></span>
+											<a href="<?php echo HOST;?>/socio/perfil/invitados" class="btn btn-secondary btn-xs">Ver</a>
+										</h5>
+									</div>
+								</div>
+							</div>
+							<div class="page-title">
+								<p>Ingresos y egresos de eSmartties</p>
+							</div>
+							<?php echo $home->get_moves(); echo $paging->parse(); ?>
+						</div><!-- /.content -->
+					</div><!-- /.col-* -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.main-inner -->
+	</div><!-- /.main -->
+<?php echo $footer = $includes->get_main_footer(); ?>
