@@ -1,0 +1,76 @@
+# Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+#order deny,allow
+#deny from all
+#allow from 189.177.202.67
+
+Options +FollowSymlinks -Indexes -MultiViews
+RewriteEngine On
+
+#FORZAR WWW EN EL SITIO
+#RewriteCond %{HTTP_HOST} !^$
+#RewriteCond %{HTTP_HOST} !^www\. [NC]
+#RewriteCond %{HTTPS}s ^on(s)|
+#RewriteRule ^ http%1://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# QUITAR SLASH FINAL Y REDIRECCIONAR 301
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [R=301,L]
+
+# REDIRECCION DE CERTIFICADOS
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^certificado/([a-z0-9-]+)$ certificado.php?url=$1 [NC,L]
+
+# REDIRECCION DE CERTIFICADOS
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^tienda/producto/([0-9]+)$ tienda/producto.php?id=$1 [NC,L]
+
+# REDIRECCION DE SIGNUP
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule ^hazte-socio/([0-9a-zA-Z]+)$ hazte-socio.php?ref=$1 [NC,L]
+
+# REVISION DE SOLICITUD ADMIN
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin/negocios/solicitud/([0-9]+)$ admin/negocios/solicitud.php?id=$1 [NC,L]
+
+# REVISION DE SOLICITUD USER
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^socio/negocios/solicitud/([0-9]+)$ socio/negocios/solicitud.php?id=$1 [NC,L]
+
+# QUITAR PHP A TODOS LOS SCRIPTS
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME}\.php -f
+RewriteRule ^([^.]+)$ $1.php [NC,L]
+
+# REDIRECCIONES DE NEGOCIO
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([0-9a-zA-Z-]+)$ perfil_negocio.php?url=$1 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([0-9a-zA-Z-]+)/certificados/?(.*)$ negocio_certificados.php?url=$1&page=$2 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([0-9a-zA-Z-]+)/publicaciones/?(.*)$ negocio_publicaciones.php?url=$1&page=$2 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([0-9a-zA-Z-]+)/eventos/?(.*)$ negocio_eventos.php?url=$1&page=$2 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([0-9a-zA-Z-]+)/opiniones/?(.*)$ negocio_opiniones.php?url=$1&page=$2 [NC,L]
+
+# REDIRECCIONES DE USUARIO
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^socio/([0-9a-zA-Z]+)$ perfil_socio.php?username=$1 [NC,L]
+
+ErrorDocument 403 /errores/403.php
+ErrorDocument 404 /errores/404.php
