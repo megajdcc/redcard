@@ -388,6 +388,7 @@ class includes {
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-6 col-sm-2">
+					
 						<h2>Member | Socio</h2>
 						<p><a href="'.HOST.'/login">Login | Inicia sesi&oacute;n</a></p>
 						<p><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></p>
