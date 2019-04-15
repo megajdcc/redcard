@@ -119,14 +119,23 @@ class Home {
 	public function get_views(){
 		return $this->hotel['views'];
 	}
-	public function get_operations(){
-		$sql="SELECT count(*) FROM negocio_venta";
+	public function getOperaciones(){
+		$sql="SELECT COUNT(nven.venta)
+ 					FROM negocio as ne
+ 					JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
+ 					JOIN usuario as usu on nven.id_usuario = usu.id_usuario
+ 					JOIN huesped as hu on usu.id_usuario = hu.id_usuario
+ 					JOIN huespedhotel as hh on hu.id = hh.id_huesped
+ 					JOIN hotel as h on hh.id_hotel = h.id
+ 				where h.id = :idhotel";
 		$stmt = $this->con->prepare($sql);
-		$stmt->execute(); 
+
+		$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
 		$number_of_rows = $stmt->fetchColumn();
 		$this->hotel['operations']=$number_of_rows;
 		return $number_of_rows;
 	}
+	
 	public function get_hoteles(){
 		$sql="SELECT count(*) FROM negocio";
 		$stmt = $this->con->prepare($sql);
@@ -227,6 +236,7 @@ class Home {
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row['total'];
 	}
+
 	public function get_user_total_old_points(){
 		$sql="SELECT SUM(id_certificado) AS total FROM usar_certificado WHERE creado <= DATE_SUB(NOW(),INTERVAL 1 YEAR)";
 		$stmt = $this->con->prepare($sql);
@@ -234,6 +244,7 @@ class Home {
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return $row['total'];
 	}
+
 	public function get_total_amount_store(){
 		$sql="SELECT SUM(precio) AS total FROM venta_tienda";
 		$stmt = $this->con->prepare($sql);
@@ -241,6 +252,7 @@ class Home {
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return number_format((float)$row['total'], 2, '.', '');
 	}
+
 	public function get_average_amount_store(){
 		$sql="SELECT SUM(precio) AS total FROM venta_tienda";
 		$stmt = $this->con->prepare($sql);
@@ -253,6 +265,7 @@ class Home {
 		$total=$number_of_rows;
 		return number_format((float)$row['total']/$total, 2, '.', '');
 	}
+
 	public function get_total_gifts(){
 		$sql="SELECT count(*) FROM lista_deseos_certificado";
 		$stmt = $this->con->prepare($sql);
@@ -261,6 +274,7 @@ class Home {
 		$total=$number_of_rows;
 		return $total;
 	}
+
 	public function get_total_requested_gifts(){
 		$sql="SELECT count(*) FROM lista_deseos_certificado";
 		$stmt = $this->con->prepare($sql);
@@ -321,7 +335,7 @@ class Home {
 	public function get_average_commision(){
 		return number_format($this->hotel['hoteles']/$this->hotel['operations']*100);
 	}
-	public function get_negocios(){
+	public function getNegocios(){
 		return number_format($this->hotel['operations']/$this->hotel['hoteles']*100);
 	}
 
@@ -358,14 +372,13 @@ class Home {
 
 
 			$query  = "SELECT nven.iso as divisa,(SUM(nven.venta)*(nven.comision))/100 as comision_hotel, nven.creado
-					FROM
-					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
-					INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
-					INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
-					INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id_usuario
-					INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
-					INNER JOIN divisa as di ON nven.iso = di.iso
-					where hot.id =:idhotel";
+							FROM negocio as ne
+							JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
+							JOIN usuario as usu on nven.id_usuario = usu.id_usuario
+							JOIN huesped as hu on usu.id_usuario = hu.id_usuario
+							JOIN huespedhotel as hh on hu.id = hh.id_huesped
+							JOIN hotel as h on hh.id_hotel = h.id
+							where h.id = :idhotel";
 
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idhotel'=>$this->hotel['id']));
@@ -388,7 +401,7 @@ class Home {
 							<div class="statusbox">
 								<h2>Total Comisiones Hotel</h2>
 								<div class="statusbox-content">
-									<strong>'.$sign.'$comision'.$row['divisa'].'</strong>
+									<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>
 								</div><!-- /.statusbox-content -->
 							</div>
 						</div>';

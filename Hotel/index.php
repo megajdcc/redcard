@@ -93,7 +93,7 @@
 				<div class="statusbox">
 					<h2>Operaciones</h2>
 					<div class="statusbox-content">
-						<strong><?php// echo $home->get_operations();?></strong>
+						<strong><?php echo $home->getOperaciones();?></strong>
 					</div><!-- /.statusbox-content -->
 				</div>
 			</div>
@@ -101,8 +101,8 @@
 				<div class="statusbox">
 					<h2>Negocios</h2>
 					<div class="statusbox-content">
-						<strong>AFILIADOS: <?php //echo $home->get_businesses();?></strong>
-						<strong>OPERADOS: <?php// echo $home->get_operations();?></strong>
+						<strong>AFILIADOS: <?php echo $home->getNegocios();?></strong>
+						<strong>OPERADOS: <?php echo $home->getOperaciones();?></strong>
 						<strong><?php //echo $home->get_negocios();?>%</strong>
 					</div><!-- /.statusbox-content -->
 				</div>
