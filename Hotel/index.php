@@ -79,7 +79,7 @@
 						<label>Buscar</label>
 						<div class="form-group">
 							<button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
-							<a href="<?php/ echo _safe(HOST.'/Hotel/');?>" class="btn btn-info">Limpiar</a>
+							<a href="<?php echo _safe(HOST.'/Hotel/');?>" class="btn btn-info">Limpiar</a>
 						</div>
 					</div>
 				</div>
