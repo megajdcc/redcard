@@ -28,6 +28,7 @@ class user_invited {
 	}
 
 	public function load_data($page = null, $rpp = null){
+	
 		$query = "SELECT COUNT(*) FROM usuario_referencia WHERE id_usuario = :id_usuario";
 		try{
 			$stmt = $this->con->prepare($query);

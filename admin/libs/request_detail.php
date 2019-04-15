@@ -59,6 +59,7 @@ class request_detail {
 		'photo' => array('tmp' => null, 'name' => null, 'path' => null)
 	);
 	private $categories = array();
+	private $iatas = array();
 	private $error = array(
 		'name' => null,
 		'description' => null,
@@ -89,7 +90,8 @@ class request_detail {
 	}
 
 	public function load_data($id = null){
-		$query = "SELECT s.id_solicitud, s.nombre, s.descripcion, s.breve, s.id_categoria, nc.categoria, s.comision, s.url, s.email, s.telefono, s.sitio_web, s.direccion, s.codigo_postal, s.id_ciudad, c.ciudad, e.id_estado, e.estado, p.id_pais, p.pais, s.latitud, s.longitud, s.logo, s.foto, s.situacion, s.comentario, s.creado, u.id_usuario, u.username, u.nombre as nombre_usuario, u.apellido, u.password, u.email as usuario_email 
+
+			$query = "SELECT s.id_solicitud, s.nombre, s.descripcion, s.breve, s.id_categoria, nc.categoria, s.comision, s.url, s.email, s.telefono, s.sitio_web, s.direccion, s.codigo_postal, s.id_ciudad, c.ciudad, e.id_estado, e.estado, p.id_pais, p.pais, s.latitud, s.longitud, s.logo, s.foto, s.situacion, s.comentario, s.creado, u.id_usuario, u.username, u.nombre as nombre_usuario, u.apellido, u.password, u.email as usuario_email 
 			FROM solicitud_negocio s 
 			INNER JOIN usuario u ON s.id_usuario = u.id_usuario 
 			INNER JOIN negocio_categoria nc ON s.id_categoria = nc.id_categoria
@@ -152,9 +154,11 @@ class request_detail {
 				$this->categories[$row['id_categoria']] = $row['categoria'];
 			}
 			return true;
-		}else{
-			return false;
-		}
+			}else{
+				return false;
+			}
+		
+		
 	}
 
 	public function accept_request(array $post){
@@ -791,7 +795,9 @@ class request_detail {
 
 	public function get_request(){
 		if($this->request['status'] == 2){
+			
 			$html = 
+
 				'<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" enctype="multipart/form-data">
 					<div class="background-white p30 mb30">
 						'.$this->get_header().'

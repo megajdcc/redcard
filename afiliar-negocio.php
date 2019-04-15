@@ -67,7 +67,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								<div class="background-white p30 mb50">
 									<h3 class="page-title">Informaci&oacute;n de negocio</h3>
 									<div class="row">
+
 										<div class="col-lg-8">
+
 											<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu negocio por su nombre.">
 												<label for="business-name">Nombre del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 												<input class="form-control" type="text" id="business-name" name="name" value="<?php echo $affiliate->get_name();?>" placeholder="Nombre del negocio" required />
@@ -79,11 +81,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<?php echo $affiliate->get_brief_error();?>
 											</div><!-- /.form-group -->
 										</div><!-- /.col-* -->
+										
 										<div class="col-lg-4">
 											<div class="row">
 												<div class="col-sm-6 col-md-12 form-group">
 													<label for="category">Categor&iacute;a del negocio <span class="required">*</span></label>
-													<select class="form-control" id="category" name="category_id" title="Seleccionar categor&iacute;a" required >
+													<select class="form-control" id="category" name="category_id" title="Seleccionar categor&iacute;a" required>
 														<?php echo $affiliate->get_categories();?>
 													</select>
 													<?php echo $affiliate->get_category_error();?>
@@ -98,6 +101,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												</div><!-- /.form-group -->
 											</div>
 										</div><!-- /.col-* -->
+
 									</div><!-- /.row -->
 									<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 										<label for="description">Descripci&oacute;n del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>

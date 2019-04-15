@@ -39,8 +39,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(isset($_POST['business_id']) && isset($_POST['suspend_id'])){
 		$businesses->change_business_status($_POST);
 	}
+	
 }
-
 $includes = new admin\libs\includes($con);
 $properties['title'] = 'Negocios | eSmart Club';
 $properties['description'] = '';

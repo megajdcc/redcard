@@ -348,6 +348,16 @@ class manage_home {
 		$result=$sale['total']-$comision['total'];
 		return $result;
 	}
+
+
+	public function getPorcentageComisionHotel(){
+		$sql="SELECT SUM(n.comision) AS total FROM negocio as n join negocio_categoria as nc on n.id_categoria = nc.id_categoria
+						where nc.categoria = 'Hotel'";
+		$stmt = $this->con->prepare($sql);
+		$stmt->execute(); 
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		return number_format((float)$row['total'], 2, '.', '');
+	}
 	public function get_percentage_commision(){
 		$sql="SELECT SUM(comision) AS total FROM negocio";
 		$stmt = $this->con->prepare($sql);
@@ -565,6 +575,7 @@ class manage_home {
 			ORDER BY nv.id_venta ASC";
 		try{
 			$stmt = $this->con->prepare($query);
+	
 			$stmt->bindValue('id_negocio', $this->business['id'], PDO::PARAM_INT);
 			$stmt->execute();
 		}catch(\PDOException $ex){
@@ -587,7 +598,9 @@ class manage_home {
 				'e_last_name' => $row['e_apellido']
 			);
 			$this->sales[$row['iso']] += $row['venta'];
+
 		}
+
 		$pref = $nonpref = null;
 		foreach ($this->sales as $key => $value) {
 			// if($value['total'] != 0){
@@ -599,7 +612,10 @@ class manage_home {
 				}
 				$sale = number_format((float)$this->sales[$key], 2, '.', '');
 				$pref='';
-				if($key == $this->business['currency'] && $key != 'CAD' && $key !='EUR'){
+				
+					
+				if($key == $this->business['currency']){
+					// echo 'true';
 					$pref .=
 					'<div class="col-sm-3">
 						<div class="statusbox">
@@ -609,12 +625,15 @@ class manage_home {
 							</div><!-- /.statusbox-content -->
 						</div>
 					</div>';
-				}else if($key != 'CAD' && $key !='EUR'){
+				}
+				if($key != 'CAD' && $key !='EUR' && $key != 'USD' ){
+					
 					$nonpref .=
 					'<div class="col-sm-3">
 						<div class="statusbox">
 							<h2>Total de Ventas</h2>
 							<div class="statusbox-content">
+
 								<strong>'.$sign.$sale.' '.$key.'</strong>
 							</div><!-- /.statusbox-content -->
 						</div>
@@ -622,6 +641,7 @@ class manage_home {
 				}
 			// }
 		}
+
 		$html = $pref.$nonpref;
 		if(!$html){
 			$html =

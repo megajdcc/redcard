@@ -1,6 +1,9 @@
 <?php # Desarrollado por Mario Sacramento. info@infochanel.si
+
 header('Content-Type: text/html; charset=utf-8');
+
 date_default_timezone_set('America/Mexico_City');
+
 session_start();
 spl_autoload_register(function ($class) {
 	// project-specific namespace prefix

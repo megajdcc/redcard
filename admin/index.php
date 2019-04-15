@@ -44,8 +44,9 @@ if(isset($_POST['change_business'])){
 	$home->change_business($_POST['change_business']);
 }
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Negocios | eSmart Club';
+$properties['title'] = 'Travel Points';
 $properties['description'] = '';
+
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); 
 
@@ -111,7 +112,7 @@ echo $navbar = $includes->get_admin_navbar();
 			</div>
 			<div class="col-sm-3">
 				<div class="statusbox">
-					<h2>Ventos promedio por negocio</h2>
+					<h2>Ventas promedio por negocio</h2>
 					<div class="statusbox-content">
 						<strong>$<?php echo $home->get_usd_sales();?> USD</strong>
 						<strong>$<?php echo $home->get_mxn_sales();?> MXN</strong>
@@ -177,7 +178,7 @@ echo $navbar = $includes->get_admin_navbar();
 			</div>
 			<div class="col-sm-3">
 				<div class="statusbox">
-					<h2>Utilidad Bruda</h2>
+					<h2>Utilidad Bruta</h2>
 					<div class="statusbox-content">
 						<strong>$<?php echo $home->get_raw_utility();?></strong>
 						<strong>MXN</strong>
@@ -186,9 +187,9 @@ echo $navbar = $includes->get_admin_navbar();
 			</div>
 			<div class="col-sm-3">
 				<div class="statusbox">
-					<h2>Total Comisiones concierge</h2>
+					<h2>Total Comisiones Hotel</h2>
 					<div class="statusbox-content">
-						<strong>$<?php echo $home->get_percentage_commision();?></strong>
+						<strong>$<?php echo $home->getPorcentageComisionHotel();?></strong>
 						<strong>MXN</strong>
 					</div><!-- /.statusbox-content -->
 				</div>

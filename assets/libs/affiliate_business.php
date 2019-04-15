@@ -620,7 +620,7 @@ class affiliate_business {
 
 	public function get_categories(){
 		$categories = null;
-		$query = "SELECT id_categoria, categoria FROM negocio_categoria";
+		$query = "SELECT id_categoria, categoria FROM negocio_categoria as nc where nc.categoria != 'Hotel'";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute();

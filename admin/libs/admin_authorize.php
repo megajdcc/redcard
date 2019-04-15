@@ -31,6 +31,7 @@ class admin_authorize {
 	}
 
 	private function set_security_code($code = null){
+		echo $code . "jhonatan";
 		if($code){
 			$this->admin['security_code'] = $code;
 			return true;

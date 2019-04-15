@@ -67,6 +67,40 @@ class user_login {
 	}
 
 	private function login(){
+
+
+		$sql = "(SELECT 'Hotel' as perfil from usuario as u join solicitudhotel sh on u.id_usuario = sh.id_usuario where sh.condicion = 1 && u.email = :email1)
+					UNION
+					(SELECT 'Franquiciatario' as perfil from usuario as u join solicitudfr sfr on u.id_usuario = sfr.id_usuario 
+								where sfr.condicion = 1 && u.email = :email2)
+					UNION
+					(SELECT 'Referidor' as perfil from usuario as u join solicitudreferidor sr on u.id_usuario = sr.id_usuario 
+								where sr.condicion = 1 && u.email = :email3)";
+
+						$stm = $this->con->prepare($sql);
+						$stm->bindValue(':email1', $this->login['email'], PDO::PARAM_STR);
+						$stm->bindValue(':email2', $this->login['email'], PDO::PARAM_STR);
+						$stm->bindValue(':email3', $this->login['email'], PDO::PARAM_STR);
+						$stm->execute();
+
+						while ($fila = $stm->fetch(PDO::FETCH_ASSOC)) {
+
+							if(!empty($fila['perfil'])){
+								$_SESSION['perfil'] = $fila['perfil'];
+							}else{
+								if(isset($_SESSION['perfil'])){
+									unset($_SESSION['perfil']);
+								}
+
+							}
+							
+							
+							
+						}
+					
+					
+			
+
 		$query = "SELECT 
 				id_usuario, 
 				password, 
@@ -216,6 +250,7 @@ class user_login {
 		if($email){
 			$_email = filter_var($email, FILTER_VALIDATE_EMAIL);
 			if($_email){
+				
 				$this->login['email'] = $_email;
 				return $_email;
 			}

@@ -13,18 +13,19 @@ class includes {
 		'rol' => null
 	);
 	private $admin = array(
-		'pending_request' => 0
+		'pending_request' => 0,
+		'solicitudes_pendiente_perfiles' => 0
 	);
 	private $sidebar = null;
 	private $crumbs = array();
 	
 
-	public function __construct(connection $con){
+	public function __construct(connection $con , $boolean = false){
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
 		$this->load_data();
-		$this->load_sidebar();
+		$this->load_sidebar($boolean);
 
 		return;
 
@@ -66,7 +67,13 @@ class includes {
 			}
 
 		}
-		$query = "SELECT COUNT(*) FROM solicitud_negocio WHERE situacion = 2";
+		$query = "(SELECT COUNT(*) as cuenta, 'Negocio' as perfil FROM solicitud_negocio WHERE situacion = 2)
+					UNION
+					(SELECT COUNT(*) as cuenta, 'Hotel' as perfil FROM solicitudhotel where condicion = 0)
+					UNION
+					(SELECT COUNT(*) as cuenta, 'Franquiciatario' as perfil FROM solicitudfr where condicion = 0)
+					UNION
+					(SELECT COUNT(*) as cuenta, 'Referidor' as perfil FROM solicitudreferidor where condicion = 0)";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute();
@@ -74,13 +81,24 @@ class includes {
 			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
-		if($row = $stmt->fetch()){
-			$this->admin['pending_request'] = $row['COUNT(*)'];
-		}
+		
+		while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+			
+			if($row['perfil'] != 'Negocio'){
+				$this->admin['solicitudes_pendiente_perfiles'] += $row['cuenta'];
+			}else{
+				$this->admin['pending_request'] += $row['cuenta'];
+			}
+		}	
+
 		return;
 	}
 
-	private function load_sidebar(){
+	private function load_sidebar($boolean = false){
+ 
+		if($boolean){
+
+		}
 		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
 			case 'admin':
 				$this->crumbs[0] = 'Inicio';
@@ -111,6 +129,8 @@ class includes {
 							</a>
 						</li>';
 				break;
+
+				
 			case 'tienda':
 				$this->crumbs[0] = 'Tienda';
 				switch (basename($_SERVER['SCRIPT_NAME'])) {
@@ -271,6 +291,63 @@ class includes {
 						</a>
 					</li>';
 				break;
+
+				case 'perfiles':
+				$this->crumbs[0] = 'Perfiles';
+				switch (basename($_SERVER['SCRIPT_NAME'])) {
+					case 'index.php':
+						$this->crumbs[1] = 'Listado';
+						break;
+					case 'solicitudes.php':
+						$this->crumbs[1] = 'Solicitudes';
+						break;
+					case 'comprobantepago.php':
+						$this->crumbs[1] = 'Comprobantes de Pago';
+						break;
+					case 'quitar-saldo.php':
+						$this->crumbs[1] = 'Quitar saldo';
+						break;
+					case 'solicitud.php':
+						$this->crumbs[1] = 'Detalles de solicitud';
+						break;
+					case 'reporte.php':
+						$this->crumbs[1] = 'Movimientos de saldos';
+						break;
+					default:
+						$this->crumbs[1] = '';
+						break;
+				}
+				if($this->admin['solicitudes_pendiente_perfiles'] > 0){
+					$noti = '<span class="notification">'.$this->admin['solicitudes_pendiente_perfiles'].'</span>';
+				}else{
+					$noti = '';
+				}
+				$this->sidebar =
+						'<li'.$this->set_active_sidebar_tab('index.php').'>
+							<a href="'.HOST.'/admin/perfiles/">
+								<span class="icon"><i class="fa fa-list"></i></span>
+								<span class="title">Perfiles</span>
+								<span class="subtitle">Usuarios con perfiles</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('solicitudes.php').'>
+							<a href="'.HOST.'/admin/perfiles/solicitudes">
+								<span class="icon"><i class="fa fa-file"></i></span>
+								<span class="title">Solicitudes'.$noti.'</span>
+								<span class="subtitle">Ver todas las solicitudes</span>
+							</a>
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
+							<a href="'.HOST.'/admin/perfiles/comprobantes">
+								<span class="icon"><i class="fa fa-file-pdf-o"></i></span>
+								<span class="title">Comprobantes</span>
+								<span class="subtitle">Emitir comprobantes</span>
+							</a>
+						</li>
+						';
+				break;
+
 			case 'preferencias':
 				$this->crumbs[0] = 'Preferencias';
 				$this->crumbs[1] = 'C&oacute;digo de seguridad';
@@ -343,19 +420,25 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-slider/css/bootstrap-slider.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-
+	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
 	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
-</head>
+
+	</head>
 ';
 		return $html;
 	}
 
 	public function get_admin_navbar(){
+
 		if($this->admin['pending_request'] > 0){
 			$noti = '<div class="notification"></div>';
 			$link = '<li><a href="'.HOST.'/admin/negocios/solicitudes">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>';
@@ -363,8 +446,17 @@ class includes {
 			$noti = '';
 			$link = '';
 		}
+
+		if($this->admin['solicitudes_pendiente_perfiles'] > 0){
+			$noti .= '<div class="notification"></div>';
+			$link .= '<li><a href="'.HOST.'/admin/perfiles/solicitudes">Solicitudes pendientes de perfiles<div class="dropdown-notification"></div></a></li>';
+		}else{
+			$noti .= '';
+			$link .= '';
+		}
 		$html =
-'<body class=""> 
+'<body class="">
+
 <div class="page-wrapper">
 	<header class="header header-minimal">
 		<div class="header-wrapper">
@@ -372,8 +464,16 @@ class includes {
 				<div class="header-inner">
 					<div class="header-logo">
 						<a href="'.HOST.'/">
-							<img src="'.HOST.'/assets/img/logo.png" alt="eSmart Club Logo"> 
-						</a>
+
+							<div class="logo" alt="Travel Points">
+										<style>
+											.logo{
+												background-image: url('.HOST.'/assets/img/logo.svg)									
+											}
+										</style>
+							</div>
+							
+						</a> 
 					</div><!-- /.header-logo -->
 					<div class="header-content">
 						<div class="header-bottom">
@@ -466,11 +566,17 @@ class includes {
 
 			$html .=	'<li'.$this->set_active_tab('admin').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/admin/"><i class="fa fa-home"></i></a></li>
 						<li'.$this->set_active_tab('negocios').' data-toggle="tooltip" data-placement="right" title="Negocios"><a href="'.HOST.'/admin/negocios/"><i class="fa fa-briefcase"></i></a></li>
-						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/admin/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>';
+
+
+						
+						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/admin/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
+
+								<li'.$this->set_active_tab('perfiles').' data-toggle="tooltip" data-placement="right" title="Perfiles"><a href="'.HOST.'/admin/perfiles/"><i class="fa fa-users"></i></a></li>';
 				}
 
 			$html .=	'<li'.$this->set_active_tab('tienda').' data-toggle="tooltip" data-placement="right" title="Tienda de regalos"><a href="'.HOST.'/admin/tienda/"><i class="fa fa-shopping-bag"></i></a></li>
 						<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias"><a href="'.HOST.'/admin/preferencias/codigo-seguridad"><i class="fa fa-cog"></i></a></li>
+						<li'.$this->set_active_tab('administracion').' data-toggle="tooltip" data-placement="right" title="Administrativo"><a href="'.HOST.'/admin/adminstracion/Iata"><i class="fa fa-coogs"></i></a></li>
 					</ul>
 				</div><!-- /.sidebar-admin-->
 				<div class="sidebar-secondary-admin">
@@ -505,7 +611,7 @@ class includes {
 		</div><!-- /.outer-admin -->
 	</div><!-- /.main -->
 </div><!-- /.page-wrapper -->
-<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+
 <script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
@@ -516,6 +622,7 @@ class includes {
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/modal.js" type="text/javascript"></script>
+<script src="'.HOST.'/assets/libraries/bootstrap-slider/js/bootstrap-slider.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
@@ -527,7 +634,10 @@ class includes {
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
+<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+<script type="text/javascript" src="'.HOST.'/assets/libraries/font-awesome/js/fontawesome.min.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
+
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>

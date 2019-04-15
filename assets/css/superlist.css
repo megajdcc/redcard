@@ -50,8 +50,152 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+
+@font-face {
+font-family: 'Nexa Regular';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Regular'), url('../../assets/fonts/NexaRegular.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Regular Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Regular Italic'), url('../../assets/fonts/NexaRegularItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Book';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book'), url('../../assets/fonts/NexaBook.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Book Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book Italic'), url('../../assets/fonts/NexaBookItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Thin';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Thin'), url('../../assets/fonts/NexaThin.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Thin Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Thin Italic'), url('../../assets/fonts/NexaThinItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Light';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Light'), url('../../assets/fonts/NexaLight.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Light Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Light Italic'), url('../../assets/fonts/NexaLightItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold'), url('../../assets/fonts/NexaBold.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Bold Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold Italic'), url('../../assets/fonts/NexaBoldItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa XBold';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa XBold'), url('../../assets/fonts/NexaXBold.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa XBold Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa XBold Italic'), url('../../assets/fonts/NexaXBoldItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Black';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Black'), url('../../assets/fonts/NexaBlack.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Black Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Black Italic'), url('../../assets/fonts/NexaBlackItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Heavy';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Heavy'), url('../../assets/fonts/NexaHeavy.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Heavy Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Heavy Italic'), url('../../assets/fonts/NexaHeavyItalic.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Light Regular';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Light Regular'), 
+url('../../assets/fonts/Nexa Light.woff') format('woff');
+}
+
+
+@font-face {
+font-family: 'Nexa Bold Regular';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold Regular'), url('../../assets/fonts/Nexa Bold.woff') format('woff');
+}
 html {
-  font-family: sans-serif;
+  font-family: 'Nexa Light Regular';
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%; }
 
@@ -286,7 +430,11 @@ th {
 @font-face {
   font-family: 'Glyphicons Halflings';
   src: url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
+  src: url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), 
+  url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), 
+  url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), 
+  url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), 
+  url("../../assets/libraries/bootstrap-sass/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
 
 .glyphicon {
   position: relative;
@@ -1102,7 +1250,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Nexa Light';
   font-size: 14px;
   line-height: 1.42857;
   color: #333333;
@@ -1112,7 +1260,7 @@ input,
 button,
 select,
 textarea {
-  font-family: inherit;
+  font-family: 'Nexa Bold Regular';
   font-size: inherit;
   line-height: inherit; }
 
@@ -1186,7 +1334,7 @@ hr {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: inherit;
+  font-family: 'Nexa Ligth Regular';
   font-weight: 500;
   line-height: 1.1;
   color: inherit; }
@@ -5413,7 +5561,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Nexa Bold Regular';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5526,7 +5674,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:'Nexa Heavy';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -6088,18 +6236,7 @@ button.close {
     outline: 0px !important;
     text-decoration: none; }
 
-.btn-secondary {
-  background-color: #ff030b;
-  color: #fff;
-  display: inline-block;
-  padding: 9px 15px;
-  transition: background-color .15s linear; }
-  .btn-secondary:active, .btn-secondary:focus, .btn-secondary:hover {
-    background-color: #d2050c !important;
-    box-shadow: none !important;
-    color: #fff;
-    outline: 0px !important;
-    text-decoration: none; }
+
 
 .btn-transparent {
   background-color: rgba(0, 0, 0, 0.4);
@@ -6596,6 +6733,11 @@ blockquote {
 /*------------------------------------------------------------------
 [ 5. Forms ]
 */
+
+/* #### Generated By: http://www.cufonfonts.com #### */
+
+
+
 label {
   color: #444;
   cursor: pointer;
@@ -7349,7 +7491,8 @@ ul.dropdown-menu li a {
   background-color: #363636;
   color: #fff;
   font-size: 13px;
-  padding: 35px 0px; }
+  padding: 35px 0px; 
+display: flex;}
   .footer-bottom .nav > li > a {
     border-radius: 0px;
     color: #fff;
@@ -10500,7 +10643,7 @@ html {
 body {
   background-color: #fff;
   color: rgba(54, 54, 54, 0.6);
-  font-family: 'Nunito';
+  font-family: 'Nexa Light Regular';
   font-size: 14px;
   height: 100%;
   overflow-x: auto;
@@ -10563,7 +10706,7 @@ ol li {
   height: 100%; }
 
 .main-inner {
-  padding: 80px 0px; }
+  padding: 50px 0px; }
 
 .box-icon {
   border: 2px solid rgba(255, 255, 255, 0.4);
@@ -11126,7 +11269,7 @@ margin-bottom: 0;
   white-space: nowrap;}
 
 .header-statusbar h1 .header-text {
-  font-family: 'Nunito';
+  font-family: 'Nexa Bold Regular';
   font-size: 22px;
   margin: -15px 0 0 25px;
   display: inline-block;
@@ -11336,4 +11479,78 @@ ul.menu-advanced li a .notification {
 
 .others {
   background-color: #444;
+}
+
+/***************
+/*Modales
+*/
+
+.alert-aceptada{
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-family: serif;
+  font-size: 12pt;
+  text-align: center;
+}
+.modal-body{
+  display: flex !important;
+  flex-direction: column;
+}
+.modal-body label{
+  font-family: 'Nexa Light';
+  font-size: medium;
+}
+.codigo{
+  display: flex;
+  justify-content: center;
+}
+.modal-header{
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-hotel{
+  display: flex;
+
+}
+.input-hotel .input-group{
+  flex: 1 1 auto;
+  margin-bottom: 0px !important;
+}
+.input-hotel button{
+  flex: 0 1 150px;
+}
+.logo{
+
+  -webkit-background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width:200px;
+  max-width: 200px;
+  height: 40px;
+  padding: 0px;
+  flex: 1 1 200px;
+}
+.header-logo{
+  width: 200px !important;
+  height: auto;
+  align-items: center;
+  display: flex !important;
+  justify-content: center;
+}
+.header-logo a {
+  display: flex;
+  height: 100%;
+  justify-content:center ;
+  align-items: center;
+  flex: 1 1 auto;
+}
+
+.header-inner{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.footer1{
+  flex: 1 1 auto;
 }

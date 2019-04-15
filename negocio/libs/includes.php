@@ -91,9 +91,11 @@ class includes {
 					</button>
 					<ul class="dropdown-menu reverse-dropdown" aria-labelledby="dropdownMenu1">';
 			foreach ($this->user['other_business'] as $key => $value) {
+				
 				$html .= 
 				'<form method="post" action="'.HOST.'/negocio/">
 					<li><a href="#" class="change-business">'.$value.'</a></li>
+
 					<input type="hidden" value="'.$key.'" name="change_business">
 				</form>';
 			}
@@ -515,8 +517,16 @@ class includes {
 				<div class="header-inner">
 					<div class="header-logo">
 						<a href="'.HOST.'/">
-							<img src="'.HOST.'/assets/img/logo.png" alt="eSmart Club Logo">
-						</a>
+
+							<div class="logo" alt="Travel Points">
+										<style>
+											.logo{
+												background-image: url('.HOST.'/assets/img/logo.svg)									
+											}
+										</style>
+							</div>
+							
+						</a> 
 					</div><!-- /.header-logo -->
 					<div class="header-content">
 						<div class="header-bottom">

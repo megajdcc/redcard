@@ -38,7 +38,7 @@ class new_product {
 	}
 
 	private function load_data(){
-		$query = "SELECT id_categoria, categoria FROM producto_categoria";
+		$query = "SELECT id_categoria, categoria FROM producto_categoria ";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute();

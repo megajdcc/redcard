@@ -28,7 +28,10 @@ class user_businesses {
 	}
 
 	public function load_data($page = null, $rpp = null){
-		$query = "SELECT COUNT(*) FROM negocio_empleado WHERE id_empleado = :id_empleado";
+		
+		$query = "SELECT COUNT(*) FROM negocio_empleado as ne join negocio as n on ne.id_negocio = n.id_negocio join negocio_categoria as nc
+				on n.id_categoria = nc.id_categoria 
+				WHERE id_empleado = :id_empleado ";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':id_empleado', $this->user['id'], PDO::PARAM_INT);
@@ -50,6 +53,7 @@ class user_businesses {
 			$query = "SELECT ne.id_negocio, n.nombre, n.url 
 				FROM negocio_empleado ne
 				INNER JOIN negocio n ON ne.id_negocio = n.id_negocio
+				join negocio_categoria as nc on n.id_categoria = nc.id_categoria
 				WHERE ne.id_empleado = :id_empleado
 				ORDER BY ne.creado ASC 
 				LIMIT :limit OFFSET :offset";

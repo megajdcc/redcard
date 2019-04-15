@@ -2,6 +2,10 @@
 $(document).ready(function() {
 	'use strict';
 
+
+	$('body').fadeIn(2000);
+	$('img').fadeIn(2000);
+			
 	// $('.owl-carousel').owlCarousel();
 	$('.owl-carousel').owlCarousel({
 		loop:true,
@@ -81,6 +85,20 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+
+	// Confirmar aceptar o rechazar una solicitud de perfil
+	
+
+		$('#corregirsolicitud').on('click', function(){
+			return confirm('¿Realmente desea enviar a corrección esta solicitud?');
+		});
+		$('#rechazarsolicitud').on('click', function(){
+			return confirm('¿Realmente desea rechazar esta solicitud?');
+		});
+		$('#eliminarsolicitud').on('click', function(){
+			return confirm('¿Realmente desea eliminar esta solicitud? Una vez hecho, no se puede deshacer.');
+		});
 
 	// Confirmar aceptar o rechazar una solicitud
 	$('#accept-request').on('click', function(){
@@ -663,8 +681,209 @@ $(document).ready(function() {
 		fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
 
-});
 
+
+
+
+if($('#solicitudes').length){
+	 var t = $('#solicitudes').DataTable({
+      "paging":         false,
+      "scrollY":        "400px",
+        "scrollCollapse": true,
+         "language": {
+                        "lengthMenu": "Mostar _MENU_ registros por pagina",
+                        "info": "",
+                        "infoEmpty": "No se encontro ninguna solcitud",
+                        "infoFiltered": "(filtrada de _MAX_ registros)",
+                        "search": "Buscar:",
+                        "paginate": {
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    },
+        "columnDefs": [ {
+            "searchable": true,
+            "orderable": true,
+            "targets": 0
+        } ],
+        "order": [[ 0, 'asc' ]]
+    } );
+}
+
+
+
+  
+
+
+
+
+//generar Iata
+	//
+		
+
+		$('.generarcodigo').click(function(){
+			var iata =  $(this).attr('data-iata');
+			var hotel =  $(this).attr('data-hotel');
+
+		
+			var cadena = hotel.split(" ");
+
+			var total = cadena.length;
+			var resultado = "";
+
+			for(var i = 0; i < total; resultado += cadena[i][0], i++);
+			
+
+			$('#codigohotel').val(iata+resultado.toUpperCase());
+
+		});
+
+
+	//slider
+	
+	if($('#ex8').length){
+		var slider = new Slider('#ex8');
+		var valorslider = slider.getValue();
+		slider.on("slide", function(sliderValue){
+			valorslider = sliderValue;
+				document.getElementById('val-slider').textContent = sliderValue + " %";
+		});
+	}
+	
+
+	// Modales 
+		$('.modales').modal({
+			keyboard:true,
+			backdrop:false,
+			focus:true,
+			show:false
+
+		});
+
+
+		$('.cerrar').click(function() {
+				
+				var result = confirm("Acepta salir y dejarlo tal cual?");
+				if(result){
+					$('#ex8').modal('hide');
+				}else{
+					return false;	
+				}
+		});
+		// $('.close').click(function() {
+				
+		// 		var result = confirm("Acepta salir y dejarlo tal cual?");
+		// 		if(result){
+		// 			$('#ex8').modal('hide');
+		// 		}else{
+		// 			return false;	
+		// 		}
+		// });
+
+
+	// Funciones con Ajax... 
+	// 
+	// 
+		
+
+		$("#formulariosolicitud").bind("submit",function(){
+		
+				var btnaceptar = $('#aceptarsolicitud');
+
+				var result = confirm('¿Realmente desea aceptar esta solicitud?');
+				if(result){
+
+					$.ajax({
+				 	type:$(this).attr("method"),
+					url: $(this).attr("action"),
+					data: $(this).serialize(),
+					beforeSend: function(){
+						btnaceptar.text("Enviando");
+						btnaceptar.attr("disabled","disabled");
+					},
+					complete:function(data){
+						btnaceptar.text("Acetar solicitud");
+						btnaceptar.removeAttr('disabled');
+					},
+					success:function(data){
+
+						$('.aceptar').modal('show');
+					},
+					error:function(data){
+						alert("No se pudo aceptar la solicitud, por favor intente mas tarde... ");
+					}
+
+				});	
+				}else{
+					return false;
+				}
+				return false;				
+		});
+
+		$('.adjudicar').click(function(){
+
+				$(this).attr('disabled',"disabled");
+				$('.close').attr('disabled', 'disabled');
+				$('.cerrar').attr('disabled', 'disabled');
+
+				$(this).text("Registrando");
+
+				var perfil = $(this).attr('data-perfil');
+
+				if(perfil == 'Hotel'){
+					var codigohotel = document.getElementById("codigohotel").value;
+					var comision =  valorslider;
+
+					var path = $(this).attr('data-path');
+
+					$.ajax({
+						url: path,
+						type: 'POST',
+						dataType: 'HTML',
+						data: 'action=adjudicar&perfil=hotel&codigohotel='+codigohotel+'&comision='+comision,
+						cache:false
+					})
+					.done(function(response) {
+
+
+					location.reload();
+						
+					})
+					.fail(function() {
+						console.log("error");
+					})
+				}else if(perfil == 'Franquiciatario'){
+
+					var comision = valorslider;
+
+					var path = $(this).attr('data-path');
+
+					$.ajax({
+						url: path,
+						type: 'POST',
+						dataType: 'HTML',
+						data: 'action=adjudicar&perfil=franquiciatario&comision='+comision,
+					})
+					.done(function(data) {
+											
+
+							//
+							// $(document).load(path);
+
+						// document.innerHTML = path;
+						location.reload();
+						
+					})
+					.fail(function() {
+						console.log("error");
+					})
+				}
+
+				
+		});
+		    
+          
+});
 
 // Tabs
 // Abrir el tab con link directo
@@ -701,3 +920,5 @@ $(document).ready(function() {
 // 		$(this).next('div.input-group').find('input').attr('disabled', 'disabled');
 // 	}
 // });
+// 
+// 

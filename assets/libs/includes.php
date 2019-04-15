@@ -98,6 +98,7 @@ class includes {
 	}
 
 	public function get_user_sidebar(){
+		
 		$html = 
 		'<div class="widget">
 			<ul class="menu-advanced">
@@ -109,17 +110,20 @@ class includes {
 				</li>
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
+
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
 				<li'.$this->set_active_tab('compras').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras</a></li>
 			</ul>
 		</div>';
+
 		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
 			case 'perfil':
 				$html .=
 		'<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
+				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
 				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
@@ -155,7 +159,23 @@ class includes {
 			</ul>
 		</div>';
 			}
-				break;
+			break;
+			case 'huesped':
+			 $html .='<div class="widget">
+				<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
+				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
+				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
+				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
+				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
+				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
+				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
+				</ul>
+				</div>';
+			break;
+
+			
+
 			case 'consumos':
 				if($this->user['pending_review'] > 0){
 					$noti = '<span class="notification">'.$this->user['pending_review'].'</span>';
@@ -192,6 +212,7 @@ class includes {
 	}
 
 	private function set_active_tab($tab = null){
+
 		if(basename(dirname($_SERVER['SCRIPT_NAME'])) == $tab){
 			$class = ' class="active"';
 		}else{
@@ -201,6 +222,7 @@ class includes {
 	}
 
 	private function set_active_sidebar_tab($tab = null){
+
 		if(basename($_SERVER['SCRIPT_NAME']) == $tab){
 			$class = ' class="active"';
 		}else{
@@ -242,15 +264,25 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
+	
+
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
+
+	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
 	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
+
+	
+
 </head>
 ';
 
@@ -264,8 +296,9 @@ class includes {
 		}else{
 			$e = '';
 		}
-		$html =
-'<body class="">
+		?>
+
+		<body class="">
 <div id="fb-root"></div>
 <div class="page-wrapper">
 	<header class="header">
@@ -273,36 +306,43 @@ class includes {
 			<div class="container">
 				<div class="header-inner">
 					<div class="header-logo">
-						<a href="'.HOST.'/">
-							<img src="'.HOST.'/assets/img/logo.png" alt="Red Card Logo">
+						<a href="<?php echo HOST.'/';?>">
+							<div class="logo">
+										<style>
+											.logo{
+												background-image: url("<?php echo HOST.'/assets/img/logo.svg';?>");									
+											}
+										</style>
+							</div>
+						
 						</a>
 					</div><!-- /.header-logo -->
 					<div class="header-content">
 						<div class="header-bottom">
 							<div class="header-button">
-								<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
+								<a href="<?php echo HOST.'/contacto'; ?>" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
 									<i class="fa fa-envelope"></i>
 								</a>
 							</div>
 							
 							<div class="header-button">
-								<a href="'.HOST.'/tienda/" class="header-button-inner pink" data-toggle="tooltip" data-placement="bottom" title="Gift Store | Tienda de Regalos">
+								<a href="<?php echo HOST.'/tienda/';?>" class="header-button-inner pink" data-toggle="tooltip" data-placement="bottom" title="Gift Store | Tienda de Regalos">
 									<i class="fa fa-gift"></i>
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Red Card | ¿Qu&eacute; es Red Card?">
+								<a href="<?php echo HOST.'/que-es-esmart-club'; ?>" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Red Card | ¿Qu&eacute; es Red Card?">
 									<i class="fa fa-question"></i>
 								</a>
-							</div>';
-							if(isset($_SESSION['user']['id_usuario'])){
-								$html .= 
-							'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								'.$e.'
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/tienda/">Gift Store | Tienda de Regalos</a></li>
+							</div>
+							<?php  if(isset($_SESSION['user']['id_usuario'])){?>
+								 
+							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+								<?php echo $e ?>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/tienda/' ?>">Gift Store | Tienda de Regalos</a></li>
 								
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contact | Contacto</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/contacto'; ?>">Contact | Contacto</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 								<span class="sr-only">Toggle navigation</span>
@@ -314,10 +354,11 @@ class includes {
 								<div class="dropdown">
 									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 										<div class="user-image">
-											<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">';
-							if($this->user['pending_review'] > 0 || $this->user['pending_request'] > 0 || $this->admin['pending_request'] > 0){
-								$html .= '<div class="notification"></div>';
-							}
+											<img src="<?php echo HOST.'/assets/img/user_profile/'.$this->user['image']; ?>">
+											<?php  
+							if($this->user['pending_review'] > 0 || $this->user['pending_request'] > 0 || $this->admin['pending_request'] > 0){?>
+								<div class="notification"></div>
+							<?php  }
 							if($this->user['pending_review'] > 0){
 								$review = '<li><a href="'.HOST.'/socio/consumos/">Opiniones pendientes<div class="dropdown-notification"></div></a></li>';
 							}else{
@@ -325,65 +366,76 @@ class includes {
 							}
 							if($this->user['pending_request'] > 0){
 								$request = '<li><a href="'.HOST.'/socio/negocios/solicitudes">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>';
-							}else{
+							
+							  }else{
 								$request = '';
-							}
-								$html .='</div><!-- /.user-image -->
-										<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
+							}?>
+								</div><!-- /.user-image -->
+										<span class="header-nav-user-name"><?php echo $this->user['alias']; ?></span> <i class="fa fa-chevron-down"></i>
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="'.HOST.'/socio/">Mi inicio</a></li>
-										<li><a href="'.HOST.'/socio/perfil/">Mi perfil</a></li>
-										'.$review.$request;
-								if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){
-									$html .= '<li><a href="'.HOST.'/admin/">Panel eSmart Club</a></li>';
-									if($this->admin['pending_request'] > 0){
-										$html .= '<li><a href="'.HOST.'/admin/negocios/solicitudes">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>';
+										<li><a href="<?php echo HOST.'/socio/'; ?>">Mi inicio</a></li>
+										<li><a href="<?php echo HOST.'/socio/perfil/'; ?>">Mi perfil</a></li>
+										<?php  
+										$review.$request;
+								if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){?>
+									
+									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel eSmart Club</a><li>
+									
+									<?php  if($this->admin['pending_request'] > 0){?>
+										<li><a href="<?php echo HOST.'/admin/negocios/solicitudes'; ?>">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>
+
+								<?php
 									}
 								}
-								if($_SESSION['user']['id_rol'] == 9){
-									$html .= '<li><a href="'.HOST.'/admin/tienda/">Gift Store | Tienda de Regalos</a></li>';
+								if($_SESSION['user']['id_rol'] == 9){?>
+
+									<li><a href="<?php echo HOST.'/admin/tienda/'; ?>">Gift Store | Tienda de Regalos</a></li>
+									<?php 
 								}
-								if(isset($_SESSION['business'])){
-									$html .= '<li><a href="'.HOST.'/negocio/">Panel de Negocio</a></li>';
-								}
-								$html .= 
-										'<li><a href="'.HOST.'/logout">Logout | Cerrar sesi&oacute;n</a></li>
+
+								if(isset($_SESSION['business'])){?>
+									
+									<li><a href="<?php echo HOST.'/negocio';?>">Panel de Negocio</a></li>
+								<?php  }?>
+								
+								<li><a href="<?php echo HOST.'/logout'; ?>">Logout | Cerrar sesi&oacute;n</a></li>
 									</ul>
 								</div><!-- /.dropdown -->
 							</div><!-- /.header-nav-user -->
-							';
-							}else{
-								$html .=
-							'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li><a href="'.HOST.'/login">Login | Iniciar sesi&oacute;n</a></li>
-								<li><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/tienda/">Gift Store | Tienda de Regalos</a></li>
+							
+		
+								<?php }else{?>
+
+							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+								<li><a href="<?php echo HOST.'/login'; ?>">Login | Iniciar sesi&oacute;n</a></li>
+								<li><a href="<?php echo HOST.'/hazte-socio';?>">Join | Hazte socio</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/tienda'; ?>">Gift Store | Tienda de Regalos</a></li>
 								
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacto</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST."/contacto" ?>">Contacto</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 								<span class="sr-only">Toggle navigation</span>
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
-							</button>';
-							}
-							$html .= '
+							</button>
+							
+							<?php } ?>
 						</div><!-- /.header-bottom -->
 					</div><!-- /.header-content -->
 				</div><!-- /.header-inner -->
 			</div><!-- /.container -->
 		</div><!-- /.header-wrapper -->
 	</header><!-- /.header -->
-';
-		return $html;
+
+	<?php 
 	}
 
-	public function get_main_footer(){
-		$html = 
-'	<footer class="footer">
+	public function get_main_footer($query = null){
+	$html = 
+		'<footer class="footer">
 		<div class="footer-top">
 			<div class="container">
 				<div class="row">
@@ -414,7 +466,7 @@ class includes {
 			</div><!-- /.container -->
 		</div><!-- /.footer-top -->
 		<div class="footer-bottom">
-			<div class="container">
+			<div class="container footer1">
 				<div class="footer-bottom-left">
 					&copy; 2018 All Rights Reserved | Todos los derechos reservados.
 				</div><!-- /.footer-bottom-left -->
@@ -430,7 +482,7 @@ class includes {
 		</div>
 	</footer><!-- /.footer -->
 </div><!-- /.page-wrapper -->
-<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+
 <script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
@@ -455,15 +507,64 @@ class includes {
 <script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
-<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script></body>
+<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
+'.$query.'
+</body>
 </html>';
 
-		return $html;
+return $html;
+	
 	}
 
 	private function error_log($method, $line, $error){
 		file_put_contents(ROOT.'\assets\error_logs\main_includes.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		return;
+	}
+
+
+
+	private function getHotel(){
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+			$this->con->beginTransaction();
+
+
+
+		$result = false;
+
+		try {
+
+			$sql = "select n.nombre, nc.categoria from negocio as  n
+					join negocio_categoria as nc on n.id_categoria = nc.id_categoria
+					join solicitud_negocio as s on n.id_solicitud = s.id_solicitud
+					join usuario as u on s.id_usuario = u.id_usuario
+					where u.id_usuario = :id_usuario";
+			$stm = $this->con->prepare($sql);
+
+			$resultado = $stm->execute(array(':id_usuario' => $_SESSION['user']['id_usuario']));
+
+			if($resultado){
+				$resultados = array(
+					'negocio'=>array(),
+					'categoria'=>array(),
+					'hotel_exists' => $resultado
+			);
+				while ($row = $stm->fetch()) {
+					$resultados['negocio'][] = $row['nombre'];
+					$resultados['categoria'][] = $row['categoria'];
+			
+				}
+
+				return $resultados;
+
+			}
+		$this->con->commit();
+		} catch (PDOException $e) {
+			$this->con->rollBack();
+		}
+
 	}
 }
 ?>

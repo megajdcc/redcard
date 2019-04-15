@@ -1,9 +1,10 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Info Channel
+
 $con = new assets\libs\connection();
 $index = new assets\libs\index_load($con);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'eSmart Club | ¡Descubre los negocios que te pagan por comprar!';
+$properties['title'] = 'Travel Points | ¡Descubre los negocios que te pagan por comprar!';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

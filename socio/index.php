@@ -10,6 +10,7 @@ if(!isset($_SESSION['user']['id_usuario'])){
 	die();
 }
 
+
 $home = new socio\libs\user_home($con);
 
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
@@ -19,9 +20,36 @@ $options = $home->load_data($page, $rpp);
 $paging = new assets\libraries\pagination\pagination($options['page'], $options['total']);
 $paging->setRPP($rpp);
 $paging->setCrumbs(10);
+if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
+	switch ($_SESSION['perfil']) {
+		case 'Hotel':
+			
+			header('location:'.HOST.'/Hotel/');
+			
+			die();
+		break;
 
+		case 'Franquiciatario':	
+			
+			header('location:'.HOST.'/Franquiciatario/');
+			
+			die();
+		break;
+
+		case 'Referidor':	
+		
+			header('location:'.HOST.'/Referidor/');
+		
+			die();
+		break;
+		
+		default:
+			# code...
+			break;
+	}
+}
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Novedades de negocios | eSmart Club';
+$properties['title'] = 'Novedades de negocios | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -38,6 +66,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					<div class="col-sm-8 col-lg-9">
 						<div class="content">
 							<div class="row">
+
 								<div class="col-xs-6 col-xs-offset-3 col-sm-offset-0 col-sm-4">
 									<div class="widget">
 										<div class="user-photo">
@@ -45,6 +74,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</div>
 									</div>
 								</div>
+
 								<div class="col-xs-12 col-sm-8">
 									<div class="p30">
 										<div class="page-title">
@@ -59,6 +89,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div>
 								</div>
 							</div>
+							
 							<div class="page-title">
 								<p>Novedades de los negocios que estoy siguiendo. <a href="'.HOST.'/listados">Encuentra m&aacute;s negocios</a> de tu inter&eacute;s.</p>
 							</div>
