@@ -88,58 +88,133 @@
 		<!-- /.box -->
 
 		<div class="row">
-			<?php echo $home->getComisiones();?>
-			<div class="col-sm-3 col-lg-3">
-				<div class="statusbox">
-					<h2>Operaciones</h2>
-					<div class="statusbox-content">
-						<strong><?php echo $home->getOperaciones();?></strong>
-					</div><!-- /.statusbox-content -->
-				</div>
-			</div>
 			<div class="col-sm-3">
+				
+				<!-- TRES CUADROS >>> -->
+				<div class="row">
+					<div class="statusbox">
+						<h2>Total Comisiones Hotel</h2>
+							<div class="statusbox-content">
+									<?php echo $home->getComisiones();?>
+							</div><!-- /.statusbox-content -->
+					</div>
+				</div>
+				
+
+
+				<!-- NEgocios deudores -->
+				<div class="row">
+						<div class="statusbox">
+						<h2>Negocio Deudores</h2>
+						<div class="statusbox-content total-adeudo">
+						<strong><?php echo $home->getNegociosDeudores();?></strong>
+						</div><!-- /.statusbox-content -->
+						</div>
+				</div>
+			
+				<!-- Total Adeudo -->
+				<div class="row">
+					<div class="statusbox">
+					<h2>Total Adeudos</h2>
+					<div class="statusbox-content total-adeudo">
+						<strong><?php echo $home->getTotalComisionAdeudo();?></strong>
+						
+					</div><!-- /.statusbox-content -->
+					</div>
+				</div>
+				
+
+			</div>
+		
+
+			<div class="col-sm-9 h-100">
 				<div class="statusbox">
 					<h2>Negocios</h2>
 					<div class="statusbox-content">
-						<strong>AFILIADOS: <?php echo $home->getNegocios();?></strong>
-						<strong>OPERADOS: <?php echo $home->getOperaciones();?></strong>
-						<strong><?php //echo $home->get_negocios();?>%</strong>
-					</div><!-- /.statusbox-content -->
+						<?php echo $home->getOperacionesNegocios(); ?>
+					</div>
 				</div>
 			</div>
 		
 		</div>
 		<div class="row">
 			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>Negocio Deudores</h2>
-					<div class="statusbox-content total-adeudo">
-						<strong><?php //echo $home->get_business_debt();?></strong>
-					</div><!-- /.statusbox-content -->
-				</div>
+				
 			</div>
 			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>Total Adeudos</h2>
-					<div class="statusbox-content">
-						<strong>$<?php //echo $home->get_toatl_commision();?></strong>
-						<strong>MXN</strong>
-					</div><!-- /.statusbox-content -->
-				</div>
+				
 			</div>
 
 			
 		</div>
 		<div class="row">
-			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>Consumo Promedio P/Compra</h2>
-					<div class="statusbox-content">
-						<strong><?php// echo $home->get_average_commision();?> %</strong>
-					</div><!-- /.statusbox-content -->
-				</div>
+			<div class="col-sm-6 " id="grafica1">
+			
+			
+				
+
+<script>
+	$(document).ready(function() {
+		
+		var idhotel = "<?php echo $home->hotel['id'];?>"
+		$.ajax({
+			url: '/Hotel/controller/grafica.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {grafica: 'consumospromedioporcompra', idhotel,hotel:idhotel},
+		})
+		.done(function(response) {
+			var options = {
+						chart: {
+							renderTo: 'grafica1',
+							plotBackgroundColor: null,
+							plotBorderWidth: null,
+							plotShadow: false,
+							type: 'pie'
+						},
+						title: {
+							text: "Promedio por consumo por cada compra"
+						},
+						tooltip: {
+							pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+						},
+						legend: {
+							enabled: false
+						},
+						  plotOptions: {
+					        pie: {
+					            allowPointSelect: true,
+					            cursor: 'pointer',
+					            dataLabels: {
+					                enabled: true,
+					                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+					                style: {
+					                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+					                }
+					            }
+					        }
+					    },
+						
+			    		series: [{}]
+			   }; 
+				 options.series[0].data = response;
+				
+				var grafica = Highcharts.chart(options);
+				 	
+				})	
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});
+	
+		});
+
+	</script>
+
 			</div>
-			<div class="col-sm-3">
+			<div class="col-sm-6">
 				<div class="statusbox">
 					<h2>Consumo Promedio</h2>
 					<div class="statusbox-content">
@@ -148,15 +223,15 @@
 					</div><!-- /.statusbox-content -->
 				</div>
 			</div>
-			<div class="col-sm-3">
+		<!-- 	<div class="col-sm-3">
 				<div class="statusbox">
 					<h2>Ventas promedio por negocio</h2>
 					<div class="statusbox-content">
-						<strong>$<?php// echo $home->get_raw_utility();?></strong>
+						<strong></strong>
 						<strong>MXN</strong>
 					</div><!-- /.statusbox-content -->
 				</div>
-			</div>
+			</div> -->
 		
 		</div>
 		<div class="row">
@@ -255,6 +330,8 @@
 	
 		</div>
 	
+
+			
 		
 	</div>
 </div>

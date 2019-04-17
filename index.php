@@ -17,10 +17,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						<source src="<?php echo HOST.'/assets/img/esmartclub/sky.mp4';?>" type="video/mp4">
 					</video>
 					<div class="video-overlay"></div>
-					<div class="container">
+					<div class="container centro">
 						<div class="row">
 							<div class="col-sm-8 col-sm-offset-2 col-xs-12 col-xs-offset-0">
-								<h1 class="logo-esmart">Club Regina<br><span class="logo-club">Red CARD</span></h1>
+								<!-- <h1 class="logo-esmart">Club Regina<br><span class="logo-club">Red CARD</span></h1> -->
+								<figure class="logotipo">	
+								</figure>
 								<p>Discover Vallarta's Top & gain Free Gifts</p>
 								<form method="get" action="<?php echo htmlspecialchars(HOST.'/listados');?>">
 									<div class="input-group">

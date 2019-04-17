@@ -88,7 +88,7 @@ class Includes {
 	}
 
 	private function load_sidebar(){
-	
+		
 		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
 			case 'Hotel':
 					$this->crumbs[0] = 'Inicio';
@@ -96,8 +96,11 @@ class Includes {
 					case 'index.php':
 						$this->crumbs[1] = 'Resumen';
 						break;
-					case 'reporte-de-ventas.php':
+					case 'reportedeventas.php':
 						$this->crumbs[1] = 'Estado de Cuenta';
+						break;
+					case 'comprabantes.php':
+						$this->crumbs[1] = 'Comprobantes';
 						break;
 					default:
 						$this->crumbs[1] = '';
@@ -105,19 +108,29 @@ class Includes {
 				}
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
-							<a href="'.HOST.'/admin/">
+							<a href="'.HOST.'/Hotel/">
 								<span class="icon"><i class="fa fa-tachometer"></i></span>
 								<span class="title">Resumen</span>
 								<span class="subtitle">Vistazo general</span>
 							</a>
 						</li>
+
 						<li'.$this->set_active_sidebar_tab('reporte-de-ventas.php').'>
-							<a href="'.HOST.'/admin/reporte-de-ventas">
+							<a href="'.HOST.'/Hotel/reporte-de-ventas">
 								<span class="icon"><i class="fa fa-dollar"></i></span>
 								<span class="title">Estado de Cuenta</span>
 								<span class="subtitle">Movimientos</span>
 							</a>
-						</li>';
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
+							<a href="'.HOST.'/Hotel/comprabantes">
+								<span class="icon"><i class="fa fa-file"></i></span>
+								<span class="title">Comprobantes</span>
+								<span class="subtitle">de pago</span>
+							</a>
+						</li>
+						';
 
 			break;
 			
@@ -215,93 +228,47 @@ class Includes {
 						</li>';
 			}
 				break;
-			case 'negocios':
-				$this->crumbs[0] = 'Negocios';
+
+				case 'reportes':
+				$this->crumbs[0] = 'Reportes';
 				switch (basename($_SERVER['SCRIPT_NAME'])) {
-					case 'index.php':
-						$this->crumbs[1] = 'Listado';
+					case 'reportedeventas.php':
+						$this->crumbs[1] = 'de ventas';
 						break;
-					case 'solicitudes.php':
-						$this->crumbs[1] = 'Solicitudes';
-						break;
-					case 'recargar.php':
-						$this->crumbs[1] = 'Recargar saldo';
-						break;
-					case 'quitar-saldo.php':
-						$this->crumbs[1] = 'Quitar saldo';
-						break;
-					case 'solicitud.php':
-						$this->crumbs[1] = 'Detalles de solicitud';
-						break;
-					case 'reporte.php':
-						$this->crumbs[1] = 'Movimientos de saldos';
-						break;
+
 					default:
 						$this->crumbs[1] = '';
 						break;
 				}
-				if($this->admin['pending_request'] > 0){
-					$noti = '<span class="notification">'.$this->admin['pending_request'].'</span>';
-				}else{
-					$noti = '';
-				}
+
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
-							<a href="'.HOST.'/admin/negocios/">
-								<span class="icon"><i class="fa fa-list"></i></span>
-								<span class="title">Negocios</span>
-								<span class="subtitle">Ver todos los negocios</span>
+							<a href="'.HOST.'/Hotel/">
+								<span class="icon"><i class="fa fa-tachometer"></i></span>
+								<span class="title">Resumen</span>
+								<span class="subtitle">Vistazo general</span>
 							</a>
 						</li>
-						<li'.$this->set_active_sidebar_tab('solicitudes.php').'>
-							<a href="'.HOST.'/admin/negocios/solicitudes">
+
+						<li'.$this->set_active_sidebar_tab('reportedeventas.php').'>
+							<a href="'.HOST.'/Hotel/reportes/reportedeventas">
+								<span class="icon"><i class="fa fa-dollar"></i></span>
+								<span class="title">Estado de Cuenta</span>
+								<span class="subtitle">Movimientos</span>
+							</a>
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('comprobantesdepago.php').'>
+							<a href="'.HOST.'/Hotel/comprobantes">
 								<span class="icon"><i class="fa fa-file"></i></span>
-								<span class="title">Solicitudes'.$noti.'</span>
-								<span class="subtitle">Ver todas las solicitudes</span>
+								<span class="title">Comprobantes</span>
+								<span class="subtitle">de pago</span>
 							</a>
-						</li>';
-			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
-				$this->sidebar .= 
-						'
-						<li'.$this->set_active_sidebar_tab('recargar.php').'>
-							<a href="'.HOST.'/admin/negocios/recargar">
-								<span class="icon"><i class="fa fa-plus-circle"></i></span>
-								<span class="title">Recargar saldo</span>
-								<span class="subtitle">Recarga saldo a un negocio</span>
-							</a>
-						</li>';
-			}
-			if($_SESSION['user']['id_rol'] == 1){
-				$this->sidebar .= 
-						'<li'.$this->set_active_sidebar_tab('quitar-saldo.php').'>
-							<a href="'.HOST.'/admin/negocios/quitar-saldo">
-								<span class="icon"><i class="fa fa-minus-circle"></i></span>
-								<span class="title">Quitar saldo</span>
-								<span class="subtitle">Quitar saldo a un negocio</span>
-							</a>
-						</li>';
-			}
-			$this->sidebar .= 
-					'<li'.$this->set_active_sidebar_tab('reporte.php').'>
-						<a href="'.HOST.'/admin/negocios/reporte">
-							<span class="icon"><i class="fa fa-list-alt"></i></span>
-							<span class="title">Reporte</span>
-							<span class="subtitle">Movimientos de saldos</span>
-						</a>
-					</li>';
+						</li>
+						';
+		
 				break;
-			case 'preferencias':
-				$this->crumbs[0] = 'Preferencias';
-				$this->crumbs[1] = 'C&oacute;digo de seguridad';
-				$this->sidebar =
-						'<li'.$this->set_active_sidebar_tab('codigo-seguridad.php').'>
-							<a href="'.HOST.'/admin/preferencias/codigo-seguridad">
-								<span class="icon"><i class="fa fa-lock"></i></span>
-								<span class="title">C&oacute;digo de seguridad</span>
-								<span class="subtitle">Cambiar el c&oacute;digo</span>
-							</a>
-						</li>';
-				break;
+			
 			default:
 				$this->crumbs[0] = '';
 				$this->crumbs[1] = '';
@@ -360,16 +327,20 @@ class Includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
+
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
-
+	<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
+	<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
+	<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
 	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
 
 	<title>'.$title.'</title>

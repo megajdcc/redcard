@@ -4,5 +4,7 @@ if(!$_SESSION['user']){ header('Location: '.HOST.'/'); die(); }
 unset($_SESSION['user']);
 unset($_SESSION['business']);
 unset($_SESSION['notification']);
+unset($_SESSION['notificacion']);
+unset($_SESSION['perfil']);
 header('Location: '.HOST.'/');
 die(); ?>

@@ -255,10 +255,13 @@ class sales_new_sale {
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($params);
+			$idventa = $this->con->lastInsertId();
+			$this->registrarbalancehotel($idventa);
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+		
 		$query = "UPDATE negocio SET saldo = saldo - :esmarties WHERE id_negocio = :id_negocio";
 		$params = array(':esmarties' => $this->sale['eSmarties'],':id_negocio' => $this->business['id']);
 		try{
@@ -294,6 +297,44 @@ class sales_new_sale {
 		return;
 	}
 
+
+	private function registrarbalancehotel(int $idventa){
+
+		$query = 'select h.id as hotel, h.comision from 
+						hotel as h join huespedhotel as hh on h.id = hh.id_hotel
+							join huesped as hu on hh.id_huesped = hu.id
+							where hu.id_usuario = :usuario';
+				$stm = $this->con->prepare($query);
+				$stm->execute(array(':usuario'=>$this->sale['id']));
+
+				$filas = $stm->fetch(PDO::FETCH_ASSOC);
+				$idhotel = $filas['hotel'];
+				$comisionhotel = $filas['comision'];
+
+				if($idhotel > 0){
+				
+					$ultimobalance = $this->capturarultimobalancehotel($idhotel);
+					$comisionhotelnew = ($this->sale['eSmarties'] * $comisionhotel / 100);
+					$balance = ($this->sale['eSmarties'] * $comisionhotel / 100) + $ultimobalance;
+
+					$query = "insert into balancehotel(balance,id_hotel,id_venta,comision) values(:balance,:hotel,:venta,:comision)";
+					$stm  = $this->con->prepare($query);
+					$stm->execute(array(':balance'=>$balance,':hotel'=>$idhotel,
+										':venta'=>$idventa,':comision'=>$comisionhotelnew));
+				}
+		}
+
+	private function capturarultimobalancehotel(int $idhotel){
+		$query = "select balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
+		$stm = $this->con->prepare($query);
+		$stm->execute(array(':hotel'=>$idhotel));
+		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+		if($balance > 0){
+			return $balance;
+		}else{
+			return 0;
+		}
+	}
 	private function set_user($username = null){
 		if($username){
 			$this->sale['username'] = trim($username);

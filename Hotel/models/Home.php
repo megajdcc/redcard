@@ -10,7 +10,7 @@ class Home {
 	private $user = array('id' => null);
 
 
-	private $hotel = array(
+	public $hotel = array(
 		'id' => null,
 		'url' => null,
 		'currency' => null,
@@ -135,7 +135,80 @@ class Home {
 		$this->hotel['operations']=$number_of_rows;
 		return $number_of_rows;
 	}
-	
+
+	public function getOperacionesNegocios(){
+		$sql="SELECT (SELECT COUNT(ne.id_negocio) FROM negocio as ne where ne.situacion =1) as afiliados, COUNT(ne.id_negocio) as operados,
+						(COUNT(ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+						FROM negocio as ne where ne.situacion =1) as porcentaje
+						FROM negocio as ne 
+						JOIN negocio_venta as nven ON ne.id_negocio = nven.id_negocio
+						JOIN usuario as usu on  nven.id_usuario = usu.id_usuario
+						JOIN huesped as hu  on  usu.id_usuario = hu.id_usuario
+						JOIN huespedhotel as hp	ON  hu.id = hp.id_huesped
+						JOIN hotel	as hot	ON  hp.id_hotel = hot.id
+						where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel";
+		$stmt = $this->con->prepare($sql);
+
+		$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+
+
+		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
+		$html = '
+			<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
+			<strong>OPERADOS: '.$fila['operados'].'</strong>
+			<strong>'.$porcentaje.' %</strong>
+		';
+		
+		return $html;
+	}
+
+	public function getNegociosDeudores(){
+
+		$query = "SELECT COUNT(ne.id_negocio) as deudores
+			FROM
+			negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+			INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+			INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+			INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+			INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+			INNER JOIN divisa as di ON nven.iso = di.iso
+			where ne.situacion = 1 and ne.saldo <=0 and hot.id = :idhotel";
+  	$stm = $this->con->prepare($query);
+
+  	$stm->execute(array(':idhotel'=>$this->hotel['id']));
+
+  	return $stm->fetch(PDO::FETCH_ASSOC)['deudores'];
+
+	}
+
+	public function getTotalComisionAdeudo(){
+
+		$query = "SELECT (((SUM(nven.venta)*(nven.comision))/100) * hot.comision / 100) + ne.saldo  as adeudo, nven.iso as divisa
+						FROM
+				negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+				INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+				INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+				INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+				INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+				INNER JOIN divisa as di ON nven.iso = di.iso
+				where ne.situacion = 1  and ne.saldo <= 0 and hot.id = :idhotel";
+
+				$stm = $this->con->prepare($query);
+  				$stm->execute(array(':idhotel'=>$this->hotel['id']));
+  				$fila = $stm->fetch(PDO::FETCH_ASSOC);
+  				$comision = number_format((float)$fila['adeudo'],2,'.','');
+  				if($fila['divisa'] == 'EUR'){
+  					$div = '€';
+  				}else{
+  					$div = '$';
+  				}
+  				$total = $div.$comision.' '.$fila['divisa'];
+  			return $total;
+	}
+
+
 	public function get_hoteles(){
 		$sql="SELECT count(*) FROM negocio";
 		$stmt = $this->con->prepare($sql);
@@ -317,6 +390,7 @@ class Home {
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return number_format((float)$row['total']/$users, 2, '.', '');
 	}
+
 	public function get_registration_per_user(){
 		$sql="SELECT count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8";
 		$stmt = $this->con->prepare($sql);
@@ -325,6 +399,7 @@ class Home {
 		$participants=$number_of_rows;
 		return round($this->hotel['operations']/$participants);
 	}
+
 	public function get_commision_franchiser(){
 		$sql="SELECT SUM(bono_esmarties) AS total FROM negocio_venta";
 		$stmt = $this->con->prepare($sql);
@@ -332,9 +407,21 @@ class Home {
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
 		return number_format((float)$row['total'], 2, '.', '');
 	}
-	public function get_average_commision(){
-		return number_format($this->hotel['hoteles']/$this->hotel['operations']*100);
+
+	public function getConsumosPromedioCompra(int $hotel = null){
+		
+		$query = "  SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
+				 FROM
+				 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+				 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+				 INNER JOIN divisa as di ON nven.iso = di.iso
+				
+				 GROUP BY nven.venta,usu.username";
+		$stm = $this->con->prepare($query);
+		$stm->execute();
+		return $stm; 
 	}
+
 	public function getNegocios(){
 		return number_format($this->hotel['operations']/$this->hotel['hoteles']*100);
 	}
@@ -371,14 +458,14 @@ class Home {
 
 
 
-			$query  = "SELECT nven.iso as divisa,(SUM(nven.venta)*(nven.comision))/100 as comision_hotel, nven.creado
-							FROM negocio as ne
-							JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
-							JOIN usuario as usu on nven.id_usuario = usu.id_usuario
-							JOIN huesped as hu on usu.id_usuario = hu.id_usuario
-							JOIN huespedhotel as hh on hu.id = hh.id_huesped
-							JOIN hotel as h on hh.id_hotel = h.id
-							where h.id = :idhotel";
+			$query  = "SELECT nven.iso as divisa,((SUM(nven.venta)*(nven.comision))/100) * h.comision / 100 as comision_hotel, nven.creado
+ 					FROM negocio as ne
+ 					JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
+ 					JOIN usuario as usu on nven.id_usuario = usu.id_usuario
+ 					JOIN huesped as hu on usu.id_usuario = hu.id_usuario
+ 					JOIN huespedhotel as hh on hu.id = hh.id_huesped
+ 					JOIN hotel as h on hh.id_hotel = h.id
+ 				where h.id = :idhotel";
 
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idhotel'=>$this->hotel['id']));
@@ -396,15 +483,7 @@ class Home {
 					$comision = number_format((float)$row['comision_hotel'],2,'.','');
 					$pref = null;
 					if($comision  > 0){
-						$pref .=
-						'<div class="col-sm-3">
-							<div class="statusbox">
-								<h2>Total Comisiones Hotel</h2>
-								<div class="statusbox-content">
-									<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>
-								</div><!-- /.statusbox-content -->
-							</div>
-						</div>';
+						$pref .='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
 					}
 				
 
@@ -413,15 +492,7 @@ class Home {
 		
 				$html = $pref;
 				if(!$html){
-					$html =
-					'<div class="col-sm-3">
-						<div class="statusbox">
-							<h2>Total Comisiones Hotel</h2>
-							<div class="statusbox-content">
-								<strong>$0</strong>
-							</div><!-- /.statusbox-content -->
-						</div>
-					</div>';
+					$html ='<strong>$ 0</strong>';
 				}
 		return $html;
 	}

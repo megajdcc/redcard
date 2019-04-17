@@ -111,7 +111,7 @@ class PerfilesList {
 				
 				return true;
 
-			}else if($post['perfil'] == 'franquciatario'){
+			}else if($post['perfil'] == 'franquiciatario'){
 				$this->con->beginTransaction();
 
 

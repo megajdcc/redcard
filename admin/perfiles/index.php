@@ -21,6 +21,7 @@ $perfiles = new admin\libs\PerfilesList($con);
 $search = filter_input(INPUT_GET, 'buscar');
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+	echo var_dump($_POST);
 	if(isset($_POST['actualizar'])){
 			$perfiles->actualizarcomision($_POST);
 	}
@@ -163,7 +164,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					</div>
 						
 					<div class="modal-footer">
-						<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="actualizar btn btn-success">Actualizar</button>
+						<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="actualizar btn btn-success" disabled>Actualizar</button>
 						<button  type="button" class="cerrarperfil btn btn-secondary" >Cerrar</button>
 					</div>
 				</div>
@@ -187,6 +188,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					solicitud = $(this).attr('data-solicitud');
 					perfil = $(this).attr('data-perfil');
 					comision = $(this).attr('data-comision');
+
 					var slider = null;
 					if(perfil == "Hotel"){
 
@@ -212,6 +214,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 								slider.on("slide", function(sliderValue){
 									valorslider = sliderValue;
 										document.getElementById('val-slider').textContent = sliderValue + " %";
+										$('.actualizar').removeAttr('disabled');
 										$('.actualizar').attr('data-comision',valorslider);
 								});
 
@@ -247,6 +250,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 								slider.on("slide", function(sliderValue){
 									valorslider = sliderValue;
 										document.getElementById('val-slider').textContent = sliderValue + " %";
+											$('.actualizar').removeAttr('disabled');
 										$('.actualizar').attr('data-comision',valorslider);
 								});
 								}
@@ -286,7 +290,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							slider.on("slide", function(sliderValue){
 								valorslider = sliderValue;
 									document.getElementById('val-slider').textContent = sliderValue + " %";
-									$('actualizar').attr('data-comision',valorslider);
+									$('.actualizar').attr('data-comision',valorslider);
+									$('.actualizar').removeAttr('disabled');
 							});
 
 
@@ -297,9 +302,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							$('.pcomi').text(comision+" %");
 							$('.modal').modal('show');
 						}else{
+
 							var ele = document.getElementById('sliderdinamico');
 							var slid = document.createElement('input');
-
 							$(slid).attr('data-slider-value',comision);
 							$(slid).attr('data-slider-min','0');
 							$(slid).attr('data-slider-max','8');
@@ -310,16 +315,22 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 							 slider = new Slider('#ex9');
 							 valorslider = slider.getValue();
+							
+							
 							slider.on("slide", function(sliderValue){
 								valorslider = sliderValue;
 									document.getElementById('val-slider').textContent = sliderValue + " %";
-									$('.actualizar').attr('data-comision',valorslider);
+									 $('.actualizar').attr('data-comision',valorslider);
+									 	$('.actualizar').removeAttr('disabled');
 							});
+							 
 							
+						
 							$('.actualizar').attr('data-perfil','franquiciatario');
 							$('.actualizar').attr('data-solicitud',solicitud);
 							$('.pcomi').text(comision+" %");
 							$('.modal').modal('show');
+
 						}
 						
 					}
@@ -329,10 +340,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 
 
-
 				$('.actualizar').click(function(){
 
 						var comision = $(this).attr('data-comision');
+						if(comision == 0){
+							comision = $(this).attr('data-comision');
+						} 
 						var perfil = $(this).attr('data-perfil');
 						var solicitud = $(this).attr('data-solicitud');
 						var path = $(this).attr('data-path');
@@ -359,7 +372,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						
 						$('.pcomi').text(valorslider+" %");
 
-
+							$('actualizar').attr('disabled');
 
 					})
 

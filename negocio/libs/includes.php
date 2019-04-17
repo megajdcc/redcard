@@ -689,6 +689,7 @@ class includes {
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
+
 </body>
 </html>';
 		return $html;
