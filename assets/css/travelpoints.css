@@ -3,7 +3,46 @@
 /***************************************************
 		Reescritura de stilos de Travel Points 
 ***************************************************/
+@font-face {
+font-family: 'Nexa Book';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book'), url('../../assets/fonts/NexaBook.woff') format('woff');
+}
 
+@font-face {
+font-family: 'Nexa Book Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book Italic'), url('../../assets/fonts/NexaBookItalic.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Thin';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Thin'), url('../../assets/fonts/NexaThin.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold'), url('../../assets/fonts/NexaBold.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Myriad';
+font-style: normal;
+font-weight: normal;
+src:url('../../assets/fonts/MYRIADPRO-COND.OTF') format('OTF');
+}
+@font-face {
+font-family: 'Myriad Bold';
+font-style: normal;
+font-weight: normal;
+src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
+}
 
 .g1{
 	display: flex;
@@ -17,4 +56,33 @@
 	height: 100% !important;
 	background: white;
 	/* margin: 0px 20px; */
+}
+#estadodecuenta td{
+		font-family: 'Myriad Bold' !important;
+		color: #0082b7 !important;
+		font-weight: 400 !important;
+}
+#estadodecuenta .b2{
+	font-family:'Nexa Book Italic' !important;
+	color: #000 !important;
+	font-weight: 400 !important;
+		
+}
+
+#estadodecuenta .negativo{
+	color: red;
+}
+
+
+
+
+.pull-right{
+	width: 100% !important;
+}		
+.bootstrap-datetimepicker-widget{
+	z-index: 100 !important;
+}
+.ttconsumosusuarios{
+
+	height: 470px !important;
 }

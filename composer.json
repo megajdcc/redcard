@@ -1,0 +1,25 @@
+{
+    "name":"Travel Points",
+    "description": "Proyecto en php para El manejo de comisiones de Travel Points",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jhonatan Crespo",
+            "email": "jhonatancrespo@megajdcc.com.ve"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload":{
+        "psr-4":{
+            "sirfei\\": "Model/"
+        }
+    },
+    "require-dev": {
+    
+        "dompdf/dompdf": "^0.8.0"
+
+    }
+}

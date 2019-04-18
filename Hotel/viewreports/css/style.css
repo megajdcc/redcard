@@ -1,0 +1,164 @@
+
+@font-face {
+font-family: 'Nexa Book';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book'), url('../../assets/fonts/NexaBook.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Book Italic';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Book Italic'), url('../../assets/fonts/NexaBookItalic.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Thin';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Thin'), url('../../assets/fonts/NexaThin.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Nexa Bold';
+font-style: normal;
+font-weight: normal;
+src: local('Nexa Bold'), url('../../assets/fonts/NexaBold.woff') format('woff');
+}
+
+@font-face {
+font-family: 'Myriad';
+font-style: normal;
+font-weight: normal;
+src:url('../../assets/fonts/MYRIADPRO-COND.OTF') format('OTF');
+}
+@font-face {
+font-family: 'Myriad Bold';
+font-style: normal;
+font-weight: normal;
+src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
+}
+
+body{
+	/* background: red; */
+	/* margin: 5rem; */
+	font-family: 'Myriad Bold';
+	margin:  30pt 30pt 30pt 30pt;
+	height: 100%;
+	min-height: 100%;
+	/* background-color: blue; */
+}
+html{
+	padding: 0px;
+	margin: 0px;
+}
+
+header{
+	width: 100%;
+}
+
+header table{
+	border: red;
+	/* border: 0px  !important; */
+	width: 100%;
+	/* border: 1px solic black !important; */
+	line-height: 5px;
+}
+
+
+.cabezera-pdf table{
+	width: 100%;
+}
+.cabezera-pdf td{
+	text-align: center;
+	width: 100%;
+}
+
+.cabezera-pdf img{
+	max-height: 100px;
+	text-align: center;
+}
+
+.t-principal{
+	width: 100%;
+	text-align: center;
+}
+
+.t-principal {
+	padding: 0;
+	margin: 0;
+	outline: none;
+}
+
+.cuerpo{
+text-align: center;
+margin-bottom: 105px;
+}
+.cuerpo table{
+	border-collapse: collapse;
+}
+.cuerpo thead{
+	margin-top: 2px;
+}
+.cuerpo table td,
+.cuerpo table th{
+	line-height: 20px;
+	outline-width: 0;
+	text-decoration: none;
+	margin: 0;
+	padding: 0;
+	border: .5px solid black;
+}
+.cuerpo h2{
+	font-family: 'Nexa Book Italic';
+	font-size: 20pt;
+	margin: 0px;
+	padding: 0px;
+}
+h2,h3,h3,h4{
+	margin: 0px;
+	padding: 0px;
+}
+.title{
+	margin-top: 1rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.pie-pagina{
+	position: absolute;
+	bottom: -30pt;
+	text-align: center;
+	min-width: 100%;
+	width:  100%;
+	padding: auto;
+}
+.leyenda-footer{
+	margin-left: auto;
+	margin-right: auto;
+	width: 400px;
+}
+.leyenda-footer small{
+	display: block;
+}
+.pie-pagina img{
+	width: 100%;
+	height: auto;
+}
+@supports(object-fit: cover) {
+	.pie-pagina img{
+		height: 100%;
+		object-fit: cover;
+		object-position: center center;
+	}
+}
+p{
+	text-align: justify;
+}
+
+.t1{
+	font-family: 'Myriad';
+}
+.t2{
+	font-family: 'Myriad Bold';
+}

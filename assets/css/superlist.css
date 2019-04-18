@@ -52,6 +52,21 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 @font-face {
+font-family: 'Myriad';
+font-style: normal;
+font-weight: normal;
+src: url('../../assets/fonts/MYRIADPRO-COND.OTF') format('OTF');
+}
+
+@font-face {
+font-family: 'Myriad bold';
+font-style: normal;
+font-weight: normal;
+src: url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
+}
+
+
+@font-face {
 font-family: 'Nexa Regular';
 font-style: normal;
 font-weight: normal;
@@ -195,7 +210,7 @@ font-weight: normal;
 src: local('Nexa Bold Regular'), url('../../assets/fonts/Nexa Bold.woff') format('woff');
 }
 html {
-  font-family: 'Nexa Light Regular';
+  font-family: 'Myriad';
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%; }
 
@@ -1250,7 +1265,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: 'Nexa Light';
+  font-family: 'Myriad';
   font-size: 14px;
   line-height: 1.42857;
   color: #333333;
@@ -1260,7 +1275,7 @@ input,
 button,
 select,
 textarea {
-  font-family: 'Nexa Bold Regular';
+  font-family: 'Myriad';
   font-size: inherit;
   line-height: inherit; }
 
@@ -1334,7 +1349,7 @@ hr {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: 'Nexa Ligth Regular';
+  font-family: 'Myriad Bold';
   font-weight: 500;
   line-height: 1.1;
   color: inherit; }
@@ -5561,7 +5576,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: 'Nexa Bold Regular';
+  font-family: 'Myriad Bold';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5674,7 +5689,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family:'Nexa Heavy';
+  font-family:'Myriad Bold';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -10656,7 +10671,7 @@ html {
 body {
   background-color: #fff;
   color: rgba(54, 54, 54, 0.6);
-  font-family: 'Nexa Light Regular';
+  font-family: 'Myriad Bold';
   font-size: 14px;
   height: 100%;
   overflow-x: auto;
@@ -11282,7 +11297,7 @@ margin-bottom: 0;
   white-space: nowrap;}
 
 .header-statusbar h1 .header-text {
-  font-family: 'Nexa Bold Regular';
+  font-family: 'Myriad Bold';
   font-size: 22px;
   margin: -15px 0 0 25px;
   display: inline-block;
@@ -11510,7 +11525,7 @@ ul.menu-advanced li a .notification {
   flex-direction: column;
 }
 .modal-body label{
-  font-family: 'Nexa Light';
+  font-family: 'Myriad Bold';
   font-size: medium;
 }
 .codigo{
