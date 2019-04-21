@@ -51,14 +51,18 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											<h1><?php echo $profile->get_header_title();?></h1>
 											<h4><?php echo $profile->get_location();?></h4>
 										</div><!-- /.page-title -->
-										<h2><span class="mr20">e$<?php echo $profile->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">eSmartties</label></h2>
+
+										<?php if(!isset($_SESSION['perfil'])){ ?>
+												<h2><span class="mr20">e$<?php echo $profile->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">eSmartties</label></h2>
+										<?php }?>
+										
 									</div>
 								</div>
 							</div>
 							<div class="background-white p30 mb30">
 								<div class="page-title">
 									<a href="<?php echo HOST;?>/socio/perfil/invitados" class="btn btn-secondary btn-xs pull-right">Ver mis invitados</a>
-									<h4>Amigos invitados a eSmart Club: <?php echo $profile->get_invited();?></h4>
+									<h4>Amigos invitados a Travel Points: <?php echo $profile->get_invited();?></h4>
 								</div>
 								<form method="post" action="<?php echo _safe(HOST.'/socio/perfil/');?>">
 									<div class="form-group" data-toggle="tooltip" title="Ingresa el correo electr&oacute;nico de tu amigo">

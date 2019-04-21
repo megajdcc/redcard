@@ -3,6 +3,12 @@ $con = new assets\libs\connection();
 
 $catalog = new assets\libs\product_catalog($con);
 
+if (isset($_SESSION['perfil'])) {
+	header('Location: ../index.php');
+	die();
+	
+}
+
 $filter['category'] = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE_INT);
 $filter['sorting'] = filter_input(INPUT_GET, 'ordenar');
 $filter['show'] = filter_input(INPUT_GET, 'mostrar', FILTER_VALIDATE_INT, array('options' => array('default' => 12, 'min_range' => 12)));

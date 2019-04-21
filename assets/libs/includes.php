@@ -98,9 +98,117 @@ class includes {
 	}
 
 	public function get_user_sidebar(){
-		
-		$html = 
+
+
+
+		if(isset($_SESSION['perfil'])){
+			$html = '<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_tab('perfil').'>
+					<a href="'.HOST.'/socio/perfil/">
+						<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'" alt="">
+						'.$this->user['alias'].'
+					</a>
+				</li>
+				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
+				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
+			</ul>
+		</div>';
+
+		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
+			case 'perfil':
+				$html .=
 		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
+				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
+				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
+				
+				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
+				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
+				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
+			</ul>
+		</div>';
+			break;
+			case 'negocios':
+			if($this->user['pending_request'] > 0){
+				$noti = '<span class="notification">'.$this->user['pending_request'].'</span>';
+			}else{
+				$noti = '';
+			}
+			if($_SESSION['user']['id_rol']==8) {
+				$html .=
+		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
+				<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
+			</ul>
+		</div>';
+			}
+			else {
+				$html .=
+		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-user"></i> Mis negocios</a></li>
+				<li'.$this->set_active_sidebar_tab('afiliar-negocio.php').'><a href="'.HOST.'/socio/negocios/afiliar-negocio"><i class="fa fa-plus-circle"></i> Afiliar mi negocio</a></li>
+				<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
+				<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
+				<li'.$this->set_active_sidebar_tab('solicitudes.php').'><a href="'.HOST.'/socio/negocios/solicitudes"><i class="fa fa-file"></i> Solicitudes enviadas'.$noti.'</a></li>
+			</ul>
+		</div>';
+			}
+			break;
+			case 'huesped':
+			 $html .='<div class="widget">
+				<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
+				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
+				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
+				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
+				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
+				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
+				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
+				</ul>
+				</div>';
+			break;
+
+			
+
+			case 'consumos':
+				if($this->user['pending_review'] > 0){
+					$noti = '<span class="notification">'.$this->user['pending_review'].'</span>';
+				}else{
+					$noti = '';
+				}
+				$html .=
+		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-money"></i> Consumos'.$noti.'</a></li>
+				<li'.$this->set_active_sidebar_tab('opiniones.php').'><a href="'.HOST.'/socio/consumos/opiniones"><i class="fa fa-bullhorn"></i> Opinions | Opiniones</a></li>
+			</ul>
+		</div>';
+				break;
+			case 'certificados':
+				$html .=
+		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-star"></i> Whislist | Lista de deseos</a></li>
+				<li'.$this->set_active_sidebar_tab('canjeados.php').'><a href="'.HOST.'/socio/certificados/canjeados"><i class="fa fa-check-circle"></i> Canjeados</a></li>
+			</ul>
+		</div>';
+				break;
+			case 'compras':
+				$html .=
+		'<div class="widget">
+			<ul class="menu-advanced">
+				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras en tienda</a></li>
+			</ul>
+		</div>';
+				break;
+		}
+
+		}else{
+			$html = '<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_tab('perfil').'>
 					<a href="'.HOST.'/socio/perfil/">
@@ -115,9 +223,10 @@ class includes {
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
 				<li'.$this->set_active_tab('compras').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras</a></li>
 			</ul>
-		</div>';
+			</div>';
 
-		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
+
+			switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
 			case 'perfil':
 				$html .=
 		'<div class="widget">
@@ -208,6 +317,11 @@ class includes {
 		</div>';
 				break;
 		}
+		}
+		
+		
+
+		
 		return $html;
 	}
 
@@ -388,7 +502,7 @@ class includes {
 								<?php
 									}
 								}
-								if($_SESSION['user']['id_rol'] == 9){?>
+								if($_SESSION['user']['id_rol'] == 9 and !isset($_SESSION['perfil'])){?>
 
 									<li><a href="<?php echo HOST.'/admin/tienda/'; ?>">Gift Store | Tienda de Regalos</a></li>
 									<?php 
@@ -445,12 +559,19 @@ class includes {
 						<p><a href="'.HOST.'/login">Login | Inicia sesi&oacute;n</a></p>
 						<p><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></p>
 					</div><!-- /.col-* -->
+					<div class="col-xs-6 col-sm-3">
+					
+						<h2>Gana con Travel Points</h2>
+						<p><a href="'.HOST.'/afiliar-hotel">Afilia tu Hotel</a></p>
+						<p><a href="'.HOST.'/afiliar-franquiciatario">Afiliate como franquiciatario de Hotel</a></p>
+						<p><a href="'.HOST.'/afiliar-referidor">Afiliate como referidor</a></p>
+					</div><!-- /.col-* -->
 					<div class="col-xs-6 col-sm-2">
 						<h2>Negocio</h2>
 						<p><a href="'.HOST.'/afiliar-negocio">Afilia tu negocio</a></p>
 						<p><a href="'.HOST.'/por-que-afiliarme">¿Por qu&eacute; afiliarme?</a></p>
 					</div><!-- /.col-* -->
-					<div class="col-xs-12 col-sm-4">
+					<div class="col-xs-12 col-sm-5">
 						<h2>Contacto</h2>
 						<p>
 							Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>

@@ -105,7 +105,7 @@ class Comprobantes
 		$stm->bindParam(':rf',$this->referidor['id'],PDO::PARAM_INT);
 		$stm->execute();
 		return $this->comprobantes = $stm->fetchAll(PDO::FETCH_ASSOC);
-fs
+
 	}
 
 public function getComprobantes(){
@@ -170,12 +170,9 @@ private function setFecha($fecha){
 	
 }
 
-
-
 public function getNotificacion(){
-
 	
-	}
+}
 
 }
 

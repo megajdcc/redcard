@@ -1,4 +1,5 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+
 namespace assets\libs;
 use PDO;
 
@@ -14,23 +15,23 @@ class connection {
 
 	function __construct($archi = 'config.ini'){
 
-		 $this->file = $archi;
-            // echo "conexion extosa";
-            if(!$this->con = parse_ini_file($this->file, TRUE)) throw new Exception("No se pudo abrir".$file.'.');
+			$this->file = $archi;
+	            // echo "conexion extosa";
+	            if(!$this->con = parse_ini_file($this->file, TRUE)) throw new Exception("No se pudo abrir".$file.'.');
 
-				$this->cargar_dsn();
-				$this->cargar_usuario();
+					$this->cargar_dsn();
+					$this->cargar_usuario();
 
-		$this->connect();
-		$this->check_block();
-		$this->check_role();
-		$this->check_requests();
-		$this->check_businesses();
-		$this->check_business_role();
-		return;
+			$this->connect();
+			$this->check_block();
+			$this->check_role();
+			$this->check_requests();
+			$this->check_businesses();
+			$this->check_business_role();
+			return;
 	}
 
-	/**
+		/**
        * [aca terminamos de cargar los datos de usuario y contrasena ... ]
        */
       private function cargar_usuario(){
@@ -42,7 +43,7 @@ class connection {
        * [aca asociamos los valores contenido en mi arichivo config.ini que alamacena los datos para la conexion en las variables locales
        * de mi objeto Conexion.php]
        */
-      private function cargar_dsn(){
+    private function cargar_dsn(){
 
         $this->driver = $this->con['redcard']['driver'];
         $this->host = $this->con['redcard']['host'];
@@ -52,7 +53,6 @@ class connection {
         $caracter = $this->con['redcard']['charset'];
         $this->dsn =  $this->driver . ':host='.$this->host.';port='.$this->port.';charset='.$caracter.';dbname='.$this->dbname; 
       }
-
 
 	public function connect(){
 
@@ -65,13 +65,18 @@ class connection {
             }catch (PDOException $e) {
                   die("ERROR DE CONEXION CON LA BASE DE DATO");
             }
-
 	}
 
+	/**
+	 * [Se verifica que el usuario este activo de lo contrario no se permite su entrada al sistema y se envia al index.]
+	 * @return [boolean] [retorna verdaro si esta activo de lo contrario lo reedirige fuera del sistema...]
+	 */
 	private function check_block(){
+
 		if(!isset($_SESSION['user']['id_usuario'])){
 			return false;
 		}
+
 		$query = "SELECT activo FROM usuario WHERE id_usuario = :id_usuario";
 		try{
 			$stmt = $this->con->prepare($query);
@@ -93,6 +98,10 @@ class connection {
 		return;
 	}
 
+	/**
+	 * Verificamos el rol del usuario 
+	 * @return [type] [description]
+	 */
 	private function check_role(){
 		if(!isset($_SESSION['user']['id_usuario'])){
 			return false;
@@ -107,20 +116,22 @@ class connection {
 			return false;
 		}
 		if($row = $stmt->fetch()){
+
 			if($row['id_rol'] != $_SESSION['user']['id_rol']){
+
 				$_SESSION['user']['id_rol'] = $row['id_rol'];
 				switch ($row['id_rol']) {
 					case 1:
-						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de eSmart Club con permisos de Super Administrador.';
+						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de Travel Points con permisos de Super Administrador.';
 						break;
 					case 2:
-						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de eSmart Club con permisos de Administrador.';
+						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de Travel Points con permisos de Administrador.';
 						break;
 					case 3:
-						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de eSmart Club con permisos de Operador.';
+						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de Travel Points con permisos de Operador.';
 						break;
 					case 9:
-						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de eSmart Club con permisos de Encargado de Tienda.';
+						$_SESSION['notify']['info'] = 'Ahora tienes acceso al panel administrativo de Travel Points con permisos de Encargado de Tienda.';
 						break;
 					case 8:
 						$_SESSION['notify']['info'] = 'Ya no tienes acceso al Panel Administrativo.';
@@ -133,6 +144,10 @@ class connection {
 		return;
 	}
 
+	/**
+	 * Verificamos el rol del empleado en el negocio y agregamos a variable de sessión el resultado corrspondiente...
+	 * @return [type] [description]
+	 */
 	private function check_business_role(){
 		if(!isset($_SESSION['business']['id_negocio'])){
 			return false;
@@ -147,8 +162,10 @@ class connection {
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+
 		if($row = $stmt->fetch()){
 			if($row['id_rol'] != $_SESSION['business']['id_rol']){
+
 				$_SESSION['business']['id_rol'] = $row['id_rol'];
 				switch ($row['id_rol']) {
 					case 4:
@@ -163,6 +180,7 @@ class connection {
 					default:
 						break;
 				}
+
 			}
 		}
 		return;
