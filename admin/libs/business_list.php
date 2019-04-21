@@ -35,7 +35,7 @@ class business_list {
 		if($search){
 			$search_query = "WHERE n.nombre LIKE :search1 OR n.breve LIKE :search2 OR n.descripcion LIKE :search3";
 		}else{
-			$search_query = '';
+			$search_query = 'WHERE n.situacion !=0';
 		}
 		$query = "SELECT COUNT(*) FROM negocio n $search_query";
 		try{
@@ -77,7 +77,7 @@ class business_list {
 				INNER JOIN estado e ON c.id_estado = e.id_estado
 				INNER JOIN pais p ON e.id_pais = p.id_pais
 				INNER JOIN preferencia pr
-				INNER JOIN negocio_preferencia l ON l.id_negocio = n.id_negocio AND l.id_preferencia = pr.id_preferencia AND pr.llave = 'business_logo'
+				INNER JOIN negocio_preferencia l ON l.id_negocio = n.id_negocio AND l.id_preferencia = pr.id_preferencia AND pr.llave = 'business_logo' 
 				$search_query
 				ORDER BY n.creado ASC
 				LIMIT :limit OFFSET :offset";
