@@ -33,7 +33,17 @@ class PerfilesList {
 
 	public function ListarPerfiles(){
 
-		$result = $this->con->prepare( "select * from listarusuariosperfiles");
+		$sql = "(select sh.condicion,u.username,u.telefono,u.ultimo_login,u.email,'Hotel' as proviene, sh.id as nrosolicitud,u.imagen, u.nombre, u.apellido,h.comision
+ from solicitudhotel as sh join usuario as u on sh.id_usuario = u.id_usuario join hotel as h on sh.id_hotel = h.id where sh.condicion = 1)
+	UNION 
+(select sfr.condicion,u.username,u.telefono,u.ultimo_login, u.email, 'Franquiciatario' as proviene, sfr.id as nrosolicitud,u.imagen, u.nombre, u.apellido, f.comision
+	from solicitudfr as sfr join usuario as u on sfr.id_usuario = u.id_usuario
+	join franquiciatario as f on sfr.id_franquiciatario = f.id where sfr.condicion = 1)
+	UNION
+(select sr.condicion,u.username,u.telefono,u.ultimo_login, u.email,'Referidor' as proviene, sr.id as nrosolicitud,u.imagen, u.nombre, u.apellido,r.comision
+ from solicitudreferidor as sr join usuario as u on sr.id_usuario = u.id_usuario join referidor as r on sr.id_referidor = r.id
+	where sr.condicion = 1)";
+		$result = $this->con->prepare($sql);
 		$result->execute();
 
 		$urlimg =  HOST.'/assets/img/user_profile/';
