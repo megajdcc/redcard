@@ -1,5 +1,5 @@
 <?php 
-namespace Hotel\models;
+namespace Referidor\models;
 use assets\libs\connection;
 use PDO;
 
@@ -30,6 +30,10 @@ class Home {
 		'balance' => array(),
 		'status' => null
 		);
+
+	public $referidor = array(
+		'id'=> null,
+	);
 	private $error = array('notificacion' => null);
 
 	public function __construct(connection $con){
@@ -38,23 +42,27 @@ class Home {
 
 
 		$this->CargarHotel();
-
 		return;
 	}
 
 	private function CargarHotel(){
 
-		$query = "select h.id from hotel as h 
-			inner join solicitudhotel as sh on h.id = sh.id_hotel
-			inner join usuario as u on sh.id_usuario = u.id_usuario
+		$query = "select h.id, rf.id  as idreferidor from hotel as h 
+			inner join referidor as rf on h.codigo = rf.codigo_hotel
+inner join solicitudreferidor as srf on rf.id = srf.id_referidor 
+			inner join usuario as u on srf.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
 
 		$stm = $this->con->prepare($query);
 		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
 		$stm->execute();
 
-		$this->hotel['id'] = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+		$this->hotel['id'] = $fila['id'];
+		$this->referidor['id']  = $fila['idreferidor'];
+
 		$_SESSION['id_hotel'] = $this->hotel['id'];
+		$_SESSION['id_referidor'] = $this->referidor['id'];
 	}
 
 	public function getOperaciones(){
@@ -75,24 +83,20 @@ class Home {
 	}
 
 	public function getOperacionesNegocios(){
-		$sql=" SELECT 
-  (SELECT COUNT(ne.id_negocio)
-   FROM negocio as ne where ne.situacion =1) as afiliados, 
- 
- (COUNT(DISTINCT ne.id_negocio)) as operados,
- 
- (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
- FROM negocio as ne where ne.situacion =1) as porcentaje
- 
- 
- FROM
- negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
- INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
- INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
- INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
- INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
-INNER JOIN divisa as di ON nven.iso = di.iso
- where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel";
+		$sql="SELECT 
+		  (SELECT COUNT(ne.id_negocio)
+		   FROM negocio as ne where ne.situacion =1) as afiliados, 
+		 (COUNT(DISTINCT ne.id_negocio)) as operados,
+		 (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+		 FROM negocio as ne where ne.situacion =1) as porcentaje 
+		 FROM
+		 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+		 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+		 INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+		 INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+		 INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+		INNER JOIN divisa as di ON nven.iso = di.iso
+		 where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel";
 		$stmt = $this->con->prepare($sql);
 
 		$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
@@ -378,17 +382,17 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	// }
 
 	public function getComisiones(){
-			$query  = "SELECT nven.iso as divisa, (SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel1 and bh.id = (select max(id) from balancehotel)) as balance
- 					FROM negocio_venta as nven 
- 					JOIN  balancehotel as bh on nven.id_venta = bh.id_venta
- 				where bh.id_hotel = :idhotel2";
+				$query  = "select nv.iso  as divisa, (select br.balance as balance from balancereferidor as br where br.id_referidor = :fr1 
+								and br.id = (select max(id) from balancereferidor)) as balance
+								from negocio_venta as nv join balancereferidor as br on nv.id_venta = br.id_venta
+								where br.id_referidor = :fr2 and br.creado BETWEEN br.creado and now()";
 
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel1'=>$this->hotel['id'],
-				                    ':idhotel2'=>$this->hotel['id']));
+				$stm->execute(array(':fr1'=>$this->referidor['id'],
+				                    ':fr2'=>$this->referidor['id']));
 
+				
+				$pref = null;
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
 					if($row['divisa'] == 'EUR'){
@@ -398,9 +402,9 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 					}
 
 					$comision = number_format((float)$row['balance'],2,'.','');
-					$pref = null;
+					
 					if($comision  > 0){
-						$pref .='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
+						$pref ='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
 					}
 				
 
@@ -415,13 +419,12 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	}
 
 	public function getBalance(){
-		$query  = "SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel and bh.id = (select max(id) from balancehotel)";
+		$query  = "SELECT  brf.balance as balance
+ 					from  balancereferidor as brf
+ 				where brf.id_referidor = :idreferidor and brf.id = (select max(id) from balancereferidor)";
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel'=>$this->hotel['id']));
+				$stm->execute(array(':idreferidor'=>$this->referidor['id']));
 				return $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-
 	}
 
 	public function getNotificacion(){

@@ -7,6 +7,7 @@ use PDO;
  * @author Crespo jhonatan
  */ 
 class Includes {
+	
 	private $con;
 	private $user = array(
 		'id' => null,
@@ -100,7 +101,7 @@ class Includes {
 					case 'reporte-de-ventas.php':
 						$this->crumbs[1] = 'Estado de Cuenta';
 						break;
-					case 'comprabantes.php':
+					case 'comprobantes.php':
 						$this->crumbs[1] = 'Comprobantes';
 						break;
 					default:
@@ -125,7 +126,7 @@ class Includes {
 						</li>
 
 						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
-							<a href="'.HOST.'/Hotel/comprabantes">
+							<a href="'.HOST.'/Hotel/comprobantes">
 								<span class="icon"><i class="fa fa-file"></i></span>
 								<span class="title">Comprobantes</span>
 								<span class="subtitle">de pago</span>
@@ -190,15 +191,15 @@ class Includes {
 							</a>
 						</li>
 
-						<li'.$this->set_active_sidebar_tab('reportedeventas.php').'>
-							<a href="'.HOST.'/Hotel/reportes/reportedeventas">
+						<li'.$this->set_active_sidebar_tab('reporte-de-ventas.php').'>
+							<a href="'.HOST.'/Hotel/reportes/reporte-de-ventas">
 								<span class="icon"><i class="fa fa-dollar"></i></span>
 								<span class="title">Estado de Cuenta</span>
 								<span class="subtitle">Movimientos</span>
 							</a>
 						</li>
 
-						<li'.$this->set_active_sidebar_tab('comprobantesdepago.php').'>
+						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
 							<a href="'.HOST.'/Hotel/comprobantes">
 								<span class="icon"><i class="fa fa-file"></i></span>
 								<span class="title">Comprobantes</span>
@@ -208,11 +209,10 @@ class Includes {
 						';
 		
 				break;
-			
-			default:
-				$this->crumbs[0] = '';
-				$this->crumbs[1] = '';
-				break;
+				default:
+					$this->crumbs[0] = '';
+					$this->crumbs[1] = '';
+					break;
 		}
 		return;
 	}
@@ -240,57 +240,57 @@ class Includes {
 		$title = _safe($properties['title']);
 		$description = _safe($properties['description']);
 		$html = 
-'<!DOCTYPE html>
-<html lang="es_mx">
-<head>
-	<meta charset="utf-8" />
-	<meta name="language" content="english" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
+			'<!DOCTYPE html>
+			<html lang="es_mx">
+			<head>
+				<meta charset="utf-8" />
+				<meta name="language" content="english" />
+				<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+				<meta name="apple-mobile-web-app-capable" content="yes" />
 
-	<meta name="robots" content="none" />
-	<meta name="robots" content="none, nindex, nfollow" />
-	<meta name="robots" content="noindex, nofollow" />
-	<meta name="googlebot" content="none" />
-	<meta name="googlebot" content="none, noindex, nofollow" />
-	<meta name="googlebot" content="noindex, nofollow" />
-	<meta content="none" name="yahoo-slurp" />
-	<meta name="yahoo-slurp" content="none, noindex, nofollow" />
-	<meta name="yahoo-slurp" content="noindex, nofollow" />
-	<meta name="msnbot" content="noindex, nofollow" />
-	<meta name="ia_archiver" content="none" />
-	<meta name="googlebot-image" content="none" />
-	<meta name="robots" content="none" />
+				<meta name="robots" content="none" />
+				<meta name="robots" content="none, nindex, nfollow" />
+				<meta name="robots" content="noindex, nofollow" />
+				<meta name="googlebot" content="none" />
+				<meta name="googlebot" content="none, noindex, nofollow" />
+				<meta name="googlebot" content="noindex, nofollow" />
+				<meta content="none" name="yahoo-slurp" />
+				<meta name="yahoo-slurp" content="none, noindex, nofollow" />
+				<meta name="yahoo-slurp" content="noindex, nofollow" />
+				<meta name="msnbot" content="noindex, nofollow" />
+				<meta name="ia_archiver" content="none" />
+				<meta name="googlebot-image" content="none" />
+				<meta name="robots" content="none" />
 
-	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
+				<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
 
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-slider/css/bootstrap-slider.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 
-	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
-	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
-	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
-	<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
-	<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
-	<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
-	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 
-	<title>'.$title.'</title>
-	<meta name="description" content="'.$description.'" />
-</head>
-';
+				<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+				<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+				<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
+				<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
+
+				<title>'.$title.'</title>
+				<meta name="description" content="'.$description.'" />
+			</head>';
 		return $html;
 	}
-
 
 	public function get_main_navbar(){
 		if($this->user['id'] && basename(dirname($_SERVER['SCRIPT_NAME'])) == 'tienda'){
@@ -300,103 +300,104 @@ class Includes {
 			$e = '';
 		}
 		$html =
-'<body class="">
-<div id="fb-root"></div>
-<div class="page-wrapper">
-	<header class="header">
-		<div class="header-wrapper">
-			<div class="container">
-				<div class="header-inner">
-					<div class="header-logo">
-						<a href="'.HOST.'/">
+				'<body class="">
+				<div id="fb-root"></div>
+				<div class="page-wrapper">
+					<header class="header">
+						<div class="header-wrapper">
+							<div class="container">
+								<div class="header-inner">
+									<div class="header-logo">
+										<a href="'.HOST.'/">
 
-							<div class="logo" alt="Travel Points">
-										<style>
-											.logo{
-												background-image: url('.HOST.'/assets/img/logo.svg)									
-											}
-										</style>
-							</div>
-							
-						</a> 
-					</div><!-- /.header-logo -->
-					<div class="header-content">
-						<div class="header-bottom">
-							<div class="header-button">
-								<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
-									<i class="fa fa-envelope"></i>
-								</a>
-							</div>
-							
-						
-							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
-									<i class="fa fa-question"></i>
-								</a>
-							</div>';
-
-							if(isset($_SESSION['user']['id_usuario'])){
-
-								$html .= 
-							'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								'.$e.'
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
-								
-								
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contact | Contacto</a></li>
-							</ul>
-							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>
-							<div class="header-nav-user">
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-										<div class="user-image">
-											<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">';
-							
-								$html .='</div><!-- /.user-image -->
-										<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="'.HOST.'/socio/">Mi inicio</a></li>';
+											<div class="logo" alt="Travel Points">
+														<style>
+															.logo{
+																background-image: url('.HOST.'/assets/img/logo.svg)									
+															}
+														</style>
+											</div>
 											
-								
-								$html .= 
-										'<li><a href="'.HOST.'/logout">Logout | Cerrar sesi&oacute;n</a></li>
-									</ul>
-								</div><!-- /.dropdown -->
-							</div><!-- /.header-nav-user -->
-							';
-							}else{
-								$html .=
-							'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li><a href="'.HOST.'/login">Login | Iniciar sesi&oacute;n</a></li>
-								<li><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
-								
-								
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacto</a></li>
-							</ul>
-							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
-								<span class="sr-only">Toggle navigation</span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-								<span class="icon-bar"></span>
-							</button>';
-							}
-							$html .= '
-						</div><!-- /.header-bottom -->
-					</div><!-- /.header-content -->
-				</div><!-- /.header-inner -->
-			</div><!-- /.container -->
-		</div><!-- /.header-wrapper -->
-	</header><!-- /.header -->
-';
-		return $html;
+										</a> 
+									</div><!-- /.header-logo -->
+									<div class="header-content">
+										<div class="header-bottom">
+											<div class="header-button">
+												<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
+													<i class="fa fa-envelope"></i>
+												</a>
+											</div>
+											
+										
+											<div class="header-button">
+												<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
+													<i class="fa fa-question"></i>
+												</a>
+											</div>';
+
+											if(isset($_SESSION['user']['id_usuario'])){
+
+												$html .= 
+											'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+												'.$e.'
+												<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
+												
+												
+												<li class="visible-xs"><a href="'.HOST.'/contacto">Contact | Contacto</a></li>
+											</ul>
+											<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
+												<span class="sr-only">Toggle navigation</span>
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+											</button>
+											<div class="header-nav-user">
+												<div class="dropdown">
+													<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+														<div class="user-image">
+															<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">';
+											
+												$html .='</div><!-- /.user-image -->
+														<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
+													</button>
+													<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+														<li><a href="'.HOST.'/socio/">Mi inicio</a></li>';
+															
+												
+												$html .= 
+														'<li><a href="'.HOST.'/logout">Logout | Cerrar sesi&oacute;n</a></li>
+													</ul>
+												</div><!-- /.dropdown -->
+											</div><!-- /.header-nav-user -->
+											';
+											}else{
+												$html .=
+											'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
+												<li><a href="'.HOST.'/login">Login | Iniciar sesi&oacute;n</a></li>
+												<li><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></li>
+												<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
+												
+												
+												<li class="visible-xs"><a href="'.HOST.'/contacto">Contacto</a></li>
+											</ul>
+											<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
+												<span class="sr-only">Toggle navigation</span>
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+												<span class="icon-bar"></span>
+											</button>';
+											}
+											$html .= '
+										</div><!-- /.header-bottom -->
+									</div><!-- /.header-content -->
+								</div><!-- /.header-inner -->
+							</div><!-- /.container -->
+						</div><!-- /.header-wrapper -->
+					</header><!-- /.header -->
+				';
+			return $html;
 	}
+
 	public function get_admin_navbar(){
 
 		$html =
@@ -514,7 +515,7 @@ class Includes {
 						'.$this->sidebar.'
 					</ul>
 				</div><!-- /.sidebar-secondary-admin -->
-				<div class="content-admin">
+				<div class="content-admin contenido-home">
 					<div class="content-admin-wrapper">
 						<div class="content-admin-main">
 							<div class="content-admin-main-inner">
@@ -525,50 +526,51 @@ class Includes {
 
 	public function get_admin_footer(){
 		$html ='</div><!-- /.container-fluid -->
-												</div><!-- /.content-admin-main-inner -->
-												</div><!-- /.content-admin-main -->
-												<div class="content-admin-footer">
-												<div class="container-fluid">
-												<div class="content-admin-footer-inner">
-												&copy; 2017 Todos los derechos reservados.
-												</div><!-- /.content-admin-footer-inner -->
-												</div><!-- /.container-fluid -->
-												</div><!-- /.content-admin-footer  -->
-												</div><!-- /.content-admin-wrapper -->
-												</div><!-- /.content-admin -->
-												</div><!-- /.wrapper-admin -->
-												</div><!-- /.outer-admin -->
-												</div><!-- /.main -->
-												</div><!-- /.page-wrapper -->
-												<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/modal.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-												<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBqoSi7c3UV5ya81-3fNa5itqfUDl2axmE&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/font-awesome/js/fontawesome.min.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
-												<script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
-												<script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
-												<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
-												</body>
-												</html>';
+													</div><!-- /.content-admin-main-inner -->
+													</div><!-- /.content-admin-main -->
+													<div class="content-admin-footer">
+													<div class="container-fluid">
+													<div class="content-admin-footer-inner">
+													&copy; 2017 Todos los derechos reservados.
+													</div><!-- /.content-admin-footer-inner -->
+													</div><!-- /.container-fluid -->
+													</div><!-- /.content-admin-footer  -->
+													</div><!-- /.content-admin-wrapper -->
+													</div><!-- /.content-admin -->
+													</div><!-- /.wrapper-admin -->
+													</div><!-- /.outer-admin -->
+													</div><!-- /.main -->
+													</div><!-- /.page-wrapper -->
+													<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/modal.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-slider/js/bootstrap-slider.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+													<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBqoSi7c3UV5ya81-3fNa5itqfUDl2axmE&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/font-awesome/js/fontawesome.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
+													<script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
+													</body>
+													</html>';
 												return $html;
 	}
 

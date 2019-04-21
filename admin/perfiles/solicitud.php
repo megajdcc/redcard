@@ -44,6 +44,11 @@ if(isset($_POST['action']) && $_POST['action'] == "adjudicar" && isset($_POST['p
 		$solicitud->adjudicar($perfil,$comision);
 		unset($_POST['action']);
 		return;
+	}else if($_POST['perfil'] == "referidor"){
+		$comision = $_POST['comision'];
+		$solicitud->adjudicar($perfil,$comision);
+		unset($_POST['action']);
+		return;
 	}
 }
 	

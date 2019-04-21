@@ -20,7 +20,7 @@ if(!isset($_SESSION['user']['admin_authorize'])){
 
 $id = filter_input(INPUT_GET, 'id');
 
-use Hotel\models\DetallesSolicitud;
+use Referidor\models\DetallesSolicitud;
 
 $solicitud = new DetallesSolicitud($con);
 

@@ -3,10 +3,10 @@
 	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 	$con = new assets\libs\connection();
 
-	use Hotel\models\Includes;
-	use Hotel\models\Dashboard;
+	use Referidor\models\Includes;
+	use Referidor\models\Dashboard;
 	use assets\libraries\pagination\pagination;
-	use Hotel\models\Home;
+	use Referidor\models\Home;
 	use admin\libs\reports_sales;
 
 	$hotel = new Dashboard($con);
@@ -41,7 +41,7 @@
 
 	$includes = new Includes($con);
 
-	$properties['title'] = 'Hotel | Travel Points';
+	$properties['title'] = 'Referidor | Travel Points';
 	$properties['description'] = '';
 	
 	echo $header = $includes->get_no_indexing_header($properties);
@@ -91,7 +91,7 @@
 				
 				<!-- TRES CUADROS >>> -->
 					<div class="statusbox">
-						<h2>Total Comisiones Hotel</h2>
+						<h2>Total Comisiones Franquiciatario</h2>
 							<div class="statusbox-content">
 									<?php echo $home->getComisiones();?>
 							</div><!-- /.statusbox-content -->

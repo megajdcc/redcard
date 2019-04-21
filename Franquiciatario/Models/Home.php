@@ -1,5 +1,5 @@
 <?php 
-namespace Hotel\models;
+namespace Franquiciatario\models;
 use assets\libs\connection;
 use PDO;
 
@@ -30,6 +30,10 @@ class Home {
 		'balance' => array(),
 		'status' => null
 		);
+
+	public $franquiciatario = array(
+		'id'=> null,
+	);
 	private $error = array('notificacion' => null);
 
 	public function __construct(connection $con){
@@ -38,23 +42,27 @@ class Home {
 
 
 		$this->CargarHotel();
-
 		return;
 	}
 
 	private function CargarHotel(){
 
-		$query = "select h.id from hotel as h 
-			inner join solicitudhotel as sh on h.id = sh.id_hotel
-			inner join usuario as u on sh.id_usuario = u.id_usuario
+		$query = "select h.id, fr.id  as idfranquiciatario from hotel as h 
+			inner join franquiciatario as fr on h.codigo = fr.codigo_hotel
+inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario 
+			inner join usuario as u on sfr.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
 
 		$stm = $this->con->prepare($query);
 		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
 		$stm->execute();
 
-		$this->hotel['id'] = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+		$this->hotel['id'] = $fila['id'];
+		$this->franquiciatario['id']  = $fila['idfranquiciatario'];
+
 		$_SESSION['id_hotel'] = $this->hotel['id'];
+		$_SESSION['id_franquiciatario'] = $this->franquiciatario['id'];
 	}
 
 	public function getOperaciones(){
@@ -75,16 +83,12 @@ class Home {
 	}
 
 	public function getOperacionesNegocios(){
-		$sql=" SELECT 
+		$sql="SELECT 
   (SELECT COUNT(ne.id_negocio)
    FROM negocio as ne where ne.situacion =1) as afiliados, 
- 
  (COUNT(DISTINCT ne.id_negocio)) as operados,
- 
  (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
- FROM negocio as ne where ne.situacion =1) as porcentaje
- 
- 
+ FROM negocio as ne where ne.situacion =1) as porcentaje 
  FROM
  negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
  INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
@@ -378,17 +382,17 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	// }
 
 	public function getComisiones(){
-			$query  = "SELECT nven.iso as divisa, (SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel1 and bh.id = (select max(id) from balancehotel)) as balance
- 					FROM negocio_venta as nven 
- 					JOIN  balancehotel as bh on nven.id_venta = bh.id_venta
- 				where bh.id_hotel = :idhotel2";
+				$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
+								and bf.id = (select max(id) from balancefranquiciatario)) as balance
+								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
+								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN bf.creado and now()";
 
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel1'=>$this->hotel['id'],
-				                    ':idhotel2'=>$this->hotel['id']));
+				$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
+				                    ':fr2'=>$this->franquiciatario['id']));
 
+				
+				$pref = null;
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
 					if($row['divisa'] == 'EUR'){
@@ -398,9 +402,9 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 					}
 
 					$comision = number_format((float)$row['balance'],2,'.','');
-					$pref = null;
+					
 					if($comision  > 0){
-						$pref .='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
+						$pref ='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
 					}
 				
 
@@ -415,13 +419,12 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	}
 
 	public function getBalance(){
-		$query  = "SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel and bh.id = (select max(id) from balancehotel)";
+		$query  = "SELECT  bf.balance as balance
+ 					from  balancefranquiciatario as bf
+ 				where bf.id_franquiciatario = :idfranquiciatario and bf.id = (select max(id) from balancefranquiciatario)";
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel'=>$this->hotel['id']));
+				$stm->execute(array(':idfranquiciatario'=>$this->franquiciatario['id']));
 				return $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-
 	}
 
 	public function getNotificacion(){

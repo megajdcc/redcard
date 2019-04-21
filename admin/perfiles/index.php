@@ -333,6 +333,72 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 						}
 						
+					}else if(perfil == 'Referidor'){
+
+						if($('#ex9').length){
+							var ele = document.getElementById('sliderdinamico');
+							var eli = document.getElementById('ex9');
+							ele.removeChild(eli);
+
+
+							var slid = document.createElement('input');
+
+							$(slid).attr('data-slider-value',comision);
+							$(slid).attr('data-slider-min','0');
+							$(slid).attr('data-slider-max','8');
+							$(slid).attr('data-slider-step','1');
+							$(slid).attr('id','ex9');
+
+							ele.appendChild(slid);
+
+							 slider = new Slider('#ex9');
+							 valorslider = slider.getValue();
+							slider.on("slide", function(sliderValue){
+								valorslider = sliderValue;
+									document.getElementById('val-slider').textContent = sliderValue + " %";
+									$('.actualizar').attr('data-comision',valorslider);
+									$('.actualizar').removeAttr('disabled');
+							});
+
+
+							
+							$('actualizar').attr('data-perfil','franquiciatario');
+							$('actualizar').attr('data-solicitud',solicitud);
+
+							$('.pcomi').text(comision+" %");
+							$('.modal').modal('show');
+						}else{
+
+							var ele = document.getElementById('sliderdinamico');
+							var slid = document.createElement('input');
+							$(slid).attr('data-slider-value',comision);
+							$(slid).attr('data-slider-min','0');
+							$(slid).attr('data-slider-max','8');
+							$(slid).attr('data-slider-step','1');
+							$(slid).attr('id','ex9');
+
+							ele.appendChild(slid);
+
+							 slider = new Slider('#ex9');
+							 valorslider = slider.getValue();
+							
+							
+							slider.on("slide", function(sliderValue){
+								valorslider = sliderValue;
+									document.getElementById('val-slider').textContent = sliderValue + " %";
+									 $('.actualizar').attr('data-comision',valorslider);
+									 	$('.actualizar').removeAttr('disabled');
+							});
+							 
+							
+						
+							$('.actualizar').attr('data-perfil','referidor');
+							$('.actualizar').attr('data-solicitud',solicitud);
+							$('.pcomi').text(comision+" %");
+							$('.modal').modal('show');
+
+						}
+						
 					}
 
 				});

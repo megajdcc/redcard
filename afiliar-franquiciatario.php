@@ -1,7 +1,7 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
 $con = new assets\libs\connection();
 
-use Franquiciatario\Models\AfiliarFranquiciatario;
+use Franquiciatario\models\AfiliarFranquiciatario;
 use assets\libs\includes as Includes;
 
 if(!isset($_SESSION['user'])){
@@ -141,12 +141,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
         
          
         </div><!-- /.box -->
-
-  
-
-
-       
-        
+               
         <div class="background-white p30 mb30">
          <h3 class="page-title">Datos para el pago de comisiones</h3>
          
@@ -179,19 +174,19 @@ echo $navbar = $includes->get_main_navbar(); ?>
              <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
              <input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $affiliate->getClabe();?>" placeholder="Clabe" required >
             </div><!-- /.input-group -->
-            <?php echo $affiliate->getClabeError();?>
+            <?php?>
            </div><!-- /.form-group -->
 
            <div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
             <label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $affiliate->getSwift();?>" placeholder="Swift" required >
-            </div><!-- /.input-group -->
+             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $affiliate->getSwift() ?>" placeholder="Swift" required >
+            </div>
             <?php echo $affiliate->getSwiftError();?>
-           </div><!-- /.form-group -->
+           </div>
 
-          </div><!-- /.col-* -->
+          </div>
 
 
 
@@ -202,17 +197,17 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-bank"></i></span>
              <input class="form-control" type="text" pattern="[a-zA-z]*" id="bancotarjeta" name="bancotarjeta" value="<?php echo $affiliate->getBancoNombreTarjeta();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
+            </div>
             <?php echo $affiliate->getNombreBancoTarjetaError();?>
-           </div><!-- /.form-group -->
+           </div>
            <div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
             <label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-cc"></i></span>
              <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numerotarjeta" value="<?php echo $affiliate->getTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
-            </div><!-- /.input-group -->
+            </div>
             <?php echo $affiliate->getNumeroTarjetaError();?>
-           </div><!-- /.form-group -->
+           </div>
         
           
             <h5 class="page-title">Transferencia PayPal</h5>
@@ -221,9 +216,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
              <input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $affiliate->getEmailPaypal();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
+            </div>
             <?php echo $affiliate->getEmailPaypalError();?>
-           </div><!-- /.form-group -->
+           </div>
           </div>
           
          </div>
@@ -240,9 +235,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
              <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $affiliate->getTelefono();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" required >
-            </div><!-- /.input-group -->
+            </div>
+
             <?php echo $affiliate->getTelefonoError();?>
-           </div><!-- /.form-group -->
+           </div>
           </div>
           <div class="col-lg-6">
           <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
@@ -250,9 +246,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
              <input class="form-control" type="text" id="movil"  pattern="[+][0-9]{11,15}[+]?" name=" telefonomovil" value="<?php echo $affiliate->getMovil();?>" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
-            </div><!-- /.input-group -->
+            </div>
             <?php echo $affiliate->getMovilError();?>
-           </div><!-- /.form-group -->
+           </div>
           </div>
           </div>
         </div>

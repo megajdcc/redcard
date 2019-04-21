@@ -86,3 +86,29 @@ src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
 
 	height: 470px !important;
 }
+.content-solicitud{
+	margin-top: 20px;
+	font-family: 'Nexa Bold Regular';
+
+}
+.contenido-home{
+	overflow-y: auto;
+	max-height: 85vh !important;
+}
+.contenedor-solicitud{
+	margin-top: 30px !important;
+}
+
+.titulo{
+width: 100%;
+	/* background-color: black; */
+	height: 50px;
+	padding: 5px 5px !important;
+	margin: 10px 0px !important;
+	display: flex;
+	justify-content: center;
+	align-content: centers;
+}
+.slider.slider-horizontal{
+	width: 100% !important; 
+}

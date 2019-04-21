@@ -3,10 +3,10 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
-use Hotel\models\Includes;
-use Hotel\models\Comprobantes;
-use Hotel\models\Dashboard;
-use Hotel\models\Home;
+use Referidor\models\Includes;
+use Referidor\models\Comprobantes;
+use Referidor\models\Dashboard;
+use Referidor\models\Home;
 
 if(!isset($_SESSION['user'])){
 	http_response_code(404);

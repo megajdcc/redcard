@@ -153,6 +153,14 @@ class DetallesSolicitud {
 	}
 
 
+	private function CargarReferidor($id){
+
+		$this->DetallesSolicitudReferidor =  new DetallesSolicitudReferidor($this->con, $id);
+		return true;
+
+	}
+
+
 	public function getModal($perfil = null){
 
 		switch ($perfil) {
@@ -210,6 +218,9 @@ class DetallesSolicitud {
 				break;
 			case 'Franquiciatario':
 				$this->DetallesSolicitudFranquiciatario->getmodal();
+			break;
+				case 'Referidor':
+				$this->DetallesSolicitudReferidor->getmodal();
 			break;
 			default:
 				# code...
@@ -821,6 +832,11 @@ class DetallesSolicitud {
 				$this->DetallesSolicitudFranquiciatario->Mostrar();
 			break;
 
+			case 'Referidor':
+				$this->DetallesSolicitudReferidor->Mostrar();
+			break;
+
+
 			default:
 				# code...
 				break;
@@ -877,6 +893,10 @@ class DetallesSolicitud {
 				}
 			}else if($perfil == "Franquiciatario"){
  					$this->DetallesSolicitudFranquiciatario->adjudicar($comision);
+				return true;
+			}
+			else if($perfil == "Referidor"){
+ 					$this->DetallesSolicitudReferidor->adjudicar($comision);
 				return true;
 			}
 			
@@ -1066,6 +1086,9 @@ class DetallesSolicitud {
 					break;
 					case 'Franquiciatario':
 						$this->DetallesSolicitudFranquiciatario->aceptarsolicitud($post);
+					break;
+					case 'Referidor':
+						$this->DetallesSolicitudReferidor->aceptarsolicitud($post);
 					break;
 					default:
 						# code...

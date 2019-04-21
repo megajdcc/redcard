@@ -1,7 +1,7 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+  <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
 $con = new assets\libs\connection();
 
-use Hotel\models\AfiliarHotel;
+use Referidor\models\AfiliarReferidor;
 use assets\libs\includes as Includes;
 
 if(!isset($_SESSION['user'])){
@@ -10,7 +10,7 @@ if(!isset($_SESSION['user'])){
   $login->set_data($_POST);
  }
 }else{
- $affiliate = new AfiliarHotel($con);
+ $affiliate = new AfiliarReferidor($con);
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
   if(isset($_POST['send'])){
    $affiliate->set_data($_POST);
@@ -19,7 +19,7 @@ if(!isset($_SESSION['user'])){
 }
 
 $includes = new Includes($con);
-$properties['title'] = 'Afiliar hotel | Travel Points';
+$properties['title'] = 'Afiliar Referidor | Travel Points';
 $properties['description'] = '';
 
 echo $header = $includes->get_no_indexing_header($properties);
@@ -32,10 +32,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
     <div class="row">
      <div class="col-sm-7 col-md-8 mb50">
       <div class="page-title">
-       <h1>¡Afilia tu hotel!</h1>
-       <p>Env&iacute;anos una solicitud para publicar tu hotel en nuestro directorio.</p>
+       <h1>¡Afiliate como Referidor!</h1>
+       <p>Env&iacute;anos una solicitud para se parte de nuestro selecto Grupo de Referidores.</p>
       </div>
-      <p>Solo los socios pueden afiliar un hotel. <a href="<?php echo HOST;?>/hazte-socio">Hazte socio</a> o inicia sesi&oacute;n.</p>
+      <p>Solo los socios pueden Solicitar este perfil. <a href="<?php echo HOST;?>/hazte-socio">Hazte socio</a> o inicia sesi&oacute;n.</p>
      </div>
      <div class="col-sm-5 col-md-4">
      <?php echo $login->get_notification(); ?>
@@ -64,47 +64,76 @@ echo $navbar = $includes->get_main_navbar(); ?>
       <div class="content">
        <?php echo $affiliate->get_notification();?>
        <div class="page-title">
-        <h1>¡Afilia tu hotel!</h1>
-        <p>Env&iacute;anos una solicitud para publicar tu hotel en nuestro directorio.</p>
+        <h1>¡Afiliate como Referidor!</h1>
+        <p>Env&iacute;anos una solicitud para que seas parte de nuestro selecto grupo de referidores.</p>
        </div>
-       <form method="post" action="<?php echo _safe(HOST.'/afiliar-hotel');?>" enctype="multipart/form-data">
+       <form method="post" action="<?php echo _safe(HOST.'/afiliar-referidor');?>" enctype="multipart/form-data">
         <div class="background-white p30 mb50">
-         <h3 class="page-title">Informaci&oacute;n de hotel</h3>
+         <h3 class="page-title">Informaci&oacute;n del Hotel</h3>
          <div class="row">
 
-          <div class="col-lg-8">
+          <div class="col-lg-8 d-flex">
         
-           <div class="form-group" data-toggle="tooltip" title="Los clientes Huespedes de Travel Points pueden afiliarse desde su propio perfil...">
-            <label for="business-name">Nombre del hotel <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+           <div class="form-group flex" >
+            <label for="business-name">Nombre del Hotel:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+            <div class="input-hotel">
+              <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-hotel"></i></span>
 
-            <input class="form-control" type="text" id="business-name" name="nombre" value="<?php echo $affiliate->getNombre();?>" placeholder="Nombre del hotel" required />
-            <?php echo $affiliate->getNombreError();?>
+            <input class ="hotel form-control" type="text" id="business-name" name="nombre" value="<?php echo $affiliate->getHotel();?>" placeholder="Nombre del hotel" readonly/>
+            </div>
+              <button type ="button"  data-toggle="modal" data-target=".capturarhotel"  data-placement="top" name="buscarhotel" class="buscar form-control"><i class="fa fa-search"></i>Buscar</button>
+            </div>
+            
            </div><!-- /.form-group -->
-          
+
+            <div class="form-group">
+            <label for="website">Sitio web del hotel</label>
+            <div class="input-group">
+             <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+             <input class="sitioweb form-control" type="text" id="website" name="website" placeholder="Sitio web del hotel" readonly>
+            </div><!-- /.input-group -->
+           
+           </div><!-- /.form-group -->
+
+           <div class="form-group">
+            <label for="address">Direcci&oacute;n del hotel <span class="required"></span></label>
+            <div class="input-group">
+             <span class="input-group-addon"><i class="fa fa-map-o"></i></span>
+             <input class="direccion form-control" type="text" id="address" name="direccion" value="" placeholder="Direcci&oacute;n del hotel" readonly >
+            </div><!-- /.input-group -->
+           
+           </div><!-- /.form-group -->
+            
           </div><!-- /.col-* -->
           
           <div class="col-lg-4">
-           <div class="row">
-            <div class="col-sm-6 col-md-12 form-group" data-toggle="tooltip" title="El codigo Iata es utilizado para ayudar a agilizar los procesos de transporte aereo y turistico.">
-             <label for="category">C&oacute;digo IATA <span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
-             <select class="form-control" id="category" name="iata" title="Seleccionar c&oacute;digo IATA" required>
-              <option value="null" selected>Seleccione</option>
-              
-              <?php echo $affiliate->getIata();?>
-             </select>
-             <?php echo $affiliate->getIataError();?>
+            <div class="row">
+              <div class="form-group">
+              <label for="country-select">Pa&iacute;s <span class="required"></span></label>
+              <input  type="text" class="pais form-control" id="country-select" placeholder="Pais" name="pais" data-size="10" readonly>
+               
+              </input>
+              </div><!-- /.form-group -->
+
+               <div class="form-group">
+                <label for="state-select">Estado <span class="required"></span></label>
+                <input  type="text" class="estado form-control" id="state-select" placeholder="Estado" name="estado" data-size="10"  readonly>
+                
+                </input>
+               </div><!-- /.form-group -->
+               <div class="form-group">
+                <label for="city-select">Ciudad <span class="required"></span></label>
+                <input type="text" class="ciudad form-control" id="city-select" placeholder="Ciudad" name="ciudad"  data-size="10" readonly>
+                 
+                </input>
+                
+                </div><!-- /.form-group -->
             </div><!-- /.form-group -->
            </div>
           </div>
            <div class="col-sm-12">
-           <div class="form-group" data-toggle="tooltip" title="Si no tienes sitio web, deja el espacio en blanco.">
-            <label for="website">Sitio web del hotel <i class="fa fa-question-circle text-secondary"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-globe"></i></span>
-             <input class="form-control" pattern="([--:\w?@%&+~#=]*\.[a-z]{2,4}\/{0,2})((?:[?&](?:\w+)=(?:\w+))+|[--:\w?@%&+~#=]+)?" type="text" id="website" name="website" value="<?php echo $affiliate->getSitioWeb();?>" placeholder="Sitio web del hotel">
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getWebsiteError();?>
-           </div><!-- /.form-group -->
+         
           </div><!-- /.col-* -->
 
          </div><!-- /.row -->
@@ -112,170 +141,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
         
          
         </div><!-- /.box -->
-
-        <div class="background-white p30 mb30">
-         <h3 class="page-title">Ubicaci&oacute;n del hotel</h3>
-         <div class="row">
-          <div class="col-lg-8">
-           <div class="form-group">
-            <label for="address">Direcci&oacute;n del hotel <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-map-o"></i></span>
-             <input class="form-control" type="text" id="address" name="direccion" value="<?php echo $affiliate->getDireccion();?>" placeholder="Direcci&oacute;n del hotel" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getDirecccionError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-          <div class="col-lg-4">
-           <div class="form-group">
-            <label for="postal-code">C&oacute;digo postal  del hotel <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-             <input class="form-control" type="text" id="postal-code" name="codigopostal" value="<?php echo $affiliate->getCodigoPostal();?>" placeholder="C&oacute;digo postal del hotel" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getCodigoPostalError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-         </div><!-- /.row -->
-         <div class="row">
-          <div class="col-lg-4">
-           <div class="form-group">
-            <label for="country-select">Pa&iacute;s <span class="required">*</span></label>
-            <select class="form-control" id="country-select" name="pais" title="Selecciona un pa&iacute;s" data-size="10" data-live-search="true" required>
-             <?php echo $affiliate->get_countries();?>
-            </select>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-          <div class="col-lg-4">
-           <div class="form-group">
-            <label for="state-select">Estado <span class="required">*</span></label>
-            <select class="form-control" id="state-select" name="estado" title="Luego un estado" data-size="10" data-live-search="true" required>
-             <?php echo $affiliate->get_states();?>
-            </select>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-          <div class="col-lg-4">
-           <div class="form-group">
-            <label for="city-select">Ciudad <span class="required">*</span></label>
-            <select class="form-control" id="city-select" name="ciudad" title="Luego una ciudad" data-size="10" data-live-search="true" required>
-             <?php echo $affiliate->get_cities();?>
-            </select>
-            <?php echo $affiliate->getCiudadError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-         </div><!-- /.row -->
-         <hr>
-         <div class="form-group">
-          <label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
-          <p>
-           <ul>
-            <li>Arrastra el marcador hacia la ubicaci&oacute;n de tu hotel.</li>
-            <li>Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad, municipio, colonia, etc. y seleccionar una de las opciones sugeridas.</li>
-           </ul>
-           Las coordenadas de la ubicaci&oacute;n se crean automaticamente.
-          </p>
-          <?php echo $affiliate->getLocationError();?>
-         </div>
-         <input class="controls form-control mb30" type="text" id="pac-input" placeholder="Escribe una ubicaci&oacute;n" />
-         <div id="map-canvas"></div>
-         <div class="row">
-          <div class="col-sm-6">
-           <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-            <input class="form-control" type="text" id="input-latitude"  name="latitud" value="<?php echo $affiliate->getLatitud();?>" placeholder="Latitud" required>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-          <div class="col-sm-6">
-           <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-            <input class="form-control" type="text" id="input-longitude" name="longitud" value="<?php echo $affiliate->getLongitud();?>" placeholder="Longitud" required>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-         </div><!-- /.row -->
-        </div><!-- /.box -->
-
-
-        <div class="background-white p30 mb30">
-         <h3 class="page-title">Responsable del &aacute;rea de promoci&oacute;n</h3>
-         
-         <div class="row">
-          <div class="col-lg-6">
-           <div class="form-group">
-            <label for="nombre">Nombre<span class="required">*</span></label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-             <input class="form-control" type="text" id="nombre_responsable" name="nombre_responsable" value="<?php echo $affiliate->getNombreResponsable();?>" placeholder="Nombre del responsable &aacute;rea de promoci&oacute;n" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getNombreResponsableError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-
-          <div class="col-lg-6">
-           <div class="form-group">
-            <label for="apellido">Apellido<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-address-card-o"></i></span>
-             <input class="form-control" type="text" id="apellido_responsable" name="apellido_responsable" value="<?php echo $affiliate->getApellidoResponsable();?>" placeholder="Apellido del responsable &aacute;rea de promoci&oacute;n" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getApellidoResponsableError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-         </div>
-         
-         
-          
-         
-          <div class="row">
-          <div class="col-lg-6">
-           <div class="form-group">
-            <label for="email">Email<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-             <input class="form-control" type="email" id="email" name="email" value="<?php echo $affiliate->getEmail();?>" placeholder="Email del responsable" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getEmailError();?>
-           </div><!-- /.form-group -->
-          </div><!-- /.col-* -->
-          
-
-          <div class="col-lg-6">
-           <div class="form-group">
-            <label for="cargo">Cargo<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
-             <input class="form-control" type="text" id="cargo" name="cargo" value="<?php echo $affiliate->getCargo();?>" placeholder="Cargo" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getCargoError();?>
-           </div><!-- /.form-group -->
-
-           
-
-          </div><!-- /.col-* -->
-          <div class="col-lg-6">
-          <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-            <label for="phone">T&eacute;lefono fijo <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $affiliate->getTelefono();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" required >
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getTelefonoError();?>
-           </div><!-- /.form-group -->
-          </div>
-          <div class="col-lg-6">
-          <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
-            <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
-             <input class="form-control" type="text" id="movil"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="<?php echo $affiliate->getMovil();?>" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
-            </div><!-- /.input-group -->
-            <?php echo $affiliate->getMovilError();?>
-           </div><!-- /.form-group -->
-          </div>
-         
-         </div><!-- /.row -->
-        
-        </div><!-- /.box -->
-        
+               
         <div class="background-white p30 mb30">
          <h3 class="page-title">Datos para el pago de comisiones</h3>
          
@@ -284,7 +150,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
           <div class="col-lg-6 col-sm-4">
           <h5 class="page-title">Transferencia Bancaria</h5>
-           <div class="form-group">
+           <div class="form-group" >
             <label for="nombre">Nombre del banco<span class="required">*</span></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-bank"></i></span>
@@ -308,19 +174,19 @@ echo $navbar = $includes->get_main_navbar(); ?>
              <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
              <input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $affiliate->getClabe();?>" placeholder="Clabe" required >
             </div><!-- /.input-group -->
-            <?php echo $affiliate->getClabeError();?>
+            <?php?>
            </div><!-- /.form-group -->
 
            <div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
             <label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $affiliate->getSwift();?>" placeholder="Swift" required >
-            </div><!-- /.input-group -->
+             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $affiliate->getSwift() ?>" placeholder="Swift" required >
+            </div>
             <?php echo $affiliate->getSwiftError();?>
-           </div><!-- /.form-group -->
+           </div>
 
-          </div><!-- /.col-* -->
+          </div>
 
 
 
@@ -330,18 +196,18 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <label for="nombre">Nombre del banco<span class="required">*</span></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta" name="nombre_banco_tarjeta" value="<?php echo $affiliate->getBancoNombreTarjeta();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
+             <input class="form-control" type="text" pattern="[a-zA-z]*" id="bancotarjeta" name="bancotarjeta" value="<?php echo $affiliate->getBancoNombreTarjeta();?>" placeholder="Nombre del banco" required >
+            </div>
             <?php echo $affiliate->getNombreBancoTarjetaError();?>
-           </div><!-- /.form-group -->
+           </div>
            <div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
             <label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-cc"></i></span>
-             <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numero_targeta" value="<?php echo $affiliate->getTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
-            </div><!-- /.input-group -->
+             <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numerotarjeta" value="<?php echo $affiliate->getTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
+            </div>
             <?php echo $affiliate->getNumeroTarjetaError();?>
-           </div><!-- /.form-group -->
+           </div>
         
           
             <h5 class="page-title">Transferencia PayPal</h5>
@@ -350,15 +216,42 @@ echo $navbar = $includes->get_main_navbar(); ?>
             <div class="input-group">
              <span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
              <input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $affiliate->getEmailPaypal();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
+            </div>
             <?php echo $affiliate->getEmailPaypalError();?>
-           </div><!-- /.form-group -->
+           </div>
           </div>
           
          </div>
-         
         
-        </div><!-- /.box -->
+        <div class="background-white p30 mb50">
+         <h3 class="page-title">Tus Datos de contacto.</h3>
+          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
+         <div class="row">
+         
+         
+           <div class="col-lg-6">
+          <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+            <label for="phone">T&eacute;lefono fijo <span class="required">*</span></label>
+            <div class="input-group">
+             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $affiliate->getTelefono();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" required >
+            </div>
+
+            <?php echo $affiliate->getTelefonoError();?>
+           </div>
+          </div>
+          <div class="col-lg-6">
+          <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
+            <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
+            <div class="input-group">
+             <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
+             <input class="form-control" type="text" id="movil"  pattern="[+][0-9]{11,15}[+]?" name=" telefonomovil" value="<?php echo $affiliate->getMovil();?>" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
+            </div>
+            <?php echo $affiliate->getMovilError();?>
+           </div>
+          </div>
+          </div>
+        </div>
 
 
         <div class="row">
@@ -366,7 +259,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
           <p>Los campos marcados son obligatorios <span class="required">*</span></p>
          </div>
          <div class="col-xs-6 right">
-          <button class="btn btn-success btn-xl" type="submit" name="send"><i class="fa fa-paper-plane"></i>Enviar mi solicitud</button>
+          <button class="enviar btn btn-success btn-xl" type="submit" value="" name="send"><i class="fa fa-paper-plane"></i>Enviar mi solicitud</button>
          </div>
         </div>
        </form>
@@ -380,4 +273,104 @@ echo $navbar = $includes->get_main_navbar(); ?>
    </div><!-- /.container -->
   </div><!-- /.main-inner -->
  </div><!-- /.main -->
+  <div class="modal fade capturarhotel " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Hoteles</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <article class="cat">
+      <table  id="example" class="display" cellspacing="0" width="100%" >
+        <thead>
+        <tr>
+        <th>Codigo</th>
+        <th>Nombre</th>
+        <th>Direccion</th>
+        <th>Sitio Web</th>
+      
+        </tr>
+        </thead>
+        
+        <tbody >
+          
+            <?php echo $affiliate->getHoteles(); ?>
+          
+        </tbody>
+      </table>
+      </article> 
+
+  
+       </div>
+       
+      <div class="modal-footer">
+
+        <button  style="margin-left: auto;" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+   
+      </div>
+    </div>
+  </div>
+</div>
+  <script>  
+
+  
+  $(document).ready(function() {
+       var t = $('#example').DataTable( {
+      'paging':         false,
+      'scrollY':        '150px',
+        'scrollCollapse': true,
+         'language': {
+                        'lengthMenu': 'Mostar _MENU_ registros por pagina',
+                        'info': '',
+                        'infoEmpty': 'No se ha encontrado ningun hotel',
+                        'infoFiltered': '(filtrada de _MAX_ registros)',
+                        'search': 'Buscar:',
+                       'paginate': {
+                            'next':       'Siguiente',
+                            'previous':   'Anterior'
+                        },
+                    },
+        'columnDefs': [ {
+            'searchable': true,
+            'orderable': true,
+            'targets': 0
+        } ],
+        'order': [[ 0, 'asc' ]]
+    });
+
+
+  $('.capt').click(function() {
+        var hotelid = $('.capt').attr('data-hotel');  
+        var codigo = $('.codigohotel').attr('data-codigo');
+        var nombre = $('.nombrehotel').attr('data-nombre');
+        var direccion = $('.direccionhotel').attr('data-direccion');
+        var sitio = $('.sitiowebhotel').attr('data-sitio');
+        var estado = $('.direccionhotel').attr('data-estado');
+        var ciudad = $('.direccionhotel').attr('data-ciudad');
+        var pais = $('.direccionhotel').attr('data-pais');
+
+        $('.hotel').val(nombre);
+        
+        $('.direccion').val(direccion);
+        $('.pais').val(pais);
+        $('.estado').val(estado);
+        $('.sitioweb').val(sitio);
+        $('.ciudad').val(ciudad);
+
+        $('.enviar').val(codigo);
+
+        $('.modal').modal('hide');
+
+
+  });
+
+  });
+
+
+      
+
+</script>
 <?php echo $footer = $includes->get_main_footer(); ?>

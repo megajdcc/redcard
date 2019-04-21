@@ -11,14 +11,13 @@ if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SES
 	include(ROOT.'/errores/404.php');
 	die();
 }
+
 if(!isset($_SESSION['user']['admin_authorize'])){
 	header('Location: '.HOST.'/admin/acceso');
 	die();
 }
 
 $solicitudes = new admin\libs\SolicitudPerfil($con);
-
-
 
 $includes = new admin\libs\includes($con);
 $properties['title'] = 'Solicitudes de negocio | eSmart Club';
@@ -33,12 +32,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<table  id="solicitudes" class="display" cellspacing="0" width="100%">
 		<thead>
             <tr>
-            	<th>Solicitud</th>
-            	<th>Status</th>
-                <th>Fecha</th>
-                <th>Solicitante</th>
-                <th>Perfil</th>
-                <th></th>           
+				<th>Solicitud</th>
+				<th>Status</th>
+				<th>Fecha</th>
+				<th>Solicitante</th>
+				<th>Perfil</th>
+				<th></th>           
             </tr>
         </thead>
 

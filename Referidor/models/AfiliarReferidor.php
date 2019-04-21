@@ -4,11 +4,11 @@
  * @since 04/05/2019
  */
 
-namespace Franquiciatario\models;
+namespace Referidor\models;
 
 use PDO;
 
-class AfiliarFranquiciatario {
+class AfiliarReferidor {
 	private $con;
 	private $reserved_words = array(
 		'admin',
@@ -119,17 +119,17 @@ class AfiliarFranquiciatario {
 		$this->setNumeroTarjeta($post['numerotarjeta']);
 		$this->setEmailPaypal($post['email_paypal']);
 
-		//Franquiciatario
+		//Referidor
 		$this->setTelefono($post['telefonofijo']);
 		$this->setMovil($post['telefonomovil']);
 	
 	
-			$this->RegistrarFranquiciatario();
+			$this->RegistrarReferidor();
 			 return true;
 
 	}
 
-	private function RegistrarFranquiciatario(){
+	private function RegistrarReferidor(){
 
 		if($this->con->inTransaction()){
 			$this->con->rollBack();
@@ -159,7 +159,7 @@ class AfiliarFranquiciatario {
 
 			$id_datospagocomision = $this->con->lastInsertId();
 					
-			$query = "insert into franquiciatario(telefonofijo,telefonomovil,id_datospagocomision,codigo_hotel) values(:telefonofijo,:telefonomovil,:id_datospagocomision,:codigo_hotel)";
+			$query = "insert into referidor(telefonofijo,telefonomovil,id_datospagocomision,codigo_hotel) values(:telefonofijo,:telefonomovil,:id_datospagocomision,:codigo_hotel)";
 			
 				try {
 					$stm = $this->con->prepare($query);
@@ -173,11 +173,11 @@ class AfiliarFranquiciatario {
 
 				$last_id = $this->con->lastInsertId();
 
-				$querysolicitud = "INSERT INTO solicitudfr(id_franquiciatario,id_usuario,condicion)values(:id_franquiciatario,:id_usuario,:condicion)";
+				$querysolicitud = "INSERT INTO solicitudreferidor(id_referidor,id_usuario,condicion)values(:id_referidor,:id_usuario,:condicion)";
 						
 						try {
 							$stm1 = $this->con->prepare($querysolicitud);			
-						$stm1->execute(array(':id_franquiciatario' => $last_id,
+						$stm1->execute(array(':id_referidor' => $last_id,
 											':id_usuario' => $this->registrar['id_usuario'],
 											':condicion' => 0
 											));
@@ -186,9 +186,9 @@ class AfiliarFranquiciatario {
 						$idsolicitud = $this->con->lastInsertId();
 
 
-						$content = 'Se ha recibido una nueva solicitud para afiliar un franquiciatario. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=franquiciatario">Haz clic aqu&iacute; para verla</a>.';
+						$content = 'Se ha recibido una nueva solicitud para afiliar un referidor. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=referidor">Haz clic aqu&iacute; para verla</a>.';
 						$body_alt =
-							'Se ha recibido una nueva solicitud para afiliar un franquiciatario. Sigue este enlace para verla: '.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=franquiciatario';
+							'Se ha recibido una nueva solicitud para afiliar un referidor. Sigue este enlace para verla: '.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=referidor';
 						require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 						$mail = new \PHPMailer;
 						$mail->CharSet = 'UTF-8';
@@ -207,14 +207,14 @@ class AfiliarFranquiciatario {
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo
-						$mail->Subject = 'Nueva solicitud de franquiciatario';
+						$mail->Subject = 'Nueva solicitud de referidor';
 						$mail->Body    = $this->email_template($content);
 						$mail->AltBody = $body_alt;
 
 						$mail->send();
 
-						$_SESSION['notification']['success'] = 'Se ha enviado la solicitud para afiliarte como franquiciatario exitosamente. Te mantendremos informado de cualquier avance.';
-						header('Location: '.HOST.'/Franquiciatario/solicitudes');
+						$_SESSION['notification']['success'] = 'Se ha enviado la solicitud para afiliarte como referidor exitosamente. Te mantendremos informado de cualquier avance.';
+						header('Location: '.HOST.'/Referidor/solicitudes');
 						die();
 						} catch (PDOException $exc) {
 							$this->error_log(__METHOD__,__LINE__,$exc->getMessage());
@@ -280,7 +280,7 @@ class AfiliarFranquiciatario {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Nueva solicitud de franquiciatario</strong>
+										<strong>Nueva solicitud de referidor</strong>
 									</td>
 								</tr>
 								<tr>
@@ -1112,7 +1112,7 @@ class AfiliarFranquiciatario {
 	}
 
 	private function error_log($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\afiliar-franquiciatario.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'\assets\error_logs\afiliar-referidor.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
 		return;
 	}

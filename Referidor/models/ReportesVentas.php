@@ -1,6 +1,6 @@
 <?php 
 
-namespace Hotel\models;
+namespace Referidor\models;
 require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 use assets\libs\connection;
@@ -38,11 +38,16 @@ class ReportesVentas{
 		'id' => null,
 	);
 
+	private $referidor = array(
+		'id' => null,
+	);
+
 	public $estadocuenta = array();
 
 	function __construct(connection $con){
 		$this->con = $con->con;
  		$this->hotel['id']  = $_SESSION['id_hotel'];
+ 		$this->referidor['id']  = $_SESSION['id_referidor'];
 		$this->CargarData();
 		return;
 	}
@@ -81,19 +86,19 @@ class ReportesVentas{
 
 
 				// echo var_dump($this->busqueda);
-						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bh.comision, bh.balance,nv.creado 
-						FROM balancehotel as bh 
-						LEFT JOIN negocio_venta as nv on bh.id_venta = nv.id_venta
+						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, brf.comision, brf.balance,nv.creado 
+						FROM balancereferidor as brf 
+						LEFT JOIN negocio_venta as nv on brf.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
-						where bh.id_hotel = :hotel1  and nv.creado between :fecha1 and :fecha2 and bh.id_venta != 0 ORDER BY creado ASC)
+						where brf.id_referidor = :fr1 and brf.id_venta != 0 and brf.creado between :fecha1 and :fecha2 ORDER BY creado ASC)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bh.balance,bh.creado
-						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balancehotel as bh on rr.id = bh.id_retiro
-						where bh.id_hotel = :hotel2 and bh.creado between :fecha3 and :fecha4 ORDER BY creado ASC)";
+						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, brf.balance,brf.creado
+						from retiro as r join retirocomisionreferidor as rr on r.id = rr.id_retiro join balancereferidor as brf on rr.id = brf.id_retiro
+						where brf.id_referidor = :fr2 and brf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)";
 							$stm = $this->con->prepare($query);
-							$stm->execute(array(':hotel1'=>$this->hotel['id'],
-							                    ':hotel2'=>$this->hotel['id'],
+							$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
+							                    ':fr2'=>$this->franquiciatario['id'],
 												':fecha1' => $this->busqueda['fechainicio'],
 												':fecha2' => $this->busqueda['fechafin'],
 												':fecha3' => $this->busqueda['fechainicio'],
@@ -101,20 +106,20 @@ class ReportesVentas{
 
 							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else{
-				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bh.comision, bh.balance,nv.creado 
- 				FROM balancehotel as bh 
-					LEFT JOIN negocio_venta as nv on bh.id_venta = nv.id_venta
- 					LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
- 					LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
- 					where bh.id_hotel = :hotel1 and bh.id_venta != 0 ORDER BY creado ASC)
-UNION 
-(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bh.balance,bh.creado
-			from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balancehotel as bh on rr.id = bh.id_retiro
-				where bh.id_hotel = :hotel2 ORDER BY creado ASC)";
+						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, brf.comision, brf.balance,nv.creado 
+						FROM balancereferidor as brf 
+						LEFT JOIN negocio_venta as nv on brf.id_venta = nv.id_venta
+						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
+						where brf.id_referidor = :fr1 and brf.id_venta != 0 ORDER BY creado ASC)
+						UNION 
+						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, brf.balance,brf.creado
+						from retiro as r join retirocomisionreferidor as rr on r.id = rr.id_retiro join balancereferidor as brf on rr.id = brf.id_retiro
+						where brf.id_referidor = :fr2 ORDER BY creado ASC)";
 
 			$stm = $this->con->prepare($query);
-			$stm->execute(array(':hotel1'=>$this->hotel['id'],
-								':hotel2'=>$this->hotel['id']));
+			$stm->execute(array(':fr1'=>$this->referidor['id'],
+								':fr2'=>$this->referidor['id']));
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}
 	
@@ -160,7 +165,7 @@ UNION
 
 		}else{
 			ob_start();
-			require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/estadocuenta.php');
+			require_once($_SERVER['DOCUMENT_ROOT'].'/Referidor/viewreports/estadocuenta.php');
 
 			$context = stream_context_create([
 				'ssl'=>[
@@ -189,7 +194,7 @@ UNION
 
 	public function getEstadoCuenta(){
 		
-		$query = "select max(balance) as balance from balancehotel";
+		$query = "select max(balance) as balance from balancereferidor";
 
 		$stm = $this->con->prepare($query);
 
@@ -254,7 +259,7 @@ UNION
 	}
 
 	private function ErrorLog($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\reportehotel.txt', '['.date('d/M/Y h:i:s A').' | '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'\assets\error_logs\reportereferidor.txt', '['.date('d/M/Y h:i:s A').' | '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		$this->error['notification'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
 		return;
 	}

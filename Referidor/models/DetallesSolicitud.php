@@ -1,6 +1,6 @@
 <?php 
 
-namespace Hotel\models;
+namespace Referidor\models;
 use assets\libs\connection;
 use PDO;
 

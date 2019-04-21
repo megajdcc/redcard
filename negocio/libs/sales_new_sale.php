@@ -257,6 +257,8 @@ class sales_new_sale {
 			$stmt->execute($params);
 			$idventa = $this->con->lastInsertId();
 			$this->registrarbalancehotel($idventa);
+			$this->registrarbalancefranquiciatario($idventa);
+			$this->registrarbalancereferidor($idventa);
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
@@ -324,6 +326,62 @@ class sales_new_sale {
 				}
 		}
 
+	private function registrarbalancefranquiciatario(int $idventa){
+
+		$query = 'select fr.id as franquiciatario, fr.comision from 
+						franquiciatario as fr join hotel as h on fr.codigo_hotel  = h.codigo 
+							join huespedhotel as hh on h.id = hh.id_hotel 
+							join huesped as hu on hh.id_huesped = hu.id 
+							where hu.id_usuario = :usuario';
+				$stm = $this->con->prepare($query);
+				$stm->execute(array(':usuario'=>$this->sale['id']));
+
+				$filas = $stm->fetch(PDO::FETCH_ASSOC);
+				$idfranquiciatario = $filas['franquiciatario'];
+				$comisionfranquiciatario = $filas['comision'];
+
+				if($idfranquiciatario > 0){
+				
+					$ultimobalance = $this->capturarultimobalancefranquiciatario($idfranquiciatario);
+					$comisionfranquiciatarionew = ($this->sale['eSmarties'] * $comisionfranquiciatario / 100);
+					$balance = ($this->sale['eSmarties'] * $comisionfranquiciatario / 100) + $ultimobalance;
+
+					$query = "insert into balancefranquiciatario(balance,id_franquiciatario,id_venta,comision) values(:balance,:franquiciatario,:venta,:comision)";
+					$stm  = $this->con->prepare($query);
+					$stm->execute(array(':balance'=>$balance,':franquiciatario'=>$idfranquiciatario,
+										':venta'=>$idventa,':comision'=>$comisionfranquiciatarionew));
+				}
+		}
+
+	private function registrarbalancereferidor(int $idventa){
+
+		$query = 'select rf.id as referidor, rf.comision from 
+						referidor as rf join hotel as h on rf.codigo_hotel  = h.codigo 
+							join huespedhotel as hh on h.id = hh.id_hotel 
+							join huesped as hu on hh.id_huesped = hu.id 
+							where hu.id_usuario = :usuario';
+
+				$stm = $this->con->prepare($query);
+				$stm->execute(array(':usuario'=>$this->sale['id']));
+
+				$filas = $stm->fetch(PDO::FETCH_ASSOC);
+				$idReferidor = $filas['referidor'];
+				$comisionreferidor = $filas['comision'];
+
+				if($idReferidor > 0){
+				
+					$ultimobalance = $this->capturarultimobalancereferidor($idReferidor);
+					$comisionreferidornew = ($this->sale['eSmarties'] * $comisionreferidor / 100);
+					$balance = ($this->sale['eSmarties'] * $comisionreferidor / 100) + $ultimobalance;
+
+					$query = "insert into balancereferidor(balance,id_referidor,id_venta,comision) values(:balance,:referidor,:venta,:comision)";
+					$stm  = $this->con->prepare($query);
+					$stm->execute(array(':balance'=>$balance,':referidor'=>$idReferidor,
+										':venta'=>$idventa,':comision'=>$comisionreferidornew));
+				}
+				
+		}
+
 	private function capturarultimobalancehotel(int $idhotel){
 		$query = "select balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
@@ -335,6 +393,31 @@ class sales_new_sale {
 			return 0;
 		}
 	}
+
+	private function capturarultimobalancefranquiciatario(int $idfranquiciatario){
+		$query = "select balance from balancefranquiciatario where id_franquiciatario =:franquiciatario order by id desc LIMIT 1";
+		$stm = $this->con->prepare($query);
+		$stm->execute(array(':franquiciatario'=>$idfranquiciatario));
+		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+		if($balance > 0){
+			return $balance;
+		}else{
+			return 0;
+		}
+	}
+
+	private function capturarultimobalancereferidor(int $idreferidor){
+		$query = "select balance from balancereferidor where id_referidor =:referidor order by id desc LIMIT 1";
+		$stm = $this->con->prepare($query);
+		$stm->execute(array(':referidor'=>$idreferidor));
+		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+		if($balance > 0){
+			return $balance;
+		}else{
+			return 0;
+		}
+	}
+
 	private function set_user($username = null){
 		if($username){
 			$this->sale['username'] = trim($username);

@@ -1,5 +1,5 @@
 <?php 
-namespace Franquiciatario\models;
+namespace Referidor\models;
 use assets\libs\connection;
 use PDO;
 
@@ -81,7 +81,7 @@ class Includes {
 		
 		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
 			
-			case 'Franquiciatario':
+			case 'Referidor':
 				$this->crumbs[0] = 'Inicio';
 				switch (basename($_SERVER['SCRIPT_NAME'])) {
 					case 'index.php':
@@ -99,7 +99,7 @@ class Includes {
 				}
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
-							<a href="'.HOST.'/Franquiciatario/">
+							<a href="'.HOST.'/Referidor/">
 								<span class="icon"><i class="fa fa-tachometer"></i></span>
 								<span class="title">Resumen</span>
 								<span class="subtitle">Vistazo general</span>
@@ -107,7 +107,7 @@ class Includes {
 						</li>
 
 						<li'.$this->set_active_sidebar_tab('reporte-de-ventas.php').'>
-							<a href="'.HOST.'/Franquiciatario/reporte-de-ventas">
+							<a href="'.HOST.'/Referidor/reporte-de-ventas">
 								<span class="icon"><i class="fa fa-dollar"></i></span>
 								<span class="title">Estado de Cuenta</span>
 								<span class="subtitle">Movimientos</span>
@@ -115,7 +115,7 @@ class Includes {
 						</li>
 
 						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
-							<a href="'.HOST.'/Franquiciatario/comprobantes">
+							<a href="'.HOST.'/Referidor/comprobantes">
 								<span class="icon"><i class="fa fa-file"></i></span>
 								<span class="title">Comprobantes</span>
 								<span class="subtitle">de pago</span>
@@ -140,14 +140,14 @@ class Includes {
 				}
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
-							<a href="'.HOST.'/Franquiciatario/usuarios/">
+							<a href="'.HOST.'/Referidor/usuarios/">
 								<span class="icon"><i class="fa fa-list"></i></span>
 								<span class="title">Usuarios</span>
 								<span class="subtitle">Todos los usuarios</span>
 							</a>
 						</li>
 						<li'.$this->set_active_sidebar_tab('nuevousuario.php').'>
-							<a href="'.HOST.'/Franquiciatario/usuarios/nuevousuario">
+							<a href="'.HOST.'/Referidor/usuarios/nuevousuario">
 								<span class="icon"><i class="fa fa-user-plus"></i></span>
 								<span class="title">Nuevo Usuario</span>
 								<span class="subtitle">Agregar</span>
@@ -173,7 +173,7 @@ class Includes {
 
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
-							<a href="'.HOST.'/Franquiciatario/">
+							<a href="'.HOST.'/Referidor/">
 								<span class="icon"><i class="fa fa-tachometer"></i></span>
 								<span class="title">Resumen</span>
 								<span class="subtitle">Vistazo general</span>
@@ -181,7 +181,7 @@ class Includes {
 						</li>
 
 						<li'.$this->set_active_sidebar_tab('reporte-de-ventas.php').'>
-							<a href="'.HOST.'/Franquiciatario/reportes/reporte-de-ventas">
+							<a href="'.HOST.'/Referidor/reportes/reporte-de-ventas">
 								<span class="icon"><i class="fa fa-dollar"></i></span>
 								<span class="title">Estado de Cuenta</span>
 								<span class="subtitle">Movimientos</span>
@@ -189,7 +189,7 @@ class Includes {
 						</li>
 
 						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
-							<a href="'.HOST.'/Franquiciatario/comprobantes">
+							<a href="'.HOST.'/Referidor/comprobantes">
 								<span class="icon"><i class="fa fa-file"></i></span>
 								<span class="title">Comprobantes</span>
 								<span class="subtitle">de pago</span>
@@ -471,7 +471,7 @@ class Includes {
 								</h1>
 
 								<h1 class="logo-esmart">
-								<span class="header-text"> Franquiciatario</span></h1>
+								<span class="header-text"> Referidor</span></h1>
 							</div>
 							<!-- /.header-statusbar-left -->
 							<div class="header-statusbar-right">
@@ -491,9 +491,9 @@ class Includes {
 					<ul>';
 				if($_SESSION['user']['id_rol'] != 9){
 
-			$html .=	'<li'.$this->set_active_tab('Franquiciatario').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Franquiciatario/"><i class="fa fa-home"></i></a></li>
+			$html .=	'<li'.$this->set_active_tab('Referidor').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Referidor/"><i class="fa fa-home"></i></a></li>
 						
-						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/Franquiciatario/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>';
+						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/Referidor/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>';
 				}
 
 			$html .=	'

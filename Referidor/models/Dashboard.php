@@ -1,5 +1,5 @@
 <?php 
-namespace Franquiciatario\models;
+namespace Referidor\models;
 use assets\libs\connection;
 use PDO;
 
