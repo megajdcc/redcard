@@ -33,11 +33,7 @@ class PerfilesList {
 
 	public function ListarPerfiles(){
 
-
-	
-		$sentenciaSQL = "select * from listarusuariosperfiles";
-
-		$result = $this->con->prepare($sentenciaSQL);
+		$result = $this->con->prepare( "select * from listarusuariosperfiles");
 		$result->execute();
 
 		$urlimg =  HOST.'/assets/img/user_profile/';
