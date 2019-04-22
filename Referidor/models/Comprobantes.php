@@ -186,6 +186,7 @@ public function getComprobantes(){
 		}else{
 				$aprobado = "No";
 		}
+		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
 		?>
 
 			
@@ -197,9 +198,9 @@ public function getComprobantes(){
 				<td><?php echo $aprobado; ?></td>
 				<td><?php echo $monto; ?></td>
 				<td><?php 
-						if($aprobado == 'Si'){
-							echo '<button type="button" data-retiro="'. $value['id'].'" class="archivo"><i class="fa fa-file-pdf-o"></i> Descargar</button>';
-				}?>
+						if($aprobado == 'Si'){?>
+							<a href="<?php echo $urlrecibo; ?>" class="btn btn-success" target="_blank"><i class="fa fa-file-pdf-o"> </i> Comprobante</a>
+				<?php  }?>
 				</td>
 			</tr>
 		<?php }
@@ -221,7 +222,7 @@ private function getUsuario(int $usuario= null){
 	}else{
 		$nombre = $valor['username'];
 	}
-
+	return $nombre;
 }
 
 private function setFecha($fecha){

@@ -102,20 +102,39 @@ class Comprobantes
 
 	}
 
+private function getAprobador(int $usuario = null){
+
+	$query = "SELECT u.username, concat(u.nombre,' ',u.apellido) as nombre from usuario as u where u.id_usuario = :usuario";
+
+	$stm = $this->con->prepare($query);
+	$stm->execute(array(':usuario'=>$usuario));
+
+	$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+	if(empty($fila['nombre'])){
+		return $fila['username'];
+	}else{
+		return $fila['nombre'];
+	}
+}
+
 public function getComprobantes(){
+
 
 	foreach ($this->comprobantes as $key => $value) {
 		$creado = $this->setFecha($value['creado']);
 
+		$usuarioaprobador = $this->getAprobador($value['id_usuario_aprobacion']);
 		$actualizado = $this->setFecha($value['actualizado']);
 		$monto = number_format((float)$value['monto'],2,',','.');
 
-		$usuarioaprobador = $this->getUsuario($value['id_usuario_aprobacion']);
+		//$usuarioaprobador = $this->getUsuario($value['id_usuario_aprobacion']);
 		if($value['aprobado']){
 			$aprobado = "Si";
 		}else{
 				$aprobado = "No";
 		}
+		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
 		?>
 
 			
@@ -127,16 +146,16 @@ public function getComprobantes(){
 				<td><?php echo $aprobado; ?></td>
 				<td><?php echo $monto; ?></td>
 				<td><?php 
-						if($aprobado == 'Si'){
-							echo '<button type="button" data-retiro="'. $value['id'].'" class="archivo"><i class="fa fa-file-pdf-o"></i> Descargar</button>';
-				}?>
+						if($aprobado == 'Si'){?>
+						<button type="button" data-retiro="<?php echo $value['id']; ?>" class=" btn btn-warning archivo"><i class="fa fa-file-pdf-o"></i> 	<a href="<?php echo $urlrecibo; ?>" target="_blank">Descargar</a></button>
+				<?php  }?>
 				</td>
 			</tr>
 		<?php }
 }
 
 
-private function getUsuario(int $usuario= null){
+private function getUsuario(int $usuario = null){
 
 	$query = "select concat(u.nombre,' ',u.apellido) as nombre, u.username from usuario  u 
 						where u.id_usuario = :usuario";

@@ -123,6 +123,7 @@ public function getComprobantes(){
 		}else{
 				$aprobado = "No";
 		}
+		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
 		?>
 
 			
@@ -134,9 +135,9 @@ public function getComprobantes(){
 				<td><?php echo $aprobado; ?></td>
 				<td><?php echo $monto; ?></td>
 				<td><?php 
-						if($aprobado == 'Si'){
-							echo '<button type="button" data-retiro="'. $value['id'].'" class="archivo"><i class="fa fa-file-pdf-o"></i> Descargar</button>';
-				}?>
+						if($aprobado == 'Si'){?>
+						<button type="button" data-retiro="<?php echo $value['id']; ?>" class=" btn btn-warning archivo"><i class="fa fa-file-pdf-o"></i> 	<a href="<?php echo $urlrecibo; ?>" target="_blank">Descargar</a></button>
+				<?php  }?>
 				</td>
 			</tr>
 		<?php }
@@ -145,7 +146,7 @@ public function getComprobantes(){
 
 private function getUsuario(int $usuario= null){
 
-	$query = "select concat(u.nombre,' ',u.apellido) as nombre, u.username from usuario  u 
+	$query = "select concat(u.nombre,' ',u.apellido) as nombre, u.username from usuario as u 
 						where u.id_usuario = :usuario";
 
 	$stm = $this->con->prepare($query);
@@ -158,6 +159,8 @@ private function getUsuario(int $usuario= null){
 	}else{
 		$nombre = $valor['username'];
 	}
+
+	return $nombre;
 
 }
 

@@ -21,7 +21,7 @@ $perfiles = new admin\libs\PerfilesList($con);
 $search = filter_input(INPUT_GET, 'buscar');
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-	echo var_dump($_POST);
+
 	if(isset($_POST['actualizar'])){
 			$perfiles->actualizarcomision($_POST);
 	}
