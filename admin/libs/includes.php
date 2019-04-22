@@ -14,7 +14,8 @@ class includes {
 	);
 	private $admin = array(
 		'pending_request' => 0,
-		'solicitudes_pendiente_perfiles' => 0
+		'solicitudes_pendiente_perfiles' => 0,
+		'solicitudes_pendiente_retiros' => 0
 	);
 	private $sidebar = null;
 	private $crumbs = array();
@@ -89,9 +90,16 @@ class includes {
 			}else{
 				$this->admin['pending_request'] += $row['cuenta'];
 			}
-		}	
+		}
 
-		return;
+		$query = "select count(r.id) as retiros from retiro r where r.aprobado = 0";
+
+		$stm = $this->con->prepare($query);
+		$stm->execute();
+
+		$this->admin['solicitudes_pendiente_retiros'] = $stm->fetch(PDO::FETCH_ASSOC)['retiros'];
+
+ 		return;
 	}
 
 	private function load_sidebar($boolean = false){
@@ -322,6 +330,12 @@ class includes {
 				}else{
 					$noti = '';
 				}
+
+				if($this->admin['solicitudes_pendiente_retiros'] > 0){
+					$notif = '<span class="notification">'.$this->admin['solicitudes_pendiente_retiros'].'</span>';
+				}else{
+					$notif = '';
+				}
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/admin/perfiles/">
@@ -341,8 +355,15 @@ class includes {
 						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
 							<a href="'.HOST.'/admin/perfiles/comprobantes">
 								<span class="icon"><i class="fa fa-file-pdf-o"></i></span>
-								<span class="title">Comprobantes</span>
+								<span class="title">Comprobantes'.$notif.'</span>
 								<span class="subtitle">Emitir comprobantes</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('iata.php').'>
+							<a href="'.HOST.'/admin/perfiles/iata">
+								<span class="icon"><i class="fa fa-file-pdf-o"></i></span>
+								<span class="title">IATA</span>
+								<span class="subtitle">codigo IATA aeroportuaria</span>
 							</a>
 						</li>
 						';
@@ -450,6 +471,15 @@ class includes {
 		if($this->admin['solicitudes_pendiente_perfiles'] > 0){
 			$noti .= '<div class="notification"></div>';
 			$link .= '<li><a href="'.HOST.'/admin/perfiles/solicitudes">Solicitudes pendientes de perfiles<div class="dropdown-notification"></div></a></li>';
+		}else{
+			$noti .= '';
+			$link .= '';
+		}
+
+
+		if($this->admin['solicitudes_pendiente_retiros'] > 0){
+			$noti .= '<div class="notification"></div>';
+			$link .= '<li><a href="'.HOST.'/admin/perfiles/comprobantes">Solicitudes pendientes de retiro de comisión<div class="dropdown-notification"></div></a></li>';
 		}else{
 			$noti .= '';
 			$link .= '';

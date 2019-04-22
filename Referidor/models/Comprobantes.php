@@ -130,8 +130,8 @@ class Comprobantes
 						
 				}
 
-				$body_alt =
-				'Has recibido una nueva solicitud de retiro del referidor'.$this->getNombreReferidor().' del Hotel '.$this->referidor['hotel'];
+				$body_alt ='Has recibido una nueva solicitud de retiro del referidor'.$this->getNombreReferidor().' del Hotel '.$this->referidor['hotel'];
+			
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';

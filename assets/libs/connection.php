@@ -292,6 +292,51 @@ class connection {
 	return;
 	}
 
+	public function ChequeoSolicitudRetiro(){
+		if(!isset($_SESSION['user']['id_usuario'])){
+			return false;
+		}
+		// solicitudes pendientes
+		$query = "(select sh.id, CONCAT(u.nombre,' ',u.apellido) as nombre, 'Hotel' as perfil, sh.condicion from solicitudhotel as sh
+					join usuario as u on sh.id_usuario = u.id_usuario
+				where u.id_usuario = :id_usuario1 )
+				UNION
+				(select sfr.id, CONCAT(u.nombre,' ',u.apellido) as nombre, 'Franquiciatario' as perfil, sfr.condicion from solicitudfr as sfr
+					join usuario as u on sfr.id_usuario = u.id_usuario
+				where u.id_usuario = :id_usuario2)
+				UNION
+				(select sr.id, CONCAT(u.nombre,' ',u.apellido) as nombre, 'Hotel' as perfil, sr.condicion from solicitudreferidor as sr
+					join usuario as u on sr.id_usuario = u.id_usuario
+				where u.id_usuario = :id_usuario3 )";
+		try{
+			$stmt = $this->con->prepare($query);
+			$stmt->bindValue(':id_usuario1', $_SESSION['user']['id_usuario']);
+			$stmt->bindValue(':id_usuario2', $_SESSION['user']['id_usuario']);
+			$stmt->bindValue(':id_usuario3', $_SESSION['user']['id_usuario']);
+			$stmt->execute();
+		}catch(\PDOException $ex){
+			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+			return false;
+		}
+		while($row = $stmt->fetch()){
+				switch ($row['condicion']) {
+						case 1:
+							$_SESSION['notificacion']['success'] = 'Tu solicitud del perfil '.$row['perfil'].' '.$row['id'].' ha sido aceptada. Puedes entrar al panel <a href="'.HOST.'/'.$row['perfil'].'/">aqu&iacute;</a>';
+							break;
+						case 3:
+							$_SESSION['notificacion']['warning'] = 'Tu solicitud del perfil '.$row['perfil'].' '.$row['id'].'ha sido regresada para correcciones. Puedes revisar tu solicitud <a href="'.HOST.'/'.$row['perfil'].'/solicitudes">aqu&iacute;</a>';
+							break;
+						case 4:
+							$_SESSION['notificacion']['danger'] = 'Tu solicitud del perfil '.$row['perfil'].' '.$row['id'].' ha sido rechazada. Puedes revisar tu solicitud <a href="'.HOST.'/'.$row['perfil'].'/solicitudes">aqu&iacute;</a>';
+							break;
+						default:
+							# code...
+							break;
+		}
+	}		
+	return;
+	}
+
 
 	public function check_requests(){
 		if(!isset($_SESSION['user']['id_usuario'])){
