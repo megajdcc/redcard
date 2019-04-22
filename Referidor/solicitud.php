@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
+
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -6,6 +7,7 @@ if(!isset($_SESSION['user'])){
 	include(ROOT.'/errores/404.php');
 	die();
 }
+
 
 if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SESSION['user']['id_rol'] != 3){
 	http_response_code(404);

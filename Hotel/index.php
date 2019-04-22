@@ -19,6 +19,20 @@
 			}
 	}
 
+	if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
+	
+	if(!isset($_SESSION['user'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
+
+
+
 	$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
 	$rpp = 20;
 	$options = $hotel->load_data($page, $rpp);

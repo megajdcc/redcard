@@ -13,6 +13,10 @@ if(!isset($_SESSION['user'])){
 	include(ROOT.'/errores/404.php');
 	die();
 }
+if(!isset($_SESSION['perfil'])){
+		header('location: ../');
+		die();
+	}
 
 if(!isset($_SESSION['perfil'])){
 	http_response_code(404);

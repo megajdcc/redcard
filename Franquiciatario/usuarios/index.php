@@ -1,4 +1,6 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -12,6 +14,12 @@ use Franquiciatario\models\Includes;
 
 $usuarios = new Usuarios($con);
 
+
+if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  	// Peticiones al servidors 	

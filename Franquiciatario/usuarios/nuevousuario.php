@@ -22,6 +22,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 }
 
+if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+}
+
+
 if(filter_input(INPUT_GET, 'ref')){
 	$reg->setReferral($_GET['ref']);
 }

@@ -1,44 +1,12 @@
 
-@font-face {
-font-family: 'Nexa Book';
-font-style: normal;
-font-weight: normal;
-src: local('Nexa Book'), url('../../assets/fonts/NexaBook.woff') format('woff');
-}
-
-@font-face {
-font-family: 'Nexa Book Italic';
-font-style: normal;
-font-weight: normal;
-src: local('Nexa Book Italic'), url('../../assets/fonts/NexaBookItalic.woff') format('woff');
-}
-
-@font-face {
-font-family: 'Nexa Thin';
-font-style: normal;
-font-weight: normal;
-src: local('Nexa Thin'), url('../../assets/fonts/NexaThin.woff') format('woff');
-}
-
-@font-face {
-font-family: 'Nexa Bold';
-font-style: normal;
-font-weight: normal;
-src: local('Nexa Bold'), url('../../assets/fonts/NexaBold.woff') format('woff');
-}
 
 @font-face {
 font-family: 'Myriad';
 font-style: normal;
 font-weight: normal;
-src:url('../../assets/fonts/MYRIADPRO-COND.OTF') format('OTF');
+src:url('fonts/MYRIADPRO-COND.OTF') format('OTF');
 }
-@font-face {
-font-family: 'Myriad Bold';
-font-style: normal;
-font-weight: normal;
-src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
-}
+
 
 body{
 	/* background: red; */
@@ -64,6 +32,7 @@ header table{
 	width: 100%;
 	/* border: 1px solic black !important; */
 	line-height: 5px;
+	font-family: 'Myriad';
 }
 
 
@@ -100,6 +69,7 @@ margin-bottom: 105px;
 }
 .cuerpo thead{
 	margin-top: 2px;
+	text-align: center;
 }
 .cuerpo table td,
 .cuerpo table th{
@@ -108,10 +78,11 @@ margin-bottom: 105px;
 	text-decoration: none;
 	margin: 0;
 	padding: 0;
+	padding-left: 10px;
 	border: .5px solid black;
 }
 .cuerpo h2{
-	font-family: 'Nexa Book Italic';
+	font-family: 'Myriad' !important;
 	font-size: 20pt;
 	margin: 0px;
 	padding: 0px;
@@ -123,6 +94,7 @@ h2,h3,h3,h4{
 .title{
 	margin-top: 1rem !important;
 	margin-bottom: 1rem !important;
+	font-family: Serif;
 }
 
 .pie-pagina{
@@ -156,9 +128,15 @@ p{
 	text-align: justify;
 }
 
-.t1{
-	font-family: 'Myriad';
+.b1{
+	font-family: 'Myriad' !important;
+	/* text-align: center; */
 }
-.t2{
-	font-family: 'Myriad Bold';
+.b2{
+	font-family: 'Myriad' !important;
+	/* text-align: center; */
+}
+.negativo{
+	color: red !important;
+	font-family: 'Myriad';
 }

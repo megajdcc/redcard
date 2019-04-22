@@ -13,7 +13,7 @@ if(filter_input(INPUT_GET, 'ref')){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = '¡Hazte Socio! | eSmart Club';
+$properties['title'] = '¡Hazte Socio! | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

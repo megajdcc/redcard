@@ -3,23 +3,23 @@
 <head>
 	
 	<?php 
-	  use Hotel\models\ReportesVentas;
+	  // use Hotel\models\ReportesVentas;
 
-	  	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
-	  	$con = new assets\libs\connection();
+	  // 	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+	  // 	$con = new assets\libs\connection();
 
-	  	$estado = new ReportesVentas($con);
+	  // 	$estado = new ReportesVentas($con);
+
+
+	$fecha1 = date('g/m/Y h:i A', strtotime($this->busqueda['fechainicio']));
+
+	$fecha2 = date('g/m/Y h:i A', strtotime($this->busqueda['fechafin']));
 
 	 ?>
-	<title>Titulo</title>
+
+	<title>Travel Points: Reporte de Actividades - <?php echo $fecha1.' al '.$fecha2; ?></title>
 	<meta charset="UTF-8">
-
-		<!-- <link rel="stylesheet" type="text/css" href="css/reportes.css"> -->
 		<link rel="stylesheet" type="text/css" href="../Hotel/viewreports/css/style.css">
-		<!-- <link rel="stylesheet" type="text/css" href="css/reportes.css"> -->
-
-	
-
 </head>
 <body>
 
@@ -32,6 +32,27 @@
 </header>
  <main class="cuerpo">
 	<h2 class="title">Estado de Cuenta</h2>
+
+	<table width="50%" border="0">
+		<thead>
+			<tr>
+				<th>Hotel</th>
+				<th colspan="2">Rango</th>
+				
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><?php echo $this->getNombreHotel(); ?></td>
+				<?php if(isset($this->busqueda['fechainicio']) && $this->busqueda['fechainicio'] == null){
+					echo "<td>Todo el historial</td>";
+				}else{?>
+				<td><?php echo $this->busqueda['fechainicio'] ?></td>
+				<td><?php echo $this->busqueda['fechafin'] ?></td>
+			<?php } ?>
+			</tr>
+		</tbody>
+	</table>
 	<table  id="estadodecuent" class="display" cellspacing="0" width="100%">
 			<thead>
 				<tr>
@@ -45,7 +66,7 @@
 			</thead>
 			<tbody>			
 			
-			<?php foreach($estado->estadocuenta as $key => $value) {
+			<?php foreach($this->estadocuenta as $key => $value) {
 			
 			 $fecha = date('d/m/Y', strtotime($value['creado']));
 			// $fecha = $value['creado'];
@@ -84,9 +105,9 @@
 
 <footer class="pie-pagina">
 	<section class="leyenda-footer">
-		<small> Marina Vallarta Business, Oficina 204, Plaza Marina</small>
-	<small>Puerto Vallarta, Mexico.</small>
-	<small>01 800 400 INFO (4636),(322) 2259635.</small>
+		<small> Info Channel "Publimoción en hoteles"</small>
+	<small><cite>www.infochannel.si | info@infochannel.si</cite></small>
+	<small>01 800 400 4636</small>
 	</section>
 	
 </footer>

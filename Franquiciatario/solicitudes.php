@@ -13,6 +13,13 @@ if($_SESSION['user']['id_rol']==8) {
 	header('Location: '.HOST.'/socio/negocios/siguiendo');
 	die();
 }
+
+if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
+
 $requests = new socio\libs\user_business_requests($con);
 
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));

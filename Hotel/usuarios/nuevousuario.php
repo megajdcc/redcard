@@ -7,6 +7,13 @@ if(!isset($_SESSION['user'])){
 	die();
 }
 
+if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
+
+
 use Hotel\models\Usuarios;
 use Hotel\models\Includes;
 use Hotel\models\NuevoUsuario;

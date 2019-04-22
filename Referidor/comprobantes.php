@@ -158,8 +158,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			<?php } ?>
 				</div>
 			</div>
-			
-	
+
 <script>
 
 

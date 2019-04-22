@@ -7,6 +7,13 @@ if(!isset($_SESSION['user'])){
 	die();
 }
 
+if(!isset($_SESSION['perfil'])){
+	http_response_code(404);
+	include(ROOT.'/errores/404.php');
+	die();
+	}
+
+
 use Referidor\models\Usuarios;
 use Referidor\models\Includes;
 use Referidor\models\NuevoUsuario;

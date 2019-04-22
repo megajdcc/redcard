@@ -36,6 +36,8 @@ class ReportesVentas{
 
 	private $hotel = array(
 		'id' => null,
+		'nombre' =>null,
+		'comision' => null
 	);
 
 	private $referidor = array(
@@ -48,14 +50,50 @@ class ReportesVentas{
 		$this->con = $con->con;
  		$this->hotel['id']  = $_SESSION['id_hotel'];
  		$this->referidor['id']  = $_SESSION['id_referidor'];
-		$this->CargarData();
+			$this->CargarData();
+		$this->DatosHotel();
 		return;
 	}
 
 	//  METHODOS DE CLASS
 	
 
+private function DatosHotel(){
+
+		$query = "select h.nombre as nombrehotel, h.comision from hotel  as h join referidor rf on h.codigo = rf.codigo_hotel where rf.id = :referidor";
+
+		$stm = $this->con->prepare($query);
+
+		$stm->execute(array(':referidor'=>$this->referidor['id']));
+
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+		$this->setNombreHotel($fila['nombrehotel']);
+		$this->setComisionHotel($fila['comision']);
+	}
+	
+
+	private function setNombreHotel(string $nombrehotel){
+
+		$this->hotel['nombre'] = $nombrehotel;
+
+	}
+
+	private function setComisionHotel(int $comision){
+		$this->hotel['comision'] = $comision;
+	}
+
+
+	public function getNombreHotel(){
+		return $this->hotel['nombre'];
+	}
+
+	public function getComisionHotel(){
+		return $this->hotel['comision'];
+	}
+
 	public function getFecha1(){
+
 		return $this->negocios['fecha_inicio'];
 	}
 
@@ -64,26 +102,21 @@ class ReportesVentas{
 	}
 
 	private function setFecha1($fecha){
-
 		$this->negocios['fecha_inicio'] = $fecha;
 	}
 
 	private function setFecha2($fecha){
-
 		$this->negocios['fecha_fin'] = $fecha;
 	}
+
 	public function CargarData($fecha1 = null, $fecha2 = null){
 
-		
+		$this->setFechainicio($fecha1);
+		$this->setFechafin($fecha2);
+		$this->setFecha1($fecha1);
+		$this->setFecha2($fecha2);
 
-			if(!empty($fecha1) && !empty($fecha2)){
-				$this->setFechainicio($fecha1);
-				$this->setFechafin($fecha2);
-
-				$this->setFecha1($fecha1);
-				$this->setFecha2($fecha2);
-
-
+			if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin'])){
 
 				// echo var_dump($this->busqueda);
 						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, brf.comision, brf.balance,nv.creado 
@@ -95,10 +128,11 @@ class ReportesVentas{
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, brf.balance,brf.creado
 						from retiro as r join retirocomisionreferidor as rr on r.id = rr.id_retiro join balancereferidor as brf on rr.id = brf.id_retiro
-						where brf.id_referidor = :fr2 and brf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)";
+						where brf.id_referidor = :fr2 and brf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+							order by creado";
 							$stm = $this->con->prepare($query);
-							$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
-							                    ':fr2'=>$this->franquiciatario['id'],
+							$stm->execute(array(':fr1'=>$this->referidor['id'],
+							                    ':fr2'=>$this->referidor['id'],
 												':fecha1' => $this->busqueda['fechainicio'],
 												':fecha2' => $this->busqueda['fechafin'],
 												':fecha3' => $this->busqueda['fechainicio'],
@@ -115,7 +149,7 @@ class ReportesVentas{
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, brf.balance,brf.creado
 						from retiro as r join retirocomisionreferidor as rr on r.id = rr.id_retiro join balancereferidor as brf on rr.id = brf.id_retiro
-						where brf.id_referidor = :fr2 ORDER BY creado ASC)";
+						where brf.id_referidor = :fr2 ORDER BY creado ASC) order by creado";
 
 			$stm = $this->con->prepare($query);
 			$stm->execute(array(':fr1'=>$this->referidor['id'],
@@ -159,12 +193,14 @@ class ReportesVentas{
 
 
 
-	public function mostrarpdf($fechaini = null, $fechafin = null){
+	public function mostrarpdf(array $post){
 
-		if($fechaini){
+	$this->setFechainicio($post['date_start']);
+			$this->setFechafin($post['date_end']);
+			$this->CargarData();
 
-		}else{
 			ob_start();
+
 			require_once($_SERVER['DOCUMENT_ROOT'].'/Referidor/viewreports/estadocuenta.php');
 
 			$context = stream_context_create([
@@ -184,11 +220,13 @@ class ReportesVentas{
 			$dompdf = new pdf($option);
 			$dompdf->setHttpContext($context);
 			$dompdf->loadHtml($html);
-			$dompdf->setPaper('A4', 'portrait');
+			$dompdf->setPaper('A4', 'landscape');
 			$dompdf->render();
+
 			$dato = array('Attachment' => 0);
-			$dompdf->stream("Solicitud.pdf",$dato);
-		}
+			$fecha1 = date('M-Y', strtotime($this->busqueda['fechainicio']));
+			$titulo = "Travel Points: reporte de actividades " .$fecha1;
+			$dompdf->stream($titulo.'.pdf',$dato);
 
 	}
 
@@ -251,8 +289,8 @@ class ReportesVentas{
 
 	public function Buscar($post){
 
-		$fechainicial = $post['f1'];
-		$fechafin = $post['f2'];
+		$fechainicial = $post['date_start'];
+		$fechafin = $post['date_end'];
 
 		$this->CargarData($fechainicial,$fechafin);
 
