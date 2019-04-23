@@ -431,9 +431,9 @@ class request_detail {
 				return false;
 			}
 			// SE MANDA LA NOTIFICACION AL USUARIO
-			$header = 'Tu solicitud de negocio ha sido aceptada por eSmart Club';
+			$header = 'Tu solicitud de negocio ha sido aceptada por Travel Points';
 			$link = 'Puedes ver tu negocio aquí: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/'.$this->request['url'].'">'.HOST.'/'.$this->request['url'].'</a>.';
-			$body_alt = 'Tu solicitud de negocio ha sido aprobada por eSmart Club. Puedes ver tu negocio aquí: '.HOST.'/'.$this->request['url'];
+			$body_alt = 'Tu solicitud de negocio ha sido aprobada por Travel Points. Puedes ver tu negocio aquí: '.HOST.'/'.$this->request['url'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';
@@ -446,7 +446,7 @@ class request_detail {
 			// El correo que hará el envío
 			$mail->Username = 'notificacion@esmartclub.com';
 			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -577,7 +577,7 @@ class request_detail {
 			// El correo que hará el envío
 			$mail->Username = 'notificacion@esmartclub.com';
 			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -632,7 +632,7 @@ class request_detail {
 			// El correo que hará el envío
 			$mail->Username = 'notificacion@esmartclub.com';
 			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -713,7 +713,7 @@ class request_detail {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -780,7 +780,7 @@ class request_detail {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -806,7 +806,7 @@ class request_detail {
 						<h3 class="page-title">Informaci&oacute;n de negocio</h3>
 						<div class="row">
 							<div class="col-lg-8">
-								<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu negocio por su nombre.">
+								<div class="form-group" data-toggle="tooltip" title="Los socios de Travel Points pueden encontrar tu negocio por su nombre.">
 									<label for="business-name">Nombre del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 									<input class="form-control" type="text" id="business-name" name="name" value="'.$this->get_name().'" placeholder="Nombre del negocio" required>
 									'.$this->get_name_error().'
@@ -837,7 +837,7 @@ class request_detail {
 								</div>
 							</div><!-- /.col-* -->
 						</div><!-- /.row -->
-						<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
+						<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de Travel Points tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 							<label for="description">Descripci&oacute;n del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 							<textarea class="form-control" id="description" placeholder="Descripci&oacute;n del negocio" name="description" rows="3" required>'.$this->get_description().'</textarea>
 							'.$this->get_description_error().'
@@ -999,8 +999,8 @@ class request_detail {
 					</div>
 					<div class="background-white p30 mb30">
 						<div class="form-group" data-toggle="tooltip" title="Escriba un comentario descriptivo del porqu&eacute; se acepta, se regresa a correcci&oacute;n o se rechaza la solicitud.">
-							<label for="comment">Comentario de eSmart Club para el solicitante <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-							<textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Comentario de eSmart Club para el solicitante" required></textarea>
+							<label for="comment">Comentario de Travel Points para el solicitante <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+							<textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Comentario de Travel Points para el solicitante" required></textarea>
 							'.$this->get_comment_error().'
 						</div><!-- /.form-group -->
 					</div><!-- /.box -->
@@ -1019,7 +1019,7 @@ class request_detail {
 				<div class="background-white p30 mb50">
 					<div class="row">
 						<div class="col-lg-8">
-							<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu negocio por su nombre.">
+							<div class="form-group" data-toggle="tooltip" title="Los socios de Travel Points pueden encontrar tu negocio por su nombre.">
 								<label for="name">Nombre del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 								<input class="form-control" type="text" id="name" value="'.$this->get_name().'" readonly/>
 							</div><!-- /.form-group -->
@@ -1044,7 +1044,7 @@ class request_detail {
 							</div>
 						</div><!-- /.col-* -->
 					</div><!-- /.row -->
-					<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
+					<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de Travel Points tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 						<label for="description">Descripci&oacute;n del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 						<textarea class="form-control" id="description" rows="3" readonly>'.$this->get_description().'</textarea>
 					</div><!-- /.form-group -->
@@ -1464,7 +1464,7 @@ class request_detail {
 		if(!empty($this->request['comment'])){
 			$html = 
 			'<div class="page-title">'.$title_tag.'</div>
-			<label>Comentario de eSmart Club para el solicitante</label>
+			<label>Comentario de Travel Points para el solicitante</label>
 			<p>'.nl2br(_safe($this->request['comment'])).'</p>';
 		}else{
 			$html = $title_tag;

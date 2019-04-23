@@ -55,7 +55,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<div class="page-title">
 			<h1>Usuarios con adjudicación de perfil
 			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
-				<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
+	
 			</form>
 			</h1>
 		</div>

@@ -25,6 +25,10 @@ class Comprobantes
 		'hotel'=>null
 	);
 
+	private $preferencias = array(
+		'email-notificacion-retiro' =>null,
+	);
+
 	private $info = array(
 		'procesada' => false
 	);
@@ -48,8 +52,24 @@ class Comprobantes
 		$this->referidor['id'] = $_SESSION['id_referidor'];
 		$this->cargarComprobantes();
 		$this->cargardatosreferidor();
+		$this->cargarpreferencias();
 		return; 
 
+	}
+
+	private function cargarpreferencias(){
+
+			$query = "select * from preferenciasistema";
+
+			$stm=$this->con->prepare($query);
+			$stm->execute();
+
+			while ($fila = $stm->fetch(PDO::FETCH_ASSOC)) {
+				
+				if($fila['preferencia'] == 1){
+					$this->preferencias['email-notificacion-retiro'] = $fila['eleccion'];
+			}
+		}
 	}
 
 	private function cargardatosreferidor(){
@@ -130,7 +150,7 @@ class Comprobantes
 						
 				}
 
-				$body_alt ='Has recibido una nueva solicitud de retiro del referidor'.$this->getNombreReferidor().' del Hotel '.$this->referidor['hotel'];
+				$body_alt ='Has recibido una nueva solicitud de retiro del referidor'.$this->referidor['nombre'].' del Hotel '.$this->referidor['hotel'];
 			
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
@@ -146,11 +166,11 @@ class Comprobantes
 			$mail->Password = 'Alan@2017_pv';
 			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
-			$mail->addAddress('megajdcc2009@gmail.com');
+			$mail->addAddress($this->preferencias['email-notificacion-retiro']);
 			// Hacerlo formato HTML
 			$mail->isHTML(true);
 			// Formato del correo
-			$mail->Subject = 'Solicitud de retiro de comisiones Referidor.';
+			$mail->Subject = 'Solicitud de retiro de comisiones Referidor '.$this->referidor['nombre'];
 			$mail->Body    = $this->TemplateEmail($post['mensaje'],$monto);
 			$mail->AltBody = $body_alt;
 

@@ -42,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	
 }
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Negocios | eSmart Club';
+$properties['title'] = 'Negocios | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -51,7 +51,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	<div class="col-sm-12">
 		<?php echo $businesses->get_notification();?>
 		<div class="page-title">
-			<h1>Negocios en eSmart Club
+			<h1>Negocios en Travel Points
 			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
 				<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
 			</form>

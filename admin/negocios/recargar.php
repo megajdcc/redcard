@@ -38,12 +38,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				</div>
 				<div class="row">
 					<div class="col-md-8">
-						<div class="form-group" id="business-search" data-toggle="tooltip" title="Ingrese el nombre del negocio o la url del negocio afiliado a eSmart Club al que desea recargarle saldo. Verifique su coincidencia cuidadosamente.">
-							<label for="business-search-input">Negocio afiliado a eSmart Club <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="form-group" id="business-search" data-toggle="tooltip" title="Ingrese el nombre del negocio o la url del negocio afiliado a Travel Points al que desea recargarle saldo. Verifique su coincidencia cuidadosamente.">
+							<label for="business-search-input">Negocio afiliado a Travel Points <i class="fa fa-question-circle text-secondary"></i></label>
 							<div class="search-placeholder" id="business-search-placeholder">
 								<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 							</div>
-							<input class="form-control typeahead" type="text" id="business-search-input" name="url" value="<?php echo $balance->get_url();?>" placeholder="Negocio de eSmart Club" autocomplete="off" required/>
+							<input class="form-control typeahead" type="text" id="business-search-input" name="url" value="<?php echo $balance->get_url();?>" placeholder="Negocio de Travel Points" autocomplete="off" required/>
 							<?php echo $balance->get_url_error();?>
 						</div>
 					</div>

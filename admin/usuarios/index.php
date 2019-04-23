@@ -48,7 +48,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<?php echo $members->get_notification();?>
 		<div class="background-white p20 mb50">
 			<div class="page-title">
-				<h4>Socios de eSmart Club</h4>
+				<h4>Socios de Travel Points</h4>
 			</div>
 			<form method="get" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>">
 				<div class="form-group" data-toggle="tooltip" title="Puedes encontrar un socio por su nombre o username">

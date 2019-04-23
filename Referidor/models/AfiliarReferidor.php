@@ -346,7 +346,10 @@ class AfiliarReferidor {
 
 	public function getHoteles(){
 
-		$query = "select * from listarhoteles";
+		$query = "select h.direccion as direccionhotel, e.estado,p.pais,c.ciudad, h.id, h.nombre as hotel, h.codigo, CONCAT(h.direccion,' ',c.ciudad,' ',e.estado,' ',p.pais) as direccion, h.sitio_web
+		from hotel as h join ciudad as c on h.id_ciudad = c.id_ciudad 
+						join estado as e on c.id_estado = e.id_estado	
+						join pais as p on e.id_pais = p.id_pais";
 
 		$stm = $this->con->prepare($query);
 		$stm->execute();

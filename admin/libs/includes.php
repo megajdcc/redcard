@@ -309,18 +309,13 @@ class includes {
 					case 'solicitudes.php':
 						$this->crumbs[1] = 'Solicitudes';
 						break;
-					case 'comprobantepago.php':
+					case 'comprobantes.php':
 						$this->crumbs[1] = 'Comprobantes de Pago';
 						break;
-					case 'quitar-saldo.php':
-						$this->crumbs[1] = 'Quitar saldo';
+					case 'iata.php':
+						$this->crumbs[1] = 'Codigo IATA';
 						break;
-					case 'solicitud.php':
-						$this->crumbs[1] = 'Detalles de solicitud';
-						break;
-					case 'reporte.php':
-						$this->crumbs[1] = 'Movimientos de saldos';
-						break;
+					
 					default:
 						$this->crumbs[1] = '';
 						break;
@@ -361,7 +356,7 @@ class includes {
 						</li>
 						<li'.$this->set_active_sidebar_tab('iata.php').'>
 							<a href="'.HOST.'/admin/perfiles/iata">
-								<span class="icon"><i class="fa fa-file-pdf-o"></i></span>
+								<span class="icon"><i class="fa fa-fighter-jet"></i></span>
 								<span class="title">IATA</span>
 								<span class="subtitle">codigo IATA aeroportuaria</span>
 							</a>
@@ -371,13 +366,34 @@ class includes {
 
 			case 'preferencias':
 				$this->crumbs[0] = 'Preferencias';
-				$this->crumbs[1] = 'C&oacute;digo de seguridad';
+
+				switch (basename($_SERVER['SCRIPT_NAME'])) {
+					case 'codigo-seguridad.php':
+						$this->crumbs[1] = 'C&oacute;digo de seguridad';
+						break;
+					case 'preferencia-sistema.php':
+						$this->crumbs[1] = 'del sistema';
+						break;
+					
+					
+					default:
+						$this->crumbs[1] = '';
+						break;
+				}
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('codigo-seguridad.php').'>
 							<a href="'.HOST.'/admin/preferencias/codigo-seguridad">
 								<span class="icon"><i class="fa fa-lock"></i></span>
 								<span class="title">C&oacute;digo de seguridad</span>
 								<span class="subtitle">Cambiar el c&oacute;digo</span>
+							</a>
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('preferencia-sistema.php').'>
+							<a href="'.HOST.'/admin/preferencias/preferencia-sistema">
+								<span class="icon"><i class="fa fa-cogs"></i></span>
+								<span class="title">Preferencias</span>
+								<span class="subtitle">Del sistema</span>
 							</a>
 						</li>';
 				break;

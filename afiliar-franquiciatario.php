@@ -80,7 +80,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
               <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-hotel"></i></span>
 
-            <input class ="hotel form-control" type="text" id="business-name" name="nombre" value="<?php echo $affiliate->getHotel();?>" placeholder="Nombre del hotel" readonly/>
+            <input class ="hotel form-control" type="text" id="business-name" name="nombre" value="<?php echo $affiliate->getHotel();?>" placeholder="Nombre del hotel" required readonly/>
             </div>
               <button type ="button"  data-toggle="modal" data-target=".capturarhotel"  data-placement="top" name="buscarhotel" class="buscar form-control"><i class="fa fa-search"></i>Buscar</button>
             </div>

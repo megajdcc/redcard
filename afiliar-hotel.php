@@ -45,7 +45,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						<form method="post" action="<?php echo _safe(HOST.'/login');?>">
 							<div class="form-group">
 								<label for="email">Correo electr&oacute;nico</label>
-								<input type="text" class="form-control" name="email" id="email" value="<?php echo $login->get_email();?>" placeholder="Correo electr&oacute;nico" required />
+								<input type"email" class="form-control" name="email" id="email" value="<?php echo $login->get_email();?>" placeholder="Correo electr&oacute;nico" required />
 								<?php echo $login->get_email_error();?>
 							</div><!-- /.form-group -->
 							<div class="form-group">
