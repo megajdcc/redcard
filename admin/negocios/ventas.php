@@ -32,7 +32,7 @@ $paging->setRPP($rpp);
 $paging->setCrumbs(10);
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Historial de ventas | eSmart Club';
+$properties['title'] = 'Historial de ventas | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>

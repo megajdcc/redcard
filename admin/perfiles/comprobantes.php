@@ -94,8 +94,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 
 	   var t = $('#comprobantes').DataTable( {
-		"paging"        :true,
-		"scrollY"       :false,
+		"paging"        :false,
+		"scrollY"       :400,
 		"scrollX"       :true,
 		"scrollCollapse": true,
          "language": {

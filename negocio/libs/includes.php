@@ -551,7 +551,7 @@ class includes {
 								</a>
 							</div>
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es eSmart Club?</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
 								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">eSmart Club Facebook</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta eSmart Club</a></li>
@@ -564,12 +564,14 @@ class includes {
 							</button>
 							<div class="header-nav-user">
 								<div class="dropdown">
+								
 									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 										<div class="user-image">
 											<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">
 										</div><!-- /.user-image -->
 										<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
 									</button>
+
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 										<li><a href="'.HOST.'/socio/">Mi inicio</a></li>
 										<li><a href="'.HOST.'/socio/perfil/">Mi perfil</a></li>';

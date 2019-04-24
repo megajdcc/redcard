@@ -33,7 +33,7 @@ $paging->setRPP($rpp);
 $paging->setCrumbs(10);
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Movimientos de saldos | eSmart Club';
+$properties['title'] = 'Movimientos de saldos | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>

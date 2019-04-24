@@ -464,6 +464,11 @@ class includes {
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+
+	<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
+				
 	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
 
 	<title>'.$title.'</title>

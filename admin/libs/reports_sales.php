@@ -1,10 +1,19 @@
 <?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
 namespace admin\libs;
+
+require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 use assets\libs\connection;
+
+
+use \Dompdf\Dompdf as pdf;
+use \Dompdf\Options;
 use PDO;
 
 class reports_sales {
 	private $con;
+
+	public $usuario = 0,$negocio = 0;
+
 	private $business = array(
 		'id' => null,
 		'date_start' => null,
@@ -15,14 +24,316 @@ class reports_sales {
 	);
 	private $sales = array();
 	private $bonus = 0;
+
+	private $negocios = array(
+		'id' => null,
+		'fecha_inicio' => null,
+		'fecha_fin' => null,
+		'negocios' => array(),
+		'id_usuario' => null
+	);
+		private $busqueda = array('fechainicio' => null,'fechafin' => null);
 	private $error = array('notification' => null, 'date_start' => null, 'date_end' => null);
 
-
+	private $estadocuenta = array();
 	public function __construct(connection $con){
 		$this->con = $con->con;
+
+		$this->cargarData();
 		return;
 	}
 
+	private function cargarData(){
+
+		if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && empty($this->usuario) && empty($this->negocio)){
+
+				// echo var_dump($this->busqueda);
+				// 
+		$query = "
+(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
+						FROM balancesistema as bs
+						LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
+						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.creado BETWEEN :fecha1 and :fecha2)
+UNION 
+	(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
+						from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+	)
+						ORDER BY creado 
+";
+							$stm = $this->con->prepare($query);
+							$stm->execute(array(':fecha1' => $this->busqueda['fechainicio'],
+												':fecha2' => $this->busqueda['fechafin'],
+												':fecha3' => $this->busqueda['fechainicio'],
+												':fecha4' => $this->busqueda['fechafin']));
+
+							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+		}else if(empty($this->busqueda['fechainicio']) && empty($this->busqueda['fechafin']) && empty($this->usuario) && empty($this->negocio)){
+					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
+						FROM balancesistema as bs
+						LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
+						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario)
+						UNION 
+						(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
+						from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro
+						)
+						ORDER BY creado ";
+
+			$stm = $this->con->prepare($query);
+			$stm->execute();
+			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && !empty($this->usuario) && !empty($this->negocio)){
+					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
+						FROM balancesistema as bs
+						LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
+						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and nv.id_negocio = :negocio1 and nv.creado BETWEEN :fecha1 and :fecha2)
+						UNION 
+						(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
+						from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where  bs.creado BETWEEN :fecha3 and :fecha4
+						)
+						ORDER BY creado ";
+
+			$stm = $this->con->prepare($query);
+			$stm->execute(array(':fecha1' => $this->busqueda['fechainicio'],
+								':fecha2' => $this->busqueda['fechafin'],
+								':fecha3' => $this->busqueda['fechainicio'],
+								':fecha4' => $this->busqueda['fechafin'],
+								':usuario1' => $this->usuario,
+								':negocio1' => $this->negocio));
+			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+		}
+	}
+
+	public function getEstadoCuenta(){
+			$query = "select max(balance) as balance from balancesistema";
+
+		$stm = $this->con->prepare($query);
+
+		$stm->execute();
+
+		$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+		
+		foreach ($this->estadocuenta as $key => $value) {
+			
+			// $fecha = date('d/m/Y h:m:s', strtotime($value['creado']));
+			 $fecha = $value['creado'];
+			 // settype($value['venta'],'double');
+
+			 $venta = number_format((float)$value['venta'],2,',','.');
+
+			  if($venta < 0){
+
+			  	$venta = '<strong class="negativo">$'.$venta.'</strong>';
+
+			  }else{
+
+			  	$venta = '$'.$venta;
+
+			  }
+
+			  if($value['comision'] < 0){
+			  	
+			  	$comision = '<strong class="negativo">$'.number_format((float)$value["comision"],2,',','.').'</strong>';
+			  }else{
+			  	$comision = '$'.number_format((float)$value["comision"],2,',','.');
+			  }
+			if(!empty($value['nombre'])){
+				$nombre = $value['nombre'];
+				}else{
+					$nombre = $value['username'];
+				}
+
+			
+			?>
+			
+
+		 		<tr class="estado">
+					<td class="b1"><?php echo $fecha ?></td>
+					<td class="b1"><?php echo $value['negocio'] ?></td>
+					<td class="b1"><?php echo $nombre ?></td>
+					<td class="b1"><?php echo $venta; ?></td>
+					<td class="b1"><?php echo $comision; ?></td>
+					<td class="b2">$<?php echo $value['balance'] ?></td>
+				</tr>
+<?php  }
+	}
+
+
+	private function setFechainicio($datetime = null){
+		if($datetime){
+			$datetime = str_replace('/', '-', $datetime);
+			$datetime = strtotime($datetime);
+			if(!$datetime){
+				$this->error['fechainicio'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
+				return false;
+			}
+			$datetime = date("Y/m/d H:i:s", $datetime);
+			$this->busqueda['fechainicio'] = $datetime;
+			return true;
+		}
+		$this->error['fechainicio'] = 'Este campo es obligatorio.';
+		return false;
+	}
+
+	private function setFechafin($datetime = null){
+		if($datetime){
+			$datetime = str_replace('/', '-', $datetime);
+			$datetime = strtotime($datetime);
+			if(!$datetime){
+				$this->error['fechafin'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
+				return false;
+			}
+			$datetime = date("Y/m/d H:i:s", $datetime);
+			$this->busqueda['fechafin'] = $datetime;
+			return true;
+		}
+		$this->error['fechafin'] = 'Este campo es obligatorio.';
+		return false;
+	}
+
+	public function getFecha1(){
+
+		return $this->negocios['fecha_inicio'];
+	}
+
+	public function getFecha2(){
+		return $this->negocios['fecha_fin'];
+	}
+
+	private function setFecha1($fecha){
+		$this->negocios['fecha_inicio'] = $fecha;
+	}
+
+	private function setFecha2($fecha){
+		$this->negocios['fecha_fin'] = $fecha;
+	}
+
+	private function setUsuario(int $usuario){
+		$this->usuario =$usuario;
+	}
+
+	private function setNegocio(int $negocio){
+		$this->negocio = $negocio;
+	}
+
+
+	public function getNombreUsuario(){
+		$query ="select u.username,concat(u.nombre,' ',u.apellido) as nombre from usuario as u where u.id_usuario = :usuario";
+		$stm = $this->con->prepare($query);
+		$stm->execute(array(':usuario'=>$this->usuario));
+
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+		if(empty($fila['nombre'])){
+			$nombre = $fila['username'];
+		}else{
+			$nombre = $fila['nombre'];
+		}
+		return $nombre;
+	}
+
+	public function getNombreNegocio(){
+
+		$query ="select n.nombre as negocio from negocio as n where n.id_negocio = :negocio";
+		$stm = $this->con->prepare($query);
+		$stm->execute(array(':negocio'=>$this->negocio));
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+		return $fila['negocio'];
+
+	}
+
+	public function getUsuario(){
+
+		$html = null;	
+
+
+		$query = "select u.id_usuario, u.username,concat(u.nombre,' ',u.apellido) as nombre from usuario as u ";
+		$stm = $this->con->prepare($query);
+		$stm->execute();
+
+		$fila =$stm->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($fila as $key => $value) {
+			if(empty($value['nombre'])){
+			$nombre = $value['username'];
+			}else{
+				$nombre = $value['nombre'];
+			}
+
+			if($value['id_usuario'] == $this->usuario){
+
+				$html .='<option value="'.$value['id_usuario'].'" selected>'.$nombre.'</option>';
+			}else{
+					$html .='<option value="'.$value['id_usuario'].'">'.$nombre.'</option>';
+			}
+
+		
+
+		}
+		
+
+		return $html;
+
+	}
+
+	public function Buscar($post){
+
+		$this->setFecha1($post['date_start']);
+		$this->setFecha2($post['date_end']);
+
+		$this->setFechainicio($post['date_start']);
+		$this->setFechafin($post['date_end']);
+
+		$this->setUsuario($post['usuario']);
+		$this->setNegocio($post['negocio']);
+
+		$this->CargarData();
+
+	}
+
+	public function mostrarpdf(array $post = null){
+
+
+		$this->setFechainicio($post['date_start']);
+		$this->setFechafin($post['date_end']);
+
+		$this->setUsuario($post['usuario']);
+		$this->setNegocio($post['negocio']);
+
+		$this->CargarData();
+		
+
+			ob_start();
+			require_once($_SERVER['DOCUMENT_ROOT'].'/admin/viewreports/estadocuenta.php');
+
+			$context = stream_context_create([
+				'ssl'=>[
+					'verify_peer' => FALSE,
+					'verify_peer_name' =>FALSE,
+					'allow_self_signed' => TRUE
+				]
+			]);
+	
+			$html = ob_get_clean();
+			$option = new Options();
+			$option->isPhpEnabled(true);
+			$option->isRemoteEnabled(true);
+			$option->setIsHtml5ParserEnabled(true);
+			
+			$dompdf = new pdf($option);
+			$dompdf->setHttpContext($context);
+			$dompdf->loadHtml($html);
+			$dompdf->setPaper('A4', 'landscape');
+			$dompdf->render();
+			$dato = array('Attachment' => 0);
+
+			$fecha1 = date('M-Y', strtotime($this->busqueda['fechainicio']));
+		
+			$titulo = "Travel Points: reporte de actividades " .$fecha1;
+			$dompdf->stream($titulo.'.pdf',$dato);
+		
+}
 	public function load_data(){
 		if($this->business['date_start'] && $this->business['date_end']){
 			$dates = " AND nv.creado BETWEEN '".$this->business['date_start']."' AND '".$this->business['date_end']."'";
@@ -148,6 +459,12 @@ class reports_sales {
 			}else{
 				$registrar = _safe($value['e_name'].' '.$value['e_last_name']);
 			}
+
+			?>
+			
+			
+
+			<?php
 			$sales .= 
 				'<tr>
 					<td>'.$key.'</td>
@@ -247,9 +564,9 @@ class reports_sales {
 	}
 
 	public function get_business_category_id(){
-		if($this->business['business_category_id']){
-			return $this->business['business_category_id'];
-		}
+		// if($this->business['business_category_id']){
+		// 	return $this->business['business_category_id'];
+		// }
 	}
 
 	public function get_date_start_error(){

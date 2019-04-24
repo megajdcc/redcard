@@ -17,12 +17,7 @@ if(!isset($_SESSION['user']['admin_authorize'])){
 }
 
 $businesses = new admin\libs\business_dashboard($con);
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-	if(isset($_POST['pdf'])){
-		$businesses->get_sales_pdf();
-		die();
-	}
-}
+
  
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
 $rpp = 20;
@@ -38,13 +33,17 @@ $reports = new admin\libs\reports_sales($con);
 $info = new negocio\libs\preference_info($con);
 $users = new admin\libs\get_allusers($con);
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-	$reports->set_date($_POST);
-}else{
-	$reports->load_data();
+
+if(isset($_REQUEST['pdf'])){
+		$reports->mostrarpdf($_POST);
+		die();
+}
+if(isset($_REQUEST['buscar'])){
+		$reports->Buscar($_POST);
+		
 }
 
-$properties['title'] = 'Negocios | eSmart Club';
+$properties['title'] = 'Negocios | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -53,65 +52,149 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	<div class="col-sm-12">
 		<?php echo $reports->get_notification();?>
 		<div class="background-white p20 mb30">
-			<form method="post">
+			<style>
+				.mb30{
+					margin-bottom: 0px !important;
+				}
+				.btnera{
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+			</style>
+			
+			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group">
 							<label for="start">Fecha y hora de inicio</label>
 							<div class="input-group date" id="event-start">
-								<input class="form-control" type="text" id="start" name="date_start" value="<?php echo $reports->get_date_start();?>" placeholder="Fecha y hora de inicio" required/>
+								<input class="form-control" type="text" id="start" name="date_start" value="<?php echo $reports->getFecha1();?>" placeholder="Fecha y hora de inicio"  required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 							<?php echo $reports->get_date_start_error();?>
 						</div>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group">
 							<label for="end">Fecha y hora de fin</label>
 							<div class="input-group date" id="event-end">
-								<input class="form-control" type="text" id="end" name="date_end" value="<?php echo $reports->get_date_end();?>" placeholder="Fecha y hora de fin" required/>
+								<input class="form-control" type="text" id="end" name="date_end" value="<?php echo $reports->getfecha2();?>" placeholder="Fecha y hora de fin"  required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 							<?php echo $reports->get_date_end_error();?>
 						</div>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group">
 							<label for="category">Usuario</label>
-								<select data-live-search="true" class="form-control" id="user" name="user_id" title="Seleccionar usuario">
-									<?php echo $users->get_users();?>
+								<select  data-live-search="true" class="form-control" id="user" name="usuario" title="Seleccionar usuario" required>
+									<?php echo $reports->getUsuario(); ?>
+									
 								</select>
-								<?php echo $users->get_users_error();?>
+								
 						</div>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<div class="form-group">
-							<label for="category">Categor&iacute;a del negocio</label>
-								<select class="form-control" id="category" name="category_id" title="Seleccionar categor&iacute;a">
-									<?php echo $info->get_category_for_report();?>
+							<label for="category">Negocios </label>
+								<select class="form-control" data-live-search="true" id="category" name="negocio" title="Seleccionar categor&iacute;a" required>
+									<?php echo $info->getNegocios();?>
 								</select>
 								<?php echo $info->get_category_error();?>
 						</div>
 					</div>
+				</div>
+
+
+				<div class="row btnera">
+					
+			
 					<div class="col-sm-8">
 						<label>Buscar</label>
 						<div class="form-group">
-							<button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
+							<button class="btn btn-success" type="submit" name="buscar"><i class="fa fa-search"></i></button>
 							<a href="<?php echo _safe(HOST.'/admin/reporte-de-ventas/');?>" class="btn btn-info">Limpiar</a>
 						</div>
 					</div>
 				</div>
-			</form>
+				</form>	
+				
+					
+				
+					<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
+						<div class="col-sm-4">
+							<input type="hidden" name="date_start" value="<?php echo $reports->getFecha1();?>" >
+							<input type="hidden" name="date_end" value="<?php echo $reports->getFecha2();?>" >
+
+							<input type="hidden" name="usuario" value="<?php echo $reports->usuario;?>" >
+							<input type="hidden" name="negocio" value="<?php echo $reports->negocio;?>" >
+							<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
+						</div>
+					</form>
+					
+				
+
+
+		
 		</div>
-		<div class="page-title">
-			<h1>Reporte de Ventas
-				<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
-					<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
-				</form>
-			</h1>
-		</div>
+
+
 		<div class="background-white p20 mb50">
-		<?php echo $reports->get_sales();?>
+			<div class="page-title">
+						<h1>Reporte de Ventas
+						
+						
+						
+						</h1>
+					</div>
+
+			<table  id="estadodecuenta" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+						
+						<th>Fecha</th>
+						<th>Negocio</th>
+						<th>Usuario</th>
+						<th>Venta</th>
+						<th>Comisión</th>
+						<th>Balance</th>						
+						</tr>
+					</thead>
+					
+					<tbody>			
+						<?php echo $reports->getEstadoCuenta();?>
+					</tbody>
+				</table>
+
+				<script>
+
+				 var t = $('#estadodecuenta').DataTable( {
+					"paging"        :         false,
+					"scrollY"       :        "400px",
+					"scrollCollapse": true,
+			         "language": {
+			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
+			                        "info": "",
+			                        "infoEmpty": "No se encontro ningún estado por este filtro intente de nuevo con otro...",
+			                        "infoFiltered": "(filtrada de _MAX_ registros)",
+			                        "search": "Buscar: ",
+			                        "paginate": {
+			                            "next":       "Siguiente",
+			                            "previous":   "Anterior"
+			                        },
+			                    },
+			        "columnDefs": [ {
+			            "searchable": true,
+			            "orderable": true,
+			            "targets": 0
+			        } ],
+			       
+			    } );
+    
+</script>
+
+		
 		</div>
 	</div>
 </div>

@@ -17,9 +17,12 @@ class get_allusers {
 		'apellido' => null
 	);
 
+	private $usuario = array();
+
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		$this->load_data();
+		$this->cargarUsuario();
 		return;
 	}
 
@@ -43,10 +46,38 @@ class get_allusers {
 		return;
 	}
 
+
+	public function cargarUsuario(){
+
+
+		$query = "select u.username, u.id_usuario , concat(u.nombre,' ',u.apellido) as nombre from usuario as u";
+		$stm = $this->con->prepare($query);
+		$stm->execute();
+
+		$this->usuario = $stm->fetchALL(PDO::FETCH_ASSOC);
+
+	}
 	public function get_users(){
 		$html = null;
 		foreach ($this->users as $key => $value) {
 				$html .= '<option value="'.$value['id'].'">'._safe($value['nombre']).' '._safe($value['apellido']).'</option>';
+		}
+		return $html;
+	}
+
+	public function getUsuarios(){
+
+
+		$html = null;
+
+		foreach ($this->usuario as $key => $value) {
+			if(empty($value['nombre'])){
+				$nombre =$value['username'];
+			}else{
+				$nombre = $value['nombre'];
+			}
+
+			$html .= '<option value="'.$value['id_usuario'].'">'._safe($nombre).'</option>';
 		}
 		return $html;
 	}

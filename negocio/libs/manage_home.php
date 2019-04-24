@@ -54,6 +54,7 @@ class manage_home {
 		// Cargar las vistas
 		// echo 'id: '.$this->business['id'];
 		// die();
+		echo var_dump($this->business['currency']);
 		$query = "SELECT vistas, comision, saldo, ultima_recarga, situacion, creado FROM negocio WHERE id_negocio=".$this->business['id']."";
 		try{
 			$stmt = $this->con->prepare($query);
@@ -506,13 +507,16 @@ class manage_home {
 
 	public function get_sales(){
 		$pref = $nonpref = null;
+
 		foreach ($this->business['sales'] as $key => $value) {
+
 			if($value['total'] != 0){
 				if($key == 'EUR'){
 					$sign = '€';
 				}else{
 					$sign = '$';
 				}
+
 				$sale = number_format((float)$value['total'], 2, '.', '');
 				$pref='';
 				if($key == $this->business['currency']){

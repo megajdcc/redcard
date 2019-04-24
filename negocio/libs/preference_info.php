@@ -698,6 +698,23 @@ class preference_info {
 		return $html;
 	}
 
+	public function getNegocios(){
+
+
+		$query = "select n.nombre, n.id_negocio from negocio as n";
+
+		$stm = $this->con->prepare($query);
+
+		$stm->execute();
+
+		$html = null;
+		while($value = $stm->fetch(PDO::FETCH_ASSOC)) {
+			$html .='<option value="'.$value['id_negocio'].'">'.$value['nombre'].'</option>' ;
+		}
+
+		return $html;
+	}
+
 	public function get_state_error(){
 		if($this->error['state']){
 			$error = '<p class="text-danger">'.$this->error['state'].'</p>';

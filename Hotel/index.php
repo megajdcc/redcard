@@ -365,7 +365,7 @@
 											    
 											    plotOptions: {
 											        series: {
-																	borderWidth: 0,
+														borderWidth: 0,
 											            dataLabels: {
 											               enabled: true,
 											               format: '$ {point.y:.2f} MXN'
@@ -377,14 +377,14 @@
 											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
 											    },
 											    series: [ {
-											    	name: "Huespedes",
+											    	name: "Negocio",
             								colorByPoint: true,
 											    } ],
 								   				}; 
 
 								   				options.series[0].data = response;
 								   			
-													var grafica = new Highcharts.Chart(options);
+												var grafica = new Highcharts.Chart(options);
 									 	
 									})	
 							.fail(function() {

@@ -256,9 +256,11 @@ class sales_new_sale {
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($params);
 			$idventa = $this->con->lastInsertId();
+			$this->registrarbalancesistema($idventa);
 			$this->registrarbalancehotel($idventa);
 			$this->registrarbalancefranquiciatario($idventa);
 			$this->registrarbalancereferidor($idventa);
+			
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
@@ -299,6 +301,23 @@ class sales_new_sale {
 		return;
 	}
 
+
+
+	private function registrarbalancesistema(int $idventa){
+
+
+				
+					$ultimobalance = $this->capturarultimobalancesistema();
+					$comisionsistema = $this->sale['eSmarties'];
+					
+					$balance = $comisionsistema + $ultimobalance;
+
+					$query = "insert into balancesistema(balance,id_venta,comision) values(:balance,:venta,:comision)";
+					$stm  = $this->con->prepare($query);
+					$stm->execute(array(':balance'=>$balance,
+										':venta'=>$idventa,':comision'=>$comisionsistema));
+				
+	}
 
 	private function registrarbalancehotel(int $idventa){
 
@@ -386,6 +405,18 @@ class sales_new_sale {
 		$query = "select balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
 		$stm->execute(array(':hotel'=>$idhotel));
+		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+		if($balance > 0){
+			return $balance;
+		}else{
+			return 0;
+		}
+	}
+
+	private function capturarultimobalancesistema(){
+		$query = "select balance from balancesistema order by id desc LIMIT 1";
+		$stm = $this->con->prepare($query);
+		$stm->execute();
 		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 		if($balance > 0){
 			return $balance;

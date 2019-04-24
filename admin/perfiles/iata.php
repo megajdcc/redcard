@@ -71,8 +71,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 
 	   var t = $('#iatas').DataTable( {
-		"paging"        :true,
-		"scrollY"       :false,
+		"paging"        :false,
+		"scrollY"       :true,
 		"scrollX"       :true,
 		"scrollCollapse": true,
          "language": {

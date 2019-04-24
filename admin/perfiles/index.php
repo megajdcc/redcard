@@ -92,7 +92,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
     	$(document).ready(function(){
 
 	   var t = $('#example').DataTable( {
-		"paging"        :true,
+		"paging"        :false,
 		"scrollY"       :false,
 		"scrollX"       :true,
 		"scrollCollapse": true,
