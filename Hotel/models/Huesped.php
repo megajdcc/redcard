@@ -197,7 +197,10 @@ class Huesped
 
 	public function ListarHoteles(){
 
-		$query = "select * from listarhoteleforhuesped";
+		$query = "select h.id as id_hotel , h.nombre, h.direccion, CONCAT(c.ciudad,' ',e.estado,' ',p.pais) as ubicacion from hotel as h 
+			inner join ciudad as c on h.id_ciudad = c.id_ciudad 
+			inner join estado as e on c.id_estado = e.id_estado
+			inner join pais as p on e.id_pais = p.id_pais ";
 		try {
 			$stm = $this->con->prepare($query);
 				$stm->execute();

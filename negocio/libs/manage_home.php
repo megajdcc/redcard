@@ -54,7 +54,7 @@ class manage_home {
 		// Cargar las vistas
 		// echo 'id: '.$this->business['id'];
 		// die();
-		echo var_dump($this->business['currency']);
+		
 		$query = "SELECT vistas, comision, saldo, ultima_recarga, situacion, creado FROM negocio WHERE id_negocio=".$this->business['id']."";
 		try{
 			$stmt = $this->con->prepare($query);

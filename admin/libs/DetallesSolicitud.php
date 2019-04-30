@@ -1739,7 +1739,7 @@ class DetallesSolicitud {
 		if($this->solicitudhotel['usuario_nombre'] && $this->solicitudhotel['usuario_apellido']){
 			return _safe($this->solicitudhotel['usuario_nombre'].' '.$this->solicitudhotel['usuario_apellido']);
 		}else{
-			return _safe($this->solitudhotel['nombreusuario']);
+			return _safe($this->solicitudhotel['username']);
 		}
 	}
 

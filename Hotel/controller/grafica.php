@@ -69,12 +69,12 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'consumospromediopornegocio'
 	
 			}
 		
-			echo json_encode($response);
+			
 
 		}else{
 
 		}
-
+		echo json_encode($response);
 	}
 
 	if(isset($_POST['grafica']) && $_POST['grafica'] == 'totalconsumohuesped'){

@@ -531,12 +531,12 @@ class includes {
 					<div class="header-content">
 						<div class="header-bottom">
 							<div class="header-button">
-								<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta eSmart Club">
+								<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
 									<i class="fa fa-envelope"></i>
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="eSmart Club Facebook">
+								<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 									<i class="fa fa-facebook"></i>
 								</a>
 							</div>
@@ -546,15 +546,15 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es eSmart Club?">
+								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
-								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">eSmart Club Facebook</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta eSmart Club</a></li>
+								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">Travel Points Facebook</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 								<span class="sr-only">Toggle navigation</span>
@@ -577,7 +577,7 @@ class includes {
 										<li><a href="'.HOST.'/socio/perfil/">Mi perfil</a></li>';
 								if($this->user['admin']){
 									$html .= 
-									'<li><a href="'.HOST.'/admin/">Panel eSmart Club</a></li>';
+									'<li><a href="'.HOST.'/admin/">Panel Travel Points</a></li>';
 								}
 								$html .= 
 										'<li><a href="'.HOST.'/logout">Cerrar sesi&oacute;n</a></li>
@@ -594,8 +594,7 @@ class includes {
 			<div class="header-statusbar-inner">
 				<div class="header-statusbar-left">
 					<h1 class="logo-esmart">
-						eSmart<br>
-						<span class="logo-club">Club</span>
+						
 						<span class="header-text">'.$this->business['name'].'</span>
 					</h1>
 				</div><!-- /.header-statusbar-left -->

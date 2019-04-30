@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user']) || !isset($_SESSION['business'])){
@@ -18,7 +19,7 @@ if(isset($_POST['change_business'])){
 	$home->change_business($_POST['change_business']);
 }
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Administración de negocio | eSmart Club';
+$properties['title'] = 'Administración de negocio | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

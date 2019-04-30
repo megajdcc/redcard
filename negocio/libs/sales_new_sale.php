@@ -104,7 +104,7 @@ class sales_new_sale {
 			);
 		}
 		if($this->business['status'] != 1){
-			$this->error['error'] = 'Tu negocio no se encuentra activo. Por el momento no puedes registrar ninguna venta. Contacta a eSmart Club.';
+			$this->error['error'] = 'Tu negocio no se encuentra activo. Por el momento no puedes registrar ninguna venta. Contacta a Travel Points.';
 		}
 		return;
 	}
@@ -141,7 +141,7 @@ class sales_new_sale {
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				return false;
 			}
-			$this->error['error'] = 'Has excedido el límite de crédito permitido ($500) y tu negocio se ha suspendido automáticamente. Contacta a eSmart Club.';
+			$this->error['error'] = 'Has excedido el límite de crédito permitido ($500) y tu negocio se ha suspendido automáticamente. Contacta a Travel Points.';
 			return false;
 		}
 		if($this->sale['certificate_id']){
@@ -518,7 +518,7 @@ class sales_new_sale {
 			$esmarties = $this->sale['total'] * $rate * ($this->sale['commission']/100);
 			$this->sale['eSmarties'] = floor($esmarties * 10000)/10000;
 			if($this->sale['referral_id']){
-				$referral_commission = $esmarties * 0.1;
+				$referral_commission = $esmarties * 0;
 				$this->sale['referral_commission'] = floor($referral_commission * 10000)/10000;
 			}
 			return;

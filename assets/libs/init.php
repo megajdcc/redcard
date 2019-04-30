@@ -1,4 +1,4 @@
-<?php # Desarrollado por Mario Sacramento. info@infochanel.si
+<?php 
 
 header('Content-Type: text/html; charset=utf-8');
 
