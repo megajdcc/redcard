@@ -1,5 +1,5 @@
 <?php 
-namespace Referidor\models;
+namespace Franquiciatario\models;
 use assets\libs\connection;
 use PDO;
 
@@ -37,7 +37,7 @@ class Usuarios {
 		'id' => null
 	);
 
-	private $referidor = array(
+	private $franquiciatario = array(
 		'id' => null
 	);
 
@@ -46,7 +46,7 @@ class Usuarios {
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		$this->hotel['id'] = $_SESSION['id_hotel'];
-		$this->referidor['id'] = $_SESSION['id_referidor'];
+		$this->franquiciatario['id'] = $_SESSION['id_franquiciatario'];
 		$this->Cargar();
 		return;
 
@@ -62,19 +62,19 @@ class Usuarios {
 					$query = "select u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, 
 					u.apellido, u.sexo, u.fecha_nacimiento, c.ciudad, p.pais, u.telefono, u.id_rol, u.activo, u.verificado, u.ultimo_login,
 					u.creado
-					FROM solicitudreferidor as srf 
-					JOIN usuario as u on srf.id_usuario = u.id_usuario	
+					FROM solicitudfr as sfr 
+					JOIN usuario as u on sfr.id_usuario = u.id_usuario	
 					LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
 					LEFT JOIN estado as e ON c.id_estado = e.id_estado
 					LEFT JOIN pais as p ON e.id_pais = p.id_pais
-					JOIN referidor as rf on srf.id_referidor = rf.id
-					where rf.id = :referidor;
+					JOIN franquiciatario as fr on sfr.id_franquiciatario = sfr.id_franquiciatario
+					where fr.id = :franquiciatario;
 					";
 
 						try {
 							
 							$stm = $this->con->prepare($query);
-							$stm->bindParam(':referidor', $this->referidor['id']);
+							$stm->bindParam(':franquiciatario', $this->franquiciatario['id']);
 							$stm->execute();
 							while($row = $stm->fetch()){
 							$this->usuarios[$row['id_usuario']] = array(
@@ -146,7 +146,6 @@ class Usuarios {
 			$phone = _safe($valores['phone']);
 			$date = date('d/m/Y', strtotime($valores['created_at']));
 			$eSmarties = _safe($valores['eSmarties']);
-			
 			if(!empty($valores['birthdate'])){
 				$birthdate = date('d/m/Y', strtotime($valores['birthdate']));
 			}else{
@@ -165,7 +164,6 @@ class Usuarios {
 			}else{
 				$verified = '';
 			}
-
 			$last_login = date('d/m/Y', strtotime($valores['last_login']));
 
 			?>
@@ -494,6 +492,8 @@ class Usuarios {
 		       
 		      </div>
 		      <div class="modal-body">
+					
+						
 								<form>
 								  <div class="form-row">
 
@@ -532,6 +532,11 @@ class Usuarios {
 
 										<small class="form" id="verificado"></small>
 								</form>
+
+								
+							
+
+						
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

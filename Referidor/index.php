@@ -181,7 +181,7 @@
 							
 							var idhotel = "<?php echo $home->hotel['id'];?>"
 							$.ajax({
-								url: '/Hotel/controller/grafica.php',
+								url: '/Referidor/controller/grafica.php',
 								type: 'POST',
 								dataType: 'json',
 								data: {grafica: 'consumospromedioporcompra', idhotel,hotel:idhotel},
@@ -243,7 +243,7 @@
 							
 							var idhotel = "<?php echo $home->hotel['id'];?>"
 							$.ajax({
-								url: '/Hotel/controller/grafica.php',
+								url: '/Referidor/controller/grafica.php',
 								type: 'POST',
 								dataType: 'json',
 								data: {grafica: 'consumospromediopornegocio', idhotel,hotel:idhotel},
@@ -327,7 +327,7 @@
 							
 							var idhotel = "<?php echo $home->hotel['id'];?>"
 							$.ajax({
-								url: '/Hotel/controller/grafica.php',
+								url: '/Referidor/controller/grafica.php',
 								type: 'POST',
 								dataType: 'json',
 								data: {grafica: 'totalconsumohuesped', idhotel,hotel:idhotel},
@@ -435,7 +435,7 @@
 							
 							var idhotel = "<?php echo $home->hotel['id'];?>"
 							$.ajax({
-								url: '/Hotel/controller/grafica.php',
+								url: '/Referidor/controller/grafica.php',
 								type: 'POST',
 								dataType: 'json',
 								data: {grafica: 'totalregalosusuarios', idhotel,hotel:idhotel},

@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
-use Hotel\models\Home;
+use Referidor\models\Home;
 
 $home = new Home($con);
 
