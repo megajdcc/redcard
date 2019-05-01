@@ -46,6 +46,13 @@ if(isset($_POST['change_business'])){
 	$home->change_business($_POST['change_business']);
 }
 
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+		if(isset($_POST['fecha_inicio']) and !empty($_POST['fecha_inicio'])){
+			$home->busqueda($_POST);
+		}
+	} 
+
 $includes = new admin\libs\includes($con);
 $properties['title'] = 'Travel Points';
 $properties['description'] = '';
@@ -58,14 +65,14 @@ echo $navbar = $includes->get_admin_navbar();
 <div class="row">
 	<div class="col-sm-12">
 		<?php echo $home->getNotificacion();?>
-<!-- 		<div class="background-white p20 mb30">
-			<form method="post">
+		<div class="background-white p20 mb30">
+			<form method="post" action="<?php echo _safe(HOST.'/admin/');?>">
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label for="start">Fecha y hora de inicio</label>
 							<div class="input-group date" id="event-start">
-								<input class="form-control" type="text" id="start" name="date_start" value="" placeholder="Fecha y hora de inicio" required/>
+								<input class="form-control" type="text" id="start" name="fecha_inicio" value="<?php echo $home->getFecha1(); ?>" placeholder="Fecha y hora de inicio" required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 							
@@ -75,7 +82,7 @@ echo $navbar = $includes->get_admin_navbar();
 						<div class="form-group">
 							<label for="end">Fecha y hora de fin</label>
 							<div class="input-group date" id="event-end">
-								<input class="form-control" type="text" id="end" name="date_end" value="" placeholder="Fecha y hora de fin" required/>
+								<input class="form-control" type="text" id="end" name="fecha_fin" value="<?php echo $home->getFecha2(); ?>" placeholder="Fecha y hora de fin" required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 							
@@ -85,12 +92,12 @@ echo $navbar = $includes->get_admin_navbar();
 						<label>Buscar</label>
 						<div class="form-group">
 							<button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
-							<a href="" class="btn btn-info">Limpiar</a>
+							<a href="<?php echo _safe(HOST.'/admin/');?>" class="btn btn-info">Limpiar</a>
 						</div>
 					</div>
 				</div>
 			</form>
-		</div> -->
+		</div>
 		<!-- /.box -->
 
 
@@ -132,7 +139,82 @@ echo $navbar = $includes->get_admin_navbar();
 			<div class="col-sm-9">
 				<!-- Ventas promedio por negocios -->
 				<div class="statusbox" id="grafica1">
-					<script>
+
+
+					<?php 
+						if(!empty($home->getFechaInicio())){?>
+
+						<script>
+						$(document).ready(function() {
+							var fecha1 = "<?php echo $home->getFechaInicio(); ?>";
+							var fecha2 = "<?php echo $home->getFechaFin(); ?>";
+						
+							$.ajax({
+								url: '/admin/controller/grafica.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {grafica: 'ventaspromediopornegocios', f1:fecha1,f2:fecha2},
+							})
+							.done(function(response) {
+								var options = {
+											 chart: {
+											 		renderTo: 'grafica1',
+											        type: 'pie'
+											    },
+											   lang:{
+															decimalPoint: ',',
+								   						thousandsSep: '.'
+													},
+											    title: {
+											        text: 'Ventas promedio por negocios'
+											    },
+											    xAxis: {
+											        type: 'category'
+											    },
+											    yAxis: {
+										        title: {
+										            text: 'Total miles de $'
+										          }
+										        },
+											    
+											    plotOptions: {
+											        pie: {
+														allowPointSelect:true,
+														cursor:'pointer',
+														borderWidth: 0,
+											            dataLabels: {
+											               enabled: true,
+											               format: '$ {point.y:.2f} MXN'
+											            },
+											            showInLegend:true,
+											        }},
+
+											    tooltip: {
+											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+											    },
+											    series: [ {
+											    	name: "Huespedes",
+            										colorByPoint: true,
+											    } ],
+								   				}; 
+									 options.series[0].data = response;
+									
+									var grafica = Highcharts.chart(options);
+									 	
+									})	
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+						
+							});
+
+						</script>
+
+						<?php }else{?>
+						<script>
 						$(document).ready(function() {
 						
 							$.ajax({
@@ -198,6 +280,10 @@ echo $navbar = $includes->get_admin_navbar();
 							});
 
 						</script>
+
+						<?php  }
+					 ?>
+					
 				</div>
 			</div>
 
@@ -283,9 +369,84 @@ echo $navbar = $includes->get_admin_navbar();
 
 			<div class="col-sm-9">
 				<div class="statusbox" id="grafica2">
-			<script>
+
+
+					<?php 
+						if(!empty($home->getFechaInicio())){?>
+
+						<script>
 						$(document).ready(function() {
+							var fecha1 = "<?php echo $home->getFechaInicio(); ?>";
+							var fecha2 = "<?php echo $home->getFechaFin(); ?>";
 						
+							$.ajax({
+								url: '/admin/controller/grafica.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {grafica: 'comisionperfiles',f1:fecha1,f2:fecha2},
+							})
+							.done(function(response) {
+								var options = {
+											 chart: {
+											 		renderTo: 'grafica2',
+											        type: 'pie'
+											    },
+											   lang:{
+															decimalPoint: ',',
+								   						thousandsSep: '.'
+													},
+											    title: {
+											        text: 'Total Comisiones de Hotel,Franquiciatario y Referidor'
+											    },
+											    xAxis: {
+											        type: 'category'
+											    },
+											    yAxis: {
+										        title: {
+										            text: 'Total miles de $'
+										          }
+										        },
+											    
+											    plotOptions: {
+											        pie: {
+														allowPointSelect:true,
+														cursor:'pointer',
+														borderWidth: 0,
+											            dataLabels: {
+											               enabled: true,
+											               format: '$ {point.y:.2f} MXN'
+											            },
+											            showInLegend:true,
+											        }},
+
+											    tooltip: {
+											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+											    },
+											    series: [ {
+											    	name: "Huespedes",
+            										colorByPoint: true,
+											    } ],
+								   				}; 
+									 options.series[0].data = response;
+									
+									var grafica = Highcharts.chart(options);
+									 	
+									})	
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+						
+							});
+
+						</script>
+
+					<?php }else{?>
+
+						<script>
+						$(document).ready(function() {						
 							$.ajax({
 								url: '/admin/controller/grafica.php',
 								type: 'POST',
@@ -349,6 +510,8 @@ echo $navbar = $includes->get_admin_navbar();
 							});
 
 						</script>
+
+				<?php } ?>
 				</div>
 			</div>
 		</div>

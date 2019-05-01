@@ -13,6 +13,34 @@ $home = new Home($con);
 
 if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios'){
 
+	if(isset($_POST['f1'])){
+
+		$f1 = str_replace('+', ' ', $_POST['f1']);
+		$f2 = str_replace('+', ' ', $_POST['f2']);
+		$result = $home->getVentasPromedioNegocios($f1,$f2);
+
+		if($result){
+			$response = array();
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$promedio = number_format((float)$row['promedio'],2,'.','');
+
+
+				if($row['iso'] == 'EUR'){
+					$div = '€';
+				}else{
+					$div = '$';
+				}
+				$negocio = $row['negocio'];
+				$prome = $promedio;
+				 settype($promedio,'float');
+				$response[] = array('name'=>$negocio,'y'=>$promedio);
+	
+			}
+		
+			echo json_encode($response);
+
+		}
+	}else{
 		$result = $home->getVentasPromedioNegocios();
 
 		if($result){
@@ -35,15 +63,20 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios')
 		
 			echo json_encode($response);
 
-		}else{
-
 		}
+	}
 
 	}
 
 if(isset($_POST['grafica']) && $_POST['grafica'] == 'comisionperfiles'){
+
+
+	if(isset($_POST['f1'])){
+
+		$f1 = str_replace('+', ' ', $_POST['f1']);
+		$f2 = str_replace('+', ' ', $_POST['f2']);
 		
-		$result = $home->getComisionPerfiles();
+		$result = $home->getComisionPerfiles($f1,$f2);
 
 		if($result){
 			$response = array();
@@ -58,11 +91,27 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'comisionperfiles'){
 		
 			echo json_encode($response);
 
-		}else{
-
 		}
 
+	}else{
+		$result = $home->getComisionPerfiles();
+
+		if($result){
+			$response = array();
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$comision = number_format((float)$row['total'],2,'.','');
+				
+
+				 settype($comision,'float');
+				$response[] = array('name'=>$row['perfil'],'y'=>$comision);
+	
+			}
+		
+			echo json_encode($response);
 	}
+
+	}
+}
 
 	if(isset($_POST['grafica']) && $_POST['grafica'] == 'totalconsumohuesped'){
 
