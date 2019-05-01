@@ -59,22 +59,30 @@ class Usuarios {
 
 	private function Cargar(){
 	
-					$query = "select u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, 
+					// $query = "select u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, 
+					// u.apellido, u.sexo, u.fecha_nacimiento, c.ciudad, p.pais, u.telefono, u.id_rol, u.activo, u.verificado, u.ultimo_login,
+					// u.creado
+					// FROM solicitudreferidor as srf 
+					// JOIN usuario as u on srf.id_usuario = u.id_usuario	
+					// LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
+					// LEFT JOIN estado as e ON c.id_estado = e.id_estado
+					// LEFT JOIN pais as p ON e.id_pais = p.id_pais
+					// JOIN referidor as rf on srf.id_referidor = rf.id
+					// where rf.id = :referidor;
+					// ";
+
+					$query ="select u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, 
 					u.apellido, u.sexo, u.fecha_nacimiento, c.ciudad, p.pais, u.telefono, u.id_rol, u.activo, u.verificado, u.ultimo_login,
 					u.creado
-					FROM solicitudreferidor as srf 
-					JOIN usuario as u on srf.id_usuario = u.id_usuario	
+					FROM usuario as u 
 					LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
 					LEFT JOIN estado as e ON c.id_estado = e.id_estado
 					LEFT JOIN pais as p ON e.id_pais = p.id_pais
-					JOIN referidor as rf on srf.id_referidor = rf.id
-					where rf.id = :referidor;
-					";
-
+					order by username";
 						try {
 							
 							$stm = $this->con->prepare($query);
-							$stm->bindParam(':referidor', $this->referidor['id']);
+							//$stm->bindParam(':referidor', $this->referidor['id']);
 							$stm->execute();
 							while($row = $stm->fetch()){
 							$this->usuarios[$row['id_usuario']] = array(
@@ -183,7 +191,7 @@ class Usuarios {
 						</div>
 				</td>
 				<td><?php echo $username; ?></td>
-				<td><?php echo $email; ?></td>
+				<!-- <td><?php //echo $email; ?></td> -->
 				<td><?php echo $eSmarties; ?></td>
 				
 				<td><?php echo $name; ?></td>

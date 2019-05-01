@@ -37,11 +37,13 @@ class NuevoUsuario {
 			username, 
 			email, 
 			password,
+			1,
 			hash_activacion
 			) VALUES (
 			:username, 
 			:email, 
 			:password,
+			1,
 			:hash_activacion
 		)";
 		$hash = md5( rand(0,1000) );
@@ -61,23 +63,6 @@ class NuevoUsuario {
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
-
-		// Lo registramos en solicitud hotel.
-		
-		$query1 = "insert into solicitudreferidor(id_referidor,id_usuario,condicion) values(:referidor,:usuario, :condicion)";
-
-		try {
-			$stm = $this->con->prepare($query1);
-
-			$stm->execute(array(':referidor'=>$_SESSION['id_referidor'],
-							':usuario'=>$lastId,
-							':condicion'=>1));
-			} catch (PDOException $e) {
-			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-
-			}
-		
-
 		
 		// Si existe referencia, la inserta
 		if($this->referral['id']){
@@ -93,7 +78,7 @@ class NuevoUsuario {
 		}
 
 		$body_alt =
-			'Bienvenido a Travel Points '.$this->username.'. Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace: '.HOST.'/login?email='.$this->email.'&codigo='.$hash;
+			'Bienvenido a Travel Points '.$this->username;
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';

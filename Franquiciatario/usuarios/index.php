@@ -52,7 +52,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<th>#</th>
 						<th>Foto</th>
 						<th>Username</th>
-						<th>Correo electr&oacute;nico</th>
+						<!-- <th>Correo electr&oacute;nico</th> -->
 						<th>eSmartties</th>
 						
 						<th>Nombre</th>
