@@ -2,7 +2,7 @@
 $con = new assets\libs\connection();
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Terminos y Condiciones | eSmart Club';
+$properties['title'] = 'Terminos y Condiciones | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -18,25 +18,25 @@ echo $navbar = $includes->get_main_navbar(); ?>
 				<?php echo $con->get_notify();?>
 				<div class="background-white p30 text-default mb50">
 					<p>
-						Bienvenido al sitio eSmartClub.com (el “Sitio”). Este Sitio tiene la finalidad de auxiliar a los consumidores a conocer y evaluar informaci&oacute;n de los Negocios Afiliados, pudiendo incluir sus propias opiniones de los Negocios Afiliados donde hayan realizado compras. Los t&eacute;rminos "nosotros", "nuestro" y " eSmartClub" se refieren a la marca eSmart Club. El t&eacute;rmino “usted” se refiere al usuario que visita el Sitio o que aporta o contribuye contenido al mismo.
+						Bienvenido al sitio eSmartClub.com (el “Sitio”). Este Sitio tiene la finalidad de auxiliar a los consumidores a conocer y evaluar informaci&oacute;n de los Negocios Afiliados, pudiendo incluir sus propias opiniones de los Negocios Afiliados donde hayan realizado compras. Los t&eacute;rminos "nosotros", "nuestro" y " eSmartClub" se refieren a la marca Travel Points. El t&eacute;rmino “usted” se refiere al usuario que visita el Sitio o que aporta o contribuye contenido al mismo.
 					</p>
 					<p>
 						El uso del presente Sitio est&aacute; sujeto a la condici&oacute;n que usted acepte, sin modificaci&oacute;n alguna, los t&eacute;rminos, condiciones y avisos que m&aacute;s adelante se establecen (conjuntamente el “Contrato”). Usted acepta regirse por el Contrato por el solo hecho de ingresar o usar el Sitio. Por favor lea cuidadosamente el Contrato. Si usted no acepta todos los t&eacute;rminos y condiciones, por favor no use el Sitio. Aseg&uacute;rese de regresar peri&oacute;dicamente a esta p&aacute;gina para revisar la versi&oacute;n m&aacute;s actualizada del presente Contrato. Nos reservamos el derecho de modificar, en cualquier momento y a nuestro juicio, el Contrato sin necesidad de aviso previo. El hecho que usted contin&uacute;e ingresando o usando el Sitio, significa su aceptaci&oacute;n a la versi&oacute;n actualizada o modificada del Contrato.
 					</p>
 					<p>
-						eSmart Club es una marca de Sail, Live and Enjoy Corporation S. de RL. de CV, empresa mexicana con sede en Marina Vallarta Business Center, oficina 204, en Plaza Marina, fraccionamiento Marina Vallarta en la ciudad de Puerto Vallarta, Jalisco, M&eacute;xico. Su Registro Federal de Contribuyente (RFC) es SLE120210FQ1. Tel&eacute;fono de contacto: 01 800 400 INFO (4636) y correo electr&oacute;nico: info@esmartclub.com
+						Travel Points es una marca de Sail, Live and Enjoy Corporation S. de RL. de CV, empresa mexicana con sede en Marina Vallarta Business Center, oficina 204, en Plaza Marina, fraccionamiento Marina Vallarta en la ciudad de Puerto Vallarta, Jalisco, M&eacute;xico. Su Registro Federal de Contribuyente (RFC) es SLE120210FQ1. Tel&eacute;fono de contacto: 01 800 400 INFO (4636) y correo electr&oacute;nico: info@esmartclub.com
 					</p>
 					<p>
 						Este Sitio Web (en adelante “eSmartClub”) ha sido creado para auxiliar a los consumidores a conocer y evaluar informaci&oacute;n de los Negocios Afiliados, pudiendo interactuar y generar beneficios varios derivados de la interacci&oacute;n entre los usuarios. El acceso al presente Sitio Web est&aacute; condicionado a la previa lectura y aceptaci&oacute;n por parte de los usuarios del presente Aviso Legal. Accediendo a este Sitio Web, Usted acepta de forma expresa, plena y sin reservas los siguientes t&eacute;rminos y condiciones. A efectos del presente Aviso Legal, se considerar&aacute; usuario de esmartclub.com cualquier persona que acceda a su p&aacute;gina web, sin necesidad de registros previos.
 					</p>
 					<p>
-						Este Sitio Web ha sido dise&ntilde;ado para soportar los navegadores Internet Explorer 7, Firefox 3, Chrome 1.0 y Safari 3. “eSmart Club” no se hace responsable de los perjuicios, de cualquier &iacute;ndole, que pudieran ocasionarse a los usuarios por la utilizaci&oacute;n de otros navegadores o versiones distintas de los navegadores para los que ha sido dise&ntilde;ado el Sitio Web.
+						Este Sitio Web ha sido dise&ntilde;ado para soportar los navegadores Internet Explorer 7, Firefox 3, Chrome 1.0 y Safari 3. “Travel Points” no se hace responsable de los perjuicios, de cualquier &iacute;ndole, que pudieran ocasionarse a los usuarios por la utilizaci&oacute;n de otros navegadores o versiones distintas de los navegadores para los que ha sido dise&ntilde;ado el Sitio Web.
 					</p>
 					<p>
 						Las cl&aacute;usulas a continuaci&oacute;n mencionadas rigen los t&eacute;rminos, condiciones y pol&iacute;tica de privacidad del presente Sitio Web y de sus programas promocionales, especialmente los referidos a Internet, ya sean publicados en este Sitio Web o en el de un tercero.
 					</p>
 					<p>
-						El acceso a este Sitio Web es responsabilidad exclusiva de los usuarios. El simple acceso a este Sitio Web directamente o a trav&eacute;s de programas promocionales de los Negocios Afiliados no supone entablar ning&uacute;n tipo de relaci&oacute;n de car&aacute;cter comercial entre “eSmart Club” y el usuario.
+						El acceso a este Sitio Web es responsabilidad exclusiva de los usuarios. El simple acceso a este Sitio Web directamente o a trav&eacute;s de programas promocionales de los Negocios Afiliados no supone entablar ning&uacute;n tipo de relaci&oacute;n de car&aacute;cter comercial entre “Travel Points” y el usuario.
 					</p>
 					<p>
 						Se entiende por USUARIO del Sitio Web a toda persona, comprador, vendedor o visitante del Sitio Web, y al usar el Sitio Web todos aceptan los presentes t&eacute;rminos y condiciones y se obligan a cumplir las reglas de operaci&oacute;n.
@@ -46,31 +46,31 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					<ol>
 						<li><h4 class="text-secondary">Objeto y contenidos del Sitio Web</h4>
 							<p>
-								El Sitio Web www.esmartclub.com (en adelante el Sitio Web o eSmart Club) contiene informaci&oacute;n relativa a los productos y servicios de “ESMARTCLUB”, de sus usuarios incluyendo los Negocios Afiliados.
-								“eSmart Club” realiza los m&aacute;ximos esfuerzos para evitar cualquier error en los contenidos que pudieran aparecer en el Sitio Web. El usuario de esmartclub.com asume, conoce y acepta, por el hecho mismo de visitarlo, que los datos e informaciones sobre ofertas, productos o servicios, precios, caracter&iacute;sticas y cualesquiera otros datos e informaciones contenidas en eSmartClub.com aparecen en el mismo &uacute;nica y exclusivamente a efectos informativos. “eSmart Club” no garantiza, ni se responsabiliza de las consecuencias que pudieran derivarse de los errores en los contenidos que pudieran aparecer en el Sitio Web.
+								El Sitio Web www.esmartclub.com (en adelante el Sitio Web o Travel Points) contiene informaci&oacute;n relativa a los productos y servicios de “ESMARTCLUB”, de sus usuarios incluyendo los Negocios Afiliados.
+								“Travel Points” realiza los m&aacute;ximos esfuerzos para evitar cualquier error en los contenidos que pudieran aparecer en el Sitio Web. El usuario de esmartclub.com asume, conoce y acepta, por el hecho mismo de visitarlo, que los datos e informaciones sobre ofertas, productos o servicios, precios, caracter&iacute;sticas y cualesquiera otros datos e informaciones contenidas en eSmartClub.com aparecen en el mismo &uacute;nica y exclusivamente a efectos informativos. “Travel Points” no garantiza, ni se responsabiliza de las consecuencias que pudieran derivarse de los errores en los contenidos que pudieran aparecer en el Sitio Web.
 							</p>
 							<p>
-								Las informaciones, contenidos y datos de cualquier clase publicados en las p&aacute;ginas de este Sitio Web son responsabilidad de quien las publica por lo que eSmart Club se deslinda de cualquier responsabilidad en el uso de sus im&aacute;genes, videos, m&uacute;sica, texto, promociones, lenguaje o cualquier otro; sin embargo, el usuario podr&aacute; reportar cualquier anomal&iacute;a o situaci&oacute;n si as&iacute; lo considera pertinente para la revisi&oacute;n por parte de eSmart Club. “eSmart Club” recomienda a los usuarios que est&eacute;n atentos a las posibles actualizaciones o rectificaciones que el Sitio Web incorpore, que confirmen los datos que resulten de inter&eacute;s esencial para ellos a trav&eacute;s de los cauces de comunicaci&oacute;n personal, telef&oacute;nica u otra que se proporcionan en estas mismas p&aacute;ginas y en los medios de comunicaci&oacute;n y que en ning&uacute;n caso adopten decisiones basadas &uacute;nica o especialmente en la informaci&oacute;n del Sitio Web o de los programas promocionales publicados en este Sitio Web o de terceros. En este sentido, “eSmart Club” no se responsabilizar&aacute; de las consecuencias econ&oacute;micas o de otro orden que sufra el Usuario o terceros por decisiones tomadas a partir de datos existentes en el Sitio Web y que no hayan sido contrastados previamente por el usuario.
+								Las informaciones, contenidos y datos de cualquier clase publicados en las p&aacute;ginas de este Sitio Web son responsabilidad de quien las publica por lo que Travel Points se deslinda de cualquier responsabilidad en el uso de sus im&aacute;genes, videos, m&uacute;sica, texto, promociones, lenguaje o cualquier otro; sin embargo, el usuario podr&aacute; reportar cualquier anomal&iacute;a o situaci&oacute;n si as&iacute; lo considera pertinente para la revisi&oacute;n por parte de Travel Points. “Travel Points” recomienda a los usuarios que est&eacute;n atentos a las posibles actualizaciones o rectificaciones que el Sitio Web incorpore, que confirmen los datos que resulten de inter&eacute;s esencial para ellos a trav&eacute;s de los cauces de comunicaci&oacute;n personal, telef&oacute;nica u otra que se proporcionan en estas mismas p&aacute;ginas y en los medios de comunicaci&oacute;n y que en ning&uacute;n caso adopten decisiones basadas &uacute;nica o especialmente en la informaci&oacute;n del Sitio Web o de los programas promocionales publicados en este Sitio Web o de terceros. En este sentido, “Travel Points” no se responsabilizar&aacute; de las consecuencias econ&oacute;micas o de otro orden que sufra el Usuario o terceros por decisiones tomadas a partir de datos existentes en el Sitio Web y que no hayan sido contrastados previamente por el usuario.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Objeto y contenidos del Sitio Web</h4>
 							<p>
-								El Usuario se compromete a utilizar el presente Sitio Web de conformidad con la ley, la moral, buenas costumbres generalmente aceptadas, el orden p&uacute;blico vigente y lo dispuesto en este Aviso Legal. El Usuario se obliga a abstenerse de utilizar el Sitio Web con fines o efectos il&iacute;citos, contrarios a lo establecido en las presentes normas, lesivos de los derechos e intereses de “eSmart Club”, o de terceros o que de cualquier forma puedan da&ntilde;ar, inutilizar, sobrecargar o deteriorar el Sitio Web o impedir su normal utilizaci&oacute;n.
+								El Usuario se compromete a utilizar el presente Sitio Web de conformidad con la ley, la moral, buenas costumbres generalmente aceptadas, el orden p&uacute;blico vigente y lo dispuesto en este Aviso Legal. El Usuario se obliga a abstenerse de utilizar el Sitio Web con fines o efectos il&iacute;citos, contrarios a lo establecido en las presentes normas, lesivos de los derechos e intereses de “Travel Points”, o de terceros o que de cualquier forma puedan da&ntilde;ar, inutilizar, sobrecargar o deteriorar el Sitio Web o impedir su normal utilizaci&oacute;n.
 							</p>
 							<p>
-								“eSmart Club” podr&aacute;, para mejorar su servicio y en beneficio de los usuarios, modificar unilateralmente, en cualquier momento y sin previo aviso, el sitio web, los sitios o publicaciones de los negocios afiliados, cualquier aspecto sustancial del mismo o sus condiciones de operatividad, t&eacute;cnicas y de uso. Del mismo modo, los usuarios, con objeto de mejorar la p&aacute;gina web y establecer un &oacute;ptimo nivel de calidad, podr&aacute;n sugerir aquellas modificaciones que ellos estimen &uacute;tiles, poni&eacute;ndose en contacto con los responsables de la p&aacute;gina a trav&eacute;s de los datos de contacto habilitados a tal efecto.
+								“Travel Points” podr&aacute;, para mejorar su servicio y en beneficio de los usuarios, modificar unilateralmente, en cualquier momento y sin previo aviso, el sitio web, los sitios o publicaciones de los negocios afiliados, cualquier aspecto sustancial del mismo o sus condiciones de operatividad, t&eacute;cnicas y de uso. Del mismo modo, los usuarios, con objeto de mejorar la p&aacute;gina web y establecer un &oacute;ptimo nivel de calidad, podr&aacute;n sugerir aquellas modificaciones que ellos estimen &uacute;tiles, poni&eacute;ndose en contacto con los responsables de la p&aacute;gina a trav&eacute;s de los datos de contacto habilitados a tal efecto.
 							</p>
 							<p>
-								Los usuarios de la p&aacute;gina deber&aacute;n observar cualquier instrucci&oacute;n que “eSmart Club” establezca a trav&eacute;s del Sitio Web o a trav&eacute;s de personal debidamente autorizado.
+								Los usuarios de la p&aacute;gina deber&aacute;n observar cualquier instrucci&oacute;n que “Travel Points” establezca a trav&eacute;s del Sitio Web o a trav&eacute;s de personal debidamente autorizado.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Indemnizaci&oacute;n</h4>
 							<p>
-								El usuario responder&aacute; de los da&ntilde;os y perjuicios de toda naturaleza que “eSmart Club”, sus filiales, funcionarios, directores, empleados o contratistas puedan sufrir directa o indirectamente, como consecuencia del incumplimiento por parte del usuario de cualquiera de las obligaciones establecidas en este Aviso Legal. Igualmente, el usuario mantendr&aacute; a “eSmart Club” y a sus otras marcas y filiales indemne frente a cualquier sanci&oacute;n, reclamaci&oacute;n o demanda que pudiera interponerse por un tercero, incluidos cualesquiera organismos p&uacute;blicos contra “eSmart Club”, sus marcas, filiales, sus empleados o agentes como consecuencia de la violaci&oacute;n de cualesquiera derechos de terceros por parte de dicho usuario mediante la utilizaci&oacute;n de eSmartClub.com en una forma contraria a lo previsto en este Aviso Legal.
+								El usuario responder&aacute; de los da&ntilde;os y perjuicios de toda naturaleza que “Travel Points”, sus filiales, funcionarios, directores, empleados o contratistas puedan sufrir directa o indirectamente, como consecuencia del incumplimiento por parte del usuario de cualquiera de las obligaciones establecidas en este Aviso Legal. Igualmente, el usuario mantendr&aacute; a “Travel Points” y a sus otras marcas y filiales indemne frente a cualquier sanci&oacute;n, reclamaci&oacute;n o demanda que pudiera interponerse por un tercero, incluidos cualesquiera organismos p&uacute;blicos contra “Travel Points”, sus marcas, filiales, sus empleados o agentes como consecuencia de la violaci&oacute;n de cualesquiera derechos de terceros por parte de dicho usuario mediante la utilizaci&oacute;n de eSmartClub.com en una forma contraria a lo previsto en este Aviso Legal.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Limitaci&oacute;n de responsabilidad</h4>
-							A pesar de que nos comprometemos a llevar a cabo todos los esfuerzos razonables para garantizar la disponibilidad del Sitio Web, no podemos asegurar un uso r&aacute;pido, ininterrumpido y libre de errores de nuestros servicios. Asimismo, no podemos garantizar la idoneidad y contenidos del Sitio Web o de los servicios vinculados al mismo. En concreto, “eSmart Club” se exime de toda clase de responsabilidades en los siguientes casos:
+							A pesar de que nos comprometemos a llevar a cabo todos los esfuerzos razonables para garantizar la disponibilidad del Sitio Web, no podemos asegurar un uso r&aacute;pido, ininterrumpido y libre de errores de nuestros servicios. Asimismo, no podemos garantizar la idoneidad y contenidos del Sitio Web o de los servicios vinculados al mismo. En concreto, “Travel Points” se exime de toda clase de responsabilidades en los siguientes casos:
 							<ul>
 								<li>
 									Fallos t&eacute;cnicos que por causas fortuitas o de otra &iacute;ndole, impidan un normal funcionamiento del servicio.
@@ -79,10 +79,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									Falta de disponibilidad del sitio por razones de mantenimiento u otras, que impida disponer del servicio.
 								</li>
 								<li>
-									Por errores o da&ntilde;os que genere o pueda generar el contenido o software al que pueda accederse a trav&eacute;s de este Sitio Web. En ning&uacute;n caso “eSmart Club” ser&aacute; responsable por las p&eacute;rdidas, da&ntilde;os o perjuicios de cualquier tipo que surjan por el acceso y el uso de la p&aacute;gina web, incluy&eacute;ndose pero no limit&aacute;ndose, a los ocasionados a los sistemas inform&aacute;ticos o los provocados por la introducci&oacute;n de virus. “eSmart Club” no se hace responsable de los da&ntilde;os que pudiesen ocasionarse a los usuarios por un uso inadecuado de este Sitio Web.
+									Por errores o da&ntilde;os que genere o pueda generar el contenido o software al que pueda accederse a trav&eacute;s de este Sitio Web. En ning&uacute;n caso “Travel Points” ser&aacute; responsable por las p&eacute;rdidas, da&ntilde;os o perjuicios de cualquier tipo que surjan por el acceso y el uso de la p&aacute;gina web, incluy&eacute;ndose pero no limit&aacute;ndose, a los ocasionados a los sistemas inform&aacute;ticos o los provocados por la introducci&oacute;n de virus. “Travel Points” no se hace responsable de los da&ntilde;os que pudiesen ocasionarse a los usuarios por un uso inadecuado de este Sitio Web.
 								</li>
 								<li>
-									Intromisi&oacute;n de terceros en el servicio. Dados los avances de la tecnolog&iacute;a, es posible que terceros se introduzcan en el sitio y causen perturbaciones. Sin perjuicio de ello, “eSmart Club” realiza todos los esfuerzos t&eacute;cnicos a trav&eacute;s de la incorporaci&oacute;n de las correspondientes medidas tecnol&oacute;gicas, para reducir este tipo de riesgos. No obstante el usuario queda informado de que estas improbables intromisiones pueden suceder, y que “eSmart Club” no ser&aacute; responsable de los perjuicios que puedan causar.
+									Intromisi&oacute;n de terceros en el servicio. Dados los avances de la tecnolog&iacute;a, es posible que terceros se introduzcan en el sitio y causen perturbaciones. Sin perjuicio de ello, “Travel Points” realiza todos los esfuerzos t&eacute;cnicos a trav&eacute;s de la incorporaci&oacute;n de las correspondientes medidas tecnol&oacute;gicas, para reducir este tipo de riesgos. No obstante el usuario queda informado de que estas improbables intromisiones pueden suceder, y que “Travel Points” no ser&aacute; responsable de los perjuicios que puedan causar.
 								</li>
 								<li>
 									Por eventuales conflictos entre usuarios, a causa de calumnias, injurias o cualesquiera otras causas que motiven un conflicto entre ellos.
@@ -94,20 +94,20 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						</li>
 						<li><h4 class="text-secondary">Propiedad Intelectual</h4>
 							<p>
-								Toda la informaci&oacute;n contenida en el Sitio Web as&iacute; como su dise&ntilde;o gr&aacute;fico y los c&oacute;digos utilizados, est&aacute;n protegidos por derechos de autor u otros derechos de protecci&oacute;n recogidos en la Ley de Propiedad Intelectual. Estos derechos pertenecen exclusivamente a “eSmart Club”, o a sus licenciantes, por lo tanto, queda expresamente excluido cualquier acto de reproducci&oacute;n, distribuci&oacute;n, transformaci&oacute;n o comunicaci&oacute;n p&uacute;blica, as&iacute; como cualquier tipo de cesi&oacute;n, del todo o parte del contenido de este sitio, y en general de cualquier objeto que seg&uacute;n la legislaci&oacute;n vigente sea protegible por las normas de propiedad intelectual sin autorizaci&oacute;n expresa de “eSmart Club”.
+								Toda la informaci&oacute;n contenida en el Sitio Web as&iacute; como su dise&ntilde;o gr&aacute;fico y los c&oacute;digos utilizados, est&aacute;n protegidos por derechos de autor u otros derechos de protecci&oacute;n recogidos en la Ley de Propiedad Intelectual. Estos derechos pertenecen exclusivamente a “Travel Points”, o a sus licenciantes, por lo tanto, queda expresamente excluido cualquier acto de reproducci&oacute;n, distribuci&oacute;n, transformaci&oacute;n o comunicaci&oacute;n p&uacute;blica, as&iacute; como cualquier tipo de cesi&oacute;n, del todo o parte del contenido de este sitio, y en general de cualquier objeto que seg&uacute;n la legislaci&oacute;n vigente sea protegible por las normas de propiedad intelectual sin autorizaci&oacute;n expresa de “Travel Points”.
 							</p>
 							<p>
-								Todo el contenido del sitio web y todo el contenido disponible a trav&eacute;s de los servicios prestados por “eSmart Club”, incluyendo dise&ntilde;os, texto, gr&aacute;ficos, im&aacute;genes, v&iacute;deo, informaci&oacute;n, aplicaciones, software, m&uacute;sica, sonido y otros archivos, as&iacute; como su selecci&oacute;n y disposici&oacute;n (el “Contenido”) son propiedad exclusiva de “eSmart Club”, o de sus licenciantes, con excepci&oacute;n de los contenidos publicados por los negocios afiliados cuya responsabilidad es total y exclusivamente del negocio que lleva a cabo la publicaci&oacute;n. Ninguna parte del Contenido del sitio web podr&aacute; ser modificado, copiado, distribuido, enmarcado, reproducido, republicado, descargado, extra&iacute;do, mostrado, publicado, transmitido o vendido en modo alguno o por ning&uacute;n medio, total o parcialmente, sin el previo consentimiento por escrito de “eSmart Club”. 
+								Todo el contenido del sitio web y todo el contenido disponible a trav&eacute;s de los servicios prestados por “Travel Points”, incluyendo dise&ntilde;os, texto, gr&aacute;ficos, im&aacute;genes, v&iacute;deo, informaci&oacute;n, aplicaciones, software, m&uacute;sica, sonido y otros archivos, as&iacute; como su selecci&oacute;n y disposici&oacute;n (el “Contenido”) son propiedad exclusiva de “Travel Points”, o de sus licenciantes, con excepci&oacute;n de los contenidos publicados por los negocios afiliados cuya responsabilidad es total y exclusivamente del negocio que lleva a cabo la publicaci&oacute;n. Ninguna parte del Contenido del sitio web podr&aacute; ser modificado, copiado, distribuido, enmarcado, reproducido, republicado, descargado, extra&iacute;do, mostrado, publicado, transmitido o vendido en modo alguno o por ning&uacute;n medio, total o parcialmente, sin el previo consentimiento por escrito de “Travel Points”. 
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Propiedad Intelectual e Industrial</h4>
 							<p>
-								Queda expresamente prohibida la utilizaci&oacute;n, sin previo consentimiento, de cualquier elemento de “eSmart Club” y del Sitio Web que sea objeto de protecci&oacute;n de acuerdo con la legislaci&oacute;n vigente relativa a propiedad industrial. Especialmente, solo se podr&aacute;n utilizar las marcas, nombres comerciales, r&oacute;tulos de establecimientos, denominaciones, logotipos, esl&oacute;ganes y cualquier tipo de signo distintivo perteneciente a “eSmart Club” o al Sitio Web bajo la condiciones de “eSmart Club”.
+								Queda expresamente prohibida la utilizaci&oacute;n, sin previo consentimiento, de cualquier elemento de “Travel Points” y del Sitio Web que sea objeto de protecci&oacute;n de acuerdo con la legislaci&oacute;n vigente relativa a propiedad industrial. Especialmente, solo se podr&aacute;n utilizar las marcas, nombres comerciales, r&oacute;tulos de establecimientos, denominaciones, logotipos, esl&oacute;ganes y cualquier tipo de signo distintivo perteneciente a “Travel Points” o al Sitio Web bajo la condiciones de “Travel Points”.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Enlaces a Web de Terceros</h4>
 							<p>
-								Los enlaces establecidos en el presente Sitio Web, referidos a publicidad o a otro tipo de contenidos, y cuya titularidad o responsabilidad corresponda a terceros distintos a “eSmart Club”, no son responsabilidad de “eSmart Club”, quien en ning&uacute;n caso se obliga a controlar ni a aprobar los servicios, contenidos, datos, archivos, productos y cualquier clase de material existente en la p&aacute;gina o p&aacute;ginas web de terceros. Por lo tanto, “eSmart Club” no responder&aacute;, bajo ninguna circunstancia, de la legalidad de los contenidos de dicha/s p&aacute;gina/s, siendo responsabilidad exclusiva del tercero todo lo que concierna al contenido de ese enlace, especialmente el respeto a la ley, moral, buenas costumbres y orden p&uacute;blico. La existencia de enlaces no presupone relaci&oacute;n de ninguna clase entre “eSmart Club” y el titular de la p&aacute;gina web enlazada.
+								Los enlaces establecidos en el presente Sitio Web, referidos a publicidad o a otro tipo de contenidos, y cuya titularidad o responsabilidad corresponda a terceros distintos a “Travel Points”, no son responsabilidad de “Travel Points”, quien en ning&uacute;n caso se obliga a controlar ni a aprobar los servicios, contenidos, datos, archivos, productos y cualquier clase de material existente en la p&aacute;gina o p&aacute;ginas web de terceros. Por lo tanto, “Travel Points” no responder&aacute;, bajo ninguna circunstancia, de la legalidad de los contenidos de dicha/s p&aacute;gina/s, siendo responsabilidad exclusiva del tercero todo lo que concierna al contenido de ese enlace, especialmente el respeto a la ley, moral, buenas costumbres y orden p&uacute;blico. La existencia de enlaces no presupone relaci&oacute;n de ninguna clase entre “Travel Points” y el titular de la p&aacute;gina web enlazada.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Negocios afiliados</h4>
@@ -122,19 +122,19 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								</li>
 								<li><h4 class="text-secondary">Comisiones</h4>
 									<p>
-										Cada venta realizada a un socio del club genera una comisi&oacute;n de venta a favor de “eSmart Club” equivalente al 6% o superior -a elecci&oacute;n del negocio- del monto de la venta.
+										Cada venta realizada a un socio del club genera una comisi&oacute;n de venta a favor de “Travel Points” equivalente al 6% o superior -a elecci&oacute;n del negocio- del monto de la venta.
 									</p>
 									<p>
-										Las comisiones de ventas ser&aacute;n cobradas del saldo a favor disponible con que cuente el negocio, o en caso de excederse del monto, se generar&aacute; el aviso el negocio a eSmart Club para que recargue saldo con un lapso de 3 d&iacute;as naturales de vigencia.
+										Las comisiones de ventas ser&aacute;n cobradas del saldo a favor disponible con que cuente el negocio, o en caso de excederse del monto, se generar&aacute; el aviso el negocio a Travel Points para que recargue saldo con un lapso de 3 d&iacute;as naturales de vigencia.
 									</p>
 									<p>
-										El monto de la comisi&oacute;n es un porcentaje del monto de la venta. El negocio puede elegir el porcentaje que desea pagar de comisi&oacute;n siendo el m&iacute;nimo el 6%. Este monto de comisi&oacute;n lo recibe en su totalidad -en puntos denominados eSmartties- el comprador una vez que el negocio ha cubierto el pago a eSmart Club en dinero.
+										El monto de la comisi&oacute;n es un porcentaje del monto de la venta. El negocio puede elegir el porcentaje que desea pagar de comisi&oacute;n siendo el m&iacute;nimo el 6%. Este monto de comisi&oacute;n lo recibe en su totalidad -en puntos denominados eSmartties- el comprador una vez que el negocio ha cubierto el pago a Travel Points en dinero.
 									</p>
 									<p>
 										Los negocios que ofrezcan mayor comisi&oacute;n, obtienen preferencia en el posicionamiento de sus mensajes comerciales dentro del Sitio Web, y ganan la preferencia de los compradores del club ya que obtienen m&aacute;s eSmartties.
 									</p>
 									<p>
-										El negocio que no cubra el saldo de las comisiones pendientes de pago, ser&aacute; notificado, y su baja quedar&aacute; a consideraci&oacute;n de eSmart Club, pudiendo eSmart Club publicar en el Sitio Web que este negocio no ha cumplido sus compromisos con los consumidores.
+										El negocio que no cubra el saldo de las comisiones pendientes de pago, ser&aacute; notificado, y su baja quedar&aacute; a consideraci&oacute;n de Travel Points, pudiendo Travel Points publicar en el Sitio Web que este negocio no ha cumplido sus compromisos con los consumidores.
 									</p>
 								</li>
 								<li><h4 class="text-secondary">Certificados de Regalo</h4>
@@ -167,7 +167,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								Solo los socios que registren una compra en cualquiera de los negocios afiliados, recibir&aacute; un formulario que les permite publicar sus comentarios, grado de satisfacci&oacute;n y recomendaciones, generando una confiable comunidad de compradores.
 							</p>
 							<p>
-								El hecho de publicar un comentario, otorga a eSmart Club el derecho de hacer p&uacute;blica su experiencia de compra.
+								El hecho de publicar un comentario, otorga a Travel Points el derecho de hacer p&uacute;blica su experiencia de compra.
 							</p>
 							<p>
 								Asimismo, usted concede a eSmartClub.com el derecho de ejercitar las acciones legales en contra de cualquier persona, f&iacute;sica o moral, que viole sus derechos o los de eSmartClub.com. Usted reconoce acepta que las Aportaciones son no-confidenciales y no-propietarias.
@@ -193,22 +193,22 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								Cada vez que un socio del club registre una compra en cualquiera de los negocios afiliados, obtendr&aacute; una cantidad de puntos denomiados eSmartties. Esta cantidad est&aacute; directamente relacionada con el porcentaje de comisi&oacute;n que el Negocio Afiliado ofrezca.
 							</p>
 							<p>
-								Los eSmartties se hacen efectivos una vez que el negocio afiliado acredite haber pagado a eSmart Club la comisi&oacute;n correspondiente de la transacci&oacute;n registrada al usuario comprador.
+								Los eSmartties se hacen efectivos una vez que el negocio afiliado acredite haber pagado a Travel Points la comisi&oacute;n correspondiente de la transacci&oacute;n registrada al usuario comprador.
 							</p>
 							<p>
 								En caso de que el negocio no cubra la comisi&oacute;n acordada, el usuario comprador ser&aacute; notificado para que publique a su criterio la experiencia en el Sitio Web en lo que se resuelve el conflicto.
 							</p>
 							<p>
-								eSmart Club no se hace responsable de cubrir los eSmartties al usuario comprador en caso de incumplimiento por parte del Negocio Afiliado.
+								Travel Points no se hace responsable de cubrir los eSmartties al usuario comprador en caso de incumplimiento por parte del Negocio Afiliado.
 							</p>
 							<p>
 								El usuario en su perfil tendr&aacute; acceso a su cuenta, donde podr&aacute; ver la informaci&oacute;n de los eSmartties ganados, acumulados o consumidos.
 							</p>
 							<p>
-								Los eSmartties pueden ser cambiados por cualquier de los productos y servicios publicados en la tienda de regalos de eSmart Club.
+								Los eSmartties pueden ser cambiados por cualquier de los productos y servicios publicados en la tienda de regalos de Travel Points.
 							</p>
 							<p>
-								eSmart Club se reserva el derecho de establecer el precio o valor en esmartties de los productos o servicios disponibles en la tienda. El usuario podr&aacute; adquirir con sus esmartties los productos y servicios ofrecidos en la tienda online. Los productos o servicios que no requieran entrega f&iacute;sica podr&aacute;n ser descargados de manera inmediata, los productos que requieran una entrega f&iacute;sica podr&aacute;n ser recogidos en el punto de canje de eSmart Club o si el usuario lo prefiere, puede cubrir el costo del env&iacute;o a su domicilio a trav&eacute;s del uso del servicio de una empresa de mensajer&iacute;a privada.
+								Travel Points se reserva el derecho de establecer el precio o valor en esmartties de los productos o servicios disponibles en la tienda. El usuario podr&aacute; adquirir con sus esmartties los productos y servicios ofrecidos en la tienda online. Los productos o servicios que no requieran entrega f&iacute;sica podr&aacute;n ser descargados de manera inmediata, los productos que requieran una entrega f&iacute;sica podr&aacute;n ser recogidos en el punto de canje de Travel Points o si el usuario lo prefiere, puede cubrir el costo del env&iacute;o a su domicilio a trav&eacute;s del uso del servicio de una empresa de mensajer&iacute;a privada.
 							</p>
 							<p>
 								Los eSmartties tienen una vigencia de un a&ntilde;o desde la fecha de su adquisici&oacute;n, y ser&aacute;n descontados de su saldo transcurrido ese lapso de manera autom&aacute;tica.
@@ -216,7 +216,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						</li>
 						<li><h4 class="text-secondary">Actualizaci&oacute;n del Sitio Web</h4>
 							<p>
-								La informaci&oacute;n que aparece en este Sitio Web es la vigente en la fecha de su &uacute;ltima actualizaci&oacute;n. “eSmart Club” se reserva el derecho a actualizar, modificar o eliminar la informaci&oacute;n de este Sitio Web. No se podr&aacute; alterar, cambiar, modificar, o adaptar este Sitio Web. Sin embargo “eSmart Club” se reserva la facultad de realizar, en cualquier momento, cuantos cambios y modificaciones estime convenientes, pudiendo hacer uso de tal facultad en cualquier momento y sin previo aviso, en lo referente a la disponibilidad de sus productos y promociones.
+								La informaci&oacute;n que aparece en este Sitio Web es la vigente en la fecha de su &uacute;ltima actualizaci&oacute;n. “Travel Points” se reserva el derecho a actualizar, modificar o eliminar la informaci&oacute;n de este Sitio Web. No se podr&aacute; alterar, cambiar, modificar, o adaptar este Sitio Web. Sin embargo “Travel Points” se reserva la facultad de realizar, en cualquier momento, cuantos cambios y modificaciones estime convenientes, pudiendo hacer uso de tal facultad en cualquier momento y sin previo aviso, en lo referente a la disponibilidad de sus productos y promociones.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Cookies</h4>
@@ -226,10 +226,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						</li>
 						<li><h4 class="text-secondary">Protecci&oacute;n de datos personales</h4>
 							<p>
-								A los efectos de preservar y garantizar en todo momento su intimidad, y en estricto cumplimiento de lo establecido en la Ley Federal de Protecci&oacute;n de Datos (en adelante, “la ley”), “eSmart Club” informa de que los datos de car&aacute;cter personal que pudieran ser recogidos a trav&eacute;s de eSmartClub.com ser&aacute;n objeto de tratamiento automatizado a trav&eacute;s de su incorporaci&oacute;n en un fichero de datos de car&aacute;cter personal titularidad de “eSmart Club” que a los efectos legales oportunos, se identifica como responsable de dicho fichero. “eSmart Club” le informa de que la finalidad de la recolecci&oacute;n de dichos datos es la de poderle ofrecer informaci&oacute;n acerca de nuestros productos y servicios, as&iacute; como enviarles comunicaciones comerciales por v&iacute;a electr&oacute;nica en relaci&oacute;n con dichos productos y servicios.
+								A los efectos de preservar y garantizar en todo momento su intimidad, y en estricto cumplimiento de lo establecido en la Ley Federal de Protecci&oacute;n de Datos (en adelante, “la ley”), “Travel Points” informa de que los datos de car&aacute;cter personal que pudieran ser recogidos a trav&eacute;s de eSmartClub.com ser&aacute;n objeto de tratamiento automatizado a trav&eacute;s de su incorporaci&oacute;n en un fichero de datos de car&aacute;cter personal titularidad de “Travel Points” que a los efectos legales oportunos, se identifica como responsable de dicho fichero. “Travel Points” le informa de que la finalidad de la recolecci&oacute;n de dichos datos es la de poderle ofrecer informaci&oacute;n acerca de nuestros productos y servicios, as&iacute; como enviarles comunicaciones comerciales por v&iacute;a electr&oacute;nica en relaci&oacute;n con dichos productos y servicios.
 							</p>
 							<p>
-								Asimismo, le informamos de la posibilidad de que ejerza, en los t&eacute;rminos establecidos en la mencionada ley, los derechos de acceso, rectificaci&oacute;n, cancelaci&oacute;n y oposici&oacute;n de sus datos de car&aacute;cter personal, siendo el responsable del fichero que los trata “eSmart Club” cuyo domicilio est&aacute; fijado en el domicilio establecido para eSmart Club. Para darse de baja de las comunicaciones comerciales remitidas v&iacute;a correo electr&oacute;nico, deber&aacute; enviarnos un correo electr&oacute;nico a la direcci&oacute;n info@eSmartClub.com con el asunto “baja newsletter”.
+								Asimismo, le informamos de la posibilidad de que ejerza, en los t&eacute;rminos establecidos en la mencionada ley, los derechos de acceso, rectificaci&oacute;n, cancelaci&oacute;n y oposici&oacute;n de sus datos de car&aacute;cter personal, siendo el responsable del fichero que los trata “Travel Points” cuyo domicilio est&aacute; fijado en el domicilio establecido para Travel Points. Para darse de baja de las comunicaciones comerciales remitidas v&iacute;a correo electr&oacute;nico, deber&aacute; enviarnos un correo electr&oacute;nico a la direcci&oacute;n info@eSmartClub.com con el asunto “baja newsletter”.
 							</p>
 							<p>
 								Esta autorizaci&oacute;n es revocable en cualquier momento sin que tenga efectos retroactivos. Con la aceptaci&oacute;n de la presente cl&aacute;usula el usuario se da por informado y autoriza de forma expresa la referida comunicaci&oacute;n de sus datos personales a los efectos de lo dispuesto la ley.
@@ -238,7 +238,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								Por &uacute;ltimo, el usuario declara que toda la informaci&oacute;n que nos suministre a trav&eacute;s del acceso a  eSmartClub.com y en el curso de la utilizaci&oacute;n del mismo, es verdadera, completa y precisa, y se compromete a mantenerla actualizada.
 							</p>
 							<p>
-								La falsedad de datos proporcionados por los negocios, implican su baja autom&aacute;tica de eSmart Club.
+								La falsedad de datos proporcionados por los negocios, implican su baja autom&aacute;tica de Travel Points.
 							</p>
 						</li>
 						<li><h4 class="text-secondary">Jurisdicci&oacute;n y fuero aplicable</h4>

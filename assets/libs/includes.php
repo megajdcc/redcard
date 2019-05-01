@@ -494,7 +494,7 @@ class includes {
 										$review.$request;
 								if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){?>
 									
-									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel eSmart Club</a><li>
+									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel Travel Points</a><li>
 									
 									<?php  if($this->admin['pending_request'] > 0){?>
 										<li><a href="<?php echo HOST.'/admin/negocios/solicitudes'; ?>">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>

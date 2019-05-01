@@ -19,7 +19,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Desactivar cuenta | eSmart Club';
+$properties['title'] = 'Desactivar cuenta | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -41,7 +41,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									<form method="post" action="<?php echo _safe(HOST.'/socio/perfil/desactivar-cuenta');?>">
 										<h1 class="page-title">Desactivar cuenta</h1>
 										<p>
-											Al desactivar tu cuenta, se desactivar&aacute; tu perfil y se borrar&aacute; tu nombre y tu foto de la mayor parte de eSmart Club.
+											Al desactivar tu cuenta, se desactivar&aacute; tu perfil y se borrar&aacute; tu nombre y tu foto de la mayor parte de Travel Points.
 										</p>
 										<div class="form-group">
 											<label for="message">Nos interesa saber por qué nos dejas.</label>

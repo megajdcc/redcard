@@ -21,7 +21,7 @@ $paging = new assets\libraries\pagination\pagination($options['page'], $options[
 $paging->setRPP($rpp);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Mis opiniones | eSmart Club';
+$properties['title'] = 'Mis opiniones | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

@@ -20,7 +20,7 @@ if(!$business->load_data($url)){
 $business->increase_views();
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = $business->get_name_unsafe().' | Negocio en eSmart Club';
+$properties['title'] = $business->get_name_unsafe().' | Negocio en Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); 

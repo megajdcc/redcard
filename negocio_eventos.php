@@ -28,7 +28,7 @@ $paging->setTarget('/alan-coffee-shop/eventos/');
 $paging->setKey('');
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Eventos | '.$business->get_raw_name().' | eSmart Club';
+$properties['title'] = 'Eventos | '.$business->get_raw_name().' | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

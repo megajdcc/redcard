@@ -22,7 +22,7 @@ $paging = new assets\libraries\pagination\pagination($options['page'], $options[
 $paging->setRPP($rpp);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Socios que he invitado | eSmart Club';
+$properties['title'] = 'Socios que he invitado | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

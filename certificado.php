@@ -16,7 +16,7 @@ if(!$certificate->load_data($url)){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Certificado de regalo | eSmart Club';
+$properties['title'] = 'Certificado de regalo | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

@@ -24,7 +24,7 @@ $paging = new assets\libraries\pagination\pagination($options['page'], $options[
 $paging->setRPP($rpp);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Hoteles | eSmart Club';
+$properties['title'] = 'Hoteles | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -62,7 +62,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							<div class="background-white p30 mb30">
 								<div class="page-title">
 									<a href="<?php echo HOST;?>/socio/perfil/invitados" class="btn btn-secondary btn-xs pull-right">Ver mis invitados</a>
-									<h4>Amigos invitados a eSmart Club: <?php // echo $profile->get_invited();?></h4>
+									<h4>Amigos invitados a Travel Points: <?php // echo $profile->get_invited();?></h4>
 								</div>
 								<form method="post" action="<?php echo _safe(HOST.'/hotel/');?>">
 									<div class="form-group" data-toggle="tooltip" title="Ingresa el correo electr&oacute;nico de tu amigo">

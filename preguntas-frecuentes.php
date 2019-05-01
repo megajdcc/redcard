@@ -9,7 +9,7 @@ $pagination->setRPP($rpp);
 $pager = $pagination->parse();
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Preguntas Frecuentes | eSmart Club';
+$properties['title'] = 'Preguntas Frecuentes | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -29,17 +29,17 @@ echo $navbar = $includes->get_main_navbar(); ?>
 <?php if($page == 1){ ?>
 								<div class="faq-item">
 									<div class="faq-item-question">
-										<h2 class="text-primary">¿Qu&eacute; es eSmart Club?</h2>
+										<h2 class="text-primary">¿Qu&eacute; es Travel Points?</h2>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											<strong>eSmart Club</strong> es un programa de lealtad de afiliaci&oacute;n totalmente gratuita, que une m&uacute;ltiples negocios y compradores en una sola plataforma.
+											<strong>Travel Points</strong> es un programa de lealtad de afiliaci&oacute;n totalmente gratuita, que une m&uacute;ltiples negocios y compradores en una sola plataforma.
 										</p>
 										<p>
 											En un solo sitio los compradores encuentran negocios, promociones y regalos, lo que lo convierte en una app muy conveniente antes de ir a comprar cualquier cosa.
 										</p>
 										<p>
-											Los clientes registran sus compras en los negocios afiliados y a cambio obtienen un porcentaje de su compra en puntos (esmartties) que podr&aacute; canjear por otros productos o servicios de la tienda eSmart Club.
+											Los clientes registran sus compras en los negocios afiliados y a cambio obtienen un porcentaje de su compra en puntos (esmartties) que podr&aacute; canjear por otros productos o servicios de la tienda Travel Points.
 										</p>
 										<p>
 											Es el club que recompensa las compras de los socios en los negocios afiliados.
@@ -99,7 +99,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<strong>Acceso al cat&aacute;logo de negocios afiliados</strong>. Podr&aacute;s ver todos los negocios que est&aacute;n recompensando a quienes realizan compras con ellos
 											</li>
 											<li>
-												<strong>Acceso a la verdad</strong>. Ver&aacute;s la opini&oacute;n de los dem&aacute;s socios de eSmart Club que ya consumieron o compraron en los negocios afiliados; y (2) emitir tu propia opini&oacute;n respecto de alg&uacute;n negocio afiliado (4) acceso a eventos y promociones exclusivas para socios.
+												<strong>Acceso a la verdad</strong>. Ver&aacute;s la opini&oacute;n de los dem&aacute;s socios de Travel Points que ya consumieron o compraron en los negocios afiliados; y (2) emitir tu propia opini&oacute;n respecto de alg&uacute;n negocio afiliado (4) acceso a eventos y promociones exclusivas para socios.
 											</li>
 											<li>
 												<strong>Promociones exclusivas para socios</strong>. Los negocios publican promociones exclusivas a los socios a trav&eacute;s del sitio de eSmartClub.
@@ -134,11 +134,11 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								</div><!-- /.faq-item -->
 								<div class="faq-item">
 									<div class="faq-item-question">
-										<h2 class="text-primary">¿En qu&eacute; momento debo identificarme como socio del eSmart club?</h2>
+										<h2 class="text-primary">¿En qu&eacute; momento debo identificarme como socio del Travel Points?</h2>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Para registrar una compra, necesitas identificarte. Menciona tu nombre, o tu usuario al vendedor en el momento de realizar tu pago y pedir que se registre tu compra. ¡As&iacute; de f&aacute;cil! Por ejemplo: soy socio de eSmart Club, registre mi compra a nombre de “juanperez”. Si acualizaste tu perfil con tu foto, el negocio podr&aacute; identificarte f&aacute;cilmente.
+											Para registrar una compra, necesitas identificarte. Menciona tu nombre, o tu usuario al vendedor en el momento de realizar tu pago y pedir que se registre tu compra. ¡As&iacute; de f&aacute;cil! Por ejemplo: soy socio de Travel Points, registre mi compra a nombre de “juanperez”. Si acualizaste tu perfil con tu foto, el negocio podr&aacute; identificarte f&aacute;cilmente.
 										</p>
 										<p>
 											Si vas a usar alg&uacute;n beneficio exclusivo, es conveniente que te identifiques como socio desde tu llegada al negocio, para que el vendedor sepa qu&eacute; regalo o promoci&oacute;n deber&aacute; otorgarte.
@@ -151,7 +151,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Puedes adquirir tu tarjeta personalizada en la tienda eSmart Club en el sitio.
+											Puedes adquirir tu tarjeta personalizada en la tienda Travel Points en el sitio.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -205,7 +205,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Ganas puntos (los llamamos eSmartties) cada vez que registras un consumo en cualquiera de los Negocios Afiliados, Tambi&eacute;n ganas eSmartties cuando cualquiera de tus invitados registra un consumo en cualquiera de los negocios del club. Puedes ver tu saldo en “Tu Perfil” dentro de tu cuenta de <strong>eSmart Club</strong>.
+											Ganas puntos (los llamamos eSmartties) cada vez que registras un consumo en cualquiera de los Negocios Afiliados, Tambi&eacute;n ganas eSmartties cuando cualquiera de tus invitados registra un consumo en cualquiera de los negocios del club. Puedes ver tu saldo en “Tu Perfil” dentro de tu cuenta de <strong>Travel Points</strong>.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -215,7 +215,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Accede a tu cuenta eSmart, y visita la tienda de eSmart Club. Puedes comprar cualquiera de los productos y servicios publicados como en una tienda normal.
+											Accede a tu cuenta eSmart, y visita la tienda de Travel Points. Puedes comprar cualquiera de los productos y servicios publicados como en una tienda normal.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -276,7 +276,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											No. <strong>eSmart Club</strong> es un sistema totalmente gratuito.
+											No. <strong>Travel Points</strong> es un sistema totalmente gratuito.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -307,7 +307,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Cualquier socio que no reciba el beneficio ofrecido podr&aacute; denunciar al Negocio Afiliado. La denuncia es p&uacute;blica y podr&aacute; ser vista por todos los socios. Si el negocio reincide <strong>eSmart Club</strong> podr&aacute; proceder de acuerdo a los t&eacute;rminos y condiciones del club.
+											Cualquier socio que no reciba el beneficio ofrecido podr&aacute; denunciar al Negocio Afiliado. La denuncia es p&uacute;blica y podr&aacute; ser vista por todos los socios. Si el negocio reincide <strong>Travel Points</strong> podr&aacute; proceder de acuerdo a los t&eacute;rminos y condiciones del club.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -317,7 +317,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											El sistema eSmart Club es autom&aacute;tico. Todos los registros de compras de tus invitados te generar&aacute;n eSmartties autom&aacute;ticamente y te llegar&aacute;n de inmediato.
+											El sistema Travel Points es autom&aacute;tico. Todos los registros de compras de tus invitados te generar&aacute;n eSmartties autom&aacute;ticamente y te llegar&aacute;n de inmediato.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -327,7 +327,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											<strong>eSmart Club</strong> te env&iacute;a un aviso por email cada vez que registras un consumo en un Negocio Afiliado. Si no lo recibes en el momento notifica al negocio, o en su caso, ponte en contacto con el club para que acredites tu consumo o lo denuncies en los t&eacute;rminos y condiciones del club.
+											<strong>Travel Points</strong> te env&iacute;a un aviso por email cada vez que registras un consumo en un Negocio Afiliado. Si no lo recibes en el momento notifica al negocio, o en su caso, ponte en contacto con el club para que acredites tu consumo o lo denuncies en los t&eacute;rminos y condiciones del club.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -338,7 +338,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									<div class="faq-item-answer">
 										<ol type="a">
 											<li>
-												<strong>Promoci&oacute;n</strong>. El negocio acceder&aacute; de manera gratuita al poderoso sistema eSmart Club, y podr&aacute; publicar sus productos, servicios, eventos y promociones a toda la comunidad de socios y a todos los visitantes del sitio eSmart Club.
+												<strong>Promoci&oacute;n</strong>. El negocio acceder&aacute; de manera gratuita al poderoso sistema Travel Points, y podr&aacute; publicar sus productos, servicios, eventos y promociones a toda la comunidad de socios y a todos los visitantes del sitio Travel Points.
 												<p>Las herramientas promocionales incluyen:</p>
 												<ol>
 													<li>
@@ -348,7 +348,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 														Listado de su negocio en el Directorio de Negocios de eSmart.
 													</li>
 													<li>
-														Vinculaci&oacute;n de su eSmart Page en el buscador de eSmart Club.
+														Vinculaci&oacute;n de su eSmart Page en el buscador de Travel Points.
 													</li>
 													<li>
 														Posibilidad de que los socios lo sigan (ver&aacute;n todas sus publicaciones en su perfil privado).
@@ -374,12 +374,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												</ol>
 											</li>
 											<li>
-												<strong>Clientes</strong>. El sistema eSmart Club pone su negocio al alcance de locales y turistas, y brinda una exposici&oacute;n masiva de sus productos y servicios, permitiendo generar y crecer una audiencia leal que mantendr&aacute; contacto con su negocio a trav&eacute;s del sistema de comunicaci&oacute;n interno.
+												<strong>Clientes</strong>. El sistema Travel Points pone su negocio al alcance de locales y turistas, y brinda una exposici&oacute;n masiva de sus productos y servicios, permitiendo generar y crecer una audiencia leal que mantendr&aacute; contacto con su negocio a trav&eacute;s del sistema de comunicaci&oacute;n interno.
 												<p>
-													Como eSmart Club es un sistema que se basa en la promoci&oacute;n de la verdad, el solo hecho de encontrar su negocio afiliado, genera en los consumidores la credibilidad de que sus productos y servicios ser&aacute;n de la calidad ofrecida.
+													Como Travel Points es un sistema que se basa en la promoci&oacute;n de la verdad, el solo hecho de encontrar su negocio afiliado, genera en los consumidores la credibilidad de que sus productos y servicios ser&aacute;n de la calidad ofrecida.
 												</p>
 												<p>
-													Como <strong>eSmart Club</strong> es un sistema que se basa en la promoci&oacute;n de la verdad, el solo hecho de encontrar su negocio afiliado, genera en los consumidores la credibilidad de que sus productos y servicios ser&aacute;n de la calidad ofrecida.
+													Como <strong>Travel Points</strong> es un sistema que se basa en la promoci&oacute;n de la verdad, el solo hecho de encontrar su negocio afiliado, genera en los consumidores la credibilidad de que sus productos y servicios ser&aacute;n de la calidad ofrecida.
 												</p>
 											</li>
 											<li>
@@ -397,7 +397,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											El Negocio Afiliado al ver una denuncia que no es verdad, o que est&aacute; fuera de lugar, tiene derecho a r&eacute;plica. eSmart Club proceder&aacute; en los t&eacute;rminos y condiciones del club.
+											El Negocio Afiliado al ver una denuncia que no es verdad, o que est&aacute; fuera de lugar, tiene derecho a r&eacute;plica. Travel Points proceder&aacute; en los t&eacute;rminos y condiciones del club.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -409,18 +409,18 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										<p>
 											6% o superior. La comisi&oacute;n m&iacute;nima es del 6% pero usted podr&aacute; ofrecer m&aacute;s de manera voluntaria en cualquier momento. Al incrementar el monto de la comisi&oacute;n, ganar&aacute; la atenci&oacute;n de m&aacute;s socios que lo elegir&aacute;n (ya que ellos ganan ese monto en eSmartties en cada consumo en su negocio). Los Negocios Afiliados se publican con base en un algoritmo que toma el porcentaje de comisi&oacute;n ofrecido, de tal manera que el que m&aacute;s comisi&oacute;n ofrece, aparece el primero de la lista.
 										<p>
-											La cantidad que usted ofrece al sistema como comisi&oacute;n, es la cantidad que eSmart Club otorga a sus socios en eSmartties.
+											La cantidad que usted ofrece al sistema como comisi&oacute;n, es la cantidad que Travel Points otorga a sus socios en eSmartties.
 										</p>
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
 								<div class="faq-item">
 									<div class="faq-item-question">
-										<h2 class="text-primary">¿C&oacute;mo pago las comisiones al sistema eSmart Club?</h2>
+										<h2 class="text-primary">¿C&oacute;mo pago las comisiones al sistema Travel Points?</h2>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											Al afiliarse el negocio tiene un cr&eacute;dito a favor. Cargue saldo (con una tarjeta de cr&eacute;dito, d&eacute;bito o paypal) desde su Panel de Administraci&oacute;n dentro de su cuenta en eSmart Club o si lo prefiere ll&aacute;menos para facilitarle un n&uacute;mero de cuenta.
+											Al afiliarse el negocio tiene un cr&eacute;dito a favor. Cargue saldo (con una tarjeta de cr&eacute;dito, d&eacute;bito o paypal) desde su Panel de Administraci&oacute;n dentro de su cuenta en Travel Points o si lo prefiere ll&aacute;menos para facilitarle un n&uacute;mero de cuenta.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->
@@ -471,7 +471,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div><!-- /.faq-item-question -->
 									<div class="faq-item-answer">
 										<p>
-											En cualquier momento socios y negocios pueden cancelar su cuenta desde su cuenta eSmart Club desde su Perfil. Los Negocios deber&aacute;n respetar los Certificados otorgados y que se encuentren vigentes.
+											En cualquier momento socios y negocios pueden cancelar su cuenta desde su cuenta Travel Points desde su Perfil. Los Negocios deber&aacute;n respetar los Certificados otorgados y que se encuentren vigentes.
 										</p>
 									</div><!-- /.faq-item-answer -->
 								</div><!-- /.faq-item -->

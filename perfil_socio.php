@@ -18,7 +18,7 @@ if(!$profile->load_data($username)){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = $profile->get_alias().' | Perfil de socio | eSmart Club';
+$properties['title'] = $profile->get_alias().' | Perfil de socio | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

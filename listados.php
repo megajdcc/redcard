@@ -17,7 +17,7 @@ $paging->setRPP($options['rpp']);
 $paging->setCrumbs(10);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Listados | eSmart Club';
+$properties['title'] = 'Listados | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

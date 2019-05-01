@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Afiliar hotel | eSmart Club';
+$properties['title'] = 'Afiliar hotel | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -49,7 +49,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									<h3 class="page-title">Informaci&oacute;n del hotel</h3>
 									<div class="row">
 										<div class="col-lg-8">
-											<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu hotel por su nombre.">
+											<div class="form-group" data-toggle="tooltip" title="Los socios de Travel Points pueden encontrar tu hotel por su nombre.">
 												<label for="business-name">Nombre del hotel <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 												<input class="form-control" type="text" id="business-name" name="name" value="<?php echo $Afiliar->get_name();?>" placeholder="Nombre del hotel" required />
 												<?php echo $Afiliar->get_name_error();?>
@@ -74,7 +74,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											</div>
 										</div><!-- /.col-* -->
 									</div><!-- /.row -->
-									<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu hotel. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu hotel por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
+									<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu hotel. Los socios de Travel Points tambi&eacute;n pueden encontrar tu hotel por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 										<label for="description">Descripci&oacute;n del hotel <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 										<textarea class="form-control" id="description" placeholder="Descripci&oacute;n del hotel" name="description" rows="3" required ><?php echo $Afiliar->get_description();?></textarea>
 										<?php echo $Afiliar->get_description_error();?>

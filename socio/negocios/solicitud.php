@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Detalles de solicitud | eSmart Club';
+$properties['title'] = 'Detalles de solicitud | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

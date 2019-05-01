@@ -2,7 +2,7 @@
 $con = new assets\libs\connection();
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = '¿Qué es eSmart Club? | eSmart Club';
+$properties['title'] = '¿Qué es Travel Points? | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
@@ -11,27 +11,27 @@ echo $navbar = $includes->get_main_navbar(); ?>
 		<div class="content">
 			<div class="mt-80">
 				<div class="document-title">
-					<h1 class="text-binary">What is the Red CARD?</h1>
+					<h1 class="text-binary">What is the Travel Points?</h1>
 				</div><!-- /.document-title -->
 			</div>
 			<div class="container">
 				<?php echo $con->get_notify();?>
 				<div>
-					<img class="img-responsive mb30" src="<?php echo HOST;?>/assets/img/esmartclub/monedero-esmart-club.jpg" alt="Monedero en eSmart Club">
-					<img class="img-responsive mb30" src="<?php echo HOST;?>/assets/img/esmartclub/encuentra-esmartties-esmart-club.jpg" alt="Encuentra negocios que den eSmartties en eSmart Club">
-					<a href="<?php echo HOST;?>/tienda/"><img class="img-responsive mb80" src="<?php echo HOST;?>/assets/img/esmartclub/adquiere-regalos-esmart-club.jpg" alt="Adquiere Regalos en eSmart Club"></a>
+					<img class="img-responsive mb30" src="<?php echo HOST;?>/assets/img/esmartclub/monedero-esmart-club.jpg" alt="Monedero en Travel Points">
+					<img class="img-responsive mb30" src="<?php echo HOST;?>/assets/img/esmartclub/encuentra-esmartties-esmart-club.jpg" alt="Encuentra negocios que den eSmartties en Travel Points">
+					<a href="<?php echo HOST;?>/tienda/"><img class="img-responsive mb80" src="<?php echo HOST;?>/assets/img/esmartclub/adquiere-regalos-esmart-club.jpg" alt="Adquiere Regalos en Travel Points"></a>
 				</div>
 				<div class="posts post-detail">
 					<div class="post-content">
-						<img class="post-content-image pull-left" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-logo.png" alt="Regalos en eSmart Club" style="width:100px;height:auto;margin-top:-30px;">
+						<img class="post-content-image pull-left" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-logo.png" alt="Regalos en Travel Points" style="width:100px;height:auto;margin-top:-30px;">
 						<p>
-							<strong class="text-default">Red CARD</strong> is the REWARD programm for Club Regina guests, in order topromote what we believe is worth in our destinations, so travelers improve their stay. 
+							<strong class="text-default">Travel Points</strong> is the REWARD programm for Club Regina guests, in order topromote what we believe is worth in our destinations, so travelers improve their stay. 
 						</p>
 						<p>
 							Find great places to go and add points to your Rewards Wallet for every purchase you do in any of the listed businesses. Exchange your points for anything you like in our Gift Store.
 						</p>
 						<div class="clearfix"></div>
-						<img class="post-content-image pull-right" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-regalos.png" alt="Regalos en eSmart Club">
+						<img class="post-content-image pull-right" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-regalos.png" alt="Regalos en Travel Points">
 						<h3>¿Qu&eacute; gano como Socio comprador?</h3>
 						<p>
 							<mark>Regalos</mark> Productos y Servicios de calidad (joyas, hospedajes, masajes y mucho m&aacute;s. Puedes verlos ahora mismo en la <a href="<?php echo HOST.'/tienda/';?>">tienda</a>).
@@ -43,7 +43,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							Cada negocio te regala un porcentaje de tu compra, la cual recibir&aacute;s en puntos llamados eSmartties en tu monedero.
 						</p>
 						<p>
-							Puedes ver el porcentaje que ofrece cada negocio en el sitio de eSmart Club.
+							Puedes ver el porcentaje que ofrece cada negocio en el sitio de Travel Points.
 						</p>
 						<p>
 							Accedes a tu monedero electr&oacute;nico al iniciar sesi&oacute;n.
@@ -57,7 +57,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 						<p>
 							Tras cada compra, el socio podr&aacute; evaluar al negocio y opinar sobre su experiencia. Esto permite a los dem&aacute;s socios tener m&aacute;s informaci&oacute;n para poder decidir sus compras. Es por esto que estamos seguros de que los negocios afiliados al club est&aacute;n comprometidos con la satisfacci&oacute;n de sus clientes.
 						</p>
-						<img class="post-content-image pull-left" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-clientes.jpg" alt="Clientes en eSmart Club">
+						<img class="post-content-image pull-left" src="<?php echo HOST;?>/assets/img/esmartclub/esmart-club-clientes.jpg" alt="Clientes en Travel Points">
 						<h3>¿Qu&eacute; gano como Negocio?</h3>
 						<p>
 							<mark>Compradores reales para tu negocio.</mark>

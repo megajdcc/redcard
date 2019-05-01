@@ -22,7 +22,7 @@ $paging = new assets\libraries\pagination\pagination($options['page'], $options[
 $paging->setRPP($rpp);
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Negocios que recomiendo | eSmart Club';
+$properties['title'] = 'Negocios que recomiendo | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>
