@@ -48,7 +48,6 @@ class Home {
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
-
 		$this->CargarHotel();
 
 		return;
@@ -433,7 +432,7 @@ class Home {
 				$stmt->execute(); 
 				$usuarios = $stmt->fetch(PDO::FETCH_ASSOC)['usuarios'];
 				return $usuarios;
-				
+
 		}
 		
 	}
@@ -477,19 +476,19 @@ class Home {
 	 					join huespedhotel as hh on hu.id = hh.id_huesped
 	 					where hh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY u.id_usuario";
 			$stmt = $this->con->prepare($sql);
-			$stmt->bindParam(':hotel',$this->hotel['id']);
+			$stmt->bindParam(':hotel',$idhotel);
 			$stmt->bindParam(':fecha1',$fecha1);
 			$stmt->bindParam(':fecha2',$fecha2);
 			$stmt->execute(); 
 			return $stmt;
 		}else{
-			$sql=" select SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+			$sql="select SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
 	 					join usuario as u on nv.id_usuario = u.id_usuario 
 	 					join huesped as hu on u.id_usuario = hu.id_usuario 
 	 					join huespedhotel as hh on hu.id = hh.id_huesped
 	 					where hh.id_hotel = :hotel GROUP BY u.id_usuario";
 			$stmt = $this->con->prepare($sql);
-			$stmt->bindParam(':hotel',$this->hotel['id']);
+			$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
 			$stmt->execute(); 
 			return $stmt;
 		}

@@ -34,7 +34,16 @@ class Home {
 	public $franquiciatario = array(
 		'id'=> null,
 	);
-	private $error = array('notificacion' => null);
+
+	private $fechas = array(
+		'inicio' => null,
+		'fin'    =>null
+		);
+	private $fecha1, $fecha2;
+	
+	private $error = array('notificacion' => null,
+							'fechainicio' => null,
+							'fechafin' => null);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -43,6 +52,64 @@ class Home {
 
 		$this->CargarHotel();
 		return;
+	}
+
+	public function busqueda(array $post){
+		
+		$this->setFecha1($post['fecha_inicio']);
+		$this->setFecha2($post['fecha_fin']);
+		$this->fecha1 = $post['fecha_inicio'];
+		$this->fecha2 = $post['fecha_fin'];
+
+		// header('location:'.HOST.'/Hotel/');
+	}
+
+	public function getFecha1(){
+		return $this->fecha1;
+	}
+
+	public function getFecha2(){
+		return $this->fecha2;
+	}
+
+	private function setFecha1($datetime = null){
+		if($datetime){
+			$datetime = str_replace('/', '-', $datetime);
+			$datetime = strtotime($datetime);
+			if(!$datetime){
+				$this->error['fechainicio'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
+				return false;
+			}
+			$datetime = date("Y/m/d H:i:s", $datetime);
+			$this->fechas['inicio'] = $datetime;
+			return true;
+		}
+		$this->error['fechainicio'] = 'Este campo es obligatorio.';
+		return false;
+	}
+
+	private function setFecha2($datetime = null){
+		if($datetime){
+			$datetime = str_replace('/', '-', $datetime);
+			$datetime = strtotime($datetime);
+			if(!$datetime){
+				$this->error['fechafin'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
+				return false;
+			}
+			$datetime = date("Y/m/d H:i:s", $datetime);
+			$this->fechas['fin'] = $datetime;
+			return true;
+		}
+		$this->error['fechafin'] = 'Este campo es obligatorio.';
+		return false;
+	}
+
+	public function getFechaInicio(){
+		return $this->fechas['inicio'];
+	}
+
+	public function getFechaFin(){
+		return $this->fechas['fin'];
 	}
 
 	private function CargarHotel(){
@@ -66,57 +133,135 @@ inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario
 	}
 
 	public function getOperaciones(){
-		$sql="SELECT COUNT(nven.venta)
- 					FROM negocio as ne
- 					JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
- 					JOIN usuario as usu on nven.id_usuario = usu.id_usuario
- 					JOIN huesped as hu on usu.id_usuario = hu.id_usuario
- 					JOIN huespedhotel as hh on hu.id = hh.id_huesped
- 					JOIN hotel as h on hh.id_hotel = h.id
- 				where h.id = :idhotel";
-		$stmt = $this->con->prepare($sql);
-
-		$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
-		$number_of_rows = $stmt->fetchColumn();
-		$this->hotel['operations']=$number_of_rows;
-		return $number_of_rows;
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+						$sql="SELECT COUNT(nven.venta)
+						FROM negocio as ne
+						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
+						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
+						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
+						JOIN huespedhotel as hh on hu.id = hh.id_huesped
+						JOIN hotel as h on hh.id_hotel = h.id
+						where h.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+						$stmt = $this->con->prepare($sql);
+						$stmt->execute(array(':idhotel'=>$this->hotel['id'],
+											':fecha1'=>$this->fechas['inicio'],
+											':fecha2'=>$this->fechas['fin'])); 
+						$number_of_rows = $stmt->fetchColumn();
+						$this->hotel['operations']=$number_of_rows;
+						return $number_of_rows;
+			}else{
+						$sql="SELECT COUNT(nven.venta)
+						FROM negocio as ne
+						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
+						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
+						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
+						JOIN huespedhotel as hh on hu.id = hh.id_huesped
+						JOIN hotel as h on hh.id_hotel = h.id
+						where h.id = :idhotel";
+						$stmt = $this->con->prepare($sql);
+						
+						$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+						$number_of_rows = $stmt->fetchColumn();
+						$this->hotel['operations']=$number_of_rows;
+						return $number_of_rows;
+			}
 	}
 
 	public function getOperacionesNegocios(){
-		$sql="SELECT 
-  (SELECT COUNT(ne.id_negocio)
-   FROM negocio as ne where ne.situacion =1) as afiliados, 
- (COUNT(DISTINCT ne.id_negocio)) as operados,
- (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
- FROM negocio as ne where ne.situacion =1) as porcentaje 
- FROM
- negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
- INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
- INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
- INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
- INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
-INNER JOIN divisa as di ON nven.iso = di.iso
- where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel";
-		$stmt = $this->con->prepare($sql);
 
-		$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+
+			$sql=" SELECT (SELECT COUNT(ne.id_negocio)
+			   FROM negocio as ne where ne.situacion =1) as afiliados, 
+			 
+				 (COUNT(DISTINCT ne.id_negocio)) as operados,
+				 
+				 (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+				 FROM negocio as ne where ne.situacion =1) as porcentaje
+			 
+			 
+			 FROM
+			 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+			 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+			 INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+			 INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+			 INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+			INNER JOIN divisa as di ON nven.iso = di.iso
+			 where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+					$stmt = $this->con->prepare($sql);
+
+			$stmt->execute(array(':idhotel'=>$this->hotel['id'],
+									':fecha1' => $this->fechas['inicio'],
+									':fecha2' => $this->fechas['fin'])); 
 
 
-		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+			$fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
-		$html = '
-			<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
-			<strong>OPERADOS: '.$fila['operados'].'</strong>
-			<strong>'.$porcentaje.' %</strong>
-		';
-		
-		return $html;
+			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
+			$html = '
+				<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
+				<strong>OPERADOS: '.$fila['operados'].'</strong>
+				<strong>'.$porcentaje.' %</strong>
+			';
+			return $html;
+
+		}else{
+			$sql=" SELECT (SELECT COUNT(ne.id_negocio)
+			   FROM negocio as ne where ne.situacion =1) as afiliados, 
+			 
+				 (COUNT(DISTINCT ne.id_negocio)) as operados,
+				 
+				 (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+				 FROM negocio as ne where ne.situacion =1) as porcentaje
+			 
+			 
+			 FROM
+			 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+			 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+			 INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+			 INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+			 INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+			INNER JOIN divisa as di ON nven.iso = di.iso
+			 where hu.id_usuario = nven.id_usuario and ne.situacion =1 and hot.id = :idhotel";
+					$stmt = $this->con->prepare($sql);
+
+			$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+
+
+			$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
+			$html = '
+				<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
+				<strong>OPERADOS: '.$fila['operados'].'</strong>
+				<strong>'.$porcentaje.' %</strong>
+			';
+			return $html;
+		}
+
 	}
 
 	public function getNegociosDeudores(){
 
-		$query = "SELECT COUNT(ne.id_negocio) as deudores
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+			$query = "SELECT COUNT(ne.id_negocio) as deudores
+			FROM
+			negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+			INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+			INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+			INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+			INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+			INNER JOIN divisa as di ON nven.iso = di.iso
+			where ne.situacion = 1 and ne.saldo <=0 and hot.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+		  	$stm = $this->con->prepare($query);
+
+		  	$stm->execute(array(':idhotel'=>$this->hotel['id'],
+		  						':fecha1' => $this->fechas['inicio'],
+		  						'fecha2' => $this->fechas['fin']));
+
+		  	return $stm->fetch(PDO::FETCH_ASSOC)['deudores'];
+		  }else{
+		  	$query = "SELECT COUNT(ne.id_negocio) as deudores
 			FROM
 			negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 			INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
@@ -125,17 +270,43 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 			INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
 			INNER JOIN divisa as di ON nven.iso = di.iso
 			where ne.situacion = 1 and ne.saldo <=0 and hot.id = :idhotel";
-	  	$stm = $this->con->prepare($query);
+		  	$stm = $this->con->prepare($query);
 
-	  	$stm->execute(array(':idhotel'=>$this->hotel['id']));
+		  	$stm->execute(array(':idhotel'=>$this->hotel['id']));
 
-	  	return $stm->fetch(PDO::FETCH_ASSOC)['deudores'];
+		  	return $stm->fetch(PDO::FETCH_ASSOC)['deudores'];
+		  }
 
 	}
 
 	public function getTotalComisionAdeudo(){
 
-		$query = "SELECT (((SUM(nven.venta)*(nven.comision))/100) * hot.comision / 100) + ne.saldo  as adeudo, nven.iso as divisa
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+			$query = "SELECT (((SUM(nven.venta)*(nven.comision))/100) * hot.comision / 100) + ne.saldo  as adeudo, nven.iso as divisa
+						FROM
+				negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+				INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+				INNER JOIN huesped as hu  on hu.id_usuario = usu.id_usuario
+				INNER JOIN huespedhotel as hp	ON hp.id_huesped = hu.id
+				INNER JOIN hotel	as hot	ON hot.id = hp.id_hotel
+				INNER JOIN divisa as di ON nven.iso = di.iso
+				where ne.situacion = 1  and ne.saldo <= 0 and hot.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+
+				$stm = $this->con->prepare($query);
+  				$stm->execute(array(':idhotel'=>$this->hotel['id'],
+  									':fecha1' =>$this->fechas['inicio'],
+  									':fecha2' =>$this->fechas['fin']));
+  				$fila = $stm->fetch(PDO::FETCH_ASSOC);
+  				$comision = number_format((float)$fila['adeudo'],2,'.','');
+  				if($fila['divisa'] == 'EUR'){
+  					$div = '€';
+  				}else{
+  					$div = '$';
+  				}
+  				$total = $div.$comision.' '.$fila['divisa'];
+  			return $total;
+		}else{
+			$query = "SELECT (((SUM(nven.venta)*(nven.comision))/100) * hot.comision / 100) + ne.saldo  as adeudo, nven.iso as divisa
 						FROM
 				negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 				INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
@@ -156,6 +327,7 @@ INNER JOIN divisa as di ON nven.iso = di.iso
   				}
   				$total = $div.$comision.' '.$fila['divisa'];
   			return $total;
+		}
 	}
 
 	public function get_hoteles(){
@@ -176,17 +348,35 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	}
 
 	public function getPromedioConsumo(){
-		$sql ="select AVG(nv.venta) as promedio, (select COUNT(venta) from negocio_venta) as nroventas 
+
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+			$sql ="select AVG(nv.venta) as promedio, (select COUNT(venta) from negocio_venta) as nroventas 
+				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
+				join hotel as h on bh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2";
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':hotel',$this->hotel['id'], PDO::PARAM_INT);
+			$stmt->bindParam(':fecha1',$this->fechas['inicio'], PDO::PARAM_STR);
+			$stmt->bindParam(':fecha2',$this->fechas['fin'], PDO::PARAM_STR);
+			$stmt->execute(); 
+
+			$promedio = $stmt->fetch(PDO::FETCH_ASSOC)['promedio'];
+
+			$result=number_format((float)$promedio, 2, ',', '.');
+			return $result;
+		}else{
+			$sql ="select AVG(nv.venta) as promedio, (select COUNT(venta) from negocio_venta) as nroventas 
 				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
 				join hotel as h on bh.id_hotel = :hotel";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id'], PDO::PARAM_INT);
-		$stmt->execute(); 
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':hotel',$this->hotel['id'], PDO::PARAM_INT);
+			$stmt->execute(); 
 
-		$promedio = $stmt->fetch(PDO::FETCH_ASSOC)['promedio'];
+			$promedio = $stmt->fetch(PDO::FETCH_ASSOC)['promedio'];
 
-		$result=number_format((float)$promedio, 2, ',', '.');
-		return $result;
+			$result=number_format((float)$promedio, 2, ',', '.');
+			return $result;
+		}
+
 	}
 
 	public function getPorcentageComisionHotel(){
@@ -214,28 +404,63 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	}
 
 	public function getUsuarios(){
-		$sql="select COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
+		if($this->fechas['inicio']){
+
+			$sql="select COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
 				join huespedhotel as hh on hu.id = hh.id_huesped 
 				join hotel as h on hh.id_hotel = h.id
-			where h.id =:hotel";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id']);
-		$stmt->execute(); 
-		$usuarios = $stmt->fetch(PDO::FETCH_ASSOC)['usuarios'];
-		return $usuarios;
+				where h.id =:hotel and u.creado between :fecha1 and :fecha2";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id']);
+				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+				$stmt->bindParam(':fecha2',$this->fechas['fin']);
+				$stmt->execute(); 
+				$usuarios = $stmt->fetch(PDO::FETCH_ASSOC)['usuarios'];
+				return $usuarios;
+
+		}else{
+
+				$sql="select COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
+				join huespedhotel as hh on hu.id = hh.id_huesped 
+				join hotel as h on hh.id_hotel = h.id
+				where h.id =:hotel";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id']);
+				$stmt->execute(); 
+				$usuarios = $stmt->fetch(PDO::FETCH_ASSOC)['usuarios'];
+				return $usuarios;
+
+		}
 	}
 
 	public function getUsuariosParticipantes(){
-		$sql="select COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+		
+			if($this->fechas['inicio']){
+				$sql="select COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+				left join usuario as u on nv.id_usuario = u.id_usuario 
+				left join balancehotel as bh on nv.id_venta = bh.id_venta
+				left join hotel as h on bh.id_hotel = h.id
+				where h.id = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY nv.id_usuario ";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id']);
+				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+				$stmt->bindParam(':fecha2',$this->fechas['fin']);
+				
+				$stmt->execute(); 
+				$usuarios = $stmt->fetchAll();
+				return count($usuarios);
+			}else{
+				$sql="select COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
 				left join usuario as u on nv.id_usuario = u.id_usuario 
 				left join balancehotel as bh on nv.id_venta = bh.id_venta
 				left join hotel as h on bh.id_hotel = h.id
 				where h.id = :hotel GROUP BY nv.id_usuario";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id']);
-		$stmt->execute(); 
-		$usuarios = $stmt->fetchAll();
-		return count($usuarios);
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id']);
+				$stmt->execute(); 
+				$usuarios = $stmt->fetchAll();
+				return count($usuarios);
+			}
 	}
 
 	public function getTotalConsumoHuesped(){
@@ -251,21 +476,53 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	}
 
 	public function getPuntosGenerados(){
-		$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
+		if($this->fechas['inicio']){
+			$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
+				join usuario as u on nv.id_usuario = u.id_usuario
+				join huesped as hu on u.id_usuario = hu.id_usuario 
+				join huespedhotel as hh on hu.id = hh.id_huesped
+				join hotel as h on hh.id_hotel = h.id
+				where h.id = :hotel and nv.creado between :fecha1 and :fecha2";
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+			$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+			$stmt->bindParam(':fecha2',$this->fechas['fin']);
+			$stmt->execute(); 
+			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['puntos'];
+			return number_format((float)$puntos, 2, ',','.');
+
+		}else{
+			$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
 				join usuario as u on nv.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
 				join hotel as h on hh.id_hotel = h.id
 				where h.id = :hotel";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
-		$stmt->execute(); 
-		$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['puntos'];
-		return number_format((float)$puntos, 2, ',','.');
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+			$stmt->execute(); 
+			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['puntos'];
+			return number_format((float)$puntos, 2, ',','.');
+		}
 	}
 
 	public function getPuntosCanjeados(){
-		$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
+		if($this->fechas['inicio']){
+			$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
+				join usuario as u on vt.id_usuario = u.id_usuario 
+				join huesped as hu on u.id_usuario = hu.id_usuario 
+				join huespedhotel as hh on hu.id = hh.id_huesped 
+				join hotel as h on hh.id_hotel = h.id	
+				where h.id = :hotel and vt.creado between :fecha1 and :fecha2";
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+			$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+			$stmt->bindParam(':fecha2',$this->fechas['fin']);
+			$stmt->execute(); 
+			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['canjeados'];
+			return number_format((float)$puntos, 2, ',','.');
+		}else{
+			$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -276,10 +533,26 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 			$stmt->execute(); 
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['canjeados'];
 			return number_format((float)$puntos, 2, ',','.');
+		}
 	}
 
 	public function getRegalosEntregados($idhotel = null){
-		$sql="select COUNT(vt.id_venta) as regalos from venta_tienda as vt 
+		if($this->fechas['inicio']){
+				$sql="select COUNT(vt.id_venta) as regalos from venta_tienda as vt 
+				join usuario as u on vt.id_usuario = u.id_usuario 
+				join huesped as hu on u.id_usuario = hu.id_usuario 
+				join huespedhotel as hh on hu.id = hh.id_huesped 
+				join hotel as h on hh.id_hotel = h.id	
+				where h.id = :hotel and vt.entrega = 1 and vt.creado between :fecha1 and :fecha2";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+				$stmt->bindParam(':fecha2',$this->fechas['fin']);
+				$stmt->execute(); 
+				$regalos = $stmt->fetch(PDO::FETCH_ASSOC)['regalos'];
+				return $regalos;
+			}else{
+					$sql="select COUNT(vt.id_venta) as regalos from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -290,10 +563,26 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 				$stmt->execute(); 
 				$regalos = $stmt->fetch(PDO::FETCH_ASSOC)['regalos'];
 				return $regalos;
+			}
 	}
 
-	public function getTotalRegalosPorUsuarios($idhotel){
-		$sql="select COUNT(vt.id_venta) as regalos, CONCAT(u.nombre,' ',u.apellido) as nombre, u.username from venta_tienda as vt 
+	public function getTotalRegalosPorUsuarios($idhotel=null,$fecha1 = null, $fecha2 = null){
+		if($fecha1){
+			$sql="select COUNT(vt.id_venta) as regalos, CONCAT(u.nombre,' ',u.apellido) as nombre, u.username from venta_tienda as vt 
+				join usuario as u on vt.id_usuario = u.id_usuario 
+ 				join huesped as hu on u.id_usuario = hu.id_usuario 
+ 				join huespedhotel as hh on hu.id = hh.id_huesped 
+ 				join hotel as h on hh.id_hotel = h.id	
+ 				where h.id = :hotel and vt.entrega = 1 and vt.creado between :fecha1 and :fecha2
+					GROUP BY nombre";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+				$stmt->bindParam(':fecha1',$fecha1);
+				$stmt->bindParam(':fecha2',$fecha2);
+				$stmt->execute(); 
+				return $stmt;
+			}else{
+				$sql="select COUNT(vt.id_venta) as regalos, CONCAT(u.nombre,' ',u.apellido) as nombre, u.username from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
  				join huesped as hu on u.id_usuario = hu.id_usuario 
  				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -304,10 +593,32 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 				$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
 				$stmt->execute(); 
 				return $stmt;
+			}
 	}
 
 	public function getTotalValorRegalos(){
-		$sql="select sum(vt.precio) as valor from venta_tienda as vt 
+	
+		if($this->fechas['inicio']){
+				$sql="select sum(vt.precio) as valor from venta_tienda as vt 
+				join usuario as u on vt.id_usuario = u.id_usuario
+				join huesped as hu on u.id_usuario = hu.id_usuario 
+				join huespedhotel as hh on hu.id = hh.id_huesped
+				join hotel as h on hh.id_hotel = h.id
+				where h.id = :hotel and vt.entrega = 1 and vt.creado between :fecha1 and :fecha2";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+				$stmt->bindParam(':fecha2',$this->fechas['fin']);
+				$stmt->execute(); 
+
+				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+				}else{
+					$valor = 0;
+				}
+				return $valor;
+			}else{
+					$sql="select sum(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -323,9 +634,32 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 					$valor = 0;
 				}
 				return $valor;
+			}
 	}
 
 	public function getValorRegaloPromedio(){
+		if($this->fechas['inicio']){
+
+		$sql="select AVG(vt.precio) as valor from venta_tienda as vt 
+				join usuario as u on vt.id_usuario = u.id_usuario
+				join huesped as hu on u.id_usuario = hu.id_usuario 
+				join huespedhotel as hh on hu.id = hh.id_huesped
+				join hotel as h on hh.id_hotel = h.id
+				where h.id = :hotel and vt.entrega = 1 and vt.creado between :fecha1 and :fecha2";
+				$stmt = $this->con->prepare($sql);
+				$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
+				$stmt->bindParam(':fecha2',$this->fechas['fin']);
+				$stmt->execute(); 
+
+				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+				}else{
+					$valor = 0;
+				}
+				return $valor;
+		}else{
+
 		$sql="select AVG(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
@@ -342,6 +676,8 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 					$valor = 0;
 				}
 				return $valor;
+
+		}
 	}
 
 	public function getConsumosPromedioCompra(int $hotel = null){
@@ -382,7 +718,47 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 	// }
 
 	public function getComisiones(){
-				$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
+		if($this->fechas['inicio'] and $this->fechas['fin']){
+			
+			$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
+								and bf.id = (select max(id) from balancefranquiciatario)) as balance
+								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
+								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN :fecha1 and :fecha2";
+
+				$stm = $this->con->prepare($query);
+				$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
+				                    ':fr2'=>$this->franquiciatario['id'],
+				                	':fecha1' =>$this->fechas['inicio'],
+				                	':fecha2' => $this->fechas['fin']));
+
+				
+				$pref = null;
+				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
+
+					if($row['divisa'] == 'EUR'){
+							$sign = '€';
+						}else{
+							$sign = '$';
+					}
+
+					$comision = number_format((float)$row['balance'],2,'.','');
+					
+					if($comision  > 0){
+						$pref ='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
+					}
+				
+
+
+				}
+		
+				$html = $pref;
+				if(!$html){
+					$html ='<strong>$ 0</strong>';
+				}
+			return $html;
+
+		}else{
+			$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
 								and bf.id = (select max(id) from balancefranquiciatario)) as balance
 								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
 								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN bf.creado and now()";
@@ -416,6 +792,9 @@ INNER JOIN divisa as di ON nven.iso = di.iso
 					$html ='<strong>$ 0</strong>';
 				}
 		return $html;
+
+		}
+				
 	}
 
 	public function getBalance(){

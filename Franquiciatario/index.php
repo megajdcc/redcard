@@ -34,13 +34,16 @@
 	$paging->setRPP($rpp);
 	$paging->setCrumbs(10);
 
-	// if($_SERVER["REQUEST_METHOD"] == "POST"){
-	// 	if(isset($_POST['business_id']) && isset($_POST['suspend_id'])){
-	// 	//	$hotel->change_business_status($_POST);
-	// 	}
-	// } 
-
 	$home = new Home($con);
+	if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+
+		if(isset($_POST['fecha_inicio']) and !empty($_POST['fecha_inicio'])){
+			$home->busqueda($_POST);
+		}
+	} 
+
+
 	 
 	if(isset($_POST['change_business'])){
 		$home->change_business($_POST['change_business']);
@@ -59,13 +62,13 @@
 	<div class="col-sm-12 ">
 		<?php echo $home->getNotificacion();?>
 		<div class="background-white p20 mb30">
-			<form method="post">
+			<form method="post" action="<?php echo _safe(HOST.'/Franquiciatario/index.php'); ?>">
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label for="start">Fecha y hora de inicio</label>
 							<div class="input-group date" id="event-start">
-								<input class="form-control" type="text" id="start" name="date_start" value="" placeholder="Fecha y hora de inicio" required/>
+								<input class="form-control" type="text" id="start" name="fecha_inicio" value="<?php echo $home->getFecha1(); ?>" placeholder="Fecha y hora de inicio" required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 						
@@ -75,7 +78,7 @@
 						<div class="form-group">
 							<label for="end">Fecha y hora de fin</label>
 							<div class="input-group date" id="event-end">
-								<input class="form-control" type="text" id="end" name="date_end" value="" placeholder="Fecha y hora de fin" required/>
+								<input class="form-control" type="text" id="end" name="fecha_fin" value="<?php echo $home->getFecha2(); ?>" placeholder="Fecha y hora de fin" required/>
 								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							</div>
 					
@@ -85,7 +88,7 @@
 						<label>Buscar</label>
 						<div class="form-group">
 							<button class="btn btn-success" type="submit"><i class="fa fa-search"></i></button>
-							<a href="<?php echo _safe(HOST.'/Hotel/');?>" class="btn btn-info">Limpiar</a>
+							<a href="<?php echo _safe(HOST.'/Franquiciatario/');?>" class="btn btn-info">Limpiar</a>
 						</div>
 					</div>
 				</div>
@@ -176,127 +179,272 @@
 
 					<div class="col-sm-8">
 					<div id="grafica1" class="statusbox">
-					<script>
-						$(document).ready(function() {
-							
-							var idhotel = "<?php echo $home->hotel['id'];?>"
-							$.ajax({
-								url: '/Hotel/controller/grafica.php',
-								type: 'POST',
-								dataType: 'json',
-								data: {grafica: 'consumospromedioporcompra', idhotel,hotel:idhotel},
-							})
-							.done(function(response) {
-								var options = {
-											chart: {
-												renderTo: 'grafica1',
-												plotBackgroundColor: null,
-												plotBorderWidth: null,
-												plotShadow: false,
-												type: 'pie'
-											},
-											title: {
-												text: "Promedio por consumo por Huesped"
-											},
-											tooltip: {
-												pointFormat: '<b>{point.percentage:.1f}%</b>'
-											},
-											legend: {
-												enabled: false
-											},
-											  plotOptions: {
-										        pie: {
-										            allowPointSelect: true,
-										            cursor: 'pointer',
-										            dataLabels: {
-										                enabled: true,
-										                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-										                style: {
-										                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-										                }
-										            }
-										        }
-										    },
-											
-								    		series: [{}]
-								   }; 
-									 options.series[0].data = response;
-									
-									var grafica = Highcharts.chart(options);
-									 	
-									})	
-							.fail(function() {
-								console.log("error");
-							})
-							.always(function() {
-								console.log("complete");
-							});
-						
-							});
+				<?php 
 
-						</script>
+						if(!empty($home->getFechaInicio())){?>
+
+							<script>
+							$(document).ready(function() {
+								
+								var idhotel = "<?php echo $home->hotel['id'];?>"
+
+								var fecha1 = "<?php echo $home->getFechaInicio(); ?>"
+								var fecha2 = "<?php echo $home->getFechaFin(); ?>"
+
+								$.ajax({
+								url: "/Hotel/controller/grafica.php",
+								type: "POST",
+								dataType: "json",
+								data: {grafica: "consumospromedioporcompra", idhotel,hotel:idhotel,f1:fecha1,f2:fecha2},
+								})							
+								.done(function(response) {
+									var options = {
+												chart: {
+													renderTo: "grafica1",
+													plotBackgroundColor: null,
+													plotBorderWidth: null,
+													plotShadow: false,
+													type: "pie"
+												},
+												title: {
+													text: "Promedio por consumo por Huesped"
+												},
+												tooltip: {
+													pointFormat: "<b>{point.percentage:.1f}%</b>"
+												},
+												legend: {
+													enabled: false
+												},
+												  plotOptions: {
+											        pie: {
+											            allowPointSelect: true,
+											            cursor: "pointer",
+											            dataLabels: {
+											                enabled: true,
+											                format: "<b>{point.name}</b>: {point.percentage:.1f} %",
+											                style: {
+											                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || "black"
+											                }
+											            }
+											        }
+											    },
+												
+									    		series: [{}]
+									   }; 
+										 options.series[0].data = response;
+										
+										var grafica = Highcharts.chart(options);
+										 	
+										})	
+								.fail(function() {
+									console.log("error");
+								})
+								.always(function() {
+									console.log("complete");
+								});
+							
+								});
+
+							</script>
+						<?php }else{?>
+								
+							<script>
+							$(document).ready(function() {
+								
+								var idhotel = "<?php echo $home->hotel['id'];?>"
+
+								$.ajax({
+								url: "/Hotel/controller/grafica.php",
+								type: "POST",
+								dataType: "json",
+								data: {grafica: "consumospromedioporcompra", idhotel,hotel:idhotel},
+								})							
+								.done(function(response) {
+									var options = {
+												chart: {
+													renderTo: "grafica1",
+													plotBackgroundColor: null,
+													plotBorderWidth: null,
+													plotShadow: false,
+													type: "pie"
+												},
+												title: {
+													text: "Promedio por consumo por Huesped"
+												},
+												tooltip: {
+													pointFormat: "<b>{point.percentage:.1f}%</b>"
+												},
+												legend: {
+													enabled: false
+												},
+												  plotOptions: {
+											        pie: {
+											            allowPointSelect: true,
+											            cursor: "pointer",
+											            dataLabels: {
+											                enabled: true,
+											                format: "<b>{point.name}</b>: {point.percentage:.1f} %",
+											                style: {
+											                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || "black"
+											                }
+											            }
+											        }
+											    },
+												
+									    		series: [{}]
+									   }; 
+										 options.series[0].data = response;
+										
+										var grafica = Highcharts.chart(options);
+										 	
+										})	
+								.fail(function() {
+									console.log("error");
+								})
+								.always(function() {
+									console.log("complete");
+								});
+							
+								});
+
+							</script>
+
+
+
+						<?php } ?>
+					
 					</div>
 
 					<div class="statusbox" id="grafica2">
-									<script>
-						$(document).ready(function() {
-							
-							var idhotel = "<?php echo $home->hotel['id'];?>"
-							$.ajax({
-								url: '/Hotel/controller/grafica.php',
-								type: 'POST',
-								dataType: 'json',
-								data: {grafica: 'consumospromediopornegocio', idhotel,hotel:idhotel},
-							})
-							.done(function(response) {
-								var options = {
-											chart: {
-												renderTo: 'grafica2',
-												plotBackgroundColor: null,
-												plotBorderWidth: null,
-												plotShadow: false,
-												type: 'pie'
-											},
-											title: {
-												text: "Promedio por consumo por Negocio"
-											},
-											tooltip: {
-												pointFormat: '<b>{point.percentage:.1f}%</b>'
-											},
-											legend: {
-												enabled: false
-											},
-											  plotOptions: {
-										        pie: {
-										            allowPointSelect: true,
-										            cursor: 'pointer',
-										            dataLabels: {
-										                enabled: true,
-										                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-										                style: {
-										                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-										                }
-										            }
-										        }
-										    },
-											
-								    		series: [{}]
-								   }; 
-									 options.series[0].data = response;
 									
-									var grafica = Highcharts.chart(options);
-									 	
-									})	
-							.fail(function() {
-								console.log("error");
-							})
-							.always(function() {
-								console.log("complete");
-							});
-						
-							});
+						<?php 
+							if(!empty($home->getFechaInicio())){?>
+								<script>
+								$(document).ready(function() {
+									
+									var idhotel = "<?php echo $home->hotel['id'];?>"
+									var fecha1 = "<?php echo $home->getFechaInicio(); ?>"
+									var fecha2 = "<?php echo $home->getFechaFin(); ?>"
+									$.ajax({
+										url: '/Hotel/controller/grafica.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {grafica: 'consumospromediopornegocio', idhotel,hotel:idhotel,f1:fecha1,f2:fecha2},
+									})
+									.done(function(response) {
+										var options = {
+													chart: {
+														renderTo: 'grafica2',
+														plotBackgroundColor: null,
+														plotBorderWidth: null,
+														plotShadow: false,
+														type: 'pie'
+													},
+													title: {
+														text: "Promedio por consumo por Negocio"
+													},
+													tooltip: {
+														pointFormat: '<b>{point.percentage:.1f}%</b>'
+													},
+													legend: {
+														enabled: false
+													},
+													  plotOptions: {
+												        pie: {
+												            allowPointSelect: true,
+												            cursor: 'pointer',
+												            dataLabels: {
+												                enabled: true,
+												                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+												                style: {
+												                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+												                }
+												            }
+												        }
+												    },
+													
+										    		series: [{}]
+										   }; 
+											 options.series[0].data = response;
+											
+											var grafica = Highcharts.chart(options);
+											 	
+											})	
+									.fail(function() {
+										console.log("error");
+									})
+									.always(function() {
+										console.log("complete");
+									});
+								
+									});
 
-						</script>
+								</script>
+							<?php }else{?>
+									<script>
+								$(document).ready(function() {
+									
+									var idhotel = "<?php echo $home->hotel['id'];?>"
+									
+									$.ajax({
+										url: '/Hotel/controller/grafica.php',
+										type: 'POST',
+										dataType: 'json',
+										data: {grafica: 'consumospromediopornegocio', idhotel,hotel:idhotel},
+									})
+									.done(function(response) {
+										var options = {
+													chart: {
+														renderTo: 'grafica2',
+														plotBackgroundColor: null,
+														plotBorderWidth: null,
+														plotShadow: false,
+														type: 'pie'
+													},
+													title: {
+														text: "Promedio por consumo por Negocio"
+													},
+													tooltip: {
+														pointFormat: '<b>{point.percentage:.1f}%</b>'
+													},
+													legend: {
+														enabled: false
+													},
+													  plotOptions: {
+												        pie: {
+												            allowPointSelect: true,
+												            cursor: 'pointer',
+												            dataLabels: {
+												                enabled: true,
+												                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+												                style: {
+												                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+												                }
+												            }
+												        }
+												    },
+													
+										    		series: [{}]
+										   }; 
+											 options.series[0].data = response;
+											
+											var grafica = Highcharts.chart(options);
+											 	
+											})	
+									.fail(function() {
+										console.log("error");
+									})
+									.always(function() {
+										console.log("complete");
+									});
+								
+									});
+
+								</script>
+
+
+							<?php } ?>
+									
 					</div>
 				
 				</div>
@@ -322,7 +470,83 @@
 			</div>
 			<div class="col-sm-8">
 				<div class="statusbox ttconsumosusuarios" id="grafica3">
-					<script>
+					<?php 
+					if(!empty($home->getFechaInicio())){?>
+						<script>
+						$(document).ready(function() {
+							
+							var idhotel = "<?php echo $home->hotel['id'];?>";
+							var fecha1 = "<?php echo $home->getFechaInicio(); ?>";
+							var fecha2 = "<?php echo $home->getFechaFin(); ?>";
+
+							$.ajax({
+								url: '/Hotel/controller/grafica.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {grafica: 'totalconsumohuesped', idhotel,hotel:idhotel,f1:fecha1,f2:fecha2},
+							})
+							.done(function(response) {
+
+								// Grafica total consumo por usuario...
+								var options = {
+											 chart: {
+											 				renderTo: 'grafica3',
+											        type: 'column'
+											    },
+											   lang:{
+															decimalPoint: ',',
+								   						thousandsSep: '.'
+													},
+											    title: {
+											        text: 'Total Consumos por Usuarios Huepedes'
+											    },
+											    xAxis: {
+											        type: 'category'
+											    },
+											    yAxis: {
+										        title: {
+										            text: 'Total miles de $'
+										          }
+										        },
+											    
+											    plotOptions: {
+											        series: {
+														borderWidth: 0,
+											            dataLabels: {
+											               enabled: true,
+											               format: '$ {point.y:.2f} MXN'
+											            }
+											        }
+											    },
+
+											    tooltip: {
+											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+											    },
+											    series: [ {
+											    	name: "Negocio",
+            								colorByPoint: true,
+											    } ],
+								   				}; 
+
+								   				options.series[0].data = response;
+								   			
+												var grafica = new Highcharts.Chart(options);
+									 	
+									})	
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+						
+							});
+
+						</script>
+
+
+					<?php }else{?>
+						<script>
 						$(document).ready(function() {
 							
 							var idhotel = "<?php echo $home->hotel['id'];?>"
@@ -358,7 +582,7 @@
 											    
 											    plotOptions: {
 											        series: {
-																	borderWidth: 0,
+														borderWidth: 0,
 											            dataLabels: {
 											               enabled: true,
 											               format: '$ {point.y:.2f} MXN'
@@ -370,14 +594,14 @@
 											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
 											    },
 											    series: [ {
-											    	name: "Huespedes",
+											    	name: "Negocio",
             								colorByPoint: true,
 											    } ],
 								   				}; 
 
 								   				options.series[0].data = response;
 								   			
-													var grafica = new Highcharts.Chart(options);
+												var grafica = new Highcharts.Chart(options);
 									 	
 									})	
 							.fail(function() {
@@ -388,6 +612,10 @@
 							});
 						
 							});
+
+						</script>
+					<?php  } ?>
+					
 
 						</script>
 				</div>
@@ -430,6 +658,86 @@
 
 				<div class="col-sm-8">
 					<div class="statusbox ttconsumosusuarios" id="grafica4">
+						<?php 
+							if(!empty($home->getFechaInicio())){?>
+							<script>
+						$(document).ready(function() {
+							
+							var idhotel = "<?php echo $home->hotel['id'];?>";
+							var fecha1 = "<?php echo $home->getFechaInicio(); ?>";
+							var fecha2 = "<?php echo $home->getFechaFin(); ?>";
+							$.ajax({
+								url: '/Hotel/controller/grafica.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {grafica: 'totalregalosusuarios', idhotel,hotel:idhotel, f1:fecha1, f2:fecha2 },
+							})
+							.done(function(response) {
+
+								// Grafica total consumo por usuario...
+								var options = {
+											chart: {
+														renderTo: 'grafica4',
+	       										type: 'column'
+												    },
+												    title: {
+												        text: 'Cantidad de regalos entregados a usuarios Huespedes'
+												    },
+												    xAxis: {
+												        type: 'category',
+												        labels: {
+												            rotation: -45,
+												            style: {
+												                fontSize: '13px',
+												                fontFamily: 'Myriad'
+												            }
+												        }
+												    },
+												    yAxis: {
+												        min: 0,
+												        title: {
+												            text: 'Cantidad de regalos'
+												        }
+												    },
+												    legend: {
+												        enabled: false
+												    },
+												    tooltip: {
+												        pointFormat: 'Regalos entregados: <b>{point.y:.0f}</b>'
+												    },
+												    series: [{
+												        name: 'Population',
+												        data: [],
+												        dataLabels: {
+												            enabled: true,
+												            rotation: -90,
+												            color: '#FFFFFF',
+												            align: 'right',
+												            format: '{point.y:.0f}', // one decimal
+												            y: 10, // 10 pixels down from the top
+												            style: {
+												                fontSize: '13px',
+												                fontFamily: 'Verdana, sans-serif'
+												            }
+												        },
+												        colorByPoint: true
+												    }]
+												   }
+								   				options.series[0].data = response;
+								   			
+													var grafica = new Highcharts.Chart(options);									 	
+									})	
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+						
+							});
+
+						</script>
+							<?php }else{?>
 							<script>
 						$(document).ready(function() {
 							
@@ -505,6 +813,7 @@
 							});
 
 						</script>
+						<?php } ?>
 					</div>
 
 
