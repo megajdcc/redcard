@@ -35,11 +35,13 @@ class NuevoUsuario {
 			username, 
 			email, 
 			password,
+			verificado,
 			hash_activacion
 			) VALUES (
 			:username, 
 			:email, 
 			:password,
+			1,
 			:hash_activacion
 		)";
 		$hash = md5( rand(0,1000) );
@@ -62,18 +64,18 @@ class NuevoUsuario {
 
 		// Lo registramos en solicitud hotel.
 		
-		$query1 = "insert into solicitudhotel(id_hotel,id_usuario,condicion) values(:hotel,:usuario, :condicion)";
+		// $query1 = "insert into solicitudhotel(id_hotel,id_usuario,condicion) values(:hotel,:usuario, :condicion)";
 
-		try {
-			$stm = $this->con->prepare($query1);
+		// try {
+		// 	$stm = $this->con->prepare($query1);
 
-			$stm->execute(array(':hotel'=>$_SESSION['id_hotel'],
-							':usuario'=>$lastId,
-							':condicion'=>1));
-			} catch (PDOException $e) {
-			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+		// 	$stm->execute(array(':hotel'=>$_SESSION['id_hotel'],
+		// 					':usuario'=>$lastId,
+		// 					':condicion'=>1));
+		// 	} catch (PDOException $e) {
+		// 	$this->error_log(__METHOD__,__LINE__,$e->getMessage());
 
-			}
+		// 	}
 		
 
 		
@@ -91,7 +93,7 @@ class NuevoUsuario {
 		}
 
 		$body_alt =
-			'Bienvenido a Travel Points '.$this->username.'. Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace: '.HOST.'/login?email='.$this->email.'&codigo='.$hash;
+			'Bienvenido a Travel Points '.$this->username.'. El registro de esta cuenta no necesita verificacion.';
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
@@ -104,7 +106,7 @@ class NuevoUsuario {
 		// El correo que hará el envío
 		$mail->Username = 'notificacion@esmartclub.com';
 		$mail->Password = 'Alan@2017_pv';
-		$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+		$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 		// El correo al que se enviará
 		$mail->addAddress($this->email);
 		// Hacerlo formato HTML
@@ -118,7 +120,7 @@ class NuevoUsuario {
 			$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
 		}
 
-		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de eSmart Club. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
+		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
 		$_SESSION['register_email'] = $this->email;
 		header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
 		die();
@@ -164,7 +166,7 @@ class NuevoUsuario {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -231,7 +233,7 @@ class NuevoUsuario {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

@@ -34,7 +34,7 @@ if(filter_input(INPUT_GET, 'ref')){
 }
 
 $includes = new Includes($con);
-$properties['title'] = 'Nuevo usuarioistrador | eSmart Club';
+$properties['title'] = 'Nuevo usuarioistrador | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -45,7 +45,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<div class="row">
 					
 						<?php echo $reg->getMethodError(); ?>
-						<div class="col-sm-12 col-sm-offset-4">
+						<div class="col-sm-12 col-sm-offset-2">
 							<div class="page-title">
 								<h1>Nuevo Usuario</h1>
 							</div><!-- /.page-title -->
