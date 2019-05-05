@@ -149,7 +149,7 @@ class AfiliarHotel {
 		$this->setNombreBanco($post['nombre_banco']);
 		$this->setCuenta($post['cuenta']);
 		$this->setClabe($post['clabe']);
-		$this->setSwift($post['clabe']);
+		$this->setSwift($post['swift']);
 
 		$this->setNombreBancoTarjeta($post['nombre_banco_tarjeta']);
 		$this->setNumeroTarjeta($post['numero_targeta']);
@@ -322,7 +322,7 @@ class AfiliarHotel {
 						$mail->Password = 'Alan@2017_pv';
 						$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 						// El correo al que se enviará
-						$mail->addAddress('megajdcc2009@gmail.com');
+						$mail->addAddress('corporativo@infochannel.si ');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo
@@ -543,8 +543,8 @@ class AfiliarHotel {
 	}
 
 	public function getSwiftError(){
-		if($this->error['clabe']){
-			$error = '<p class="text-danger">'._safe($this->error['clabe']).'</p>';
+		if($this->error['swift']){
+			$error = '<p class="text-danger">'._safe($this->error['swift']).'</p>';
 			return $error;
 		}
 

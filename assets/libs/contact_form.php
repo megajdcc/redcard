@@ -36,16 +36,19 @@ class contact_form {
 			$mail->CharSet = 'UTF-8';
 
 			$mail->isSMTP();
-			$mail->Host = 'mail.redcard.com.mx';
-			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = 'ssl';
-			$mail->Port = 465;
+			$mail->Host = 'single-5928.banahosting.com';
+			 $mail->SMTPAuth = true;
+			 $mail->SMTPSecure = 'ssl';
+			 $mail->Port = 465;
+
+			// $mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificaciones@redcard.com.mx';
-			$mail->Password = 'RedCard@2018_pv';
-			$mail->setFrom('notificaciones@redcard.com.mx', 'RedCard');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = 'jhonatan1991';
+			
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
-			$mail->addAddress("soporte@infochannel.si");
+			$mail->addAddress("corporativo@infochannel.si");
 			$mail->isHTML(true);
 			$mail->Subject = $this->form['subject'];
 			$mail->Body    = $this->email_template($this->form);
@@ -104,7 +107,7 @@ class contact_form {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.jpg" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.jpg" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>

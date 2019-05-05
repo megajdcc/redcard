@@ -65,6 +65,13 @@ font-weight: normal;
 src: url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
 }
 
+@font-face {
+font-family: 'Myriad Regular';
+font-style: normal;
+font-weight: normal;
+src: url('../../assets/fonts/MYRIADPRO-REGULAR.OTF') format('OTF');
+}
+
 
 @font-face {
 font-family: 'Nexa Regular';
@@ -1265,7 +1272,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: 'Myriad';
+  font-family: 'Myriad Regular';
   font-size: 14px;
   line-height: 1.42857;
   color: #333333;
@@ -1275,7 +1282,7 @@ input,
 button,
 select,
 textarea {
-  font-family: 'Myriad';
+  font-family: 'Myriad Regular';
   font-size: inherit;
   line-height: inherit; }
 
@@ -1349,7 +1356,7 @@ hr {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: 'Myriad Bold';
+  font-family: 'Myriad Regular';
   font-weight: 500;
   line-height: 1.1;
   color: inherit; }
@@ -5576,7 +5583,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: 'Myriad Bold';
+  font-family: 'Myriad Regular';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5689,7 +5696,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family:'Myriad Bold';
+  font-family:'Myriad Regular';
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -10671,7 +10678,7 @@ html {
 body {
   background-color: #fff;
   color: rgba(54, 54, 54, 0.6);
-  font-family: 'Myriad Bold';
+  font-family: 'Myriad Regular';
   font-size: 14px;
   height: 100%;
   overflow-x: auto;
@@ -11297,7 +11304,7 @@ margin-bottom: 0;
   white-space: nowrap;}
 
 .header-statusbar h1 .header-text {
-  font-family: 'Myriad Bold';
+  font-family: 'Myriad Regular';
   font-size: 22px;
   margin: -15px 0 0 25px;
   display: inline-block;
@@ -11525,7 +11532,7 @@ ul.menu-advanced li a .notification {
   flex-direction: column;
 }
 .modal-body label{
-  font-family: 'Myriad Bold';
+  font-family: 'Myriad Regular';
   font-size: medium;
 }
 .codigo{

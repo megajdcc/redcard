@@ -101,9 +101,7 @@ $(document).ready(function() {
 		});
 
 	// Confirmar aceptar o rechazar una solicitud
-	$('#accept-request').on('click', function(){
-		return confirm('¿Realmente desea aceptar esta solicitud?');
-	});
+
 	$('#check-request').on('click', function(){
 		return confirm('¿Realmente desea enviar a corrección esta solicitud?');
 	});
@@ -785,8 +783,41 @@ if($('#solicitudes').length){
 	// 
 	// 
 		
+		// $("#rechazarsolicitud").click(function(){
 
-		$("#formulariosolicitud").bind("submit",function(){
+		// 		var result = confirm('¿Realmente desea Cancelar esta solicitud?');
+
+
+		// 		if(result){
+
+		// 		$.ajax({
+		// 		 	type:'POST',
+		// 			url: $(this).attr("action"),s
+		// 			data: 'rechazarsolicitud:true',
+		// 			beforeSend: function(){
+		// 				$(this).text("Cancelando");
+		// 				$(this).attr("disabled","disabled");
+		// 			},
+		// 			complete:function(data){
+						
+		// 			},
+		// 			success:function(data){
+
+		// 				location.reload();
+		// 			},
+		// 			error:function(data){
+		// 				alert("No se pudo cancelar la solicitud, por favor intente mas tarde... ");
+		// 			}
+
+		// 		});	
+				
+		// 		}
+		// });
+		// 
+		// 
+		
+		$('#aceptarsolicitud').click(function() {
+			$("#formulariosolicitud").bind("submit",function(){
 		
 				var btnaceptar = $('#aceptarsolicitud');
 
@@ -819,6 +850,8 @@ if($('#solicitudes').length){
 				}
 				return false;				
 		});
+		});
+		
 
 		$('.adjudicar').click(function(){
 

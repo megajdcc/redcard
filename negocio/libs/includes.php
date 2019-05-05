@@ -498,8 +498,7 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 
-	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
-
+	
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
 </head>

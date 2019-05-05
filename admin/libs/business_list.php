@@ -320,7 +320,7 @@ class business_list {
 </style>
 <page style="font-size: 8px">
 	<div id="cabecera">
-		<h1>eSmart Club</h1>
+		<h1>Travel Points</h1>
 		<h2>Reporte de negocios</h2>
 	</div>
 	<table class="table-bordered">
@@ -463,7 +463,7 @@ class business_list {
 				break;
 		}
 		// SE MANDA LA NOTIFICACION AL USUARIO
-		$body_alt = $header.' Para cualquier aclaración contacta a eSmart Club. soporte@esmartclub.com';
+		$body_alt = $header.' Para cualquier aclaración contacta a Travel Points. soporte@esmartclub.com';
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
@@ -476,7 +476,7 @@ class business_list {
 		// El correo que hará el envío
 		$mail->Username = 'notificacion@esmartclub.com';
 		$mail->Password = 'Alan@2017_pv';
-		$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+		$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 		// El correo al que se enviará
 		$mail->addAddress($business_email);
 		if($business_email != $request_email){
@@ -538,7 +538,7 @@ class business_list {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -604,7 +604,7 @@ class business_list {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

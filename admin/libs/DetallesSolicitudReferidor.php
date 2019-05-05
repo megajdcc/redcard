@@ -132,7 +132,25 @@ class DetallesSolicitudReferidor{
 
 	// GETTERS Y SETTERS 
 	 
+	public function EliminarSolicitud(){
 
+	
+			$query = "delete from solicitudreferidor where id=:id_solicitud";
+		try{
+			$stmt = $this->con->prepare($query);
+			$stmt->bindValue(':id_solicitud', $this->registro['solicitud'], PDO::PARAM_INT);
+			$stmt->execute();
+		}catch(\PDOException $ex){
+			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+			return false;
+		}
+		$_SESSION['notification']['success'] = 'Solicitud eliminada exitosamente';
+		header('Location: '.HOST.'/admin/perfiles/solicitudes');
+		die();
+		return;
+
+	}
+	
 	public function getCodigo(){
 		return $this->registro['codigo'];
 	}
@@ -486,7 +504,7 @@ class DetallesSolicitudReferidor{
          <input type="hidden" name="perfil" value="referidor">
 		<div class="center">
 						<button class="btn btn-success mr20" id="aceptarsolicitud" type="submit" name="accept_request">Aceptar solicitud</button>
-						<button class="btn btn-warning mr20" id="corregirsolicitud" type="submit" name="check_request">Regresar a correcci&oacute;n</button>
+						<!-- <button class="btn btn-warning mr20" id="corregirsolicitud" type="submit" name="check_request">Regresar a correcci&oacute;n</button> -->
 						<button class="btn btn-danger" id="rechazarsolicitud" type="submit" name="reject_request">Rechazar solicitud</button>
 		</div>
 
@@ -774,7 +792,7 @@ class DetallesSolicitudReferidor{
 					// El correo que hará el envío
 					$mail->Username = 'notificacion@esmartclub.com';
 					$mail->Password = 'Alan@2017_pv';
-					$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+					$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 											// El correo al que se enviará
 					$mail->addAddress('megajdcc2009@gmail.com');
 					$mail->AddCC('megajdcc2009@gmail.com');
@@ -842,7 +860,7 @@ class DetallesSolicitudReferidor{
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -909,7 +927,7 @@ class DetallesSolicitudReferidor{
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = $product->get_unsafe_name().' | eSmart Club';
+$properties['title'] = $product->get_unsafe_name().' | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

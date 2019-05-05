@@ -32,7 +32,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
     <div class="row">
      <div class="col-sm-7 col-md-8 mb50">
       <div class="page-title">
-       <h1>¡Afilia tu hotel!</h1>
+       <h1>¡Afiliate como Franquiciatario!</h1>
        <p>Env&iacute;anos una solicitud para se parte de nuestro selecto Grupo de Franquiciatario.</p>
       </div>
       <p>Solo los socios pueden Solicitar este perfil. <a href="<?php echo HOST;?>/hazte-socio">Hazte socio</a> o inicia sesi&oacute;n.</p>
@@ -273,6 +273,8 @@ echo $navbar = $includes->get_main_navbar(); ?>
    </div><!-- /.container -->
   </div><!-- /.main-inner -->
  </div><!-- /.main -->
+ <?php echo $footer = $includes->get_main_footer(); ?>
+
   <div class="modal fade capturarhotel " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -373,4 +375,3 @@ echo $navbar = $includes->get_main_navbar(); ?>
       
 
 </script>
-<?php echo $footer = $includes->get_main_footer(); ?>

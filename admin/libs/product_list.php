@@ -178,7 +178,7 @@ class product_list {
 </style>
 <page style="font-size: 12px">
 	<div id="cabecera">
-		<h1>eSmart Club</h1>
+		<h1>Travel Points</h1>
 		<h2>Reporte de productos en tienda</h2>
 	</div>
 	<table class="table-bordered">

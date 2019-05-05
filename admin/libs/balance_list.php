@@ -186,7 +186,7 @@ class balance_list {
 </style>
 <page style="font-size: 12px">
 	<div id="cabecera">
-		<h1>eSmart Club</h1>
+		<h1>Travel Points</h1>
 		<h2>Reporte de movimientos de saldos</h2>
 	</div>
 	<table class="table-bordered">

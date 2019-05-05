@@ -284,8 +284,7 @@ class Includes {
 				<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
-				<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
-
+			
 				<title>'.$title.'</title>
 				<meta name="description" content="'.$description.'" />
 			</head>';
@@ -525,13 +524,14 @@ class Includes {
 	}
 
 	public function get_admin_footer(){
+		$ano = date('Y');
 		$html ='</div><!-- /.container-fluid -->
 													</div><!-- /.content-admin-main-inner -->
 													</div><!-- /.content-admin-main -->
 													<div class="content-admin-footer">
 													<div class="container-fluid">
 													<div class="content-admin-footer-inner">
-													&copy; 2017 Todos los derechos reservados.
+													&copy; '.$ano.' Todos los derechos reservados.
 													</div><!-- /.content-admin-footer-inner -->
 													</div><!-- /.container-fluid -->
 													</div><!-- /.content-admin-footer  -->

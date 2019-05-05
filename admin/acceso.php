@@ -23,7 +23,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Autorizar Acceso | eSmart Club';
+$properties['title'] = 'Autorizar Acceso | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

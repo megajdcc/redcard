@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -54,26 +54,24 @@ if(isset($_POST['action']) && $_POST['action'] == "adjudicar" && isset($_POST['p
 	
 
 
+if(isset($_REQUEST['reject_request'])){
+	$solicitud->EliminarSolicitud($perfil);
+}
 if(isset($_POST['perfil']) && !isset($_POST['action'])){
-
-	$solicitud->aceptarSolicitud($_POST,$perfil);
-
-
+			$solicitud->aceptarSolicitud($_POST,$perfil);
 }
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	if(isset($_POST['corregirsolicitud'])){
+		
+		
+		if(isset($_POST['corregirsolicitud'])){
 		$solicitud->check_solicitud($_POST);
-	}
-
-	if(isset($_POST['rechazarsolicitud'])){
-		$solicitud->reject_solicitud($_POST);
-	}
+		}
 
 	if(isset($_POST['eliminarsolicitud'])){
-		$solicitud->EliminarSolicitud();
+		$solicitud->EliminarSolicitud($perfil);
 	}
 }
 

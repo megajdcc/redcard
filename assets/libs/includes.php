@@ -1,4 +1,4 @@
-<?php # Desarrollado por Info Channel
+<?php 
 namespace assets\libs;
 use PDO;
 
@@ -390,7 +390,7 @@ class includes {
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
-	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
+	<link rel="icon" type="text" href="" alt="Free gifts in Puerto Vallarta" title="Free gifts in Puerto Vallarta" value="Free gifts in Puerto Vallarta">
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -445,7 +445,7 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="<?php echo HOST.'/que-es-esmart-club'; ?>" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Red Card | ¿Qu&eacute; es Red Card?">
+								<a href="<?php echo HOST.'/que-es-esmart-club'; ?>" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
@@ -548,6 +548,8 @@ class includes {
 	}
 
 	public function get_main_footer($query = null){
+
+		$ano = date('Y');
 	$html = 
 		'<footer class="footer">
 		<div class="footer-top">
@@ -589,7 +591,7 @@ class includes {
 		<div class="footer-bottom">
 			<div class="container footer1">
 				<div class="footer-bottom-left">
-					&copy; 2018 All Rights Reserved | Todos los derechos reservados.
+					&copy; '.$ano.' All Rights Reserved | Todos los derechos reservados.
 				</div><!-- /.footer-bottom-left -->
 				<div class="footer-bottom-right">
 					<ul class="nav nav-pills">

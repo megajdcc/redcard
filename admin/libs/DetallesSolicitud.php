@@ -335,18 +335,25 @@ class DetallesSolicitud {
 										</div><!-- /.col-* -->
 									</div><!-- /.row -->
 									<hr>
-									<div class="form-group">
-										<label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
-										<p>
-											<ul>
-												<li>Arrastra el marcador hacia la ubicaci&oacute;n de tu hotel.</li>
-												<li>Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad, municipio, colonia, etc. y seleccionar una de las opciones sugeridas.</li>
-											</ul>
-											Las coordenadas de la ubicaci&oacute;n se crean automaticamente.
-										</p>
-									</div>
-									<input class="controls form-control mb30" type="text" id="pac-input" placeholder="Escribe una ubicaci&oacute;n" />
-									<div id="map-canvas"></div>
+									
+											<div class="form-group">
+											<label>Posici&oacute;n en el mapa <span class="required">*</span></label>
+											<div class="detail-content">
+											<div class="detail-map">
+											<div class="map-position">
+											<div id="listing-detail-map"
+											data-transparent-marker-image="<?php echo HOST.'/assets/img/transparent-marker-image.png';?>"
+											
+											data-zoom="15"
+											data-latitude="<?php echo $this->getLatitud(); ?>"
+											data-longitude="<?php echo $this->getLongitud(); ?>"
+											data-icon="fa fa-map-marker">
+											</div><!-- /#map-property -->
+											</div><!-- /.map-property -->
+											</div><!-- /.detail-map -->
+											</div>
+											</div>
+
 									<div class="row">
 										<div class="col-sm-6">
 											<div class="input-group">
@@ -475,7 +482,7 @@ class DetallesSolicitud {
 												<label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="clabe"  pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe(); ?>" placeholder="Clabe" required >
+													<input class="form-control" type="text" id="clabe" maxlength="18" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe(); ?>" placeholder="Clabe" required >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
@@ -484,7 +491,7 @@ class DetallesSolicitud {
 												<label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="swift" name="swift" minlength="8" maxlength="11" pattern="[A-Za-z0-9]{8,11}" value="<?php echo $this->getSwift(); ?>" placeholder="Swift" required >
+													<input class="form-control" type="text" id="swift" name="swift" minlength="8" maxlength="11" pattern="[0-9]{11}" value="<?php echo $this->getSwift(); ?>" placeholder="Swift" required >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
@@ -535,7 +542,7 @@ class DetallesSolicitud {
 					 <input type="hidden" name="perfil" value="hotel">
 					<div class="center">
 						<button class="btn btn-success mr20" id="aceptarsolicitud" type="submit" name="accept_request">Aceptar solicitud</button>
-						<button class="btn btn-warning mr20" id="corregirsolicitud" type="submit" name="check_request">Regresar a correcci&oacute;n</button>
+						<!-- <button class="btn btn-warning mr20" id="corregirsolicitud" type="submit" name="check_request">Regresar a correcci&oacute;n</button> -->
 						<button class="btn btn-danger" id="rechazarsolicitud" type="submit" name="reject_request">Rechazar solicitud</button>
 					</div>
 				</form>
@@ -633,19 +640,24 @@ class DetallesSolicitud {
 										</div><!-- /.col-* -->
 									</div><!-- /.row -->
 									<hr>
-									<div class="form-group">
-										<label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
-										<p>
-											<ul>
-												<li>Arrastra el marcador hacia la ubicaci&oacute;n de tu hotel.</li>
-												<li>Puedes apoyarte escribiendo una ubicaci&oacute;n como una ciudad, municipio, colonia, etc. y seleccionar una de las opciones sugeridas.</li>
-											</ul>
-											Las coordenadas de la ubicaci&oacute;n se crean automaticamente.
-										</p>
-		
-									</div>
-									<input class="controls form-control mb30" type="text" id="pac-input" placeholder="Escribe una ubicaci&oacute;n" />
-									<div id="map-canvas"></div>
+											<div class="form-group">
+											<label>Posici&oacute;n en el mapa <span class="required">*</span></label>
+											<div class="detail-content">
+											<div class="detail-map">
+											<div class="map-position">
+											<div id="listing-detail-map"
+											data-transparent-marker-image="<?php echo HOST.'/assets/img/transparent-marker-image.png';?>"
+											
+											data-zoom="15"
+											data-latitude="<?php echo $this->getLatitud(); ?>"
+											data-longitude="<?php echo $this->getLongitud(); ?>"
+											data-icon="fa fa-map-marker">
+											</div><!-- /#map-property -->
+											</div><!-- /.map-property -->
+											</div><!-- /.detail-map -->
+											</div>
+											</div>
+
 									<div class="row">
 										<div class="col-sm-6">
 											<div class="input-group">
@@ -1051,7 +1063,7 @@ class DetallesSolicitud {
 											// El correo que hará el envío
 											$mail->Username = 'notificacion@esmartclub.com';
 											$mail->Password = 'Alan@2017_pv';
-											$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+											$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 											// El correo al que se enviará
 											$mail->addAddress('megajdcc2009@gmail.com');
 										
@@ -1203,7 +1215,7 @@ class DetallesSolicitud {
 			// El correo que hará el envío
 			$mail->Username = 'notificacion@esmartclub.com';
 			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -1258,7 +1270,7 @@ class DetallesSolicitud {
 			// El correo que hará el envío
 			$mail->Username = 'notificacion@esmartclub.com';
 			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -1283,8 +1295,10 @@ class DetallesSolicitud {
 		return false;
 	}
 
-	public function EliminarSolicitud(){
-		$query = "delete from solicitudhotel where id=:id_solicitud";
+	public function EliminarSolicitud($perfil = null){
+
+		if($perfil == 'Hotel'){
+			$query = "delete from solicitudhotel where id=:id_solicitud";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':id_solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
@@ -1297,6 +1311,12 @@ class DetallesSolicitud {
 		header('Location: '.HOST.'/admin/perfiles/solicitudes');
 		die();
 		return;
+	}else if($perfil == 'Franquiciatario'){
+		$this->DetallesSolicitudFranquiciatario->EliminarSolicitud();
+	}else if($perfil == 'Referidor'){
+		$this->DetallesSolicitudReferidor->EliminarSolicitud();
+	}
+		
 	}
 
 	private function email_template($header, $link){
@@ -1339,7 +1359,7 @@ class DetallesSolicitud {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -1406,7 +1426,7 @@ class DetallesSolicitud {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

@@ -203,10 +203,10 @@ class AfiliarFranquiciatario {
 						$mail->Password = 'Alan@2017_pv';
 						$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 						// El correo al que se enviará
-						$mail->addAddress('megajdcc2009@gmail.com');
+						$mail->addAddress('corporativo@infochannel.si ');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
-						// Formato del correo
+						// Formato del correos
 						$mail->Subject = 'Nueva solicitud de franquiciatario';
 						$mail->Body    = $this->email_template($content);
 						$mail->AltBody = $body_alt;

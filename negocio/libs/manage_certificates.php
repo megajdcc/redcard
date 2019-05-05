@@ -65,7 +65,7 @@ class manage_certificates {
 			$this->status = $row['situacion'];
 		}
 		if($this->status != 1 && basename($_SERVER['SCRIPT_NAME']) == 'reservar.php'){
-			$this->error['error'] = 'Tu negocio no se encuentra activo. Por el momento no puedes reservar ningún certificado. Contacta a eSmart Club.';
+			$this->error['error'] = 'Tu negocio no se encuentra activo. Por el momento no puedes reservar ningún certificado. Contacta a Travel Points.';
 		}
 		return true;
 	}

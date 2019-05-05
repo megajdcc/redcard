@@ -469,7 +469,7 @@ class includes {
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
 				
-	<link rel="shortcut icon" href="'.HOST.'/assets/img/favicon.png">
+	
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -529,12 +529,12 @@ class includes {
 					<div class="header-content">
 						<div class="header-bottom">
 							<div class="header-button">
-								<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta eSmart Club">
+								<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
 									<i class="fa fa-envelope"></i>
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="eSmart Club Facebook">
+								<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 									<i class="fa fa-facebook"></i>
 								</a>
 							</div>
@@ -544,15 +544,15 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es eSmart Club?">
+								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es eSmart Club?</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
-								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">eSmart Club Facebook</a></li>
-								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta eSmart Club</a></li>
+								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">Travel Points Facebook</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 								<span class="sr-only">Toggle navigation</span>
@@ -645,6 +645,7 @@ class includes {
 	}
 
 	public function get_admin_footer(){
+		$ano = date('Y');
 		$html = 
 '								</div><!-- /.container-fluid -->
 							</div><!-- /.content-admin-main-inner -->
@@ -652,7 +653,7 @@ class includes {
 						<div class="content-admin-footer">
 							<div class="container-fluid">
 								<div class="content-admin-footer-inner">
-									&copy; 2017 Todos los derechos reservados.
+									&copy; '.$ano.' Todos los derechos reservados.
 								</div><!-- /.content-admin-footer-inner -->
 							</div><!-- /.container-fluid -->
 						</div><!-- /.content-admin-footer  -->

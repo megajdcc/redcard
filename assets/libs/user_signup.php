@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace assets\libs;
 use PDO;
 
@@ -67,7 +67,7 @@ class user_signup {
 		}
 
 		$body_alt =
-			'Bienvenido a eSmart Club '.$this->username.'. Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace: '.HOST.'/login?email='.$this->email.'&codigo='.$hash;
+			'Bienvenido a Travel Points '.$this->username.'. Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace: '.HOST.'/login?email='.$this->email.'&codigo='.$hash;
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
@@ -80,7 +80,7 @@ class user_signup {
 		// El correo que hará el envío
 		$mail->Username = 'notificacion@esmartclub.com';
 		$mail->Password = 'Alan@2017_pv';
-		$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+		$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
 		// El correo al que se enviará
 		$mail->addAddress($this->email);
 		// Hacerlo formato HTML
@@ -94,7 +94,7 @@ class user_signup {
 			$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
 		}
 
-		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de eSmart Club. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
+		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
 		$_SESSION['register_email'] = $this->email;
 		header('Location: '.HOST.'/login');
 		die();
@@ -140,7 +140,7 @@ class user_signup {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
 										</a>
 									</td>
 								</tr>
@@ -157,7 +157,7 @@ class user_signup {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Bienvenido a eSmart Club</strong>
+										<strong>Bienvenido a Travel Points</strong>
 									</td>
 								</tr>
 								<tr>
@@ -207,7 +207,7 @@ class user_signup {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
