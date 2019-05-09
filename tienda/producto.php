@@ -66,7 +66,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</div>
 									</div>
 									<h3>
-										<strong class="text-info" id="product-price">e$ <?php echo $product->get_price();?></strong> <label>eSmartties</label>
+										<strong class="text-info" id="product-price">Tp$ <?php echo $product->get_price();?></strong> <label>Travel Points</label>
 									</h3>
 									<?php echo $product->get_buy_button();?>
 								</div>

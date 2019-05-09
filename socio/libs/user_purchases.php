@@ -127,7 +127,7 @@ class user_purchases {
 			</div>';
 		}
 		if(is_null($html)){
-			$html = '<div class="background-white p20 text-default">No has realizado ninguna compra en la tienda de eSmart Club.</div>';
+			$html = '<div class="background-white p20 text-default">No has realizado ninguna compra en la tienda de Travel Points.</div>';
 		}else{
 			$html = '<div class="row">'.$html.'</div>';
 		}
@@ -137,9 +137,9 @@ class user_purchases {
 	public function get_count(){
 		$i = $this->pagination['total'];
 		if($i > 0){
-			return 'He comprado '.$i.' cosas en la tienda de eSmart Club';
+			return 'He comprado '.$i.' cosas en la tienda de Travel Points';
 		}else{
-			return 'Mis compras en la tienda de eSmart Club';
+			return 'Mis compras en la tienda de Travel Points';
 		}
 	}
 

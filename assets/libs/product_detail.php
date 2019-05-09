@@ -85,7 +85,7 @@ class product_detail {
 			return false;
 		}
 		if($this->product['price'] > $this->user['esmarties']){
-			$this->error['error'] = 'No tienes suficientes eSmartties para comprar este producto.';
+			$this->error['error'] = 'No tienes suficientes Travel Points para comprar este producto.';
 			return false;
 		}
 		if($post['type'] == 1 || $post['type'] == 2 || $post['type'] == 3){
@@ -116,7 +116,7 @@ class product_detail {
 					$content = '';
 					break;
 			}
-			$content = 'Usted ha realizado una compra por concepto de <strong>'.$this->get_name().'</strong> con un cargo de <strong>e$'.$this->get_price().'</strong> eSmartties.<br>'.$content;
+			$content = 'Usted ha realizado una compra por concepto de <strong>'.$this->get_name().'</strong> con un cargo de <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$content;
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';
@@ -427,7 +427,7 @@ class product_detail {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;>
 										</a>
 									</td>
 								</tr>

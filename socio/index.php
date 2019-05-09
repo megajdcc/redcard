@@ -86,7 +86,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										<?php 
 
 										if(!isset($_SESSION['perfil'])){?>
-											<h2><span class="mr20">e$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">eSmartties</label></h2>
+											<h2><span class="mr20">Tp$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">Travel Points</label></h2>
 										
 										<?php }else{?>
 											
@@ -100,7 +100,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							</div>
 							
 							<div class="page-title">
-								<p>Novedades de los negocios que estoy siguiendo. <a href="'.HOST.'/listados">Encuentra m&aacute;s negocios</a> de tu inter&eacute;s.</p>
+								<p>Novedades de los negocios que estoy siguiendo. <a href="<?php echo HOST.'/listados';?>">Encuentra m&aacute;s negocios</a> de tu inter&eacute;s.</p>
 							</div>
 							<?php echo $home->get_posts(); echo $paging->parse(); ?>
 						</div><!-- /.content -->

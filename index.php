@@ -8,7 +8,8 @@ $includes = new assets\libs\includes($con);
 $properties['title'] = 'Free gifts in Puerto Vallarta';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
-echo $navbar = $includes->get_main_navbar(); ?>
+echo $navbar = $includes->get_main_navbar(); 
+?>
 <div class="main">
 	<div class="main-inner">
 		<div class="content">

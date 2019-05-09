@@ -11549,11 +11549,13 @@ ul.menu-advanced li a .notification {
 
 }
 .input-hotel .input-group{
-  flex: 1 1 auto;
-  margin-bottom: 0px !important;
+    flex: 6 1 300px;
+    margin-bottom: 0px !important;
+    display: flex;
 }
+
 .input-hotel button{
-  flex: 0 1 150px;
+  flex: 1 1 150px;
 }
 .logo{
 

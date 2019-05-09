@@ -53,7 +53,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</div><!-- /.page-title -->
 
 										<?php if(!isset($_SESSION['perfil'])){ ?>
-												<h2><span class="mr20">e$<?php echo $profile->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">eSmartties</label></h2>
+												<h2><span class="mr20">Tp$<?php echo $profile->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">Travel Points</label></h2>
 										<?php }?>
 										
 									</div>

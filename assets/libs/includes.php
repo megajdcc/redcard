@@ -164,7 +164,7 @@ class includes {
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
 				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
-				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
+				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
 				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
 				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
@@ -234,7 +234,7 @@ class includes {
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
 				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
-				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
+				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
 				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
 				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
@@ -390,7 +390,7 @@ class includes {
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
-	<link rel="icon" type="text" href="" alt="Free gifts in Puerto Vallarta" title="Free gifts in Puerto Vallarta" value="Free gifts in Puerto Vallarta">
+	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/logo2.png" sizes="16x8">
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -406,7 +406,7 @@ class includes {
 	public function get_main_navbar(){
 		if($this->user['id'] && basename(dirname($_SERVER['SCRIPT_NAME'])) == 'tienda'){
 			$esm = number_format((float)$this->user['esmarties'], 2, '.', '');
-			$e = '<li><a href="'.HOST.'/tienda/">e$ '.$esm.'</a></li>';
+			$e = '<li><a href="'.HOST.'/tienda/">Tp$ '.$esm.'</a></li>';
 		}else{
 			$e = '';
 		}

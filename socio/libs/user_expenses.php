@@ -303,7 +303,7 @@ class user_expenses {
 						</div><!-- /.col-* -->
 						<div class="col-md-4">
 							<div class="form-group">
-								<label>eSmartties Bonificados</label>
+								<label>Travel Points Bonificados</label>
 								<p>'.$eSmarties.'</p>
 							</div>
 						</div>

@@ -99,7 +99,7 @@ class user_invited {
 			</div><!-- /.col-* -->';
 		}
 		if(is_null($html)){
-			$html = '<div class="background-white p20 text-default">No has invitado a nadie a eSmart Club.</div>';
+			$html = '<div class="background-white p20 text-default">No has invitado a nadie a Travel Points.</div>';
 		}
 		return $html;
 	}

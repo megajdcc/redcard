@@ -26,6 +26,8 @@ class user_signup {
 		return false;
 	}
 
+
+
 	private function register(){
 		$query = "INSERT INTO usuario (
 			username, 
@@ -66,8 +68,10 @@ class user_signup {
 			}
 		}
 
-		$body_alt =
-			'Bienvenido a Travel Points '.$this->username.'. Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace: '.HOST.'/login?email='.$this->email.'&codigo='.$hash;
+		$body_alt ='Bienvenido a Travel Points | Welcome to Travel Points<br>
+		Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace:<a href="'.HOST.'/login?email='.$this->email.'&codigo='.$hash.'"></a><br>
+		Please click <a href="'.HOST.'/login?email='.$this->email.'&codigo='.$hash.'">here</a> to confirm your registration. For further assistence contact support:<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">soporte@info@infochannel.si</a>';
+		
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
@@ -101,9 +105,9 @@ class user_signup {
 	}
 
 	private function email_template($email, $hash){
+		$fecha = date('Y');
 		$html = 
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+'<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,7 +144,7 @@ class user_signup {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width: 250px; height: auto;" >
 										</a>
 									</td>
 								</tr>
@@ -157,15 +161,24 @@ class user_signup {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Bienvenido a Travel Points</strong>
+										<strong>Bienvenido a Travel Points | Welcome to Travel Points</strong>
 									</td>
 								</tr>
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										Para completar tu registro debes confirmar tu correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
+										</a>
+
+
+									</td>
+								</tr>
+								<tr>
+									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+										Please click <a href="'.HOST.'/login?email='.$this->email.'&codigo='.$hash.'">here</a> to confirm your registration. For further assistence contact support:<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -181,7 +194,7 @@ class user_signup {
 									<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
 										Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
 										Puerto Vallarta, México.<br>
-										01 800 400 INFO (4636), (322) 225 9635.<br>
+										01 800 400 INFO (4636), 01 55 5014 0020.<br>
 										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
 									</td>
 								</tr>
@@ -190,7 +203,7 @@ class user_signup {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -207,7 +220,7 @@ class user_signup {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.$fecha.' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
