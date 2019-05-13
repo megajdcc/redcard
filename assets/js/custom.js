@@ -120,7 +120,7 @@ $(document).ready(function() {
 	$('.buy-product').on('click', function(){
 		var name = $('#product-name').text();
 		var price = $('#product-price').text();
-		return confirm('Confirmar compra de ' + name + ' por ' + price + ' eSmartties.');
+		return confirm('Confirmar compra de ' + name + ' por ' + price + ' Travel Points.');
 	});
 	$('.send-product').on('click', function(){
 		return confirm('¿Desea marcar esta venta como entregada?');

@@ -177,7 +177,7 @@ class product_catalog {
 							</div><!-- /.card-simple-actions -->
 						</div><!-- /.card-simple-content -->
 						<div class="card-simple-label">'.$category.'</div>
-						<div class="card-simple-price">e$ '.$price.'</div>
+						<div class="card-simple-price">Tp$ '.$price.'</div>
 					</div><!-- /.card-simple-background -->
 				</div><!-- /.card-simple -->
 			</div><!-- /.col-* -->';

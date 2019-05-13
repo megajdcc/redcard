@@ -39,6 +39,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 				<form method="get" action="<?php echo _safe(HOST.'/tienda/');?>">
 					<div class="background-white p20 mb30">
 						<div class="row">
+
 							<div class="col-md-5">
 								<div class="form-group" data-toggle="tooltip" title="Type Keywords | Buscar por palabra o frase.">
 									<div class="input-group">
@@ -46,9 +47,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										<span class="input-group-btn">
 											<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
 										</span>
-									</div><!-- /.input-group -->
-								</div><!-- /.form-group -->
+									</div>
+								</div>
 							</div>
+							
 							<div class="col-md-7">
 								<div class="right">
 									<div class="form-group display-inline-block mr20">

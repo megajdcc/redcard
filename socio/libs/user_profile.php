@@ -120,7 +120,7 @@ class user_profile {
 				return false;
 			}
 			if($row = $stmt->fetch()){
-				$this->error['email'] = 'Esta persona ya es un socio de eSmart Club.';
+				$this->error['email'] = 'Esta persona ya es un socio de Travel Points.';
 				return false;
 			}
 			$this->invite['email'] = $email;
@@ -153,28 +153,28 @@ class user_profile {
 			}else{
 				$_SESSION['last_email'] = time();
 			}
-			$vars['title'] = '¡'.$this->user['alias'].' te ha invitado a eSmart Club!';
-			$vars['header'] = '¡'.$this->user['alias'].' te ha invitado a eSmart Club!';
-			$vars['content'] =  '¡Afíliate! es gratis y siempre lo será. Descubre una infinidad de negocios que te regalan cosas y puntos para que los canjees por regalos.';
+			$vars['title'] = '¡'.$this->user['alias'].' te ha invitado a Travel Points!';
+			$vars['header'] = '¡'.$this->user['alias'].' te ha invitado a Travel Points!';
+			$vars['content'] =  '¡Afíliate! es gratis y siempre lo será. Descubre una infinidad de negocios que te regalan cosas y puntos para que los canjees por regalos. | Affiliate! It\'s free and always will be. Discover an infinity of businesses that give you things and points for gifts .';
 			$vars['register_link'] = HOST.'/hazte-socio?ref='._safe($this->user['username']);
-			$vars['message_title'] = $this->user['alias'].' te ha escrito un mensaje';
+			$vars['message_title'] = $this->user['alias'].' te ha escrito un mensaje | he wrote you a message';
 			$vars['message'] = $this->invite['message'];
 			$body_alt =
-				$this->user['alias'].' te ha invitado a ser parte de eSmart Club. ¡Bienvenido al club de los compradores inteligentes! 
+				$this->user['alias'].' te ha invitado a ser parte de Travel Points. ¡Bienvenido al club de los compradores inteligentes! 
 				'.$this->invite['message'].'. Sigue este enlace para registrarte: '.HOST.'/hazte-socio?ref='.$this->user['username'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->invite['email']);
 			// Hacerlo formato HTML
@@ -251,7 +251,7 @@ class user_profile {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -286,7 +286,7 @@ class user_profile {
 								</tr>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>¡Bienvenido al club de los compradores inteligentes!</strong>
+										<strong>¡Bienvenido al club de los compradores inteligentes! | Welcome to the smart shoppers club!</strong>
 									</td>
 								</tr>
 								<tr>
@@ -305,7 +305,7 @@ class user_profile {
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:20px; font-size:14px; line-height:30px;">
 										<a style="outline:none; background-color:#0082b7; text-decoration:none; padding: 10px 15px; color:#fff;" href="'.$vars['register_link'].'" target="_blank">
-											¡Hazte socio!
+											¡Hazte socio! | Become a partner!
 										</a>
 									</td>
 								</tr>
@@ -330,7 +330,7 @@ class user_profile {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -347,7 +347,7 @@ class user_profile {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points 2017 Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

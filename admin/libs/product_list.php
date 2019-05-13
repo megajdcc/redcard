@@ -311,10 +311,10 @@ class product_list {
 										<div class="row">
 											<div class="col-sm-8 col-md-4">
 												<div class="form-group">
-													<label for="price">Precio en eSmartties <span class="required">*</span></label>
+													<label for="price">Precio en Travel Points <span class="required">*</span></label>
 													<div class="input-group">
-														<span class="input-group-addon">e$</span>
-														<input class="form-control" type="text" id="price" name="price" value="'.$balance.'" placeholder="Precio en eSmartties" required>
+														<span class="input-group-addon">Tp$</span>
+														<input class="form-control" type="text" id="price" name="price" value="'.$balance.'" placeholder="Precio en TravelPoints" required>
 													</div>
 													'.$price_error.'
 												</div><!-- /.form-group -->

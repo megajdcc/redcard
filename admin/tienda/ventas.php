@@ -39,7 +39,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Ventas de la tienda | eSmart Club';
+$properties['title'] = 'Ventas de la tienda | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>

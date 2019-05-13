@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -25,7 +26,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Nuevo producto | eSmart Club';
+$properties['title'] = 'Nuevo producto | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -54,9 +55,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				<div class="row">
 					<div class="col-sm-8 col-md-4">
 						<div class="form-group">
-							<label for="price">Precio en eSmartties <span class="required">*</span></label>
+							<label for="price">Precio en Travel Points <span class="required">*</span></label>
 							<div class="input-group">
-								<span class="input-group-addon">e$</span>
+								<span class="input-group-addon">Tp$</span>
 								<input class="form-control" type="text" id="price" name="price" value="<?php echo $product->get_price();?>" placeholder="Precio en eSmartties"/ required>
 							</div>
 							<?php echo $product->get_price_error();?>

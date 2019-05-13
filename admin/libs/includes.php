@@ -151,6 +151,9 @@ class includes {
 					case 'ventas.php':
 						$this->crumbs[1] = 'Ventas';
 						break;
+					case 'PreferenciaTienda.php':
+						$this->crumbs[1] = 'Preferencias de la Tienda';
+						break;
 					default:
 						$this->crumbs[1] = '';
 						break;
@@ -179,6 +182,13 @@ class includes {
 								<span class="icon"><i class="fa fa-th-list"></i></span>
 								<span class="title">Ventas</span>
 								<span class="subtitle">Ventas de la tienda</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('PreferenciaTienda.php').'>
+							<a href="'.HOST.'/admin/tienda/PreferenciaTienda">
+								<span class="icon"><i class="fa fa-cogs"></i></span>
+								<span class="title">Preferencias</span>
+								<span class="subtitle">de la tienda</span>
 							</a>
 						</li>';
 				break;
@@ -354,6 +364,7 @@ class includes {
 								<span class="subtitle">Emitir comprobantes</span>
 							</a>
 						</li>
+						
 						<li'.$this->set_active_sidebar_tab('iata.php').'>
 							<a href="'.HOST.'/admin/perfiles/iata">
 								<span class="icon"><i class="fa fa-fighter-jet"></i></span>

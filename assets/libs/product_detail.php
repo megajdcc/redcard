@@ -1,6 +1,11 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace assets\libs;
+require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
+
 use PDO;
+use \Dompdf\Dompdf as pdf;
+use \Dompdf\Options;
+use \Dompdf\Positioner;
 
 class product_detail {
 	private $con;
@@ -19,6 +24,7 @@ class product_detail {
 		'error' => null
 	);
 
+	private $idventa;
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		if(isset($_SESSION['user']['id_usuario'])){
@@ -50,7 +56,7 @@ class product_detail {
 				$this->user['email'] = $row['email'];
 			}
 		}
-		$query = "SELECT p.id_producto, p.nombre, p.descripcion, p.id_categoria, pc.categoria, p.precio, p.disponibles, p.imagen, p.cupon, (SELECT COUNT(*) FROM venta_tienda vt WHERE p.id_producto = vt.id_producto) as usados 
+		$query = "SELECT p.envio,p.id_producto, p.nombre, p.descripcion, p.id_categoria, pc.categoria, p.precio, p.disponibles, p.imagen, p.cupon, (SELECT COUNT(*) FROM venta_tienda vt WHERE p.id_producto = vt.id_producto) as usados 
 			FROM producto p
 			INNER JOIN producto_categoria pc ON p.id_categoria = pc.id_categoria
 			WHERE p.id_producto = :id_producto
@@ -74,9 +80,121 @@ class product_detail {
 			$this->product['image'] = $row['imagen'];
 			$this->product['coupon'] = $row['cupon'];
 			$this->product['used'] = $row['usados'];
+			$this->product['envio'] = $row['envio'];
 			return true;
 		}
 		return false;
+	}
+
+
+	public function getNameProduct(){
+		return _safe($this->product['name']);
+	}
+
+
+	public function getCertificado(){
+		$url = $this->product['coupon'];
+
+		return $url;
+	}
+	public function getCategoryProduct(){
+		return _safe($this->product['category']);
+	}
+
+	public function getImageProduct(){
+		return $this->product['image'];
+	}
+
+	public function getPriceProduct(){
+		return number_format((float)$this->product['price'],2,',','.');
+	}
+
+	public function comprobante(int $tipo = null){
+
+
+			if($tipo == 1){
+				ob_start();
+
+			require_once($_SERVER['DOCUMENT_ROOT'].'/assets/viewreports/comprobanteventa.php');
+
+		
+	
+			$html = ob_get_clean();
+			$option = new Options();
+			$option->isPhpEnabled(true);
+			$option->isRemoteEnabled(true);
+			$option->setIsHtml5ParserEnabled(true);
+			
+			$dompdf = new pdf($option);
+		
+			$dompdf->loadHtml($html);
+			$dompdf->setPaper('A4', 'landscape');
+			$dompdf->render();
+
+			$dato = array('Attachment' => 1);
+			$titulo = "Travel Points: Comprobante de compra de ".$this->product['name'];
+			$dompdf->stream($titulo.'.pdf',$dato);
+
+			}else if($tipo == 2){
+			
+			ob_start();
+			require_once($_SERVER['DOCUMENT_ROOT'].'/assets/viewreports/comprobanteventaenvio.php');
+
+		
+	
+			$html = ob_get_clean();
+			$option = new Options();
+			$option->isPhpEnabled(true);
+			$option->isRemoteEnabled(true);
+			$option->setIsHtml5ParserEnabled(true);
+			
+			$dompdf = new pdf($option);
+		
+			$dompdf->loadHtml($html);
+			$dompdf->setPaper('A4', 'landscape');
+			$dompdf->render();
+
+			$dato = array('Attachment' => 1);
+			$titulo = "Travel Points: Comprobante de compra de ".$this->product['name'];
+			$dompdf->stream($titulo.'.pdf',$dato);
+
+			}else if($tipo == 3 ){
+				ob_start();
+			require_once($_SERVER['DOCUMENT_ROOT'].'/assets/viewreports/comprobanteventacertificado.php');
+
+		
+	
+			$html = ob_get_clean();
+			$option = new Options();
+			$option->isPhpEnabled(true);
+			$option->isRemoteEnabled(true);
+			$option->setIsHtml5ParserEnabled(true);
+			
+			$dompdf = new pdf($option);
+		
+			$dompdf->loadHtml($html);
+			$dompdf->setPaper('A4', 'portrait');
+			$dompdf->render();
+
+			$dato = array('Attachment' => 0);
+			$titulo = "Travel Points: Comprobante de compra de ".$this->product['name'];
+			$dompdf->stream($titulo.'.pdf',$dato);
+			}
+			
+
+			// return true;
+
+	}
+
+	public function setIdVenta($id){
+		$this->idventa = $id;
+	}
+
+	public function getIdventa(){
+		$sql = "select max(id_venta) as id from venta_tienda";
+		$stm = $this->con->prepare($sql);
+		$stm->execute();
+		return $stm->fetch(PDO::FETCH_ASSOC)['id'];
 	}
 
 	public function buy_item(array $post){
@@ -84,10 +202,12 @@ class product_detail {
 			$this->error['error'] = 'No se ha podido completar la compra debido a un error.';
 			return false;
 		}
+
 		if($this->product['price'] > $this->user['esmarties']){
 			$this->error['error'] = 'No tienes suficientes Travel Points para comprar este producto.';
 			return false;
 		}
+
 		if($post['type'] == 1 || $post['type'] == 2 || $post['type'] == 3){
 			$id = $post['buy'];
 			$type = $post['type'];
@@ -102,15 +222,16 @@ class product_detail {
 			}
 		}
 		if(!array_filter($this->error)){
+
 			switch ($type) {
 				case 1:
-					$content = 'Puede pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales.';
+					$content = 'Puede pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales. | You can pick up your product in the store from tomorrow and during the next 7 calendar days.';
 					break;
 				case 2:
-					$content = 'Su pedido llegar&aacute; en los pr&oacute;ximos 5 d&iacute;as despu&eacute;s de completar el pago del env&iacute;o.';
+					$content = 'Su pedido llegar&aacute; en los pr&oacute;ximos 5 d&iacute;as despu&eacute;s de completar el pago del env&iacute;o. | Your order will arrive in the next 5 days after completing the payment of the shipment.';
 					break;
 				case 3:
-					$content = 'Se ha adjuntado un certificado en este correo electrónico para utilizar su servicio.';
+					$content = 'Se ha adjuntado un certificado en este correo electrónico para utilizar su servicio. | A certificate has been attached to this email to use your service.';
 					break;
 				default:
 					$content = '';
@@ -122,20 +243,20 @@ class product_detail {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->user['email']);
 			// Hacerlo formato HTML
 			$mail->isHTML(true);
 			// Formato del correo
-			$mail->Subject = 'Compra realizada exitosamente';
+			$mail->Subject = 'Compra realizada exitosamente | Purchase made successfully';
 			$mail->Body    = $this->email_template($content);
 			if($this->product['category_id'] && $this->product['coupon']){
 				$path = ROOT.'\assets\img\store\coupon\.'.$this->product['coupon'];
@@ -151,16 +272,16 @@ class product_detail {
 			$mail2->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail2->isSMTP();
-			$mail2->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail2->Host = 'single-5928.banahosting.com';
 			$mail2->SMTPAuth = true;
 			$mail2->SMTPSecure = 'ssl';
 			$mail2->Port = 465;
 			// El correo que hará el envío
-			$mail2->Username = 'notificacion@esmartclub.com';
-			$mail2->Password = 'Alan@2017_pv';
-			$mail2->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail2->Username = 'notification@travelpoints.com.mx';
+			$mail2->Password = '20464273jd';
+			$mail2->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
-			$mail2->addAddress('tienda@esmartclub.com');
+			$mail2->addAddress('tienda@travelpoints.com.mx');
 			// Hacerlo formato HTML
 			$mail2->isHTML(true);
 			// Formato del correo
@@ -206,6 +327,7 @@ class product_detail {
 			try{
 				$stmt = $this->con->prepare($query);
 				$stmt->execute($params);
+				$this->setIdVenta($this->con->lastInsertId());
 			}catch(\PDOException $ex){
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				return false;
@@ -247,7 +369,38 @@ class product_detail {
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				return false;
 			}
-			$_SESSION['notification']['success'] = 'Producto comprado exitosamente.';
+			echo $type;
+
+			if($type == 1){
+				$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y podrás recogerlo en nuestra tienda ubicada en Marina Vallarta Business Center, Oficina 204. Interior Plaza Marina, en el fraccionamiento Marina Vallarta, Puerto Vallarta. Teléfono (322) 2259635. de lunes a viernes de 9AM a 6PM y los Sabados de 9AM a 2PM. Guarda este comprobante para futuras referencias.
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" > 
+				<br>
+				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante" class="emit-comprobante btn btn-danger"><i class="fa fa-file-pdf-o"></i>Descargar Comprobante</button>
+				</form>
+				';
+			}else if($type == 2){
+
+				$_SESSION['notification']['ventaexitosa'] = true; 
+				$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y podrás recogerlo en nuestra tienda ubicada en Marina Vallarta Business Center, Oficina 204. Interior Plaza Marina, en el fraccionamiento Marina Vallarta, Puerto Vallarta. Teléfono (322) 2259635. de lunes a viernes de 9AM a 6PM y los Sabados de 9AM a 2PM. Guarda este comprobante para futuras referencias.
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'"> 
+				<br>
+
+				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante2" class="emit-comprobante btn btn-danger"><i class="fa fa-file-pdf-o"></i>Descargar Comprobante</button>
+				</form>';
+			}else if($type == 3){
+				$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y lo hemos enviado a tu email <strong>'.$this->user['email'].'</strong>.Presenta el certificado digital que te enviamos desde tu dispositivo movil o descarga tu certificado.
+				
+				<br>
+
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" target="_blank"> 
+				<br>
+
+				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante3" class="emit-comprobante btn btn-danger"><i class="fa fa-file-pdf-o"></i>Descargar Certificado</button>
+				</form>';
+			}
+		
+		
+			//$_SESSION['notification']['success'] = 'Producto comprado exitosamente.';
 			header('Location: '._safe($_SERVER['REQUEST_URI']));
 			die();
 			return;
@@ -291,7 +444,7 @@ class product_detail {
 
 	public function get_esmarties(){
 		if($this->user['id']){
-			return '<div class="background-white p20 mb30"><h4>Mis eSmartties: <span class="text-primary">'._safe($this->user['esmarties']).'</span></h4></div>';
+			return '<div class="background-white p20 mb30"><h4>Mis Travel Points: <span class="text-primary">'._safe($this->user['esmarties']).'</span></h4></div>';
 		}
 	}
 
@@ -309,6 +462,18 @@ class product_detail {
 
 	public function get_postal_error(){
 		return '<p class="text-danger">'._safe($this->error['postal']).'</p>';
+	}
+
+
+	public function getPrecioEnvio(){
+
+		$precio = '$0,00';
+
+		if($this->product['envio']){
+			$precio = '$'.number_format((float)$this->product['envio'],2,',','.').'MXN';
+
+		}
+		return $precio;
 	}
 
 	public function get_buy_button(){
@@ -388,6 +553,7 @@ class product_detail {
 	}
 
 	private function email_template($content){
+		$fecha = date('Y');
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -444,7 +610,7 @@ class product_detail {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Compra realizada exitosamente</strong>
+										<strong>Compra realizada exitosamente |  Purchase made successfully</strong>
 									</td>
 								</tr>
 								<tr>
@@ -452,12 +618,22 @@ class product_detail {
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
 										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+											soporte@infochannel.si
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+										'.$content.'<br>
+										For any clarification please contact our support team.<br>
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
 							</tbody>
 						</table>
+
 					</td>
 				</tr>
 				<tr>
@@ -466,9 +642,12 @@ class product_detail {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
-										Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
-										Puerto Vallarta, México.<br>
-										01 800 400 INFO (4636), (322) 225 9635.<br>
+										Travel Points <br>
+										Marina Vallarta Business Center, Oficina 204, Interior Plaza Marina.<br>
+										Fraccionamiento Marina Vallarta, Puerto Vallarta Mexico<br>
+										
+										Tel:(322) 225 9635<br>
+										Lunes a Viernes de 9AM a 6PM y Sabados de 9AM a 2PM.<br>
 										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
 									</td>
 								</tr>
@@ -477,7 +656,7 @@ class product_detail {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -494,7 +673,7 @@ class product_detail {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.$fecha.' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -508,6 +687,8 @@ class product_detail {
 	}
 
 	private function email_template_2(){
+
+		$fecha = date('Y');
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -547,7 +728,7 @@ class product_detail {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -595,7 +776,7 @@ class product_detail {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -612,7 +793,7 @@ class product_detail {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.$fecha.' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -623,6 +804,84 @@ class product_detail {
 </body>
 </html>';
 		return $html;
+	}
+
+
+	public function recoger(){
+
+
+		$sql = "select max(id_venta) as id from venta_tienda where id_usuario = :usuario";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':usuario',$_SESSION['user']['id_usuario']);
+			$stm->execute();
+		} catch (PDOException $e) {
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+		}
+
+
+		$idventa = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+
+
+		$sql2 = "update venta_tienda set entrega = :entrega where id_venta=:venta";
+
+		try {
+			$stm = $this->con->prepare($sql2);
+
+			$stm->execute(array(':entrega'=>1,
+								':venta'=>$idventa));
+
+
+		} catch (PDOException $ex) {
+			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+		}
+
+		$content = '!Has decidido recogerlo en tienda!, Puedes pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales.';
+
+		$content = 'Usted ha realizado una compra por concepto de <strong>'.$this->get_name().'</strong> con un cargo de <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$content;
+			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+			$mail = new \PHPMailer;
+			$mail->CharSet = 'UTF-8';
+			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+			$mail->isSMTP();
+			$mail->Host = 'single-5928.banahosting.com';
+			$mail->SMTPAuth = true;
+			$mail->SMTPSecure = 'ssl';
+			$mail->Port = 465;
+			// El correo que hará el envío
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+			// El correo al que se enviará
+			$mail->addAddress($this->user['email']);
+			// Hacerlo formato HTML
+			$mail->isHTML(true);
+			// Formato del correo
+			$mail->Subject = 'Compra realizada exitosamente';
+			$mail->Body    = $this->email_template($content);
+			if($this->product['category_id'] && $this->product['coupon']){
+				$path = ROOT.'\assets\img\store\coupon\.'.$this->product['coupon'];
+				$mail->addAttachment($path);
+			}
+
+			if(!$mail->send()){
+				$this->error['error'] = 'Ha ocurrido un error en el proceso de compra. Intentalo nuevamente.';
+				return;
+			}
+
+
+			$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y podrás recogerlo en nuestra tienda ubicada en Marina Vallarta Business Center, Oficina 204. Interior Plaza Marina, en el fraccionamiento Marina Vallarta, Puerto Vallarta. Teléfono (322) 2259635. de lunes a viernes de 9AM a 6PM y los Sabados de 9AM a 2PM. Guarda este comprobante para futuras referencias.
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'"> 
+				<br>
+				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante" class="emit-comprobante btn btn-danger"><i></i>Descargar Comprobante</button>
+				</form>
+				';
+
+			header('Location: '._safe($_SERVER['REQUEST_URI']));
+			die();
+			return;
+
 	}
 
 	private function set_address($string = null){
@@ -647,13 +906,14 @@ class product_detail {
 
 	public function get_notification(){
 		$html = null;
+
 		if(isset($_SESSION['notification']['success'])){
 			$html .= 
 			'<div class="alert alert-icon alert-dismissible alert-success" role="alert">
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 					<i class="fa fa-times" aria-hidden="true"></i>
 				</button>
-				'._safe($_SESSION['notification']['success']).'
+				'.$_SESSION['notification']['success'].'
 			</div>';
 			unset($_SESSION['notification']['success']);
 		}

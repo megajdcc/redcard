@@ -453,7 +453,7 @@ class includes {
 								 
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<?php echo $e ?>
-								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="<?php echo HOST.'/tienda/' ?>">Gift Store | Tienda de Regalos</a></li>
 								
 								<li class="visible-xs"><a href="<?php echo HOST.'/contacto'; ?>">Contact | Contacto</a></li>
@@ -470,20 +470,29 @@ class includes {
 										<div class="user-image">
 											<img src="<?php echo HOST.'/assets/img/user_profile/'.$this->user['image']; ?>">
 											<?php  
+
 							if($this->user['pending_review'] > 0 || $this->user['pending_request'] > 0 || $this->admin['pending_request'] > 0){?>
 								<div class="notification"></div>
 							<?php  }
+
 							if($this->user['pending_review'] > 0){
+
+
 								$review = '<li><a href="'.HOST.'/socio/consumos/">Opiniones pendientes<div class="dropdown-notification"></div></a></li>';
+
 							}else{
+
 								$review = '';
+
 							}
 							if($this->user['pending_request'] > 0){
 								$request = '<li><a href="'.HOST.'/socio/negocios/solicitudes">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>';
 							
 							  }else{
 								$request = '';
-							}?>
+							}
+
+							 ?>
 								</div><!-- /.user-image -->
 										<span class="header-nav-user-name"><?php echo $this->user['alias']; ?></span> <i class="fa fa-chevron-down"></i>
 									</button>
@@ -491,7 +500,7 @@ class includes {
 										<li><a href="<?php echo HOST.'/socio/'; ?>">Mi inicio</a></li>
 										<li><a href="<?php echo HOST.'/socio/perfil/'; ?>">Mi perfil</a></li>
 										<?php  
-										$review.$request;
+										echo $review.$request;
 								if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){?>
 									
 									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel Travel Points</a><li>
@@ -499,14 +508,16 @@ class includes {
 									<?php  if($this->admin['pending_request'] > 0){?>
 										<li><a href="<?php echo HOST.'/admin/negocios/solicitudes'; ?>">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>
 
-								<?php
-									}
-								}
-								if($_SESSION['user']['id_rol'] == 9 and !isset($_SESSION['perfil'])){?>
+							
+								<?php }} 
+								
+								
+								if($_SESSION['user']['id_rol'] == 9 and !isset($_SESSION['perfil'])){
 
-									<li><a href="<?php echo HOST.'/admin/tienda/'; ?>">Gift Store | Tienda de Regalos</a></li>
-									<?php 
-								}
+
+								echo '<li><a href="'.HOST.'/admin/tienda/">Gift Store | Tienda de Regalos</a></li>';
+									
+								 } 
 
 								if(isset($_SESSION['business'])){?>
 									
