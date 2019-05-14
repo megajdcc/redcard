@@ -35,7 +35,7 @@ echo $navbar = $includes->get_navbar(); ?>
 			<?php echo $home->get_business_sales();?>
 			<div class="col-sm-3">
 				<div class="statusbox">
-					<h2>eSmartties bonificados</h2>
+					<h2>Travel Points bonificados</h2>
 					<div class="statusbox-content">
 						<strong><?php echo $home->get_esmarties();?></strong>
 						<span>Por las ventas del mes</span>

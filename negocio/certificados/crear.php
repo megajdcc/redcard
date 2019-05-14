@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user']) || !isset($_SESSION['business'])){
@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 $includes = new negocio\libs\includes($con);
 
-$properties['title'] = 'Crear un nuevo certificado de regalo | eSmart Club';
+$properties['title'] = 'Crear un nuevo certificado de regalo | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

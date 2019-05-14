@@ -130,7 +130,7 @@ class reports_sales {
 						<th>Fecha y hora</th>
 						<th>Venta</th>
 						<th>Comisi&oacute;n</th>
-						<th>eSmartties</th>
+						<th>Travel Points</th>
 						<th>Cliente</th>
 						<th>Origen</th>
 						<th>Registrante</th>

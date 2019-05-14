@@ -52,6 +52,85 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 <div class="row">
 	<div class="col-sm-12">
 		<?php echo $perfiles->get_notification();?>
+
+
+		<div class="background-white p20 mb50">
+			<h1 class="page-title">Nuevos Perfiles</h1>
+
+
+			<div class="row">
+				<div class="col-lg-12" id="perfilesnew">
+					
+				</div>
+
+
+				<script>
+					
+					$(document).ready(function() {
+						$(document).ready(function() {
+						
+							$.ajax({
+								url: '/admin/controller/grafica.php',
+								type: 'POST',
+								dataType: 'json',
+								data: {grafica: 'perfilesnuevos'},
+							})
+							.done(function(response) {
+								var options = {
+											 chart: {
+											 		renderTo: 'perfilesnew',
+											        type: 'pie'
+											    },
+											   lang:{
+															decimalPoint: ',',
+								   						thousandsSep: '.'
+													},
+											    title: {
+											        text: 'Perfiles Nuevos'
+											    },
+											    xAxis: {
+											        type: 'category'
+											    },
+											  
+											    
+											    plotOptions: {
+											        pie: {
+														allowPointSelect:true,
+														cursor:'pointer',
+														borderWidth: 0,
+											            dataLabels: {
+											               enabled: true,
+											               format: '{point.y:.0f}'
+											            },
+											            showInLegend:true,
+											        }},
+
+											    tooltip: {
+											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> {point.y:.0f}</b>'
+											    },
+											    series: [ {
+											    	name: "perfiles",
+            										colorByPoint: true,
+											    } ],
+								   				}; 
+									 options.series[0].data = response;
+									
+									var grafica = Highcharts.chart(options);
+									 	
+									})	
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+						
+							});
+
+					});
+				</script>
+			</div>
+		</div>
 		<div class="page-title">
 			<h1>Usuarios con adjudicación de perfil
 			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
@@ -73,6 +152,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
                 <th>Comisión</th>
                
                 <th>Ultimo Logín</th>
+                <th></th>
                
 
             </tr>
@@ -452,6 +532,48 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			});
 
 		
+		</script>
+
+
+		<!-- Modal para editar usuario con perfil-->
+		<div class="modal fade " id="editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+			<div class="modal-dialog modal-dialog-centered modal-lg " role="document">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Editar Usuarios</h5>
+							
+							
+						
+		
+					</div>
+
+					<div class="modal-body">
+						<div class="alert alert-success" role="alert" id="alerta" style="display:none">
+							Comisión actualizada. Si desea puede actualizar de nuevo.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+						</div>
+							
+					</div>
+						
+					<div class="modal-footer">
+						<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="actualizar btn btn-success" disabled>Actualizar</button>
+						<button  type="button" class="cerrarperfil btn btn-secondary" >Cerrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script>
+			
+			$(document).ready(function() {
+				$('.actualizarperfil').click(function(){
+					$('#editar').modal('show');
+				});
+			});
 		</script>
 
 

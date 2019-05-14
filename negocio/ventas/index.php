@@ -21,7 +21,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Nueva venta | eSmart Club';
+$properties['title'] = 'Nueva venta | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>
@@ -37,8 +37,8 @@ echo $navbar = $includes->get_navbar(); ?>
 					<input type="hidden" id="balance" value="<?php echo $sale->get_clean_balance();?>">
 					<p id="after">Saldo despu&eacute;s de venta: </p>
 				</div>
-				<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de eSmart Club. Verifique su coincidencia cuidadosamente.">
-					<label for="user-search-input">Socio de eSmart Club <i class="fa fa-question-circle text-secondary"></i></label>
+				<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de Travel Points. Verifique su coincidencia cuidadosamente.">
+					<label for="user-search-input">Socio de Travel Points <i class="fa fa-question-circle text-secondary"></i></label>
 					<div class="search-placeholder" id="user-search-placeholder">
 						<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 					</div>
@@ -71,7 +71,7 @@ echo $navbar = $includes->get_navbar(); ?>
 					</div><!-- /.col-* -->
 					<div class="col-sm-8 col-lg-3">
 						<div class="form-group">
-							<label for="sale-esmarties">eSmartties de esta venta</label>
+							<label for="sale-esmarties">TravelPoints de esta venta</label>
 							<input class="form-control" id="sale-esmarties" value="<?php echo $sale->get_eSmarties(); ?>" readonly>
 						</div>
 					</div>

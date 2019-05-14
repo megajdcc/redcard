@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user']) || !isset($_SESSION['business'])){
@@ -31,6 +32,7 @@ echo $navbar = $includes->get_navbar(); ?>
 	<div class="col-sm-12">
 		<?php echo $reports->get_notification();?>
 		<div class="background-white p20 mb30">
+			<h1 class="page-title">Reporte de Certificado</h1>
 			<form method="post" action="<?php echo _safe(HOST.'/negocio/reportes/certificados');?>">
 				<div class="row">
 					<div class="col-sm-4">

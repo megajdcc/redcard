@@ -120,7 +120,7 @@ class store_sales{
 						</div>
 					</td>
 					<td><a href="'.HOST.'/tienda/producto/'.$product_id.'" target="_blank">'.$name.'</a></td>
-					<td>e$ '.$price.'</td>
+					<td>Tp$ '.$price.'</td>
 					<td>'.$date.'</td>
 					<td>'.$label.'</td>
 					<td><a href="'.HOST.'/socio/'.$username.'" target="_blank">'.$alias.'</a></td>

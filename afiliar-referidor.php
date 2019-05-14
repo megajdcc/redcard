@@ -82,7 +82,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
             <input class ="hotel form-control" type="text" id="business-name" name="nombre" value="<?php echo $affiliate->getHotel();?>" placeholder="Nombre del hotel" readonly/>
             </div>
-              <button type ="button"  data-toggle="modal" data-target=".capturarhotel"  data-placement="top" name="buscarhotel" class="buscar form-control"><i class="fa fa-search"></i>Buscar</button>
+         <!--      <button type ="button"  data-toggle="modal" data-target=".capturarhotel"  data-placement="top" name="buscarhotel" class="buscar form-control"><i class="fa fa-search"></i>Buscar</button> -->
             </div>
             
            </div><!-- /.form-group -->
@@ -142,8 +142,8 @@ echo $navbar = $includes->get_main_navbar(); ?>
          
         </div><!-- /.box -->
                
-       <!--  <div class="background-white p30 mb30">
-         <h3 class="page-title">Datos para el pago de comisiones</h3> -->
+        <div class="background-white p30 mb30">
+         <!-- <h3 class="page-title">Datos para el pago de comisiones</h3> -->
          
         
          <!-- <div class="row">

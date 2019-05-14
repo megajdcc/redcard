@@ -87,7 +87,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									<div class="form-group" data-toggle="tooltip" title="Este ser&aacute; el enlace directo al perfil de tu negocio.">
 										<label for="url">Enlace deseado del perfil de negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 										<div class="input-group">
-											<span class="input-group-addon">www.redcard.com.mx/</span>
+											<span class="input-group-addon">www.travelpoints.com.mx/</span>
 											<input class="form-control" type="text" id="url" name="url" value="<?php echo $affiliate->get_url();?>" placeholder="nombre-de-negocio" required >
 										</div><!-- /.input-group -->
 									</div><!-- /.form-group -->

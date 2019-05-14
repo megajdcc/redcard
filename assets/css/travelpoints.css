@@ -112,3 +112,23 @@ width: 100%;
 .slider.slider-horizontal{
 	width: 100% !important; 
 }
+
+/*BTN IATAS */
+
+.btn-iata{
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+}
+.btn-iata button{
+	padding: 5px 5px;
+	/*background: transparent;*/
+	margin-left: 1rem;
+}
+.btn-iata .fa{
+	font-size: 12pt;
+	margin: 0px;
+	color: black;
+}
+

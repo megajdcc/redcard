@@ -164,6 +164,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</div><!-- /.col-* -->
 									</div><!-- /.row -->
 									<hr>
+
 									<div class="form-group">
 										<label for="map-canvas">Posici&oacute;n en el mapa <span class="required">*</span></label>
 										<p>
@@ -175,6 +176,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</p>
 										<?php echo $affiliate->getLocationError();?>
 									</div>
+
 									<input class="controls form-control mb30" type="text" id="pac-input" placeholder="Escribe una ubicaci&oacute;n" />
 									<div id="map-canvas"></div>
 									<div class="row">
@@ -275,7 +277,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								
 								</div><!-- /.box -->
 								
-								<div class="background-white p30 mb30">
+								<!-- <div class="background-white p30 mb30">
 									<h3 class="page-title">Datos para el pago de comisiones</h3>
 									
 								
@@ -287,39 +289,39 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<label for="nombre">Nombre del banco<span class="required">*</span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-													<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $affiliate->getBanco();?>" placeholder="Nombre del banco" required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getBancoError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php //echo $affiliate->getBanco();?>" placeholder="Nombre del banco" required >
+												</div>
+												<?php //echo $affiliate->getBancoError();?>
+											</div>
 
 											<div class="form-group">
 												<label for="cuenta">Cuenta<span class="required">*</span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php echo $affiliate->getCuenta();?>" placeholder="Cuenta." required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getCuentaError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php //echo $affiliate->getCuenta();?>" placeholder="Cuenta." required >
+												</div>
+												<?php //echo $affiliate->getCuentaError();?>
+											</div>
 
 											<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
 												<label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $affiliate->getClabe();?>" placeholder="Clabe" required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getClabeError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php //echo $affiliate->getClabe();?>" placeholder="Clabe" required >
+												</div>
+												<?php// echo $affiliate->getClabeError();?>
+											</div>
 
 											<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
 												<label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $affiliate->getSwift();?>" placeholder="Swift" required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getSwiftError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php //echo $affiliate->getSwift();?>" placeholder="Swift" required >
+												</div>
+												<?php //echo $affiliate->getSwiftError();?>
+											</div>
 
-										</div><!-- /.col-* -->
+										</div>
 
 
 
@@ -329,18 +331,18 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<label for="nombre">Nombre del banco<span class="required">*</span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-													<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta" name="nombre_banco_tarjeta" value="<?php echo $affiliate->getBancoNombreTarjeta();?>" placeholder="Nombre del banco" required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getNombreBancoTarjetaError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta" name="nombre_banco_tarjeta" value="<?php //echo $affiliate->getBancoNombreTarjeta();?>" placeholder="Nombre del banco" required >
+												</div>
+												<?php //echo $affiliate->getNombreBancoTarjetaError();?>
+											</div>
 											<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
 												<label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-cc"></i></span>
-													<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numero_targeta" value="<?php echo $affiliate->getTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getNumeroTarjetaError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numero_targeta" value="<?php //echo $affiliate->getTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
+												</div>
+												<?php //echo $affiliate->getNumeroTarjetaError();?>
+											</div>
 								
 										
 												<h5 class="page-title">Transferencia PayPal</h5>
@@ -348,16 +350,16 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<label for="nombre">Email de Paypal<span class="required">*</span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-													<input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $affiliate->getEmailPaypal();?>" placeholder="Nombre del banco" required >
-												</div><!-- /.input-group -->
-												<?php echo $affiliate->getEmailPaypalError();?>
-											</div><!-- /.form-group -->
+													<input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php //echo $affiliate->getEmailPaypal();?>" placeholder="Nombre del banco" required >
+												</div>
+												<?php //echo $affiliate->getEmailPaypalError();?>
+											</div>
 										</div>
 										
 									</div>
 									
 								
-								</div><!-- /.box -->
+								</div>-->
 
 
 								<div class="row">

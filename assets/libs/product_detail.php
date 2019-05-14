@@ -225,19 +225,29 @@ class product_detail {
 
 			switch ($type) {
 				case 1:
-					$content = 'Puede pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales. | You can pick up your product in the store from tomorrow and during the next 7 calendar days.';
+					$content = 'Puede pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales.';
+
+					$contentingles = "You can pick up your product in the store from tomorrow and during the next 7 calendar days.";
 					break;
 				case 2:
-					$content = 'Su pedido llegar&aacute; en los pr&oacute;ximos 5 d&iacute;as despu&eacute;s de completar el pago del env&iacute;o. | Your order will arrive in the next 5 days after completing the payment of the shipment.';
+					$content = 'Su pedido llegar&aacute; en los pr&oacute;ximos 5 d&iacute;as despu&eacute;s de completar el pago del env&iacute;o.';
+
+					$contentingles = 'Your order will arrive in the next 5 days after completing the payment of the shipment.';
 					break;
 				case 3:
-					$content = 'Se ha adjuntado un certificado en este correo electrónico para utilizar su servicio. | A certificate has been attached to this email to use your service.';
+					$content = 'Se ha adjuntado un certificado en este correo electrónico para utilizar su servicio.';
+
+					$contentingles = 'A certificate has been attached to this email to use your service.';
 					break;
 				default:
 					$content = '';
 					break;
 			}
 			$content = 'Usted ha realizado una compra por concepto de <strong>'.$this->get_name().'</strong> con un cargo de <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$content;
+
+
+			$contentingles = 'You have made a purchase for the concept of <strong>'.$this->get_name().'</strong> with a charge of <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$contentingles;
+
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';
@@ -257,7 +267,7 @@ class product_detail {
 			$mail->isHTML(true);
 			// Formato del correo
 			$mail->Subject = 'Compra realizada exitosamente | Purchase made successfully';
-			$mail->Body    = $this->email_template($content);
+			$mail->Body    = $this->email_template($content,$contentingles);
 			if($this->product['category_id'] && $this->product['coupon']){
 				$path = ROOT.'\assets\img\store\coupon\.'.$this->product['coupon'];
 				$mail->addAttachment($path);
@@ -552,7 +562,7 @@ class product_detail {
 		return $html;
 	}
 
-	private function email_template($content){
+	private function email_template($content,$contentingles){
 		$fecha = date('Y');
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -593,7 +603,7 @@ class product_detail {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;>
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -617,16 +627,16 @@ class product_detail {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
 											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										'.$content.'<br>
+										'.$contentingles.'<br>
 										For any clarification please contact our support team.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
 											soporte@infochannel.si
 										</a>
 									</td>
@@ -839,7 +849,12 @@ class product_detail {
 
 		$content = '!Has decidido recogerlo en tienda!, Puedes pasar a recoger su producto en tienda a partir de ma&ntilde;ana y durante los próximos 7 d&iacute;as naturales.';
 
+		$contentingles = '! You have decided to pick it up in store! You can pick up your product in the store after the publication of the information for the next 7 days.';
+
+
 		$content = 'Usted ha realizado una compra por concepto de <strong>'.$this->get_name().'</strong> con un cargo de <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$content;
+
+		$contentingles = 'You have made a purchase for the concept of <strong>'.$this->get_name().'</strong> with a charge of <strong>Tp$'.$this->get_price().'</strong> Travel Points.<br>'.$contentingles;
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
 			$mail->CharSet = 'UTF-8';
@@ -859,7 +874,7 @@ class product_detail {
 			$mail->isHTML(true);
 			// Formato del correo
 			$mail->Subject = 'Compra realizada exitosamente';
-			$mail->Body    = $this->email_template($content);
+			$mail->Body    = $this->email_template($content,$contentingles);
 			if($this->product['category_id'] && $this->product['coupon']){
 				$path = ROOT.'\assets\img\store\coupon\.'.$this->product['coupon'];
 				$mail->addAttachment($path);

@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace assets\libs;
 use PDO;
 
@@ -192,6 +192,8 @@ class affiliate_business {
 			move_uploaded_file($this->register['photo']['tmp'], $this->register['photo']['path'])
 		){
 			$content = 'Se ha recibido una nueva solicitud para afiliar un negocio. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/negocios/solicitud/'.$last_id.'">Haz clic aqu&iacute; para verla</a>.';
+
+			$content .= '<br>A new application has been received to affiliate a business.<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/negocios/solicitud/'.$last_id.'">Click here to se her</a>.';
 			$body_alt =
 				'Se ha recibido una nueva solicitud para afiliar negocio. Sigue este enlace para verla: '.HOST.'/admin/negocios/solicitud/'.$last_id;
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
@@ -199,16 +201,16 @@ class affiliate_business {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notificacion@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
-			$mail->addAddress('soporte@esmartclub.com');
+			$mail->addAddress('soporte@infochannel.si');
 			// Hacerlo formato HTML
 			$mail->isHTML(true);
 			// Formato del correo
@@ -227,13 +229,14 @@ class affiliate_business {
 	}
 
 	private function email_template($content){
+		$fecha = date('Y');
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nueva solicitud de negocio</title>
+<title>Nueva solicitud de negocio | New business application</title>
 <style type="text/css">
 @media only screen and (max-width: 600px) {
  table[class="contenttable"] {
@@ -266,7 +269,7 @@ class affiliate_business {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -283,15 +286,16 @@ class affiliate_business {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Nueva solicitud de negocio</strong>
+										<strong>Nueva solicitud de negocio | New business application</strong>
 									</td>
 								</tr>
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										For any clarification please contact our support team.<br>
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -316,7 +320,7 @@ class affiliate_business {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -333,7 +337,7 @@ class affiliate_business {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.$fecha.' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

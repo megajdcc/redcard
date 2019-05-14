@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Certificados redimidos | eSmart Club';
+$properties['title'] = 'Certificados redimidos | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

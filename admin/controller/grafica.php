@@ -169,8 +169,24 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'comisionperfiles'){
 
 	}
 
+if(isset($_POST['grafica']) && $_POST['grafica'] == 'perfilesnuevos'){
 
+		$result = $home->getNuevosPerfiles();
 
+		if($result){
+			$response = array();
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+				$usuarios = number_format((float)$row['usuarios'],2,'.','');
 
+				$perfil = $row['perfil'];
+				 settype($usuarios,'float');
+				$response[] = array('name'=>$perfil,'y'=>$usuarios);
+	
+			}
+		
+			echo json_encode($response);
+
+		}
+}
 
  ?>

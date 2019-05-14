@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user']) || !isset($_SESSION['business'])){
@@ -19,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Información, ubicación y contacto del negocio | eSmartClub';
+$properties['title'] = 'Información, ubicación y contacto del negocio | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>
@@ -37,7 +38,7 @@ echo $navbar = $includes->get_navbar(); ?>
 				</div>
 				<div class="form-group" data-toggle="tooltip" title="Este es el enlace directo al perfil de tu negocio. eSmart Club puede cambiar tu enlace en cualquier momento.">
 					<label for="url">Enlace al perfil de negocio <i class="fa fa-question-circle text-secondary"></i></label>
-					<input class="form-control" type="text" id="url" value="http://www.esmartclub.com/<?php echo $info->get_url();?>" readonly>
+					<input class="form-control" type="text" id="url" value="http://www.travelpoints.com.mx/<?php echo $info->get_url();?>" readonly>
 				</div><!-- /.form-group -->
 				<div class="row">
 					<div class="col-lg-8">
@@ -55,7 +56,7 @@ echo $navbar = $includes->get_navbar(); ?>
 					<div class="col-lg-4">
 						<div class="row">
 							<div class="col-sm-6 col-md-12 form-group">
-								<label for="category">Categor&iacute;a del negocio00000<span class="required">*</span></label>
+								<label for="category">Categor&iacute;a del negocio<span class="required">*</span></label>
 								<select class="form-control" id="category" name="category_id" title="Seleccionar categor&iacute;a" required>
 									<?php echo $info->get_category();?>
 								</select>

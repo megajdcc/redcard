@@ -1,4 +1,5 @@
-<?php # Desarrollado por Info Channel
+<?php 
+
 namespace admin\libs;
 use assets\libs\connection;
 use PDO;
@@ -29,8 +30,6 @@ class includes {
 		$this->load_sidebar($boolean);
 
 		return;
-
-
 	}
 
 	private function load_data(){
@@ -172,7 +171,7 @@ class includes {
 							<a href="'.HOST.'/admin/tienda/nuevo-producto">
 								<span class="icon"><i class="fa fa-plus"></i></span>
 								<span class="title">Nuevo producto</span>
-								<span class="subtitle">Agrega un nuevo producto</span>
+								<span class="subtitle">Agregar nuevo</span>
 							</a>
 						</li>';
 			}
@@ -349,11 +348,33 @@ class includes {
 								<span class="subtitle">Usuarios con perfiles</span>
 							</a>
 						</li>
+
 						<li'.$this->set_active_sidebar_tab('solicitudes.php').'>
 							<a href="'.HOST.'/admin/perfiles/solicitudes">
 								<span class="icon"><i class="fa fa-file"></i></span>
 								<span class="title">Solicitudes'.$noti.'</span>
 								<span class="subtitle">Ver todas las solicitudes</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('hoteles.php').'>
+							<a href="'.HOST.'/admin/perfiles/hoteles">
+								<span class="icon"><i class="fa fa-hotel"></i></span>
+								<span class="title">Hoteles</span>
+								<span class="subtitle">Todos los hoteles</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('franquiciatarios.php').'>
+							<a href="'.HOST.'/admin/perfiles/franquiciatarios">
+								<span class="icon"><i class="fa fa-black-tie"></i></span>
+								<span class="title">Franquiciatarios</span>
+								<span class="subtitle">Todos los franquiciatario</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('referidores.php').'>
+							<a href="'.HOST.'/admin/perfiles/referidores">
+								<span class="icon"><i class="fa fa-black-tie"></i></span>
+								<span class="title">Referidores</span>
+								<span class="subtitle">Todos los Referidores</span>
 							</a>
 						</li>
 
@@ -369,7 +390,7 @@ class includes {
 							<a href="'.HOST.'/admin/perfiles/iata">
 								<span class="icon"><i class="fa fa-fighter-jet"></i></span>
 								<span class="title">IATA</span>
-								<span class="subtitle">codigo IATA aeroportuaria</span>
+								<span class="subtitle">codigo IATA</span>
 							</a>
 						</li>
 						';
@@ -472,6 +493,7 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
@@ -545,7 +567,7 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
+								<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 									<i class="fa fa-facebook"></i>
 								</a>
 							</div>
@@ -562,7 +584,7 @@ class includes {
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
-								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">Travel Points Facebook</a></li>
+								<li class="visible-xs"><a href="http://www.facebook.com/TravelPointsMX" target="_blank">Travel Points Facebook</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
@@ -691,7 +713,7 @@ class includes {
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBqoSi7c3UV5ya81-3fNa5itqfUDl2axmE&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
@@ -707,6 +729,8 @@ class includes {
 </body>
 </html>';
 		return $html;
+
+		// AIzaSyAfGXqiorl8HZHXRQaGKpj95C8W8TU80co&amp
 	}
 
 	private function catch_errors($method, $line, $error){

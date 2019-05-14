@@ -86,7 +86,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<script>paypal.Buttons().render('#btn-paypal')</script>
 									<div class="row">
 												
-											<section class="col-lg-6" id="btn-paypal">
+											<section class="col-lg-3" id="btn-paypal">
 									<!-- 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 												<input type="hidden" name="cmd" value="_s-xclick">
 												<input type="hidden" name="hosted_button_id" value="4JYJNMUKMTT8W">
@@ -96,11 +96,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
  -->
 											</section>
 												
-											<section class="col-lg-6">
+											<section class="col-lg-9" style="display:flex; justify-content: center;">
 												
 												<form method ="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" >
 												<button type ="submit" class="recoger-tienda btn btn-secondary" name="recoger" ><i class="fa fa-handshake-o"></i>Retirar Personalmente</button> 
 												</form>
+												<button class="btn btn-secondary" data-dismiss="modal">Pagar Despues</button>
 												
 											</section>
 									</div>

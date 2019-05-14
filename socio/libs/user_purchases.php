@@ -92,7 +92,7 @@ class user_purchases {
 					$msg = '<p class="text-danger">Su compra estar&aacute; en mostrador por los siguientes 7 d&iacute;as despu&eacute;s de la compra. Para recibirlo por env&iacute;o debe completar el pago.</p>';
 					$coupon = 
 					'<hr>
-					<p class="text-default">Completa el pago aqu&iacute; y cont&aacute;ctanos en <a href="mailto:pagos@esmartclub.com" target="_blank">pagos@esmartclub.com</a></p>
+					<p class="text-default">Completa el pago aqu&iacute; y cont&aacute;ctanos en <a href="mailto:pagos@travelpoints.com.mx" target="_blank">pagos@travelpoints.com.mx</a></p>
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 						<input type="hidden" name="cmd" value="_s-xclick">
 						<input type="hidden" name="hosted_button_id" value="WVB554YQ6FLH8">

@@ -497,6 +497,20 @@ public function getVentasPromedioNegocios($fecha1 = null,$fecha2 = null){
 
 }
 
+public function getNuevosPerfiles(){
+
+	$query ="(select 'Hotel' as perfil, (select count(*) as usuarios from solicitudhotel) as usuarios from solicitudhotel)
+					UNION
+				(select 'Franquiciatario' as perfil, (select count(*) as usuarios from solicitudfr) as usuarios from solicitudfr)
+					UNION
+				(select 'Referidor' as perfil, (select count(*) as usuarios from solicitudreferidor) as usuarios from solicitudreferidor)";
+					
+		$stm = $this->conection->prepare($query);
+		$stm->execute();
+					
+		return $stm;
+}
+
 public function getNegociosDeudores(){
 	return $this->negocios['deudores'];
 }

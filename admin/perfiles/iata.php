@@ -20,7 +20,13 @@ use admin\libs\Iata;
 $iata = new Iata($con);
 
 if(isset($_REQUEST['registrar'])){
+
 	$iata->registrar($_POST);
+
+}
+
+if(isset($_REQUEST['eliminar'])){
+	$iata->eliminar($_POST);
 }
 
 $includes = new admin\libs\includes($con);
@@ -31,74 +37,87 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 <?php echo $con->get_notify();?>
 
 <div class="row">
-	<div class="col-sm-12">
-		<?php echo $iata->getNotificacion();?>
+	<div class="background-white p20 mb50 col-sm-12">
+		<?php  echo $iata->getNotificacion();?>
 		<div class="page-title">
 			<h1>Codigo Iata Aeroportuaria
-			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
-				
-			</form>
+		
 			</h1>
 		</div>
 		<div class="background-white p20 mb50">
-			
-		<table  id="iatas" class="display" cellspacing="0" width="100%">
-		<thead>
-            <tr>
-            	
-            	<th>#</th>
-            	<th>Iata</th>
-            	<th>Aeropuerto</th>
-                <th>Ciudad</th>
-                <th>Estado</th>
-                <th>Pais</th>
-                <th>Cant Hoteles Cercanos</th>
-               
-            </tr>
-        </thead>
+			<script>
+				function ValidarIata(){
 
-        <tbody>
-   			<?php echo $iata->getIata(); ?>
-        </tbody>
-    </table>
+					if(elim){
+							var result =confirm('Esta Seguro de eliminar este Codigo IATA, Podria afectar a otros hoteles que tengan asociado este codigo...');
+							if(result){
+								return true;
+							}else{
+								return false;
+							}
+					}
 
+					
 
+				
+				}
+			</script>
+				<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" onsubmit="return ValidarIata()">
+					<table  id="iatas" class="display" cellspacing="0" width="98%">
+					<thead>
+			            <tr>
+			            	
+			            	<th>#</th>
+			            	<th>Iata</th>
+			            	<th>Aeropuerto</th>
+			                <th>Ciudad</th>
+			                <th>Estado</th>
+			                <th>Pais</th>
+			                <th>Cant Hoteles Cercanos</th>
+			                <th></th>
+			               
+			            </tr>
+			        </thead>
 
-
-    <script>
-    	$(document).ready(function(){
-
-
-
-	   var t = $('#iatas').DataTable( {
-		"paging"        :false,
-		"scrollY"       :true,
-		"scrollX"       :true,
-		"scrollCollapse": true,
-         "language": {
-                        "lengthMenu": "Mostrar _MENU_ Registros por pagina",
-                        "info": "",
-                        "infoEmpty": "No se encontro ningún codigo iata",
-                        "infoFiltered": "(filtrada de _MAX_ registros)",
-                        "search": "Buscar:",
-                        "paginate": {
-                            "next":       "Siguiente",
-                            "previous":   "Anterior"
-                        },
-                    },
-        "columnDefs": [ {
-            "searchable": true,
-            "orderable": true,
-            "targets": 0
-        } ],
-        "order": [[ 0, 'asc' ]]
-    });
-
-    	});
-    </script>
+			        <tbody>
+			   			<?php echo $iata->getIata(); ?>
+			        </tbody>
+			    </table>
+				</form>
 
 
-			
+
+	    <script>
+	    	$(document).ready(function(){
+
+
+
+				   var t = $('#iatas').DataTable( {
+					"paging"        :false,
+					"scrollY"       :true,
+					"scrollX"       :true,
+					"scrollCollapse": true,
+			         "language": {
+			                        "lengthMenu": "Mostrar _MENU_ Registros por pagina",
+			                        "info": "",
+			                        "infoEmpty": "No se encontro ningún codigo iata",
+			                        "infoFiltered": "(filtrada de _MAX_ registros)",
+			                        "search": "Buscar:",
+			                        "paginate": {
+			                            "next":       "Siguiente",
+			                            "previous":   "Anterior"
+			                        },
+			                    },
+			        "columnDefs": [ {
+			            "searchable": true,
+			            "orderable": true,
+			            "targets": 0
+			        } ],
+			        "order": [[ 0, 'asc' ]]
+			    });
+
+			    	});
+	    </script>
 		</div>
 	</div>
 </div>
@@ -161,7 +180,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 								          <div class="col-lg-6 d-flex">
 								        
-									           <div class="form-group flex" >
+									           <div class="form-group flex" data-toggle="tooltip" title="Insertar codigo Iata. Ver listados de todos los códigos aqui:https://es.wikipedia.org/wiki/Anexo:Aeropuertos_seg%C3%BAn_el_c%C3%B3digo_IATA" data-placement="bottom">
+
 										            <label for="business-name">Codigo:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 										            <div class="input-hotel">
 											             <div class="input-group">
@@ -171,7 +191,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 										            </div>
 									           </div>
 
-									            <div class="form-group flex" >
+									            <div class="form-group flex" data-toggle="tooltip" title="Nombre con el que quedará registrado su ciudad o territorio." data-placement="bottom" >
 										            <label for="business-name">Aeropuerto:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 										            <div class="input-hotel">
 											             <div class="input-group">
@@ -206,8 +226,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 										
 										
 											<div class="form-group">
-												<label for="city-select">Ciudad <span class="required">*</span></label>
-												<select class="form-control" id="city-select" name="ciudad" title="Luego una ciudad" data-size="10" data-live-search="true" required>
+												<label for="city-select">Ciudad <span class="required"></span></label>
+												<select class="form-control" id="city-select" name="ciudad" title="Luego una ciudad" data-size="10" data-live-search="true">
 													<?php echo $iata->get_cities();?>
 												</select>
 												<?php //echo $iata->getCiudadError();?>

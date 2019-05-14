@@ -643,7 +643,7 @@ class sales_new_sale {
 	}
 
 	public function get_balance(){
-		$balance = number_format((float)$this->business['balance'], 2, '.', '');
+		$balance = number_format((float)$this->business['balance'], 2, ',', '.').' MXN';
 		if($this->business['balance'] >= 0){
 			$html = '<strong class="text-primary">'.$balance.'</strong>';
 		}else{

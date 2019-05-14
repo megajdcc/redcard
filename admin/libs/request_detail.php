@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
 namespace admin\libs;
 use assets\libs\connection;
 use PDO;
@@ -432,6 +432,7 @@ class request_detail {
 			}
 			// SE MANDA LA NOTIFICACION AL USUARIO
 			$header = 'Tu solicitud de negocio ha sido aceptada por Travel Points';
+			$header .= '<br>Your business request has been accepted by Travel Points';
 			$link = 'Puedes ver tu negocio aquí: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/'.$this->request['url'].'">'.HOST.'/'.$this->request['url'].'</a>.';
 			$body_alt = 'Tu solicitud de negocio ha sido aprobada por Travel Points. Puedes ver tu negocio aquí: '.HOST.'/'.$this->request['url'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
@@ -439,14 +440,14 @@ class request_detail {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -562,7 +563,8 @@ class request_detail {
 			}
 			// SE MANDA LA NOTIFICACION AL USUARIO
 			$header = 'Hemos detectado inconsistencias en tu solicitud de negocio y ha sido regresada para su corrección';
-			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/negocios/solicitud/'.$this->request['id'].'">Ver mi solicitud</a>.';
+			$header .= '<br>We have detected inconsistencies in your business request and it has been returned for correction';
+			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/negocios/solicitud/'.$this->request['id'].'">Ver mi solicitud | see my request</a>.';
 			$body_alt =
 				'Hemos detectado inconsistencias en tu solicitud de negocio y ha sido regresada para su revisión. Puedes ver tu solicitud aquí: '.HOST.'/socio/negocios/solicitud/'.$this->request['id'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
@@ -570,14 +572,14 @@ class request_detail {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -617,7 +619,8 @@ class request_detail {
 			}
 			// SE MANDA LA NOTIFICACION AL USUARIO
 			$header = 'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada';
-			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/negocios/solicitud/'.$this->request['id'].'">Ver mi solicitud</a>.';
+			$header .= '<br>We regret to inform you that the request for your business has been rejected.';
+			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/negocios/solicitud/'.$this->request['id'].'">Ver mi solicitud | see my request</a>.';
 			$body_alt =
 				'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada. Puedes ver tu solicitud aquí: '.HOST.'/socio/negocios/solicitud/'.$this->request['id'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
@@ -625,14 +628,16 @@ class request_detail {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -713,7 +718,7 @@ class request_detail {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;>
 										</a>
 									</td>
 								</tr>
@@ -737,8 +742,9 @@ class request_detail {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$link.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										For any clarification please contact our support team.<br>
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -763,7 +769,7 @@ class request_detail {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -845,7 +851,7 @@ class request_detail {
 						<div class="form-group" data-toggle="tooltip" title="Este ser&aacute; el enlace directo al perfil de tu negocio.">
 							<label for="url">Enlace deseado del perfil de negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 							<div class="input-group">
-								<span class="input-group-addon">www.esmartclub.com/</span>
+								<span class="input-group-addon">www.travelpoints.com.mx/</span>
 								<input class="form-control" type="text" id="url" name="url" value="'.$this->get_url().'" placeholder="nombre-de-negocio" required>
 							</div><!-- /.input-group -->
 						</div><!-- /.form-group -->
@@ -1051,7 +1057,7 @@ class request_detail {
 					<div class="form-group" data-toggle="tooltip" title="Este ser&aacute; el enlace directo al perfil de tu negocio.">
 						<label for="biz-url">Enlace deseado del perfil de negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 						<div class="input-group">
-							<span class="input-group-addon">www.esmartclub.com/</span>
+							<span class="input-group-addon">www.travelpoints.com.mx/</span>
 							<input class="form-control" type="text" id="biz-url" value="'.$this->get_url().'" readonly>
 						</div><!-- /.input-group -->
 					</div><!-- /.form-group -->
@@ -1298,7 +1304,7 @@ class request_detail {
 	private function set_website($string = null){
 		if($string){
 			if(!preg_match('_^(?:(?:https?|ftp)://)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS',$string)){
-				$this->error['website'] = 'Escribe un enlace correcto. Ejemplo: www.esmartclub.com o http://esmartclub.com';
+				$this->error['website'] = 'Escribe un enlace correcto. Ejemplo: www.travelpoints.com.mx o http://esmartclub.com';
 				$this->request['website'] = $string;
 				return false;
 			}

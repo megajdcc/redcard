@@ -502,7 +502,7 @@ class manage_home {
 
 	public function get_esmarties(){
 		$eS = number_format($this->business['eSmarties']);
-		return 'e$'.$eS;
+		return 'Tp$'.$eS ;
 	}
 
 	public function get_sales(){

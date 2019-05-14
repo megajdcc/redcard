@@ -22,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$reports->load_data();
 }
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Reporte de ventas | eSmart Club';
+$properties['title'] = 'Reporte de ventas | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>
@@ -31,10 +31,12 @@ echo $navbar = $includes->get_navbar(); ?>
 	<div class="col-sm-12">
 		<?php echo $reports->get_notification();?>
 		<div class="background-white p20 mb30">
+			<h1 class="page-title">Reportes de Ventas</h1>
+
 			<div class="row">
 				<?php echo $reports->get_total_sales();?>
 				<div class="col-sm-3">
-					<label for="bonus">Total de bonos de eSmartties</label>
+					<label for="bonus">Total de bonos de Travel Points</label>
 					<input class="form-control" type="text" id="bonus" value="<?php echo $reports->get_total_esmarties();?>" readonly />
 				</div>
 			</div>

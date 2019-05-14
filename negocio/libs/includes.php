@@ -1,4 +1,5 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
+
 namespace negocio\libs;
 use assets\libs\connection;
 use PDO;
@@ -622,8 +623,9 @@ class includes {
 			if($_SESSION['business']['id_rol'] == 4){
 				$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/"><i class="fa fa-user-circle-o"></i></a></li>
 							<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias de negocio"><a href="'.HOST.'/negocio/preferencias/informacion"><i class="fa fa-cog"></i></a></li>';
-			}else{
 				$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/codigo-seguridad"><i class="fa fa-user-circle-o"></i></a></li>';
+			}else{
+				
 			}
 		}
 		if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5){

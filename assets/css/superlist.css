@@ -10422,8 +10422,8 @@ h2.widgettitle {
         color: rgba(255, 255, 255, 0.8);
         display: block;
         font-size: 28px;
-        height: 80px;
-        line-height: 80px;
+        height: 60px;
+        line-height: 60px;
         text-align: center;
         width: 80px; }
         .sidebar-admin ul li a:hover {
@@ -10482,8 +10482,8 @@ h2.widgettitle {
       .sidebar-secondary-admin ul li a {
         color: #fff;
         display: block;
-        height: 80px;
-        padding: 18px 20px 0px 20px;
+        height: 60px;
+        padding: 10px 20px 0px 20px;
         transition: all .15s linear; }
         @media (max-width: 1199px) {
           .sidebar-secondary-admin ul li a {
@@ -11609,4 +11609,19 @@ ul.menu-advanced li a .notification {
 
 .centro{
   width: 100%;
+}
+
+
+
+/*Btn de admin/perfiles/*/
+.actualizarcomision,
+.actualizarperfil{
+  padding: 3px 5px !important;
+  background: transparent;
+  border:0px !important;
+}
+.actualizarcomision i,
+.actualizarperfil i{
+  margin: 0px !important;
+  font-size: 15pt;
 }

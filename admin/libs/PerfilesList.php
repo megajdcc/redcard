@@ -79,15 +79,20 @@ class PerfilesList {
 				
 				<td><?php  echo $proviene;?></td>
 				<td><?php  echo $comision .' %';?>
-					<button type="button"  data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarcomision btn btn-outline-secondary btn-xs pull-right">
-						Cambiar
+					<button type="button"  data-toggle="tooltip" title="Actualizar Comisión." data-placement="left" data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarcomision  pull-right">
+						<i class="fa fa-pencil-square-o"></i>
 					</button>
+					
 				</td>
 				
 				<td><?php echo $ultimologin; ?></td>
 
 			
-			
+				<td>
+					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
+					<i class="fa fa-cogs"></i>
+					</button>
+				</td>
             </tr>
 			<?php
 		}
