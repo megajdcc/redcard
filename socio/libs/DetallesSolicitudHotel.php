@@ -574,7 +574,7 @@ class DetallesSolicitudHotel {
 												<input class="form-control" type="text" id="business-name" name="nombre" value="<?php echo $this->getNombreHotel();?>" placeholder="Nombre del hotel" readonly/>
 												
 											</div><!-- /.form-group -->
-										
+							<p>jhonaatan</p>			
 										</div><!-- /.col-* -->
 										
 										<div class="col-lg-4">
