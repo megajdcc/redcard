@@ -233,6 +233,94 @@ UNION
 	}
 
 
+
+	public function registrocliente(array $post){
+
+
+		$sql = "select * from iata where codigo = :codigo";
+		$stm= $this->conection->prepare($sql);
+
+		$stm->bindParam(':codigo', $post['codigo'], PDO::PARAM_STR);
+
+		$stm->execute();
+
+		$response = array(
+			"result"  => false,
+			"datos"   => array( 'iataexiste' => false,
+								'registroexitoso' =>false),
+			"iata" => array('id'=>null,
+							'codigo'=>null));
+
+
+		
+		if($stm->rowCount() > 0){
+			
+			$response['result'] = true;
+			$response['datos']['iataexiste'] = true;
+			echo json_encode($response);
+ 			
+		}else{
+
+
+			if(empty($post['ciudad']) || $post['ciudad'] == ''){
+					$query = "insert into iata(codigo,aeropuerto,id_estado) value(:codigo,:aeropuerto,:estado)";
+
+				try {
+
+					$this->conection->beginTransaction();
+					$stm = $this->conection->prepare($query);
+
+					$stm->execute(array(':codigo'=>$post['codigo'],
+					                    ':aeropuerto'=>$post['aeropuerto'],
+					                	':estado'=>$post['estado']));
+
+					$this->conection->commit();
+
+				} catch (PDOException $e) {
+
+					$this->conection->rollBack();
+					
+				}
+			}else{
+					$query = "insert into iata(codigo,aeropuerto,id_ciudad,id_estado) value(:codigo,:aeropuerto,:ciudad,:estado)";
+
+				try {
+
+					$this->conection->beginTransaction();
+					$stm = $this->conection->prepare($query);
+
+					$stm->execute(array(':codigo'=>$post['codigo'],
+					                    ':aeropuerto'=>$post['aeropuerto'],
+					                    ':ciudad'=>$post['ciudad'],
+					                	':estado'=>$post['estado']));
+
+					$this->conection->commit();
+
+				} catch (PDOException $e) {
+
+					$this->conection->rollBack();
+					
+				}
+		}
+
+		$sql = "select i.id,i.codigo from iata as i where i.id = (select max(id) from iata)";
+		$stm = $this->conection->prepare($sql);
+		$stm->execute();
+
+		$fila   = $stm->fetch(PDO::FETCH_ASSOC);
+		$id     = $fila['id'];
+		$codigo = $fila['codigo'];
+
+		$response['iata']['id']               = $id;
+		$response['iata']['codigo']           = $codigo;
+		
+		$response['result']                   = true;
+		$response['datos']['iataexiste']      = false;
+		$response['datos']['registroexitoso'] = true;
+		echo json_encode($response);
+	}
+}
+
 	public function registrar(array $post){
 
 		$sql = "select * from iata where codigo = :codigo";
@@ -297,7 +385,6 @@ UNION
 	}
 
 }
-
 
 
  ?>

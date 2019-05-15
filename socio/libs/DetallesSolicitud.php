@@ -161,7 +161,7 @@ class user_request_detail {
 						<h3 class="page-title">Informaci&oacute;n de negocio</h3>
 						<div class="row">
 							<div class="col-lg-8">
-								<div class="form-group" data-toggle="tooltip" title="Los socios de Travel Points pueden encontrar tu negocio por su nombre.">
+								<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu negocio por su nombre.">
 									<label for="business-name">Nombre del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 									<input class="form-control" type="text" id="business-name" name="name" value="'.$this->get_name().'" placeholder="Nombre del negocio" required>
 									'.$this->get_name_error().'
@@ -192,7 +192,7 @@ class user_request_detail {
 								</div>
 							</div><!-- /.col-* -->
 						</div><!-- /.row -->
-						<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de Travel Points tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
+						<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 							<label for="description">Descripci&oacute;n del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 							<textarea class="form-control" id="description" placeholder="Descripci&oacute;n del negocio" name="description" rows="3" required>'.$this->get_description().'</textarea>
 							'.$this->get_description_error().'
@@ -369,7 +369,7 @@ class user_request_detail {
 				<div class="background-white p30 mb50">
 					<div class="row">
 						<div class="col-lg-8">
-							<div class="form-group" data-toggle="tooltip" title="Los socios de Travel Points pueden encontrar tu negocio por su nombre.">
+							<div class="form-group" data-toggle="tooltip" title="Los socios de eSmart Club pueden encontrar tu negocio por su nombre.">
 								<label for="name">Nombre del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 								<input class="form-control" type="text" id="name" value="'.$this->get_name().'" readonly/>
 							</div><!-- /.form-group -->
@@ -394,7 +394,7 @@ class user_request_detail {
 							</div>
 						</div><!-- /.col-* -->
 					</div><!-- /.row -->
-					<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de Travel Points tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
+					<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle acerca de tu negocio. Los socios de eSmart Club tambi&eacute;n pueden encontrar tu negocio por su descripci&oacute;n. Puedes agregar palabras claves para facilitar la b&uacute;squeda.">
 						<label for="description">Descripci&oacute;n del negocio <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 						<textarea class="form-control" id="description" rows="3" readonly>'.$this->get_description().'</textarea>
 					</div><!-- /.form-group -->
@@ -911,7 +911,7 @@ class user_request_detail {
 		if(!empty($this->request['comment'])){
 			$html = 
 			'<div class="page-title">'.$title_tag.'</div>
-			<label>Comentario de Travel Points para el solicitante</label>
+			<label>Comentario de eSmart Club para el solicitante</label>
 			<p>'.nl2br(_safe($this->request['comment'])).'</p>';
 		}else{
 			$html = $title_tag;

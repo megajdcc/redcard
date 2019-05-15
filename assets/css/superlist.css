@@ -11625,3 +11625,7 @@ ul.menu-advanced li a .notification {
   margin: 0px !important;
   font-size: 15pt;
 }
+
+.input-iata{
+  display: flex;
+}

@@ -57,6 +57,8 @@ class DetallesSolicitud {
 	);
 	private $request = array();
 
+
+	private $nrosolicitud;
 	private $solicitudhotel = array();
 	private $solicitudFranquiciatario = array();
 	private $solicitudReferidor = array();
@@ -98,6 +100,8 @@ class DetallesSolicitud {
 
 	private function CargarHotel($id){
 
+		$this->setSolicitud($id);
+
 		$query = "select h.id as id_hotel, h.comision, sh.id, u.email as emailusuario, u.username, u.nombre as usuario_nombre,u.apellido as usuario_apellido, h.nombre as hotel, h.id_iata,i.codigo as iata, h.sitio_web,h.direccion, h.codigo_postal, h.id_ciudad,c.ciudad,est.id_estado,est.estado,
 			pa.id_pais, pa.pais,h.longitud,h.latitud,per.id as id_persona,  per.nombre as nombre_responsable, per.apellido as apellido_responsable,rap.id as id_responsableareapromocion, rap.email,rap.cargo,
 			rap.telefono_fijo, rap.telefono_movil,dpc.id as id_datospagocomision, dpc.banco, dpc.cuenta,dpc.clabe, dpc.swift,
@@ -109,7 +113,7 @@ class DetallesSolicitud {
 			join pais as pa on est.id_pais = pa.id_pais
 			join responsableareapromocion as rap on h.id_responsable_promocion = rap.id
 			join persona as per on rap.dni_persona = per.id
-			join datospagocomision as dpc on h.id_datospagocomision = dpc.id
+			left join datospagocomision as dpc on h.id_datospagocomision = dpc.id
 			join solicitudhotel as sh on h.id = sh.id_hotel 
 			join usuario as u on sh.id_usuario = u.id_usuario
 			where sh.id = :nrosolicitud";
@@ -159,6 +163,14 @@ class DetallesSolicitud {
 		return true;
 
 	}
+
+
+	private function setSolicitud(int $id){
+
+		$this->nrosolicitud = $id;
+
+	}
+
 
 
 	public function getModal($perfil = null){
@@ -429,10 +441,10 @@ class DetallesSolicitud {
 										</div><!-- /.col-* -->
 										<div class="col-lg-6">
 										<div class="form-group"  data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-												<label for="phone">T&eacute;lefono fijo <span class="required">*</span><i class="fa fa-question-circle"></i></label>
+												<label for="phone">T&eacute;lefono fijo <span class="required"></span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-													<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?"  id="phone" name="telefonofijo" value="<?php echo $this->getTelefonoFijo(); ?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" required>
+													<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?"  id="phone" name="telefonofijo" value="<?php echo $this->getTelefonoFijo(); ?>" placeholder="N&uacute;mero de t&eacute;lefono fijo">
 												</div><!-- /.input-group -->
 									
 											</div><!-- /.form-group -->
@@ -461,37 +473,37 @@ class DetallesSolicitud {
 										<div class="col-lg-6 col-sm-4">
 										<h5 class="page-title">Transferencia Bancaria</h5>
 											<div class="form-group">
-												<label for="nombre">Nombre del banco<span class="required">*</span></label>
+												<label for="nombre">Nombre del banco<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-													<input class="form-control" type="text" pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $this->getBanco(); ?>" placeholder="Nombre del banco" required >
+													<input class="form-control" type="text" pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $this->getBanco(); ?>" placeholder="Nombre del banco"  >
 												</div><!-- /.input-group -->
 											
 											</div><!-- /.form-group -->
 
 											<div class="form-group">
-												<label for="cuenta">Cuenta<span class="required">*</span></label>
+												<label for="cuenta">Cuenta<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="cuenta" pattern="[0-9a-zA-z]+" name="cuenta" value="<?php echo $this->getCuenta(); ?>" placeholder="Cuenta." required >
+													<input class="form-control" type="text" id="cuenta" pattern="[0-9a-zA-z]+" name="cuenta" value="<?php echo $this->getCuenta(); ?>" placeholder="Cuenta."  >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
 
 											<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-												<label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
+												<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle text-secondary"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="clabe" maxlength="18" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe(); ?>" placeholder="Clabe" required >
+													<input class="form-control" type="text" id="clabe" maxlength="18" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe(); ?>" placeholder="Clabe"  >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
 
 											<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-												<label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
+												<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle text-secondary"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="swift" name="swift" minlength="8" maxlength="11" pattern="[0-9]{11}" value="<?php echo $this->getSwift(); ?>" placeholder="Swift" required >
+													<input class="form-control" type="text" id="swift" name="swift" minlength="8" maxlength="11" pattern="[0-9]{11}" value="<?php echo $this->getSwift(); ?>" placeholder="Swift" >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
@@ -503,18 +515,18 @@ class DetallesSolicitud {
 										<div class="col-lg-6 col-sm-4">
 											<h5 class="page-title">Deposito a tarjeta</h5>
 											<div class="form-group">
-												<label for="nombre">Nombre del banco<span class="required">*</span></label>
+												<label for="nombre">Nombre del banco<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-													<input class="form-control" type="text" id="nombre_banco_targeta" pattern="[a-zA-z]+" name="banco_tarjeta" value="<?php echo $this->getNombreBancoTarjeta(); ?>" placeholder="Nombre del banco" required>
+													<input class="form-control" type="text" id="nombre_banco_targeta" pattern="[a-zA-z]+" name="banco_tarjeta" value="<?php echo $this->getNombreBancoTarjeta(); ?>" placeholder="Nombre del banco" >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
 											<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-												<label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
+												<label for="nombre">N&uacute;mero de tarjeta<span class="required"></span><i class="fa fa-question-circle text-secondary"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-cc"></i></span>
-													<input class="form-control" type="text" id="numero_tarjeta" pattern="[0-9]{16}" name="numero_tarjeta" value="<?php echo $this->getNumeroTarjeta(); ?>" placeholder="N&uacute;mero de Tarjeta" required>
+													<input class="form-control" type="text" id="numero_tarjeta" pattern="[0-9]{16}" name="numero_tarjeta" value="<?php echo $this->getNumeroTarjeta(); ?>" placeholder="N&uacute;mero de Tarjeta" >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
@@ -522,10 +534,10 @@ class DetallesSolicitud {
 										
 												<h5 class="page-title">Transferencia PayPal</h5>
 											<div class="form-group">
-												<label for="nombre">Email de Paypal<span class="required">*</span></label>
+												<label for="nombre">Email de Paypal<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-													<input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $this->getEmailPaypal(); ?>" placeholder="Nombre del banco" required>
+													<input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $this->getEmailPaypal(); ?>" placeholder="Email de paypal" >
 												</div><!-- /.input-group -->
 												
 											</div><!-- /.form-group -->
@@ -913,6 +925,12 @@ class DetallesSolicitud {
 			}
 			
 	}
+	
+	private function getEmailUsuario(){
+
+		return	$email = $this->solicitudhotel['emailusuario'];	
+	}
+
 	public function aceptarSolicitud(array $post, $perfil = null){
 
 
@@ -962,6 +980,8 @@ class DetallesSolicitud {
 							id_ciudad =:id_ciudad, longitud =:longitud, latitud =:latitud, aprobada =:aprobada where id =:id_hotel";
 
 				$query5 = "update solicitudhotel set comentario =:comentario, condicion=:condicion where id =:nrosolicitud";
+
+				$query6 = "update usuario set id_rol =:rol where id_usuario = (select id_usuario from solicitudhotel where id=:nrosolicitud)";
 						
 						try {
 							$stm = 	$this->con->prepare($query1);
@@ -1047,33 +1067,43 @@ class DetallesSolicitud {
 															':nrosolicitud'=>$this->getId()));
 											$this->con->commit();
 
+											$stm5 = $this->con->prepare($query6);
+											$resultado = $stm5->execute(array(':rol'=>10,
+																				':nrosolicitud'=>$this->getId()));
+											$this->con->commit();
+
+
 											//SE MANDA LA NOTIFICACION AL USUARIO
 											$header = 'Tu solicitud de perfil ha sido aceptada por Travel Points ';
+											$headeringles = 'Your profile request has been accepted by Travel Points';
 											$link = 'Puedes ver tu perfil aquí: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/Hotel/">'.HOST.'/Hotel/"></a>.';
+
+											$linkingles = 'You can see your profile here: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/Hotel/">'.HOST.'/Hotel/"></a>.';
+
 											$body_alt = 'Tu solicitud de perfil ha sido aprobada por Travel Points. Puedes entrar al panel desde aquí: '.HOST.'Hotel/';
 											require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 											$mail = new \PHPMailer;
 											$mail->CharSet = 'UTF-8';
 											// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 											$mail->isSMTP();
-											$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+											$mail->Host = 'single-5928.banahosting.com';
 											$mail->SMTPAuth = true;
 											$mail->SMTPSecure = 'ssl';
 											$mail->Port = 465;
 											// El correo que hará el envío
-											$mail->Username = 'notificacion@esmartclub.com';
-											$mail->Password = 'Alan@2017_pv';
-											$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+											$mail->Username = 'notification@travelpoints.com.mx';
+											$mail->Password = '20464273jd';
+											$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 											// El correo al que se enviará
-											$mail->addAddress('megajdcc2009@gmail.com');
+											$mail->addAddress($this->getEmailUsuario());
 										
-												$mail->AddCC('megajdcc2009@gmail.com');
+												$mail->AddCC($this->getEmailUsuario());
 											
 											// Hacerlo formato HTML
 											$mail->isHTML(true);
 											// Formato del correo
-											$mail->Subject = 'Tu solicitud del perfil de Hotel ha sido aceptada.';
-											$mail->Body    = $this->email_template($header, $link);
+											$mail->Subject = 'Tu solicitud del perfil de Hotel ha sido aceptada. | Your request for a hotel profile has been accepted. ';
+											$mail->Body    = $this->email_template($header,$headeringles, $link,$linkingles);
 											$mail->AltBody = $body_alt;
 											// Enviar
 											if(!$mail->send()){
@@ -1105,9 +1135,7 @@ class DetallesSolicitud {
 					default:
 						# code...
 						break;
-				}
-
-				
+				}			
 	}
 
 	public function check_request(array $post){
@@ -1208,14 +1236,14 @@ class DetallesSolicitud {
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->request['user_email']);
 			if($this->request['user_email'] != $this->request['email']){
@@ -1240,59 +1268,92 @@ class DetallesSolicitud {
 		return false;
 	}
 
-	public function reject_request(array $post){
-		$this->set_comment($post['comment']);
-		if(!array_filter($this->error)){
-			$query = "UPDATE solicitud_negocio SET situacion = 4, mostrar_usuario = 4, comentario = :comentario WHERE id_solicitud = :id_solicitud";
-			try{
-				$stmt = $this->con->prepare($query);
-				$stmt->bindValue(':comentario', $this->request['comment'], PDO::PARAM_STR);
-				$stmt->bindValue(':id_solicitud', $this->request['id'], PDO::PARAM_INT);
-				$stmt->execute();
-			}catch(\PDOException $ex){
-				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+	public function rechazarsolicitud(array $post, $perfil = null){
+
+
+		switch ($perfil) {
+			case 'Hotel':
+					$this->set_comment($post['comment']);
+					if(!array_filter($this->error)){
+					$query = "UPDATE solicitudhotel SET situacion = 4, mostrar_usuario = 4, comentario = :comentario WHERE id = :nrosolicitud";
+					try{
+					
+					$stmt = $this->con->prepare($query);
+					
+					$stmt->bindValue(':comentario', $this->request['comment'], PDO::PARAM_STR);
+					
+					$stmt->bindValue(':nrosolicitud', $this->nrosolicitud, PDO::PARAM_INT);
+					
+					$stmt->execute();
+					
+					}catch(\PDOException $ex){
+					$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+					return false;
+					}
+					// SE MANDA LA NOTIFICACION AL USUARIO
+					$header = 'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada';
+					$headeringles = 'We regret to inform you that the request for your hotel has been rejected';
+					
+					$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud.'">Ver mi solicitud</a>.';
+					
+					$linkingles = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud.'">See my request</a>.';
+					
+					$body_alt =
+					'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada. Puedes ver tu solicitud aquí: '.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud;
+					
+					require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+					$mail = new \PHPMailer;
+					$mail->CharSet = 'UTF-8';
+					// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+					$mail->isSMTP();
+					$mail->Host = 'single-5928.banahosting.com';
+					$mail->SMTPAuth = true;
+					$mail->SMTPSecure = 'ssl';
+					$mail->Port = 465;
+					// El correo que hará el envío
+					$mail->Username = 'notification@travelpoints.com.mx';
+					$mail->Password = '20464273jd';
+					$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+					// El correo al que se enviará
+					$mail->addAddress($this->getEmailUsuario());
+					if($this->getEmailUsuario() != $this->getEmailUsuario()){
+					$mail->AddCC($this->getEmailUsuario());
+					}
+					// Hacerlo formato HTML
+					$mail->isHTML(true);
+					// Formato del correo
+					$mail->Subject = 'Solicitud para afiliar tu hotel  has sido rechazada';
+					
+					$mail->Body    = $this->email_template($header,$headeringles, $link, $linkingles);
+					
+					$mail->AltBody = $body_alt;
+					// Enviar
+					if(!$mail->send()){
+					$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor.';
+					}
+					$_SESSION['notification']['success'] = 'Solicitud rechazada exitosamente';
+					
+					header('Location: '.HOST.'/admin/perfiles/solicitudes');
+					die();
+					return;	
+					}
+					$this->error['warning'] = 'Uno o más campos tienen errores. Verifícalos cuidadosamente.';
+					return false;
+				break;
+			case 'Franquiciatario':
+				$DetallesSolicitudFranquiciatario->rechazarsolicitud($post);	
+				break;
+
+			case 'Referidor':
+				$DetallesSolicitudReferidor->rechazarsolicitud($post);	
+				break;
+			
+			default:
 				return false;
-			}
-			// SE MANDA LA NOTIFICACION AL USUARIO
-			$header = 'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada';
-			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/negocios/solicitud/'.$this->request['id'].'">Ver mi solicitud</a>.';
-			$body_alt =
-				'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada. Puedes ver tu solicitud aquí: '.HOST.'/socio/negocios/solicitud/'.$this->request['id'];
-			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
-			$mail = new \PHPMailer;
-			$mail->CharSet = 'UTF-8';
-			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
-			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
-			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = 'ssl';
-			$mail->Port = 465;
-			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
-			// El correo al que se enviará
-			$mail->addAddress($this->request['user_email']);
-			if($this->request['user_email'] != $this->request['email']){
-				$mail->AddCC($this->request['email']);
-			}
-			// Hacerlo formato HTML
-			$mail->isHTML(true);
-			// Formato del correo
-			$mail->Subject = 'Solicitud para afiliar tu negocio rechazada';
-			$mail->Body    = $this->email_template($header, $link);
-			$mail->AltBody = $body_alt;
-			// Enviar
-			if(!$mail->send()){
-				$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor.';
-			}
-			$_SESSION['notification']['success'] = 'Solicitud rechazada exitosamente';
-			header('Location: '._safe($_SERVER['REQUEST_URI']));
-			die();
-			return;
+				break;
 		}
-		$this->error['warning'] = 'Uno o más campos tienen errores. Verifícalos cuidadosamente.';
-		return false;
+
+		
 	}
 
 	public function EliminarSolicitud($perfil = null){
@@ -1307,10 +1368,52 @@ class DetallesSolicitud {
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
-		$_SESSION['notification']['success'] = 'Solicitud eliminada exitosamente';
-		header('Location: '.HOST.'/admin/perfiles/solicitudes');
-		die();
-		return;
+		// SE MANDA LA NOTIFICACION AL USUARIO
+			$header = 'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada';
+			$headeringles = 'We regret to inform you that the request for your hotel has been rejected';
+
+			$link = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud.'">Ver mi solicitud</a>.';
+
+			$linkingles = '<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud.'">See my request</a>.';
+
+			$body_alt =
+				'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada. Puedes ver tu solicitud aquí: '.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud;
+
+			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+			$mail = new \PHPMailer;
+			$mail->CharSet = 'UTF-8';
+			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+			$mail->isSMTP();
+			$mail->Host = 'single-5928.banahosting.com';
+			$mail->SMTPAuth = true;
+			$mail->SMTPSecure = 'ssl';
+			$mail->Port = 465;
+			// El correo que hará el envío
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+			// El correo al que se enviará
+			$mail->addAddress($this->getEmailUsuario());
+			if($this->getEmailUsuario() != $this->getEmailUsuario()){
+				$mail->AddCC($this->getEmailUsuario());
+			}
+			// Hacerlo formato HTML
+			$mail->isHTML(true);
+			// Formato del correo
+			$mail->Subject = 'Solicitud para afiliar tu hotel  has sido rechazada';
+			
+			$mail->Body    = $this->email_template($header,$headeringles, $link, $linkingles);
+
+			$mail->AltBody = $body_alt;
+			// Enviar
+			if(!$mail->send()){
+				$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor.';
+			}
+			$_SESSION['notification']['success'] = 'Solicitud rechazada y eliminada exitosamente';
+			
+			header('Location: '.HOST.'/admin/perfiles/solicitudes');
+			die();
+			return;	
 	}else if($perfil == 'Franquiciatario'){
 		$this->DetallesSolicitudFranquiciatario->EliminarSolicitud();
 	}else if($perfil == 'Referidor'){
@@ -1321,121 +1424,136 @@ class DetallesSolicitud {
 
 	private function email_template($header, $link){
 		$html = 
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>'._safe($header).'</title>
-<style type="text/css">
-@media only screen and (max-width: 600px) {
- table[class="contenttable"] {
- width: 320px !important;
- border-width: 3px!important;
-}
- table[class="tablefull"] {
- width: 100% !important;
-}
- table[class="tablefull"] + table[class="tablefull"] td {
- padding-top: 0px !important;
-}
- table td[class="tablepadding"] {
- padding: 15px !important;
-}
-}
-</style>
-</head>
-<body style="margin:0; border: none; background:#f7f8f9">
-	<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-		<tr>
-			<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
-				<tr>
-					<td>
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
+				'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>'._safe($header).'</title>
+				<style type="text/css">
+				@media only screen and (max-width: 600px) {
+				 table[class="contenttable"] {
+				 width: 320px !important;
+				 border-width: 3px!important;
+				}
+				 table[class="tablefull"] {
+				 width: 100% !important;
+				}
+				 table[class="tablefull"] + table[class="tablefull"] td {
+				 padding-top: 0px !important;
+				}
+				 table td[class="tablepadding"] {
+				 padding: 15px !important;
+				}
+				}
+				</style>
+				</head>
+				<body style="margin:0; border: none; background:#f7f8f9">
+					<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+						<tr>
+							<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-								<tr>
-									<td valign="top" align="center">
-										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
-										</a>
+									<td>
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+												<tr>
+													<td valign="top" align="center">
+														<a href="'.HOST.'" target="_blank">
+															<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px; height:auto;">
+														</a>
+													</td>
+												</tr>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>'._safe($header).'</strong>
+									<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														<strong>'._safe($header).'</strong>
+													</td>
+												</tr>
+												<tr>
+													<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														<strong>'._safe($headeringles).'</strong>
+													</td>
+												</tr>
+												<tr>
+													<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														'.$link.'<br>
+														Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+															soporte@infochannel.si
+														</a>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														'.$linkingles.'<br>
+														For any clarification, contact our support team.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+															soporte@infochannel.si
+														</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										'.$link.'<br>
-										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
-										</a>
+									<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
+										<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
+														Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
+														Puerto Vallarta, México.<br>
+														01 800 400 INFO (4636), (322) 225 9635.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table align="center">
+											<tr>
+												<td style="padding-right:10px; padding-bottom:9px;">
+													<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
+														<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
+													</a>
+												</td>
+											</tr>
+										</table>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
-						<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
-										Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
-										Puerto Vallarta, México.<br>
-										01 800 400 INFO (4636), (322) 225 9635.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table align="center">
-							<tr>
-								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
-										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-				<tbody>
-					<tr>
-						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							</table>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		</td>
-	</tr>
-</table>
-</body>
-</html>';
+					<tr>
+						<td>
+							<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+								<tbody>
+									<tr>
+										<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
+											&copy; Travel Points '.date('Y').' Todos los derechos reservados.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+				</body>
+				</html>';
 		return $html;
 	}
 
@@ -1458,6 +1576,7 @@ class DetallesSolicitud {
 		$this->error['banco'] = 'Este campo es obligatorio.';
 		return false;
 	}
+
 	private function setBancoTarjeta($string = null){
 		if($string){
 			$string = trim($string);
@@ -1495,6 +1614,7 @@ class DetallesSolicitud {
 		$this->error['apellido_responsable'] = 'Este campo es obligatorio.';
 		return false;
 	}
+
 	private function setCargo($string = null){
 		if($string){
 			$this->solicitudhotel['cargo'] = trim($string);
@@ -1528,7 +1648,7 @@ class DetallesSolicitud {
 	}
 
 	private function setClabe($string = null){
-						$this->solicitudhotel['clabe'] = $string;
+		$this->solicitudhotel['clabe'] = $string;
 	}
 
 	private function setSwift($string = null){
@@ -1579,6 +1699,7 @@ class DetallesSolicitud {
 		$this->error['telefono_fijo'] = 'Este campo es obligatorio.';
 		return false;
 	}
+
 	private function setTelefonomovil($string = null){
 		if($string){
 			$string = trim($string);
@@ -1597,7 +1718,7 @@ class DetallesSolicitud {
 	private function setSitioWeb($string = null){
 		if($string){
 			if(!preg_match('_^(?:(?:https?|ftp)://)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]-*)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$_iuS',$string)){
-				$this->error['sitio_web'] = 'Escribe un enlace correcto. Ejemplo: www.esmartclub.com o http://esmartclub.com';
+				$this->error['sitio_web'] = 'Escribe un enlace correcto. Ejemplo: www.travelpoints.com.mx o http://travelpoints.com.mx';
 				$this->solicitudhotel['sitio_web'] = $string;
 				return false;
 			}
@@ -1629,6 +1750,7 @@ class DetallesSolicitud {
 		$this->error['postal_code'] = 'Este campo es obligatorio.';
 		return false;
 	}
+
 	private function setIata($string = null){
 		if($string){
 			$this->solicitudhotel['id_iata'] = $string;

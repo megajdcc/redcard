@@ -5,13 +5,20 @@ use PDO;
 class includes {
 	private $con;
 	private $user = array(
-		'id' => null,
-		'username' => null,
-		'esmarties' => null,
-		'image' => null,
-		'alias' => null,
-		'pending_review' => 0,
-		'pending_request' => 0,
+		'id'                                           => null,
+		'username'                                     => null,
+		'esmarties'                                    => null,
+		'image'                                        => null,
+		'alias'                                        => null,
+		'pending_review'                               => 0,
+		'pending_request'                              => 0,
+		'solicitud_pendiente_hotel'                    => 0,
+		'solicitud_pendiente_hotel_revision'           =>	0,
+		'solicitud_pendiente_franquiciatario'          => 0,
+		'solicitud_pendiente_franquiciatario_revision' =>	0,
+		'solicitud_pendiente_referidor'                => 0,
+		'solicitud_pendiente_referidor_revision'       =>	0,
+
 	);
 	private $admin = array(
 		'pending_request' => 0
@@ -81,6 +88,20 @@ class includes {
 		if($row = $stmt->fetch()){
 			$this->user['pending_request'] = $row['COUNT(*)'];
 		}
+
+		$sql = "SELECT COUNT(*) as cuenta FROM solicitudhotel WHERE id_usuario = :id_usuario && mostrar_usuario = 3 ";
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindValue(':id_usuario', $this->user['id'], PDO::PARAM_INT);
+			$stm->execute();
+		} catch (PDOException $e) {
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+			return false;
+		}
+		if($fila = $stm->fetch()){
+			$this->user['solicitud_pendiente_hotel'] = $fila['cuenta'];
+		}
+
 		if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){
 			$query = "SELECT COUNT(*) FROM solicitud_negocio WHERE situacion = 2";
 			try{
@@ -112,6 +133,8 @@ class includes {
 				</li>
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
+				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hoteles</a></li>
+
 			</ul>
 		</div>';
 
@@ -121,7 +144,6 @@ class includes {
 		'<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
-				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
 				
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
@@ -131,45 +153,55 @@ class includes {
 		</div>';
 			break;
 			case 'negocios':
-			if($this->user['pending_request'] > 0){
-				$noti = '<span class="notification">'.$this->user['pending_request'].'</span>';
-			}else{
-				$noti = '';
-			}
-			if($_SESSION['user']['id_rol']==8) {
-				$html .=
-		'<div class="widget">
-			<ul class="menu-advanced">
-				<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
-				<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
-			</ul>
-		</div>';
-			}
-			else {
-				$html .=
-		'<div class="widget">
-			<ul class="menu-advanced">
-				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-user"></i> Mis negocios</a></li>
-				<li'.$this->set_active_sidebar_tab('afiliar-negocio.php').'><a href="'.HOST.'/socio/negocios/afiliar-negocio"><i class="fa fa-plus-circle"></i> Afiliar mi negocio</a></li>
-				<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
-				<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
-				<li'.$this->set_active_sidebar_tab('solicitudes.php').'><a href="'.HOST.'/socio/negocios/solicitudes"><i class="fa fa-file"></i> Solicitudes enviadas'.$noti.'</a></li>
-			</ul>
-		</div>';
-			}
-			break;
-			case 'huesped':
-			 $html .='<div class="widget">
-				<ul class="menu-advanced">
-				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
-				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
-				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
-				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
-				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
-				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
-				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
-				</ul>
+					if($this->user['solicitud_pendiente_hotel'] > 0){
+						$noti = '<span class="notification">'.$this->user['pending_request'].'</span>';
+					}else{
+						$noti = '';
+					}
+					if($_SESSION['user']['id_rol']==8) {
+						$html .=
+				'<div class="widget">
+					<ul class="menu-advanced">
+						<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
+						<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
+					</ul>
 				</div>';
+					}else{
+						$html .=
+							'<div class="widget">
+								<ul class="menu-advanced">
+									<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-user"></i> Mis negocios</a></li>
+									<li'.$this->set_active_sidebar_tab('afiliar-negocio.php').'><a href="'.HOST.'/socio/negocios/afiliar-negocio"><i class="fa fa-plus-circle"></i> Afiliar mi negocio</a></li>
+									<li'.$this->set_active_sidebar_tab('siguiendo.php').'><a href="'.HOST.'/socio/negocios/siguiendo"><i class="fa fa-bookmark"></i> Siguiendo</a></li>
+									<li'.$this->set_active_sidebar_tab('recomendados.php').'><a href="'.HOST.'/socio/negocios/recomendados"><i class="fa fa-heart"></i> Recomendados</a></li>
+									<li'.$this->set_active_sidebar_tab('solicitudes.php').'><a href="'.HOST.'/socio/negocios/solicitudes"><i class="fa fa-file"></i> Solicitudes enviadas'.$noti.'</a></li>
+								</ul>
+							</div>';
+					}
+			break;
+				case 'hotel':
+					if($this->user['solicitud_pendiente_hotel'] > 0){
+						$noti = '<span class="notification">'.$this->user['solicitud_pendiente_hotel'].'</span>';
+					}else{
+						$noti = '';
+					}
+					if($_SESSION['user']['id_rol']==8) {
+						$html .=
+									'<div class="widget">
+										<ul class="menu-advanced">
+											<li'.$this->set_active_sidebar_tab('hospedado.php').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hospedado</a></li>
+										</ul>
+									</div>';
+					} else {
+						$html .=
+										'<div class="widget">
+											<ul class="menu-advanced">
+													<li'.$this->set_active_sidebar_tab('hospedado.php').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hospedado</a></li>
+													<li'.$this->set_active_sidebar_tab('afiliar-hotel.php').'><a href="'.HOST.'/socio/hotel/afiliar-hotel"><i class="fa fa-plus-circle"></i> Afiliar mi hotel</a></li>
+													<li'.$this->set_active_sidebar_tab('solicitudes.php').'><a href="'.HOST.'/socio/hotel/solicitudes/"><i class="fa fa-file"></i> Solicitudes enviadas'.$noti.'</a></li>
+											</ul>
+										</div>';
+					}
 			break;
 
 			
@@ -218,6 +250,7 @@ class includes {
 				</li>
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
+				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hoteles</a></li>
 
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
@@ -232,7 +265,7 @@ class includes {
 		'<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
-				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
+
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
 				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
@@ -269,20 +302,32 @@ class includes {
 		</div>';
 			}
 			break;
-			case 'huesped':
-			 $html .='<div class="widget">
-				<ul class="menu-advanced">
-				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
-				<li'.$this->set_active_sidebar_tab('huesped.php').'><a href="'.HOST.'/socio/perfil/huesped"><i class="fa fa-hotel"></i> Hotel</a></li>
-				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
-				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis eSmartties</a></li>
-				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
-				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
-				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
-				</ul>
-				</div>';
+
+			case 'hotel':
+					if($this->user['pending_request'] > 0){
+						$noti = '<span class="notification">'.$this->user['solicitud_pendiente_hotel'].'</span>';
+					}else{
+						$noti = '';
+					}
+					if($_SESSION['user']['id_rol']==8) {
+						$html .=
+									'<div class="widget">
+										<ul class="menu-advanced">
+											<li'.$this->set_active_sidebar_tab('hospedado.php').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hospedado</a></li>
+										</ul>
+									</div>';
+					} else {
+						$html .=
+										'<div class="widget">
+											<ul class="menu-advanced">
+													<li'.$this->set_active_sidebar_tab('hospedado.php').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hospedado</a></li>
+													<li'.$this->set_active_sidebar_tab('afiliar-hotel.php').'><a href="'.HOST.'/socio/hotel/afiliar-hotel"><i class="fa fa-plus-circle"></i> Afiliar mi hotel</a></li>
+											</ul>
+										</div>';
+					}
 			break;
 
+			
 			
 
 			case 'consumos':
@@ -326,6 +371,8 @@ class includes {
 	}
 
 	private function set_active_tab($tab = null){
+
+
 
 		if(basename(dirname($_SERVER['SCRIPT_NAME'])) == $tab){
 			$class = ' class="active"';
@@ -535,7 +582,7 @@ class includes {
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<li><a href="<?php echo HOST.'/login'; ?>">Login | Iniciar sesi&oacute;n</a></li>
 								<li><a href="<?php echo HOST.'/hazte-socio';?>">Join | Hazte socio</a></li>
-								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Red Card | ¿Qu&eacute; es Red Card?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Travel Points | ¿Qu&eacute; es Red Card?</a></li>
 								<li class="visible-xs"><a href="<?php echo HOST.'/tienda'; ?>">Gift Store | Tienda de Regalos</a></li>
 								
 								<li class="visible-xs"><a href="<?php echo HOST."/contacto" ?>">Contacto</a></li>

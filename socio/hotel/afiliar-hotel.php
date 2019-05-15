@@ -1,11 +1,22 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Info Channel
 $con = new assets\libs\connection();
-
+ 
 use Hotel\models\AfiliarHotel;
 use admin\libs\Iata;
 
-use assets\libs\includes as Includes;
+if(!isset($_SESSION['user'])){
+	header('Location: '.HOST.'/login');
+	die();
+}
+if(!isset($_SESSION['user']['id_usuario'])){
+	header('Location: '.HOST.'/login');
+	die();
+}
 
+if($_SESSION['user']['id_rol']==8) {
+	header('Location: '.HOST.'/socio/hoteles/siguiendo');
+	die();
+}
 $iata = new Iata($con);
 
 if(!isset($_SESSION['user'])){
@@ -26,8 +37,7 @@ if(!isset($_SESSION['user'])){
 }
 
 
-
-$includes = new Includes($con);
+$includes = new assets\libs\includes($con);
 $properties['title'] = 'Afiliar hotel | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
@@ -36,39 +46,13 @@ echo $navbar = $includes->get_main_navbar(); ?>
 		<div class="main-inner">
 			<div class="container">
 				<?php echo $con->get_notify();?>
-<?php if(!isset($_SESSION['user'])){ ?>
 				<div class="row">
-					<div class="col-sm-7 col-md-8 mb50">
-						<div class="page-title">
-							<h1>¡Afilia tu hotel!</h1>
-							<p>Env&iacute;anos una solicitud para publicar tu hotel en nuestro directorio.</p>
-						</div>
-						<p>Solo los socios pueden afiliar un hotel. <a href="<?php echo HOST;?>/hazte-socio">Hazte socio</a> o inicia sesi&oacute;n.</p>
-					</div>
-					<div class="col-sm-5 col-md-4">
-					<?php echo $login->get_notification(); ?>
-						<div class="page-title">
-							<h2 class="mb0">Iniciar sesi&oacute;n</h2>
-						</div><!-- /.page-title -->
-						<?php echo $login->get_login_error(); ?>
-						<form method="post" action="<?php echo _safe(HOST.'/login');?>">
-							<div class="form-group">
-								<label for="email">Correo electr&oacute;nico</label>
-								<input type"email" class="form-control" name="email" id="email" value="<?php echo $login->get_email();?>" placeholder="Correo electr&oacute;nico" required />
-								<?php echo $login->get_email_error();?>
-							</div><!-- /.form-group -->
-							<div class="form-group">
-								<label for="password">Contrase&ntilde;a</label>
-								<input type="password" class="form-control" name="password" id="password" placeholder="Contrase&ntilde;a" required />
-								<?php echo $login->get_password_error();?>
-							</div><!-- /.form-group -->
-							<button type="submit" class="btn btn-primary pull-right">¡Entrar!</button>
-						</form>
-					</div>
-				</div>
-<?php }else{ ?>
-				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-4 col-lg-3">
+						<div class="sidebar">
+							<?php echo $includes->get_user_sidebar();?>
+						</div><!-- /.sidebar -->
+					</div><!-- /.col-* -->
+					<div class="col-sm-8 col-lg-9">
 						<div class="content">
 							<?php echo $affiliate->get_notification();?>
 							<div class="page-title">
@@ -385,19 +369,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									</div>
 								</div>
 							</form>
-						</div><!-- /.content -->
-					</div><!-- /.col-* -->
-				</div><!-- /.row -->
-
-<?php } ?>
-
-
-			</div><!-- /.container -->
-		</div><!-- /.main-inner -->
-	</div><!-- /.main -->
-
-
-	<!-- Modal para adjudicar recibo de pago... -->
+								<!-- Modal para adjudicar recibo de pago... -->
 		<div class="modal fade " id="new-iata" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content modal-dialog-centered">
@@ -539,8 +511,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 			</div>
 		</div>
 
-
-<script>
+							<script>
 
 	$('.actualizar').click(function(){
 
@@ -611,4 +582,11 @@ echo $navbar = $includes->get_main_navbar(); ?>
 	});
 
 </script>
+						
+						</div><!-- /.content -->
+					</div><!-- /.col-* -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.main-inner -->
+	</div><!-- /.main -->
 <?php echo $footer = $includes->get_main_footer(); ?>

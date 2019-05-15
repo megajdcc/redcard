@@ -145,16 +145,16 @@ class AfiliarHotel {
 
 		$this->setTelefono($post['telefonofijo']);
 		$this->setMovil($post['movil']);
+// Datos para el pago de comision no van en el formulario de solicitud
+		// $this->setNombreBanco($post['nombre_banco']);
+		// $this->setCuenta($post['cuenta']);
+		// $this->setClabe($post['clabe']);
+		// $this->setSwift($post['swift']);
 
-		$this->setNombreBanco($post['nombre_banco']);
-		$this->setCuenta($post['cuenta']);
-		$this->setClabe($post['clabe']);
-		$this->setSwift($post['swift']);
+		// $this->setNombreBancoTarjeta($post['nombre_banco_tarjeta']);
+		// $this->setNumeroTarjeta($post['numero_targeta']);
 
-		$this->setNombreBancoTarjeta($post['nombre_banco_tarjeta']);
-		$this->setNumeroTarjeta($post['numero_targeta']);
-
-		$this->setEmailPaypal($post['email_paypal']);
+		// $this->setEmailPaypal($post['email_paypal']);
 		
 
 		
@@ -216,27 +216,27 @@ class AfiliarHotel {
 					$idresponsable = $stm->fetch(PDO::FETCH_ASSOC)['id'];
 
 
-					$querydatospagocomision = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,numero_tarjeta,email_paypal,banco_tarjeta)
-														values(:banco,:cuenta,:clabe,:swift,:numero_tarjeta,:email_paypal,:banco_tarjeta)";
+					// $querydatospagocomision = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,numero_tarjeta,email_paypal,banco_tarjeta)
+					// 									values(:banco,:cuenta,:clabe,:swift,:numero_tarjeta,:email_paypal,:banco_tarjeta)";
 
-					$stm3 = $this->con->prepare($querydatospagocomision);
+					// $stm3 = $this->con->prepare($querydatospagocomision);
 
-					$resultdatospagocomsion = $stm3->execute(array(':banco' => $this->getBanco(), 
-					                                              ':cuenta' => $this->getCuenta(),
-					                                              ':clabe' => $this->getClabe(),
-					                                              ':swift' => $this->getSwift(),
-					                                              ':numero_tarjeta' => $this->getTarjeta(),
-					                                              ':email_paypal' => $this->getEmailPaypal(),
-					                                          		':banco_tarjeta' => $this->getBancoTarjeta())); 
+					// $resultdatospagocomsion = $stm3->execute(array(':banco' => $this->getBanco(), 
+					//                                               ':cuenta' => $this->getCuenta(),
+					//                                               ':clabe' => $this->getClabe(),
+					//                                               ':swift' => $this->getSwift(),
+					//                                               ':numero_tarjeta' => $this->getTarjeta(),
+					//                                               ':email_paypal' => $this->getEmailPaypal(),
+					//                                           		':banco_tarjeta' => $this->getBancoTarjeta())); 
 
-					if($resultdatospagocomsion){
+			
 
-						$iddatosquery = "select max(id) as id from datospagocomision";
+						// $iddatosquery = "select max(id) as id from datospagocomision";
 
-						$stm4  = $this->con->prepare($iddatosquery);
-						$stm4->execute();
+						// $stm4  = $this->con->prepare($iddatosquery);
+						// $stm4->execute();
 
-						$iddatos = $stm4->fetch(PDO::FETCH_ASSOC)['id'];
+						// $iddatos = $stm4->fetch(PDO::FETCH_ASSOC)['id'];
 
 
 					$query = "INSERT INTO hotel (
@@ -248,7 +248,7 @@ class AfiliarHotel {
 						sitio_web,
 						id_ciudad,
 						id_responsable_promocion,
-						id_datospagocomision,
+					
 						codigo_postal,
 						comision,
 						aprobada,
@@ -262,7 +262,6 @@ class AfiliarHotel {
 						:sitio_web, 
 						:id_ciudad, 
 						:id_responsable_promocion, 
-						:id_datospagocomision,
 						:codigo_postal, 
 						:comision,
 						:aprobada, 
@@ -278,7 +277,7 @@ class AfiliarHotel {
 					':sitio_web' => $this->register['sitio_web'],
 					':id_ciudad' => $this->register['id_ciudad'],
 					':id_responsable_promocion' =>$idresponsable,
-					':id_datospagocomision' => $iddatos,
+					
 					':codigo_postal' => $this->register['codigopostal'],
 					':comision' => 0,
 					':aprobada' => 0,
@@ -305,24 +304,24 @@ class AfiliarHotel {
 
 						if($resultado){
 							$this->con->commit();
-						$content = 'Se ha recibido una nueva solicitud para afiliar un hotel. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/Hotel/solicitud/'.$idsolicitud.'">Haz clic aqu&iacute; para verla</a>.';
+						$content = 'Se ha recibido una nueva solicitud para afiliar un hotel. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=Hotel">Haz clic aqu&iacute; para verla</a>.';
 						$body_alt =
-							'Se ha recibido una nueva solicitud para afiliar hotel. Sigue este enlace para verla: '.HOST.'/Hotel/solicitud/'.$idsolicitud;
+							'Se ha recibido una nueva solicitud para afiliar hotel. Sigue este enlace para verla: '.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=Hotel';
 						require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 						$mail = new \PHPMailer;
 						$mail->CharSet = 'UTF-8';
 						// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 						$mail->isSMTP();
-						$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+						$mail->Host = 'single-5928.banahosting.com';
 						$mail->SMTPAuth = true;
 						$mail->SMTPSecure = 'ssl';
 						$mail->Port = 465;
 						// El correo que hará el envío
-						$mail->Username = 'notificacion@esmartclub.com';
-						$mail->Password = 'Alan@2017_pv';
-						$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+						$mail->Username = 'notification@travelpoints.com.mx';
+						$mail->Password = '20464273jd';
+						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 						// El correo al que se enviará
-						$mail->addAddress('corporativo@infochannel.si ');
+						$mail->addAddress('megajdcc2009@gmail.com');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo
@@ -345,12 +344,7 @@ class AfiliarHotel {
 						$this->error['error'] = 'Estamos teniendo problemas técnicos, disculpa las molestias. Intenta más tarde.';
 						return false;
 					}
-					
-
-					}else{
-						$this->con->rollBack();
-							return $false;
-					}
+				
 				}else{
 						$this->con->rollBack();
 							return $false;
@@ -408,7 +402,7 @@ class AfiliarHotel {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -432,8 +426,8 @@ class AfiliarHotel {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -458,7 +452,7 @@ class AfiliarHotel {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -475,7 +469,7 @@ class AfiliarHotel {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -739,8 +733,8 @@ class AfiliarHotel {
 			$this->register['telefonofijo'] = $string;
 			return true;
 		}
-		$this->error['telefonofijo'] = 'Este campo es obligatorio.';
-		return false;
+		$this->register['telefonofijo'] = null;
+		return true;
 	}
 	private function setMovil($string = null){
 		if($string){
@@ -945,6 +939,16 @@ class AfiliarHotel {
 	public function getIata(){
 		$iatas = null;
 		$query = "SELECT i.id,i.codigo,c.ciudad FROM iata  as i join ciudad as c on i.id_ciudad = c.id_ciudad";
+
+		$query = "(select i.id, i.codigo from iata as i 
+				join ciudad as c on i.id_ciudad = c.id_ciudad
+ 				left join estado as e on c.id_estado = e.id_estado 
+				left join pais as p on e.id_pais = p.id_pais)
+UNION
+(select i.id, i.codigo from iata as i 
+				left join ciudad as c on i.id_ciudad = c.id_ciudad
+ 				join estado as e on i.id_estado = e.id_estado 
+				left join pais as p on e.id_pais = p.id_pais)";
 		try{
 
 			$stmt = $this->con->prepare($query);

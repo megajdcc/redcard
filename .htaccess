@@ -1,4 +1,4 @@
-# Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+# Desarrollado por Crespo Jhonatan
 #order deny,allow
 #deny from all
 #allow from 189.177.202.67
@@ -36,10 +36,32 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^admin/negocios/solicitud/([0-9]+)$ admin/negocios/solicitud.php?id=$1 [NC,L]
 
+# USUARIO HOTEL NEW
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^Hotel/usuarios/nuevousuario([0-9]+)$ Hotel/usuarios/nuevousuario.php?id=$1 [NC,L]
+
+# REVISION DE SOLICITUD ADMIN
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^admin/perfiles/solicitud/([0-9]+)$ admin/perfiles/solicitud.php?id=$1 [NC,L]
+
 # REVISION DE SOLICITUD USER
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^socio/negocios/solicitud/([0-9]+)$ socio/negocios/solicitud.php?id=$1 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^socio/hotel/solicitud/([0-9]+)$ socio/hotel/solicitud.php?id=$1 [NC,L]
+
+
+
+
+# REVISION DE SOLICITUD ADMIN HOTEL
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^Hotel/solicitud/([0-9]+)$ Hotel/solicitud.php?id=$1 [NC,L]
 
 # QUITAR PHP A TODOS LOS SCRIPTS
 RewriteCond %{SCRIPT_FILENAME} !-d
@@ -71,6 +93,21 @@ RewriteRule ^([0-9a-zA-Z-]+)/opiniones/?(.*)$ negocio_opiniones.php?url=$1&page=
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^socio/([0-9a-zA-Z]+)$ perfil_socio.php?username=$1 [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^socio/hotel/huesped/([0-9a-zA-Z]+)$ huesped.php [NC,L]
+
+# REDIRECCIONES DE SOLICITUDES AJAX
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^/admin/libs/responsecontroller([a-zA-Z]+)$ /admin/libs/responsecontroller.php [NC,L]
+
+# REDIRECCIONES DE TIENDA
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^/admin/tienda/PreferenciaTienda([0-9a-zA-Z]+)$ /admin/tienda/PreferenciaTienda.php [NC,L]
+
 
 ErrorDocument 403 /errores/403.php
 ErrorDocument 404 /errores/404.php

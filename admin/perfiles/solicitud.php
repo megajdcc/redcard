@@ -51,28 +51,25 @@ if(isset($_POST['action']) && $_POST['action'] == "adjudicar" && isset($_POST['p
 		return;
 	}
 }
-	
-
-
-if(isset($_REQUEST['reject_request'])){
-	$solicitud->EliminarSolicitud($perfil);
-}
-if(isset($_POST['perfil']) && !isset($_POST['action'])){
-			$solicitud->aceptarSolicitud($_POST,$perfil);
-}
-
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
+	if(isset($_POST['perfil']) && !isset($_POST['action'])){
+		$solicitud->aceptarSolicitud($_POST,$perfil);
+	}
+
+	if(isset($_POST['reject_request'])){
+		$solicitud->rechazarsolicitud($_POST, $perfil);
+	}
 		
-		
-		if(isset($_POST['corregirsolicitud'])){
-		$solicitud->check_solicitud($_POST);
-		}
+	if(isset($_POST['corregirsolicitud'])){
+		$solicitud->check_solicitud($_POST, $perfil);
+	}
 
 	if(isset($_POST['eliminarsolicitud'])){
 		$solicitud->EliminarSolicitud($perfil);
 	}
+
 }
 
 $includes = new admin\libs\includes($con);

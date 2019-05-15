@@ -36,15 +36,32 @@ $(document).ready(function() {
 
 	// Al cambiar el pais, se cargan los nuevos estados y se limpia el select ciudades.
 	$('#country-select').on('change', function(){
+		
 		$('#city-select').empty();
 		$('#city-select').selectpicker('refresh');
 		load_states(this.value);
+	});
+
+
+	// Al cambiar el pais, se cargan los nuevos estados y se limpia el select ciudades.
+	$('#country-select-affiliate').on('change', function(){
+		
+		$('#city-select-affiliate').empty();
+		$('#city-select-affiliate').selectpicker('refresh');
+		load_states_affiliate(this.value);
 	});
 
 	// Al cambiar el estado, se cargan las nuevas ciudades
 	$('#state-select').on('change', function(){
 		load_cities(this.value);
 	});
+
+	// Al cambiar el estado, se cargan las nuevas ciudades
+	$('#state-select-affiliate').on('change', function(){
+		load_cities_affiliate(this.value);
+	});
+
+
 
 	// Funcion para cargar estados
 	var load_states = function(id){
@@ -66,6 +83,27 @@ $(document).ready(function() {
 		});
 	}
 
+		// Funcion para cargar estados
+	var load_states_affiliate = function(id){
+		var id_pais = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_pais: id_pais
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#state-select-affiliate').empty();
+				for(var i in data){
+					$('#state-select-affiliate').append('<option value="' + data[i].id_estado + '">' + data[i].estado + '</option>');
+				}
+				$('#state-select-affiliate').selectpicker('refresh');
+			}
+		});
+	}
+
+
 	// Funcion para cargar ciudades
 	var load_cities = function(id){
 		var id_estado = id;
@@ -85,6 +123,28 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+	var load_cities_affiliate = function(id){
+		var id_estado = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_estado: id_estado
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#city-select-affiliate').empty();
+				for(var i in data){
+					$('#city-select-affiliate').append('<option value="' + data[i].id_ciudad + '">' + data[i].ciudad + '</option>');
+				}
+				$('#city-select-affiliate').selectpicker('refresh');
+			}
+		});
+	}
+
+
+	
 
 
 	// Confirmar aceptar o rechazar una solicitud de perfil

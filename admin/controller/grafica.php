@@ -2,9 +2,13 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
+
 use admin\libs\Home;
+use admin\libs\Iata;
 
 $home = new Home($con);
+
+$iata = new Iata($con);
 
 /**
  * 	Controladores para peticiones ajax para graficos... 
@@ -188,5 +192,14 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'perfilesnuevos'){
 
 		}
 }
+
+if(isset($_POST['newiata']) && $_POST['newiata']){
+
+		$post = array('codigo'=>$_POST['codigo'],'aeropuerto'=>$_POST['aeropuerto'],
+					'ciudad'=>$_POST['ciudad'],'estado'=>$_POST['estado']);
+
+		$iata->registrocliente($post);
+
+	}
 
  ?>
