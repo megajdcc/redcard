@@ -50,13 +50,9 @@ class DetallesSolicitud {
 		'recover-account',
 		'recuperar-cuenta',
 		'terms-of-service',
-		'terminos-y-condiciones'
-	);
-	private $user = array(
-		'id' => null
-	);
+		'terminos-y-condiciones');
+	private $user = array('id' => null);
 	private $request = array();
-
 
 	private $nrosolicitud;
 	private $solicitudhotel = array();
@@ -920,7 +916,7 @@ class DetallesSolicitud {
 				return true;
 			}
 			else if($perfil == "Referidor"){
- 					$this->DetallesSolicitudReferidor->adjudicar($comision);
+ 					$this->DetallesSolicitudReferidor->adjudicar($comision,$codigohotel);
 				return true;
 			}
 			
@@ -1126,12 +1122,15 @@ class DetallesSolicitud {
 					return false;
 
 					break;
+
 					case 'Franquiciatario':
 						$this->DetallesSolicitudFranquiciatario->aceptarsolicitud($post);
 					break;
+
 					case 'Referidor':
 						$this->DetallesSolicitudReferidor->aceptarsolicitud($post);
 					break;
+
 					default:
 						# code...
 						break;

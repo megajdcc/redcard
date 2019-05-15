@@ -32,21 +32,22 @@ if(!$solicitud->load_data($id,$perfil)){
 
 if(isset($_POST['action']) && $_POST['action'] == "adjudicar" && isset($_POST['perfil'])){
 
-	if($_POST['perfil'] == "hotel"){
+	if($_POST['perfil'] == "Hotel"){
 		
 		$codigohotel = $_POST['codigohotel'];
 		$comision = $_POST['comision'];
 		$solicitud->adjudicar($perfil,$comision,$codigohotel);
 		unset($_POST['action']);
 		return;
-	}else if($_POST['perfil'] == "franquiciatario"){
+	}else if($_POST['perfil'] == "Franquiciatario"){
 		$comision = $_POST['comision'];
 		$solicitud->adjudicar($perfil,$comision);
 		unset($_POST['action']);
 		return;
-	}else if($_POST['perfil'] == "referidor"){
-		$comision = $_POST['comision'];
-		$solicitud->adjudicar($perfil,$comision);
+	}else if($_POST['perfil'] == "Referidor"){
+		$comision    = $_POST['comision'];
+		$codigohotel = $_POST['codigohotel'];
+		$solicitud->adjudicar($perfil,$comision,$codigohotel);
 		unset($_POST['action']);
 		return;
 	}

@@ -933,7 +933,7 @@ if($('#solicitudes').length){
 						url: path,
 						type: 'POST',
 						dataType: 'HTML',
-						data: 'action=adjudicar&perfil=hotel&codigohotel='+codigohotel+'&comision='+comision,
+						data: 'action=adjudicar&perfil=Hotel&codigohotel='+codigohotel+'&comision='+comision,
 						cache:false
 					})
 					.done(function(response) {
@@ -955,7 +955,32 @@ if($('#solicitudes').length){
 						url: path,
 						type: 'POST',
 						dataType: 'HTML',
-						data: 'action=adjudicar&perfil=franquiciatario&comision='+comision,
+						data: 'action=adjudicar&perfil=Franquiciatario&comision='+comision,
+					})
+					.done(function(data) {
+											
+
+							//
+							// $(document).load(path);
+
+						// document.innerHTML = path;
+						location.reload();
+						
+					})
+					.fail(function() {
+						console.log("error");
+					})
+				}else if(perfil == 'Referidor'){
+					var comision = valorslider;
+					var codigohotel = document.getElementById("codigohotel").value;
+
+					var path = $(this).attr('data-path');
+					
+
+					$.ajax({
+						url: path,
+						type: 'POST',
+						data: 'action=adjudicar&perfil=Referidor&codigohotel='+codigohotel+'&comision='+comision,
 					})
 					.done(function(data) {
 											
