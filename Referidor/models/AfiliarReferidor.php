@@ -246,7 +246,7 @@ class AfiliarReferidor {
 						$mail->Password = '20464273jd';
 						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 						// El correo al que se enviará
-						$mail->addAddress('megajdcc2009@gmail.com');
+						$mail->addAddress('corporativo@infochannel.si');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo

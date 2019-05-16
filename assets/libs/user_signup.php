@@ -5,6 +5,7 @@ use PDO;
 class user_signup {
 	private $con;
 	private $username = null;
+	private $proviene = null;
 	private $email = null;
 	private $password = null;
 	private $referral = array ('id' => null, 'username' => null);
@@ -14,7 +15,11 @@ class user_signup {
 		$this->con = $con->con;
 	}
 
-	public function setData(array $post){
+	public function setData(array $post,$proviene = null){
+
+		if(!empty($proviene)){
+			$this->proviene = $proviene;
+		}
 		$this->setUsername($post['username']);
 		$this->setEmail($post['email']);
 		$this->setPassword($post['password'], $post['password-retype']);
