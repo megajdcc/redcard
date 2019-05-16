@@ -41,7 +41,8 @@ if(isset($_POST['action']) && $_POST['action'] == "adjudicar" && isset($_POST['p
 		return;
 	}else if($_POST['perfil'] == "Franquiciatario"){
 		$comision = $_POST['comision'];
-		$solicitud->adjudicar($perfil,$comision);
+		$codigohotel = $_POST['codigohotel'];
+		$solicitud->adjudicar($perfil,$comision,$codigohotel);
 		unset($_POST['action']);
 		return;
 	}else if($_POST['perfil'] == "Referidor"){

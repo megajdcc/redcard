@@ -118,7 +118,7 @@ class DetallesSolicitudReferidor{
 						e.estado,
 						e.id_estado
 				from referidor as rf
-				left join datospagocomision as dpc on rf.id_datospagocomision = dpc.id 
+				
 				inner join solicitudreferidor as srf on rf.id = srf.id_referidor 
 				inner join ciudad as c on srf.id_ciudad = c.id_ciudad
 				inner join estado as e on srf.id_estado = e.id_estado
@@ -126,7 +126,8 @@ class DetallesSolicitudReferidor{
 				join iata i on srf.id_iata = i.id
 				
 				
-				inner join usuario as u on srf.id_usuario = u.id_usuario				
+				inner join usuario as u on srf.id_usuario = u.id_usuario
+				left join datospagocomision as dpc on rf.id_datospagocomision = dpc.id 				
 		where srf.id = :solicitud";
 
 		try {
@@ -186,10 +187,10 @@ class DetallesSolicitudReferidor{
 	public function EliminarSolicitud(){
 
 	
-			$query = "delete from solicitudreferidor where id=:id_solicitud";
+			$query = "delete from referidor where id=:id_referidor";
 		try{
 			$stmt = $this->con->prepare($query);
-			$stmt->bindValue(':id_solicitud', $this->registro['solicitud'], PDO::PARAM_INT);
+			$stmt->bindValue(':id_referidor', $this->registro['id_referidor'], PDO::PARAM_INT);
 			$stmt->execute();
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
@@ -579,6 +580,14 @@ class DetallesSolicitudReferidor{
           
           <div class="col-lg-4">
             <div class="row">
+
+            	<div class="form-group">
+              		<label for="country-select">Codigo IATA <span class="required"></span></label>
+              		<select name="iata" class="form-control" readonly>
+              			<?php echo $this->getIata(); ?>
+              		</select>
+              </div><!-- /.form-group -->
+
               <div class="form-group">
               <label for="country-select">Pa&iacute;s <span class="required"></span></label>
               <input  type="text" class="pais form-control" value="<?php echo $this->getPais(); ?>" id="country-select" placeholder="Pais" name="pais" data-size="10" readonly>
@@ -613,104 +622,56 @@ class DetallesSolicitudReferidor{
         </div><!-- /.box -->
        
         
-        <div class="background-white p30 mb30">
-         <h3 class="page-title">Datos para el pago de comisiones</h3>
-         
-        
-         <div class="row">
-
-          <div class="col-lg-6 col-sm-4">
-          <h5 class="page-title">Transferencia Bancaria</h5>
-           <div class="form-group" >
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $this->getBanco();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group">
-            <label for="cuenta">Cuenta<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php echo $this->getCuenta();?>" placeholder="Cuenta." readonly >
-            </div><!-- /.input-group -->
-          
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-            <label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe();?>" placeholder="Clabe" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-            <label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $this->getSwift();?>" placeholder="Swift" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-          </div><!-- /.col-* -->
-
-
-
-          <div class="col-lg-6 col-sm-4">
-           <h5 class="page-title">Deposito a tarjeta</h5>
-           <div class="form-group">
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text" pattern="[a-zA-z]*" id="bancotarjeta" name="bancotarjeta" value="<?php echo $this->getBancoTarjeta();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-           <div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-            <label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc"></i></span>
-             <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numerotarjeta" value="<?php echo $this->getNumeroTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" readonly>
-            </div><!-- /.input-group -->
-           
-           </div><!-- /.form-group -->
-        
-          
-            <h5 class="page-title">Transferencia PayPal</h5>
-           <div class="form-group">
-            <label for="nombre">Email de Paypal<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-             <input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $this->getEmailPaypal();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
-          
-         </div>
         
         <div class="background-white p30 mb50">
          <h3 class="page-title">Tus Datos de contacto.</h3>
-          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
+         
          <div class="row">
          
          
-           <div class="col-lg-6">
-          <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-            <label for="phone">T&eacute;lefono fijo <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
           <div class="col-lg-6">
+
+          	<div class="form-group" data-toggle="tooltip" title="Tu nombre">
+               <label for="phone">Nombre:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text" id="nombre" name="nombre" value="<?php echo $this->getNombre();?>" placeholder="Nombre" readonly>
+               </div>
+               
+             
+            </div>
+            <div class="form-group" data-toggle="tooltip" title="Tu Apellido">
+               <label for="phone">Apellido:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text"  id="apellido" name="apellido" value="<?php echo $this->getApellido();?>" placeholder="Apellido" readonly>
+               </div>
+               
+             
+            </div>
+
+          <!--   <div class="form-group" data-toggle="tooltip" title="Tu Email de Referidor">
+               <label for="phone">Email:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="Email"  id="email" name="email" value="<?php //echo $this->getEmailSolicitante();?>" placeholder="email" readonly>
+               </div>
+               
+             
+            </div> -->
+         
+         </div>
+          <div class="col-lg-6">
+
+				<div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+					<label for="phone">T&eacute;lefono fijo <span class="required"></span></label>
+					<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+					<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo"readonly>
+					</div><!-- /.input-group -->
+					
+				</div><!-- /.form-group -->
+
           <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
             <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
@@ -722,6 +683,7 @@ class DetallesSolicitudReferidor{
           </div>
           </div>
         </div>
+
 
        
        </form>

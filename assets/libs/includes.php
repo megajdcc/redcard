@@ -267,7 +267,7 @@ class includes {
 				<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/perfil/"><i class="fa fa-user"></i> Perfil de socio</a></li>
 
 				<li'.$this->set_active_sidebar_tab('invitados.php').'><a href="'.HOST.'/socio/perfil/invitados"><i class="fa fa-user-plus"></i> Mis invitados</a></li>
-				<li'.$this->set_active_sidebar_tab('esmartties.php').'><a href="'.HOST.'/socio/perfil/esmartties"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
+				<li'.$this->set_active_sidebar_tab('travelpoints.php').'><a href="'.HOST.'/socio/perfil/travelpoints"><i class="fa fa-exchange"></i> Mis Travel Points</a></li>
 				<li'.$this->set_active_sidebar_tab('editar.php').'><a href="'.HOST.'/socio/perfil/editar"><i class="fa fa-pencil"></i> Editar informaci&oacute;n</a></li>
 				<li'.$this->set_active_sidebar_tab('cambiar-contrasena.php').'><a href="'.HOST.'/socio/perfil/cambiar-contrasena"><i class="fa fa-key"></i> Cambiar contrase&ntilde;a</a></li>
 				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>

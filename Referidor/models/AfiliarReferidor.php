@@ -77,12 +77,14 @@ class AfiliarReferidor {
 		'nrosolicitud'         => null,
 		'condicion'            => null,
 		'comentario'           => null,
+		//Datos del hotel
 		'sitio_web'            => null,
 		'nombrehotel'          => null,
 		'direccion'            => null,
 		'codigopostal'         => null,
-		'nombrehotel'          => null,
-		'id_iata'              => null
+		'id_ciudad'            => null,
+		'id_iata'              => null,
+		'id_estado'            => null
 
 	);
 	private $error = array(

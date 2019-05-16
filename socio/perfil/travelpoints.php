@@ -51,7 +51,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											<h1><?php echo $home->get_header_title();?></h1>
 											<h4><?php echo $home->get_location();?></h4>
 										</div><!-- /.page-title -->
-										<h2><span class="mr20">e$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">Travel Points</label></h2>
+										<h2><span class="mr20">Tp$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">Travel Points</label></h2>
 										<h5>Amigos invitados a Travel Points: <span class="mr20"><?php echo $home->get_invited();?></span>
 											<a href="<?php echo HOST;?>/socio/perfil/invitados" class="btn btn-secondary btn-xs">Ver</a>
 										</h5>

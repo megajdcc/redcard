@@ -16,22 +16,25 @@ class DetallesSolicitudFranquiciatario{
 	private $registro = array(
 
 		//datos de la solicitud
-		'solicitud'          => null,
-		'id_usuario'         => null,
-		'username'           => null,
-		'nombre_usuario'     => null,
-		'apellido_usuario'   => null,
-		'id_franquiciatario' => null,
-		'comentario'         => null,
-		'condicion'          => null,
-		'creado'             => null,
+		'solicitud'            => null,
+		'id_usuario'           => null,
+		'username'             => null,
+		'nombre_usuario'       => null,
+		'apellido_usuario'     => null,
+		'id_franquiciatario'   => null,
+		'comentario'           => null,
+		'condicion'            => null,
+		'creado'               => null,
+		'emailfranquiciatario' =>null,
+		'nombre'               =>null,
+		'apellido'             =>null,
 		
 		//datos del franquiciante
-		'nombrecompleto' => null,
-		'email'          => null,
-		'telefonofijo'   => null,
-		'telefonomovil'  => null,
-
+		'nombrecompleto'       => null,
+		'email'                => null,
+		'telefonofijo'         => null,
+		'telefonomovil'        => null,
+		
 		//datos pago comisiones 
 		'id_datospagocomision' => null,
 		'banco'                => null,
@@ -41,18 +44,21 @@ class DetallesSolicitudFranquiciatario{
 		'banco_tarjeta'        => null,
 		'numero_tarjeta'       => null,
 		'email_paypal'         => null,
-
+		
 		//Datos del hotel a Franquiciar
 		//
 		
-		'nombrehotel' => null,
-		'direccion'   => null,
-		'pais'        => null,
-		'ciudad'      => null,
-		'estado'      => null,
-		'sitioweb'    => null,
-		'comision'    =>null,
-		'codigo' => null 
+		'nombrehotel'          => null,
+		'direccion'            => null,
+		'pais'                 => null,
+		'ciudad'               => null,
+		'estado'               => null,
+		'id_ciudad'            =>null,
+		'id_estado'            =>null,
+		'sitioweb'             => null,
+		'comision'             =>null,
+		'codigo'               => null,
+		'codigopostal'         => null 
 
 	);
 
@@ -72,21 +78,57 @@ class DetallesSolicitudFranquiciatario{
 
 	private function cargarDatos(){
 
-		$query = "select u.nombre as nombre_usuario,u.apellido as apellido_usuario, u.username, u.id_usuario, sfr.id as solicitud, sfr.comentario,sfr.condicion,sfr.creado, CONCAT(u.nombre,' ',u.apellido) as nombrecompleto, u.email,
-				f.id as id_franquiciatario, f.telefonomovil, f.telefonofijo, f.comision, f.aprobada, f.codigo_hotel,
-				dpc.id as id_datospagocomision, dpc.banco,dpc.cuenta,dpc.clabe,dpc.swift,dpc.banco_tarjeta,dpc.numero_tarjeta,dpc.email_paypal,
-				h.codigo,h.nombre as hotel, h.sitio_web, h.direccion,
-				c.ciudad, p.pais,e.estado
-				from franquiciatario as f
-				inner join datospagocomision as dpc on f.id_datospagocomision = dpc.id 
-				inner join hotel as h on f.codigo_hotel = h.codigo 
-				inner join ciudad as c on h.id_ciudad = c.id_ciudad
-				inner join estado as e on c.id_estado = e.id_estado
-				inner join pais as p on e.id_pais = p.id_pais
+		$query = "select u.nombre as nombre_usuario,
+						u.apellido as apellido_usuario, 
+						u.username, 
+						u.id_usuario, 
+						srf.id as solicitud, 
+						srf.comentario,
+						srf.condicion,
+						srf.creado, 
+						srf.hotel,
+						srf.sitioweb,
+						srf.direccion,
+						srf.codigopostal,
+						srf.id_iata,
+
+
+						i.codigo,
+
+						CONCAT(u.nombre,' ',u.apellido) as nombrecompleto, 
+						u.email,
+						rf.id as id_franquiciatario, 
+						rf.telefonomovil, 
+						rf.telefonofijo, 
+						rf.comision, 
+						rf.aprobada, 
+						rf.codigo_hotel,
+						rf.nombre,
+						rf.apellido,
+						rf.email as emailfranquiciatario,
+						dpc.id as id_datospagocomision,
+						dpc.banco,
+						dpc.cuenta,
+						dpc.clabe,
+						dpc.swift,
+						dpc.banco_tarjeta,
+						dpc.numero_tarjeta,
+						dpc.email_paypal,
+						c.ciudad,
+						c.id_ciudad, 
+						p.pais,
+						e.estado,
+						e.id_estado
+				from franquiciatario as rf
 				
-				inner join solicitudfr as sfr on f.id = sfr.id_franquiciatario
-				inner join usuario as u on sfr.id_usuario = u.id_usuario				
-		where sfr.id = :solicitud";
+				inner join solicitudfr as srf on rf.id = srf.id_franquiciatario 
+				inner join ciudad as c on srf.id_ciudad = c.id_ciudad
+				inner join estado as e on srf.id_estado = e.id_estado
+				inner join pais as p on e.id_pais = p.id_pais
+				join iata i on srf.id_iata = i.id
+				inner join usuario as u on srf.id_usuario = u.id_usuario
+				left join datospagocomision as dpc on rf.id_datospagocomision = dpc.id 				
+			where srf.id = :solicitud";
 
 		try {
 			$stm = $this->con->prepare($query);
@@ -114,6 +156,10 @@ class DetallesSolicitudFranquiciatario{
 		$this->registro['banco']                = $valores['banco'];
 		$this->registro['cuenta']               =$valores['cuenta'];
 		
+		$this->registro['nombre']               = $valores['nombre'];
+		$this->registro['apellido']             = $valores['apellido'];
+		$this->registro['emailfranquiciatario'] = $valores['emailfranquiciatario'];
+		
 		$this->registro['clabe']                = $valores['clabe'];
 		$this->registro['swift']                = $valores['swift'];
 		$this->registro['banco_tarjeta']        = $valores['banco_tarjeta'];
@@ -122,12 +168,16 @@ class DetallesSolicitudFranquiciatario{
 		
 		$this->registro['nombrehotel']          = $valores['hotel'];
 		$this->registro['direccion']            = $valores['direccion'];
-		$this->registro['sitioweb']             = $valores['sitio_web'];
+		$this->registro['sitioweb']             = $valores['sitioweb'];
 		$this->registro['pais']                 = $valores['pais'];
 		$this->registro['estado']               = $valores['estado'];
 		$this->registro['ciudad']               = $valores['ciudad'];
 		$this->registro['comision']             = $valores['comision'];
 		$this->registro['codigo']               = $valores['codigo'];
+		$this->registro['id_ciudad']            = $valores['id_ciudad'];
+		$this->registro['id_estado']            = $valores['id_estado'];
+		$this->registro['codigopostal']            = $valores['codigopostal'];
+		$this->registro['id_iata']            = $valores['id_iata'];
 		
 		$this->registro['creado']               = $valores['creado'];
 	}
@@ -146,6 +196,13 @@ class DetallesSolicitudFranquiciatario{
 		return $this->registro['username'];
 
 	}
+	public function getNombre(){
+
+		return $this->registro['nombre'];
+	}
+	public function getApellido(){
+		return $this->registro['apellido'];
+	}
 	public function getNombreHotel(){
 		return $this->registro['nombrehotel'];
 	}
@@ -157,6 +214,13 @@ class DetallesSolicitudFranquiciatario{
 
 		return $this->registro['sitioweb'];
 
+	}
+
+	public function getIata(){
+		$iata = _safe($this->registro['codigo']);
+		$id_iata = $this->registro['id_iata'];
+
+		return '<option value="'.$id_iata.'" selected>'.$iata.'</option>';
 	}
 
 	public function getPais(){
@@ -185,7 +249,7 @@ class DetallesSolicitudFranquiciatario{
 	}
 
 	public function getEmailSolicitante(){
-		return htmlentities($this->registro['email'], ENT_QUOTES, 'UTF-8');
+		return htmlentities($this->registro['emailfranquiciatario'], ENT_QUOTES, 'UTF-8');
 	}
 
 	public function getTelefonofijo(){
@@ -223,6 +287,7 @@ class DetallesSolicitudFranquiciatario{
 	public function getEmailPaypal(){
 		return $this->registro['email_paypal'];
 	}
+
 	public function getFecha(){
 		return date('d/m/Y g:i A', strtotime($this->registro['creado']));
 	}
@@ -284,10 +349,10 @@ class DetallesSolicitudFranquiciatario{
 	public function EliminarSolicitud(){
 
 	
-			$query = "delete from solicitudfr where id=:id_solicitud";
+			$query = "delete from franquiciatario where id=:id_franquiciatario";
 		try{
 			$stmt = $this->con->prepare($query);
-			$stmt->bindValue(':id_solicitud', $this->registro['solicitud'], PDO::PARAM_INT);
+			$stmt->bindValue(':id_franquiciatario', $this->registro['id_franquiciatario'], PDO::PARAM_INT);
 			$stmt->execute();
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
@@ -308,10 +373,13 @@ class DetallesSolicitudFranquiciatario{
 				<?php echo $this->getHeader(); ?>
 		</div>
         <div class="background-white p30 mb50">
-         <h3 class="page-title">Informaci&oacute;n de la solicitud del Franquiciante... </h3>
+         <h3 class="page-title">Informaci&oacute;n de la solicitud del Franquiciatario.</h3>
          <div class="row">
-
+ 			
+ 	
           <div class="col-lg-8 d-flex">
+
+
         
            <div class="form-group flex" >
             <label for="business-name">Nombre del Hotel:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
@@ -347,6 +415,14 @@ class DetallesSolicitudFranquiciatario{
           
           <div class="col-lg-4">
             <div class="row">
+
+            	<div class="form-group">
+              		<label for="country-select">Codigo IATA <span class="required"></span></label>
+              		<select name="iata" class="form-control" readonly>
+              			<?php echo $this->getIata(); ?>
+              		</select>
+              </div><!-- /.form-group -->
+
               <div class="form-group">
               <label for="country-select">Pa&iacute;s <span class="required"></span></label>
               <input  type="text" class="pais form-control" value="<?php echo $this->getPais(); ?>" id="country-select" placeholder="Pais" name="pais" data-size="10" readonly>
@@ -381,104 +457,56 @@ class DetallesSolicitudFranquiciatario{
         </div><!-- /.box -->
        
         
-        <div class="background-white p30 mb30">
-         <h3 class="page-title">Datos para el pago de comisiones</h3>
-         
-        
-         <div class="row">
-
-          <div class="col-lg-6 col-sm-4">
-          <h5 class="page-title">Transferencia Bancaria</h5>
-           <div class="form-group" >
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $this->getBanco();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group">
-            <label for="cuenta">Cuenta<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php echo $this->getCuenta();?>" placeholder="Cuenta." required >
-            </div><!-- /.input-group -->
-          
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-            <label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe();?>" placeholder="Clabe" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-            <label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $this->getSwift();?>" placeholder="Swift" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-          </div><!-- /.col-* -->
-
-
-
-          <div class="col-lg-6 col-sm-4">
-           <h5 class="page-title">Deposito a tarjeta</h5>
-           <div class="form-group">
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text" pattern="[a-zA-z]*" id="bancotarjeta" name="bancotarjeta" value="<?php echo $this->getBancoTarjeta();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-           <div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-            <label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc"></i></span>
-             <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numerotarjeta" value="<?php echo $this->getNumeroTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" required>
-            </div><!-- /.input-group -->
-           
-           </div><!-- /.form-group -->
-        
-          
-            <h5 class="page-title">Transferencia PayPal</h5>
-           <div class="form-group">
-            <label for="nombre">Email de Paypal<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-             <input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $this->getEmailPaypal();?>" placeholder="Nombre del banco" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
-          
-         </div>
         
         <div class="background-white p30 mb50">
          <h3 class="page-title">Tus Datos de contacto.</h3>
-          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
+         
          <div class="row">
          
          
-           <div class="col-lg-6">
-          <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-            <label for="phone">T&eacute;lefono fijo <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" required >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
           <div class="col-lg-6">
+
+          	<div class="form-group" data-toggle="tooltip" title="Tu nombre">
+               <label for="phone">Nombre:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text" id="nombre" name="nombre" value="<?php echo $this->getNombre();?>" placeholder="Nombre" required>
+               </div>
+               
+             
+            </div>
+            <div class="form-group" data-toggle="tooltip" title="Tu Apellido">
+               <label for="phone">Apellido:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text"  id="apellido" name="apellido" value="<?php echo $this->getApellido();?>" placeholder="Apellido" required>
+               </div>
+               
+             
+            </div>
+
+             <div class="form-group" data-toggle="tooltip" title="Tu Email de Franquiciatario">
+               <label for="emailfranquiciatario">Email:<span class="required"></span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-at"></i></span>
+                 <input class="form-control" type="email"  id="emailfranquiciatario" name="emailfranquiciatario" value="<?php echo $this->getEmailSolicitante();?>" placeholder="Email de Franquiciatario" required>
+               </div>
+               
+             
+            </div>
+         
+         </div>
+          <div class="col-lg-6">
+
+				<div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+					<label for="phone">T&eacute;lefono fijo <span class="required"></span></label>
+					<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+					<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo">
+					</div><!-- /.input-group -->
+					
+				</div><!-- /.form-group -->
+
           <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
             <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
@@ -502,7 +530,7 @@ class DetallesSolicitudFranquiciatario{
 		  
 
          <input type="hidden" name="id" value="<?php echo $this->registro['solicitud']; ?>">
-         <input type="hidden" name="perfil" value="franquiciatario">
+         <input type="hidden" name="perfil" value="referidor">
 		<div class="center">
 						<button class="btn btn-success mr20" id="aceptarsolicitud" type="submit" name="accept_request">Aceptar solicitud</button>
 						<!-- <button class="btn btn-warning mr20" id="corregirsolicitud" type="submit" name="check_request">Regresar a correcci&oacute;n</button> -->
@@ -518,10 +546,13 @@ class DetallesSolicitudFranquiciatario{
 				<?php echo $this->getHeader(); ?>
 		</div>
         <div class="background-white p30 mb50">
-         <h3 class="page-title">Informaci&oacute;n de la solicitud del Franquiciante... </h3>
+         <h3 class="page-title">Informaci&oacute;n de la solicitud del Franquiciatario.</h3>
          <div class="row">
-
+ 			
+ 	
           <div class="col-lg-8 d-flex">
+
+
         
            <div class="form-group flex" >
             <label for="business-name">Nombre del Hotel:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
@@ -557,6 +588,14 @@ class DetallesSolicitudFranquiciatario{
           
           <div class="col-lg-4">
             <div class="row">
+
+            	<div class="form-group">
+              		<label for="country-select">Codigo IATA <span class="required"></span></label>
+              		<select name="iata" class="form-control" readonly>
+              			<?php echo $this->getIata(); ?>
+              		</select>
+              </div><!-- /.form-group -->
+
               <div class="form-group">
               <label for="country-select">Pa&iacute;s <span class="required"></span></label>
               <input  type="text" class="pais form-control" value="<?php echo $this->getPais(); ?>" id="country-select" placeholder="Pais" name="pais" data-size="10" readonly>
@@ -591,104 +630,56 @@ class DetallesSolicitudFranquiciatario{
         </div><!-- /.box -->
        
         
-        <div class="background-white p30 mb30">
-         <h3 class="page-title">Datos para el pago de comisiones</h3>
-         
-        
-         <div class="row">
-
-          <div class="col-lg-6 col-sm-4">
-          <h5 class="page-title">Transferencia Bancaria</h5>
-           <div class="form-group" >
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php echo $this->getBanco();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group">
-            <label for="cuenta">Cuenta<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php echo $this->getCuenta();?>" placeholder="Cuenta." readonly >
-            </div><!-- /.input-group -->
-          
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-            <label for="clabe">Clabe<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php echo $this->getClabe();?>" placeholder="Clabe" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-           <div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-            <label for="swift">Swift / Bic<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-             <input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php echo $this->getSwift();?>" placeholder="Swift" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-
-          </div><!-- /.col-* -->
-
-
-
-          <div class="col-lg-6 col-sm-4">
-           <h5 class="page-title">Deposito a tarjeta</h5>
-           <div class="form-group">
-            <label for="nombre">Nombre del banco<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-             <input class="form-control" type="text" pattern="[a-zA-z]*" id="bancotarjeta" name="bancotarjeta" value="<?php echo $this->getBancoTarjeta();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-           <div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-            <label for="nombre">N&uacute;mero de tarjeta<span class="required">*</span><i class="fa fa-question-circle"></i></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc"></i></span>
-             <input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta" name="numerotarjeta" value="<?php echo $this->getNumeroTarjeta();?>" placeholder="N&uacute;mero de Tarjeta" readonly>
-            </div><!-- /.input-group -->
-           
-           </div><!-- /.form-group -->
-        
-          
-            <h5 class="page-title">Transferencia PayPal</h5>
-           <div class="form-group">
-            <label for="nombre">Email de Paypal<span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-             <input class="form-control" type="email" id="email_paypal" name="email_paypal" value="<?php echo $this->getEmailPaypal();?>" placeholder="Nombre del banco" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
-          
-         </div>
         
         <div class="background-white p30 mb50">
          <h3 class="page-title">Tus Datos de contacto.</h3>
-          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
+         
          <div class="row">
          
          
-           <div class="col-lg-6">
-          <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-            <label for="phone">T&eacute;lefono fijo <span class="required">*</span></label>
-            <div class="input-group">
-             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo" readonly >
-            </div><!-- /.input-group -->
-            
-           </div><!-- /.form-group -->
-          </div>
           <div class="col-lg-6">
+
+          	<div class="form-group" data-toggle="tooltip" title="Tu nombre">
+               <label for="phone">Nombre:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text" id="nombre" name="nombre" value="<?php echo $this->getNombre();?>" placeholder="Nombre" readonly>
+               </div>
+               
+             
+            </div>
+            <div class="form-group" data-toggle="tooltip" title="Tu Apellido">
+               <label for="phone">Apellido:<span class="required">*</span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
+                 <input class="form-control" type="text"  id="apellido" name="apellido" value="<?php echo $this->getApellido();?>" placeholder="Apellido" readonly>
+               </div>
+               
+             
+            </div>
+
+             <div class="form-group" data-toggle="tooltip" title="Tu Email de Franquiciatario">
+               <label for="emailfranquiciatario">Email:<span class="required"></span></label>
+               <div class="input-group">
+                 <span class="input-group-addon"><i class="fa fa-at"></i></span>
+                 <input class="form-control" type="email"  id="emailfranquiciatario" name="emailfranquiciatario" value="<?php echo $this->getEmailSolicitante();?>" placeholder="Email de Franquiciatario" readonly>
+               </div>
+               
+             
+            </div>
+         
+         </div>
+          <div class="col-lg-6">
+
+				<div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+					<label for="phone">T&eacute;lefono fijo <span class="required"></span></label>
+					<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+					<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone" name="telefonofijo" value="<?php echo $this->getTelefonofijo();?>" placeholder="N&uacute;mero de t&eacute;lefono fijo"readonly>
+					</div><!-- /.input-group -->
+					
+				</div><!-- /.form-group -->
+
           <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
             <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
             <div class="input-group">
@@ -700,7 +691,6 @@ class DetallesSolicitudFranquiciatario{
           </div>
           </div>
         </div>
-
        
        </form>
 		<?php  }
@@ -710,13 +700,15 @@ class DetallesSolicitudFranquiciatario{
 
 	public function aceptarsolicitud(array $post){
 
-		$this->setBanco($post['nombre_banco']);
-		$this->setClabe($post['clabe']);
-		$this->setCuenta($post['cuenta']);
-		$this->setSwift($post['swift']);
-		$this->setBancoTarjeta($post['bancotarjeta']);
-		$this->setNumeroTarjeta($post['numerotarjeta']);
-		$this->setEmailPaypal($post['email_paypal']);
+		// $this->setBanco($post['nombre_banco']);
+		// $this->setClabe($post['clabe']);
+		// $this->setCuenta($post['cuenta']);
+		// $this->setSwift($post['swift']);
+		// $this->setBancoTarjeta($post['bancotarjeta']);
+		// $this->setNumeroTarjeta($post['numerotarjeta']);
+		// $this->setEmailPaypal($post['email_paypal']);
+		
+		
 		$this->setTelefonofijo($post['telefonofijo']);
 		$this->setTelefonomovil($post['telefonomovil']);
 		$this->setComentario($post['comentario']);
@@ -727,32 +719,14 @@ class DetallesSolicitudFranquiciatario{
 
 		$this->con->beginTransaction();
 
-		$query = "update datospagocomision set banco=:banco, cuenta =:cuenta, clabe=:clabe, swift=:swift, banco_tarjeta = :bancotarjeta, numero_tarjeta = :numerotarjeta,email_paypal =:emailpaypal where id = :id_datospagocomision";
-
-
-		try {
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':banco' =>$this->getBanco(),
-							':cuenta'=>$this->getCuenta(),
-							':clabe'=>$this->getClabe(),
-							':swift'=>$this->getSwift(),
-							':bancotarjeta'=>$this->getBancoTarjeta(),
-							':numerotarjeta'=>$this->getNumeroTarjeta(),
-							':emailpaypal'=>$this->getEmailPaypal(),
-							':id_datospagocomision'=>$this->registro['id_datospagocomision']));
-			} catch (PDOException $e) {
-				
-				$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
-				$this->con->rollBack();
-				return false;
-			}
-	
-
-		$query1 = "update franquiciatario set telefonomovil = :telefonomovil, telefonofijo=:telefonofijo, aprobada=:aprobada where id = :id_franquiciatario";
+		$query1 = "update franquiciatario set email=:email, nombre = :nombre, apellido =:apellido,telefonomovil = :telefonomovil, telefonofijo=:telefonofijo, aprobada=:aprobada where id = :id_franquiciatario";
 
 			try {
 				$stm1 = $this->con->prepare($query1);
-				$stm1->execute(array(':telefonomovil' =>$this->getTelefonomovil(),
+				$stm1->execute(array(':email'=>$this->getEmailSolicitante(),
+									':nombre'=>$this->registro['nombre'],
+									':apellido'=>$this->registro['apellido'],
+									':telefonomovil' =>$this->getTelefonomovil(),
 									':telefonofijo' =>$this->getTelefonofijo(),
 									':aprobada' => 1,
 									':id_franquiciatario' => $this->registro['id_franquiciatario']));
@@ -778,7 +752,10 @@ class DetallesSolicitudFranquiciatario{
 				//SE MANDA LA NOTIFICACION AL USUARIO
 				
 				$header = 'Tu solicitud de perfil ha sido aceptada por Travel Points ';
+				$headeringles = 'Your profile request has been accepted by Travel Points';
 				$link = 'Puedes ver tu perfil aquí: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/Franquiciatario/">'.HOST.'/Hotel/"></a>.';
+
+				$linkingles = 'You can see your profile here: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/Franquiciatario/">'.HOST.'/Hotel/"></a>.';
 				
 				$body_alt = 'Tu solicitud de perfil ha sido aprobada por Travel Points. Puedes entrar al panel desde aquí: '.HOST.'/Franquiciatario/';
 											require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
@@ -786,14 +763,14 @@ class DetallesSolicitudFranquiciatario{
 				$mail->CharSet = 'UTF-8';
 											// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 				$mail->isSMTP();
-				$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+				$mail->Host = 'single-5928.banahosting.com';
 				$mail->SMTPAuth = true;
 				$mail->SMTPSecure = 'ssl';
 				$mail->Port = 465;
 					// El correo que hará el envío
-					$mail->Username = 'notificacion@esmartclub.com';
-					$mail->Password = 'Alan@2017_pv';
-					$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+					$mail->Username = 'notification@travelpoints.com.mx';
+					$mail->Password = '20464273jd';
+					$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 											// El correo al que se enviará
 					$mail->addAddress('megajdcc2009@gmail.com');
 					$mail->AddCC('megajdcc2009@gmail.com');
@@ -801,8 +778,8 @@ class DetallesSolicitudFranquiciatario{
 											// Hacerlo formato HTML
 											$mail->isHTML(true);
 											// Formato del correo
-											$mail->Subject = 'Tu solicitud del perfil de franquiciatario ha sido aceptada.';
-											$mail->Body    = $this->email_template($header, $link);
+											$mail->Subject = 'Tu solicitud del perfil de franquiciatario ha sido aceptada. | Your profile request has been accepted.';
+											$mail->Body    = $this->email_template($header,$headeringles, $link, $linkingles);
 											$mail->AltBody = $body_alt;
 											// Enviar
 											if(!$mail->send()){
@@ -861,7 +838,7 @@ class DetallesSolicitudFranquiciatario{
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -882,14 +859,30 @@ class DetallesSolicitudFranquiciatario{
 									</td>
 								</tr>
 								<tr>
+									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+										<strong>'._safe($headeringles).'</strong>
+									</td>
+								</tr>
+								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$link.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
+
+								<tr>
+									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+										'.$linkingles.'<br>
+										For any clarification, contact our support team.<br>
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
+										</a>
+									</td>
+								</tr>
+
 							</tbody>
 						</table>
 					</td>
@@ -911,7 +904,7 @@ class DetallesSolicitudFranquiciatario{
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -928,7 +921,7 @@ class DetallesSolicitudFranquiciatario{
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -950,9 +943,11 @@ class DetallesSolicitudFranquiciatario{
 					
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel"><label class="cert-date mr20">Solicitud # <?php echo $this->registro['solicitud'];?> <label class="cert-date form"><?php echo $this->getFecha();?></label></label></h5>
-						
-			
-						<button type="button" class="close" ><span aria-hidden="true">&times;</span></button>
+						<h5 class="modal-title"><label class="cert-date form">Hotel <?php echo $this->getNombreHotel(); ?></label></h5>
+						<small class="iata cert-date">Codigo Iata <?php echo $this->registro['codigo']; ?></small>
+						<button type="button" class="close" >
+						<span aria-hidden="true">&times;</span>
+						</button>					
 					</div>
 
 					<div class="modal-body">
@@ -962,12 +957,12 @@ class DetallesSolicitudFranquiciatario{
 							<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
 								<section class="col-xs-12 acept-solicitud container" >
 									<div class="row">
-										<div class="codigohotel col-lg-5" data-toggle="tooltip" title="Codigo de hotel.">
+										<div class="codigohotel col-lg-5" data-toggle="tooltip" title="Cree o genere el Codigo de hotel, puedes asociar las siglas del Codigo iata, mas las Siglas del hotel o como desees...">
 											<div class="form-group">
 												<label for="codigohotel" >Codigo de Hotel * <i class="fa fa-question-circle"></i></label>
 												<div class="codigo">
-													<input type="text" name="codigohotel" value="<?php echo $this->registro['codigo']; ?>" class="form-control" id="codigohotel" placeholder="Ejemp AGUHCN" readonly>
-
+													<input type="text" name="codigohotel" class="form-control" id="codigohotel" placeholder="Ejemp AGUHCN" required>
+													<button type="button" name="generarcodigo" data-iata="<?php echo _safe($this->registro['codigo']); ?>" data-hotel="<?php echo $this->getNombreHotel(); ?>" class="btn btn-outline-secondary generarcodigo">Generar</button>
 												</div>
 											</div>
 										</div>
@@ -999,7 +994,7 @@ class DetallesSolicitudFranquiciatario{
 
 
 
-	public function adjudicar($comision){
+	public function adjudicar($comision,$codigohotel = null){
 
 
 
@@ -1012,17 +1007,68 @@ class DetallesSolicitudFranquiciatario{
 		$this->con->beginTransaction();
 	
 
-		$query  = "update franquiciatario set comision =:comision where id =:id_franquiciatario";
+		$query  = "update franquiciatario set comision =:comision, codigo_hotel=:codigo where id =:id_franquiciatario";
 		
 		try {
 			$stm = $this->con->prepare($query);
-			$stm->execute(array(':comision' => $this->registro['comision'],':id_franquiciatario' => $this->registro['id_franquiciatario']));
-			$this->con->commit();
-			return true;
+			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_franquiciatario' => $this->registro['id_franquiciatario']));
+			
 		} catch (PDOException $ex) {
 			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
 			$this->con->rollback();
 			return false;
+		}
+		$sql = "SELECT * from hotel where codigo = :codigo";
+
+		try {
+
+			
+			
+			$stm = $this->con->prepare($sql);
+
+			$stm->execute(array(':codigo'=>$codigohotel));
+
+		
+		} catch (PDOException $e) {
+			$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollback();
+			return false;
+		}
+		
+		if($stm->rowCount() == 0){
+			$sql1 = "INSERT INTO hotel(nombre,codigo,direccion,sitio_web,id_ciudad,codigo_postal,comision,aprobada,id_iata,id_estado)
+							values(:nombre,:codigo,:direccion,:sitioweb,:ciudad,:codigopostal,:comision,:aprobada,:iata,:estado)";
+			
+			try {
+				
+				$stm = $this->con->prepare($sql1);
+
+				$datos = array(
+					':nombre'       =>	$this->getNombreHotel(),
+					':codigo'       =>	$codigohotel,
+					':direccion'    =>	$this->registro['direccion'],
+					':sitioweb'     =>	$this->getSitioWeb(),
+					':ciudad'       =>	$this->registro['id_ciudad'],
+					':codigopostal' =>	$this->registro['codigopostal'],
+					':comision'     =>	0,
+					':aprobada'     =>  1,
+					':iata'         =>	$this->registro['id_iata'],
+					':estado'       =>	$this->registro['id_estado']
+				);
+				
+				$stm->execute($datos);
+
+				$this->con->commit();
+
+			} catch (PDOException $exx) {
+				$this->registrarerror(__METHOD__,__LINE__,$exx->getMessage());
+				$this->con->rollback();
+				return false;
+			}
+			
+		}else{
+			$this->con->commit();
+			return true;
 		}
 		return;
 	}

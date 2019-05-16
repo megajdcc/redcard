@@ -912,7 +912,7 @@ class DetallesSolicitud {
 					return false;
 				}
 			}else if($perfil == "Franquiciatario"){
- 					$this->DetallesSolicitudFranquiciatario->adjudicar($comision);
+ 					$this->DetallesSolicitudFranquiciatario->adjudicar($comision,$codigohotel);
 				return true;
 			}
 			else if($perfil == "Referidor"){

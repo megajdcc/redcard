@@ -932,7 +932,6 @@ if($('#solicitudes').length){
 					$.ajax({
 						url: path,
 						type: 'POST',
-						dataType: 'HTML',
 						data: 'action=adjudicar&perfil=Hotel&codigohotel='+codigohotel+'&comision='+comision,
 						cache:false
 					})
@@ -950,12 +949,13 @@ if($('#solicitudes').length){
 					var comision = valorslider;
 
 					var path = $(this).attr('data-path');
+					var codigohotel = document.getElementById("codigohotel").value;
 
 					$.ajax({
 						url: path,
 						type: 'POST',
-						dataType: 'HTML',
-						data: 'action=adjudicar&perfil=Franquiciatario&comision='+comision,
+						
+						data: 'action=adjudicar&perfil=Franquiciatario&codigohotel='+codigohotel+'&comision='+comision,
 					})
 					.done(function(data) {
 											

@@ -74,11 +74,29 @@ class AfiliarFranquiciatario {
 		'aprobada'             => null,
 		'nrosolicitud'         => null,
 		'condicion'            => null,
-		'comentario'           => null
+		'comentario'           => null,
+
+
+	
+		//Datos del hotel
+		'sitio_web'            => null,
+		'nombrehotel'          => null,
+		'direccion'            => null,
+		'codigopostal'         => null,
+		'id_ciudad'            => null,
+		'id_iata'              => null,
+		'id_estado'            => null,
+		
+		//Datos de contacto
+		
+		'nombre'               =>null,
+		'apellido'             =>null,
+		'emailfranquiciatario' =>null
+
 
 	);
 	private $error = array(
-		'codigohotel'         =>null,
+		'codigohotel'          =>null,
 		'banco'                => null,
 		'cuenta'               => null,
 		'clabe'                => null,
@@ -98,7 +116,26 @@ class AfiliarFranquiciatario {
 		'condicion'            => null,
 		'comentario'           => null,
 		'warning'              => null,
-		'error'                => null
+		'error'                => null,
+		'nombre'               => null,
+		'apellido'             => null,
+		
+		//Datos del hotel
+		'sitio_web'            => null,
+		'nombrehotel'          => null,
+		'direccion'            => null,
+		'codigopostal'         => null,
+		'id_ciudad'            => null,
+		'id_iata'              => null,
+		'id_estado'            => null,
+		
+		//Datos de contacto
+		
+		'nombre'               =>null,
+		'apellido'             =>null,
+		'emailfranquiciatario' =>null,
+
+
 	);
 
 	public function __construct($con){
@@ -108,24 +145,149 @@ class AfiliarFranquiciatario {
 	}
 
 	public function set_data(array $post, array $files = null){
-		$this->setCodigoHotel($post['send']);
-		echo $this->setCodigoHotel($post['send']);
-		//datospagocomision
-		$this->setBanco($post['nombre_banco']);
-		$this->setCuenta($post['cuenta']);
-		$this->setClabe($post['clabe']);
-		$this->setSwift($post['swift']);
-		$this->setNombreBancoTarjeta($post['bancotarjeta']);
-		$this->setNumeroTarjeta($post['numerotarjeta']);
-		$this->setEmailPaypal($post['email_paypal']);
 
+
+		//datos de hotel 
+		//
+		
+		$this->setNombreHotel($post['nombrehotel']);
+		$this->setIata($post['iata']);
+		$this->setWebsite($post['website']);
+		$this->setDireccion($post['direccion']);
+		$this->setCodigoPostal($post['codigopostal']);
+		$this->setEstado($post['estado']);
+		$this->setCiudad($post['ciudad']);
+
+
+		//datos del solicitante
+		$this->setNombre($post['nombre']);
+		$this->setApellido($post['apellido']);
+		$this->setEmailFranquiciatario($post['emailfranquiciatario']);
 		//Franquiciatario
-		$this->setTelefono($post['telefonofijo']);
-		$this->setMovil($post['telefonomovil']);
+		 $this->setTelefono($post['telefonofijo']);
+		 $this->setMovil($post['telefonomovil']);
+
+		// $this->setCodigoHotel($post['send']);
+		// echo $this->setCodigoHotel($post['send']);
+		// //datospagocomision
+		// $this->setBanco($post['nombre_banco']);
+		// $this->setCuenta($post['cuenta']);
+		// $this->setClabe($post['clabe']);
+		// $this->setSwift($post['swift']);
+		// $this->setNombreBancoTarjeta($post['bancotarjeta']);
+		// $this->setNumeroTarjeta($post['numerotarjeta']);
+		// $this->setEmailPaypal($post['email_paypal']);
+
+		// //Franquiciatario
+		// $this->setTelefono($post['telefonofijo']);
+		// $this->setMovil($post['telefonomovil']);
 	
 	
-			$this->RegistrarFranquiciatario();
-			 return true;
+			$this->RegistrarSolicitud();
+		 	 return true;
+
+	}
+
+	private function RegistrarSolicitud(){
+
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		// registro de rerefidor //
+		 
+		
+
+		$query = "INSERT INTO franquiciatario(telefonofijo,telefonomovil,codigo_hotel,nombre,apellido,email) values(:telefonofijo,:telefonomovil,:codigohotel,:nombre,:apellido,:email)";
+
+		try {
+			$stm = $this->con->prepare($query);
+			$datos = array(':telefonofijo'=>$this->registrar['telefonofijo'],
+							':telefonomovil'=>$this->registrar['telefonomovil'],
+							':codigohotel'=>'Ninguna',
+							':nombre'=>$this->registrar['nombre'],
+							':apellido'=>$this->registrar['apellido'],
+							':email'=>$this->registrar['emailfranquiciatario']);
+
+			$stm->execute($datos);
+
+		} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+		}
+
+			$lasid = $this->con->lastInsertId();
+
+
+			$query1 = "INSERT INTO solicitudfr(id_usuario,id_franquiciatario,condicion,hotel,sitioweb,direccion,codigopostal,id_estado,id_ciudad,id_iata)
+						values(:usuario,:referidor,:condicion,:hotel,:sitioweb,:direccion,:codigopostal,:estado,:ciudad,:iata)";
+
+
+			try {
+
+				$stm = $this->con->prepare($query1);
+				$datos = array(
+								':usuario'      => $this->registrar['id_usuario'],
+								':referidor'    => $lasid,
+								':condicion'    => 0,
+								':hotel'        => $this->registrar['nombrehotel'],
+								':sitioweb'     => $this->registrar['sitioweb'],
+								':direccion'    => $this->registrar['direccion'],
+								':codigopostal' => $this->registrar['codigopostal'],
+								':estado'       => $this->registrar['id_estado'],
+								':ciudad'       => $this->registrar['id_ciudad'],
+								':iata'         => $this->registrar['id_iata']
+							);
+
+				$stm->execute($datos);
+				$this->con->commit();
+
+			} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+			}
+
+			$idsolicitud = $this->con->lastInsertId();
+
+			$content = 'Se ha recibido una nueva solicitud para afiliar un franquiciatario. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=franquiciatario">Haz clic aqu&iacute; para verla</a>.';
+
+			$contentingles = 'A new application has been received to affiliate a franchisee. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=franquiciatario">Click here to se her</a>.';
+
+						$body_alt =
+							'Se ha recibido una nueva solicitud para afiliar un franquiciatario. Sigue este enlace para verla: '.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=franquiciatario';
+						require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+						$mail = new \PHPMailer;
+						$mail->CharSet = 'UTF-8';
+						// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+						$mail->isSMTP();
+						$mail->Host = 'single-5928.banahosting.com';
+						$mail->SMTPAuth = true;
+						$mail->SMTPSecure = 'ssl';
+						$mail->Port = 465;
+						// El correo que hará el envío
+						$mail->Username = 'notification@travelpoints.com.mx';
+						$mail->Password = '20464273jd';
+						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+						// El correo al que se enviará
+						$mail->addAddress('megajdcc2009@gmail.com');
+						// Hacerlo formato HTML
+						$mail->isHTML(true);
+						// Formato del correo
+						$mail->Subject = 'Nueva solicitud de franquiciatario';
+						$mail->Body    = $this->email_template($content,$contentingles);
+						$mail->AltBody = $body_alt;
+
+						$mail->send();
+
+						$_SESSION['notification']['success'] = 'Se ha enviado la solicitud para afiliarte como franquiciatario exitosamente. Te mantendremos informado de cualquier avance.';
+						header('Location: '.HOST.'/Referidor/solicitudes');
+						die();
+				
 
 	}
 
@@ -223,7 +385,7 @@ class AfiliarFranquiciatario {
 						}
 }
 
-	private function email_template($content){
+	private function email_template($content,$contentingles = null){
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -263,7 +425,7 @@ class AfiliarFranquiciatario {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px; height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -280,15 +442,24 @@ class AfiliarFranquiciatario {
 							<tbody>
 								<tr>
 									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Nueva solicitud de franquiciatario</strong>
+										<strong>Nueva solicitud de franquiciatario | New franchisee application</strong>
 									</td>
 								</tr>
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+										'.$contentingles.'<br>
+										For any clarification, contact our support team.<br>
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -313,7 +484,7 @@ class AfiliarFranquiciatario {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -330,7 +501,7 @@ class AfiliarFranquiciatario {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -504,6 +675,36 @@ class AfiliarFranquiciatario {
 		$this->error['cargo'] = 'Este campo es obligatorio.';
 		return false;
 	}
+	private function setNombre($string = null){
+		if($string){
+			$string = trim($string);
+			$this->registrar['nombre'] = $string;
+			return true;
+		}
+		$this->error['nombre'] = 'Este es un campo Obligatorio';
+		return false;
+
+	}
+
+	private function setApellido($string = null){
+		if($string){
+			$string = trim($string);
+			$this->registrar['apellido'] = $string;
+			return true;
+		}
+		$this->error['apellido'] = 'Este es un campo Obligatorio';
+		return false;
+
+	}
+	private function setNombreHotel($string = null){
+		if($string){
+			$string = trim($string);
+			$this->registrar['nombrehotel'] = $string;
+			return true;
+		}
+		$this->error['nombrehotel'] = 'Este campo es obligatorio.';
+		return false;
+	}
 	private function setNombreResponsable($string = null){
 		if($string){
 			$this->registrar['nombre_responsable'] = trim($string);
@@ -586,6 +787,21 @@ class AfiliarFranquiciatario {
 			return true;
 		}
 		$this->error['email'] = 'Este campo es obligatorio.';
+		return false;
+	}
+
+	private function setEmailFranquiciatario($string = null){
+		if($string){
+			$email = filter_var($string, FILTER_VALIDATE_EMAIL);
+			if(!$email){
+				$this->error['emailfranquiciatario'] = 'Escribe una dirección de correo electrónico correcta. Ejemplo: usuario@ejemplo.com.';
+				$this->registrar['emailfranquiciatario'] = $string;
+				return false;
+			}
+			$this->registrar['emailfranquiciatario'] = $email;
+			return true;
+		}
+		$this->error['emailfranquiciatario'] = 'Este campo es obligatorio.';
 		return false;
 	}
 
@@ -764,11 +980,34 @@ class AfiliarFranquiciatario {
 		return false;
 	}
 
+
+
+	public function getNombreHotel(){
+
+		return _safe($this->registrar['nombrehotel']);
+
+	}
+
+	public function getNombreHotelError(){
+		if($this->error['nombre']){
+			$error = '<p class="text-danger">'._safe($this->error['nombrehotel']).'</p>';
+			return $error;
+		}
+	}
+
 	public function getNombre(){
 
 		return _safe($this->registrar['nombre']);
 
 	}
+
+	public function getApellido(){
+
+		return _safe($this->registrar['apellido']);
+
+	}
+
+
 
 
 
@@ -778,11 +1017,18 @@ class AfiliarFranquiciatario {
 			return $error;
 		}
 	}
+	public function getApellidoError(){
+		if($this->error['nombre']){
+			$error = '<p class="text-danger">'._safe($this->error['apellido']).'</p>';
+			return $error;
+		}
+	}
 
 	public function get_Iata(){
 		return _safe($this->registrar['iata']);
 	}
 
+	
 	public function getIataError(){
 		if($this->error['id_iata']){
 			$error = '<p class="text-danger">'._safe($this->error['id_iata']).'</p>';
@@ -821,24 +1067,34 @@ class AfiliarFranquiciatario {
 	public function getIata(){
 		$iatas = null;
 		$query = "SELECT i.id,i.codigo,c.ciudad FROM iata  as i join ciudad as c on i.id_ciudad = c.id_ciudad";
-		try{
 
-			$stmt = $this->con->prepare($query);
-			$stmt->execute();
+		$query = "(select i.id, i.codigo from iata as i 
+				join ciudad as c on i.id_ciudad = c.id_ciudad
+ 				left join estado as e on c.id_estado = e.id_estado 
+				left join pais as p on e.id_pais = p.id_pais)
+			UNION
+			(select i.id, i.codigo from iata as i 
+							left join ciudad as c on i.id_ciudad = c.id_ciudad
+			 				join estado as e on i.id_estado = e.id_estado 
+							left join pais as p on e.id_pais = p.id_pais)";
+					try{
 
-		}catch(\PDOException $ex){
-			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
-			return false;
-		}
-		while($row = $stmt->fetch()){
-			$iatas = _safe($row['codigo']);
-			if($this->registrar['id_iata'] == $row['id']){
-				$iata .= '<option value="'.$row['id'].'">'.$iatas.' '.$row['ciudad'].'</option>';
-			}else{
-				$iata .= '<option value="'.$row['id'].'">'.$iatas.'</option>';
-			}
-		}
-		return $iata;
+						$stmt = $this->con->prepare($query);
+						$stmt->execute();
+
+					}catch(\PDOException $ex){
+						$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+						return false;
+					}
+					while($row = $stmt->fetch()){
+						$iatas = _safe($row['codigo']);
+						if($this->register['id_iata'] == $row['id']){
+							$iata .= '<option value="'.$row['id'].'">'.$iatas.' '.$row['ciudad'].'</option>';
+						}else{
+							$iata .= '<option value="'.$row['id'].'">'.$iatas.'</option>';
+						}
+					}
+					return $iata;
 	}
 
 	public function get_category_error(){
@@ -873,7 +1129,15 @@ class AfiliarFranquiciatario {
 	public function getEmail(){
 		return _safe($this->registrar['email']);
 	}
-
+	public function getEmailFranquiciatario(){
+		return _safe($this->registrar['emailfranquiciatario']);
+	}
+	public function getEmailFranquiciatarioError(){
+		if($this->error['emailfranquiciatario']){
+			$error = '<p class="text-danger">'._safe($this->error['emailfranquiciatario']).'</p>';
+			return $error;
+		}
+	}
 	public function getCargo(){
 		return _safe($this->registrar['cargo']);
 	}

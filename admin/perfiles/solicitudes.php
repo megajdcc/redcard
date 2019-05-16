@@ -28,7 +28,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 <div class="row">
 	<div class="col-sm-12 background-white p20 mb30">
 		<?php echo $solicitudes->get_notification();?>
-
+		<h1 class="page-title">Solicitudes de usuarios</h1>
 		<table  id="solicitudes" class="display" cellspacing="0" width="100%">
 		<thead>
             <tr>
