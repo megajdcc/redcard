@@ -63,7 +63,7 @@ class PerfilesList {
 			$ultimologin = date('d/m/Y g:i A', strtotime($fila['ultimo_login']));
 			$telefono = $fila['telefono'];
 			?>
-			<tr id="fila-<?php echo $nrosolciitud; ?>">
+			<tr id="<?php echo $nrosolicitud; ?>">
 				
 			
 				<td>
@@ -88,11 +88,11 @@ class PerfilesList {
 				<td><?php echo $ultimologin; ?></td>
 
 			
-				<td>
-					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
+			<!-- 	<td>
+					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php //echo $nrosolicitud; ?>" data-perfil="<?php //echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
 					<i class="fa fa-cogs"></i>
 					</button>
-				</td>
+				</td> -->
             </tr>
 			<?php
 		}

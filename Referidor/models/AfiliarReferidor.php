@@ -119,6 +119,9 @@ class AfiliarReferidor {
 		'id_iata'              => null
 
 		);
+	private $solicitante = 0;
+	private $registropago = false;
+	public $ultimohotel = 0;
 
 	public function __construct($con){
 		$this->con = $con->con;
@@ -126,7 +129,7 @@ class AfiliarReferidor {
 		return;
 	}
 
-	public function set_data(array $post, array $files = null){
+	public function set_data(array $post,array $datospagos = null,$iduser =null, array $files = null){
 	
 		//datos de hotel 
 		//
@@ -146,21 +149,165 @@ class AfiliarReferidor {
 		 $this->setTelefono($post['telefonofijo']);
 		 $this->setMovil($post['telefonomovil']);
 		
-		//datospagocomision
-		// $this->setBanco($post['nombre_banco']);
-		// $this->setCuenta($post['cuenta']);
-		// $this->setClabe($post['clabe']);
-		// $this->setSwift($post['swift']);
-		// $this->setNombreBancoTarjeta($post['bancotarjeta']);
-		// $this->setNumeroTarjeta($post['numerotarjeta']);
-		// $this->setEmailPaypal($post['email_paypal']);
+		$this->solicitante = $iduser;
+		if($datospagos != null){
 
-		 	$this->RegistrarSolicitud();
-		 	 return true;
+			$this->registropago = true;
+			
+			// Datos para el pago de comision no van en el formulario de solicitud
+			 $this->setBanco($datospagos['nombre_banco']);
+			 $this->setCuenta($datospagos['cuenta']);
+			 $this->setClabe($datospagos['clabe']);
+			 $this->setSwift($datospagos['swift']);
+
+			 $this->setNombreBancoTarjeta($datospagos['nombre_banco_targeta']);
+			 $this->setNumeroTarjeta($datospagos['numero_targeta']);
+
+			 $this->setEmailPaypal($datospagos['email_paypal']);
+		}
+
+		if($iduser > 0){
+			$this->RegistrarSolicitudPago();
+			return true;
+
+		}else{
+
+			$this->RegistrarSolicitud();
+		 	return true;
+		}
+
+		 	
 
 	}
 
 
+	private function RegistrarSolicitudPago(){
+
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		// registro de rerefidor //
+		// 
+				if($this->registropago){
+			$querydatospagocomision = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,numero_tarjeta,email_paypal,banco_tarjeta)
+																values(:banco,:cuenta,:clabe,:swift,:numero_tarjeta,:email_paypal,:banco_tarjeta)";
+
+							$stm3 = $this->con->prepare($querydatospagocomision);
+
+							$resultdatospagocomsion = $stm3->execute(array(	':banco' => $this->getBanco(), 
+							                                              	':cuenta' => $this->getCuenta(),
+							                                              	':clabe' => $this->getClabe(),
+							                                              	':swift' => $this->getSwift(),
+							                                              	':numero_tarjeta' => $this->getTarjeta(),
+							                                              	':email_paypal' => $this->getEmailPaypal(),
+							                                          		':banco_tarjeta' => $this->getBancoTarjeta())); 
+
+				
+							$iddatos                    = $this->con->lastInsertId();
+
+
+			$query = "INSERT INTO referidor(telefonofijo,telefonomovil,codigo_hotel,nombre,apellido,id_datospagocomision) values(:telefonofijo,:telefonomovil,:codigohotel,:nombre,:apellido,:pago)";
+
+			$param = array(':telefonofijo'=>$this->registrar['telefonofijo'],
+								':telefonomovil' =>$this->registrar['telefonomovil'],
+								':codigohotel'   =>'Ninguna',
+								':nombre'        =>$this->registrar['nombre'],
+								':apellido'      =>$this->registrar['apellido'],
+								':pago'          =>$iddatos
+							);
+		}else{
+
+			$query = "INSERT INTO referidor(telefonofijo,telefonomovil,codigo_hotel,nombre,apellido) values(:telefonofijo,:telefonomovil,:codigohotel,:nombre,:apellido)";
+
+			$param = array(':telefonofijo'=>$this->registrar['telefonofijo'],
+							':telefonomovil'=>$this->registrar['telefonomovil'],
+							':codigohotel'=>'Ninguna',
+							':nombre'=>$this->registrar['nombre'],
+							':apellido'=>$this->registrar['apellido']);
+
+		}
+
+		try {
+			$stm = $this->con->prepare($query);
+			$stm->execute($param);
+
+		} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+		}
+
+			$idreferidor = $this->con->lastInsertId();
+
+			$sql1 = "INSERT INTO hotel(nombre,codigo,direccion,sitio_web,id_ciudad,codigo_postal,comision,aprobada,id_iata,id_estado)
+							values(:nombre,:codigo,:direccion,:sitioweb,:ciudad,:codigopostal,:comision,:aprobada,:iata,:estado)";
+
+
+				try {
+						$stm = $this->con->prepare($sql1);
+						
+						$datos = array(
+
+						':nombre'       =>	$this->getNombreHotel(),
+						':codigo'       =>	'Ninguna',
+						':direccion'    =>	$this->getDireccion(),
+						':sitioweb'     =>	$this->getSitioWeb(),
+						':ciudad'       =>	$this->registrar['id_ciudad'],
+						':codigopostal' =>	$this->getCodigoPostal(),
+						':comision'     =>	0,
+						':aprobada'     =>  1,
+						':iata'         =>	$this->registrar['id_iata'],
+						':estado'       =>	$this->registrar['id_estado']
+						);
+						
+						$stm->execute($datos);
+
+				$this->ultimohotel = $this->con->lastInsertId();
+				} catch (PDOException $e) {
+					$this->con->rollBack();
+					return false;
+				}
+
+
+			$query1 = "INSERT INTO solicitudreferidor(id_usuario,id_referidor,condicion)
+						values(:usuario,:referidor,:condicion)";
+
+
+			try {
+
+				$stm = $this->con->prepare($query1);
+				$datos = array(':usuario'      => $this->solicitante,
+								':referidor'    => $idreferidor,
+								':condicion'    => 1);
+
+				$stm->execute($datos);
+				$this->con->commit();
+
+			} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+			}
+		 
+	}
+
+	public function capturarultimo($idhotel = null){
+
+
+		$sql = "SELECT srf.id_referidor as idreferidor, srf.id as solicitud,i.codigo,h.nombre as nombrehotel,h.id as idhotel  from solicitudreferidor as srf join hotel as h on h.id = :hotel join iata as i on h.id_iata = i.id  where srf.id = (select max(id) from solicitudreferidor)";
+					
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':hotel'=>$idhotel));
+
+		$array = $stm->fetchAll(PDO::FETCH_ASSOC);
+		return $array;
+
+
+	}
 	private function RegistrarSolicitud(){
 
 
@@ -171,20 +318,23 @@ class AfiliarReferidor {
 		$this->con->beginTransaction();
 
 		// registro de rerefidor //
-		 
-		
+		// 
+		// 
 
-		$query = "INSERT INTO referidor(telefonofijo,telefonomovil,codigo_hotel,nombre,apellido) values(:telefonofijo,:telefonomovil,:codigohotel,:nombre,:apellido)";
 
-		try {
-			$stm = $this->con->prepare($query);
-			$datos = array(':telefonofijo'=>$this->registrar['telefonofijo'],
+			$query = "INSERT INTO referidor(telefonofijo,telefonomovil,codigo_hotel,nombre,apellido) values(:telefonofijo,:telefonomovil,:codigohotel,:nombre,:apellido)";
+
+			$param = array(':telefonofijo'=>$this->registrar['telefonofijo'],
 							':telefonomovil'=>$this->registrar['telefonomovil'],
 							':codigohotel'=>'Ninguna',
 							':nombre'=>$this->registrar['nombre'],
 							':apellido'=>$this->registrar['apellido']);
+		
 
-			$stm->execute($datos);
+		 		
+		try {
+			$stm = $this->con->prepare($query);
+			$stm->execute($param);
 
 		} catch (PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
@@ -1062,6 +1212,11 @@ class AfiliarReferidor {
 		}
 	}
 
+	public function getNombreHotel(){
+
+		return _safe($this->registrar['nombrehotel']);
+
+	}
 	public function getNombre(){
 		return _safe($this->registrar['nombre']);
 	}

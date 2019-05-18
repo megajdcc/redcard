@@ -42,6 +42,21 @@ $(document).ready(function() {
 		load_states(this.value);
 	});
 
+	$('#country-select-franquiciatario').on('change', function(){
+		
+		$('#city-select-franquiciatario').empty();
+		$('#city-select-franquiciatario').selectpicker('refresh');
+		load_states_franquiciatario(this.value);
+	});
+
+	$('#country-select-referidor').on('change', function(){
+		
+		$('#city-select-referidor').empty();
+		$('#city-select-referidor').selectpicker('refresh');
+		load_states_referidor(this.value);
+	});
+
+
 
 	// Al cambiar el pais, se cargan los nuevos estados y se limpia el select ciudades.
 	$('#country-select-affiliate').on('change', function(){
@@ -59,6 +74,14 @@ $(document).ready(function() {
 	// Al cambiar el estado, se cargan las nuevas ciudades
 	$('#state-select-affiliate').on('change', function(){
 		load_cities_affiliate(this.value);
+	});
+
+	$('#state-select-franquiciatario').on('change', function(){
+		load_cities_franquiciatario(this.value);
+	});
+
+	$('#state-select-referidor').on('change', function(){
+		load_cities_referidor(this.value);
 	});
 
 
@@ -103,6 +126,44 @@ $(document).ready(function() {
 		});
 	}
 
+	var load_states_franquiciatario = function(id){
+		var id_pais = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_pais: id_pais
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#state-select-franquiciatario').empty();
+				for(var i in data){
+					$('#state-select-franquiciatario').append('<option value="' + data[i].id_estado + '">' + data[i].estado + '</option>');
+				}
+				$('#state-select-franquiciatario').selectpicker('refresh');
+			}
+		});
+	}
+
+	var load_states_referidor = function(id){
+		var id_pais = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_pais: id_pais
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#state-select-referidor').empty();
+				for(var i in data){
+					$('#state-select-referidor').append('<option value="' + data[i].id_estado + '">' + data[i].estado + '</option>');
+				}
+				$('#state-select-referidor').selectpicker('refresh');
+			}
+		});
+	}
+
 
 	// Funcion para cargar ciudades
 	var load_cities = function(id){
@@ -139,6 +200,44 @@ $(document).ready(function() {
 					$('#city-select-affiliate').append('<option value="' + data[i].id_ciudad + '">' + data[i].ciudad + '</option>');
 				}
 				$('#city-select-affiliate').selectpicker('refresh');
+			}
+		});
+	}
+
+	var load_cities_franquiciatario = function(id){
+		var id_estado = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_estado: id_estado
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#city-select-franquiciatario').empty();
+				for(var i in data){
+					$('#city-select-franquiciatario').append('<option value="' + data[i].id_ciudad + '">' + data[i].ciudad + '</option>');
+				}
+				$('#city-select-franquiciatario').selectpicker('refresh');
+			}
+		});
+	}
+
+	var load_cities_referidor = function(id){
+		var id_estado = id;
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				id_estado: id_estado
+			},
+			dataType: 'json',
+			success: function(data){
+				$('#city-select-referidor').empty();
+				for(var i in data){
+					$('#city-select-referidor').append('<option value="' + data[i].id_ciudad + '">' + data[i].ciudad + '</option>');
+				}
+				$('#city-select-referidor').selectpicker('refresh');
 			}
 		});
 	}
@@ -922,6 +1021,11 @@ if($('#solicitudes').length){
 				$(this).text("Registrando");
 
 				var perfil = $(this).attr('data-perfil');
+				var idhotel = null;
+
+				if($(this).attr('data-hotel') != null){
+					idhotel = $(this).attr('data-hotel');
+				}
 
 				if(perfil == 'Hotel'){
 					var codigohotel = document.getElementById("codigohotel").value;
@@ -932,7 +1036,7 @@ if($('#solicitudes').length){
 					$.ajax({
 						url: path,
 						type: 'POST',
-						data: 'action=adjudicar&perfil=Hotel&codigohotel='+codigohotel+'&comision='+comision,
+						data: 'action=adjudicar&perfil=Hotel&codigohotel='+codigohotel+'&comision='+comision+'&hotel='+idhotel,
 						cache:false
 					})
 					.done(function(response) {
@@ -949,13 +1053,23 @@ if($('#solicitudes').length){
 					var comision = valorslider;
 
 					var path = $(this).attr('data-path');
+
+					var franquiciatario = $(this).attr('data-path');
 					var codigohotel = document.getElementById("codigohotel").value;
+					var idhotel = null;
+					var idfranquiciatario = null;
+					if($(this).attr('data-hotel')){
+						idhotel = $(this).attr('data-hotel');
+					}
+					if($(this).attr('data-franquiciatario')){
+						idfranquiciatario = $(this).attr('data-franquiciatario');
+					}
 
 					$.ajax({
 						url: path,
 						type: 'POST',
 						
-						data: 'action=adjudicar&perfil=Franquiciatario&codigohotel='+codigohotel+'&comision='+comision,
+						data: 'action=adjudicar&perfil=Franquiciatario&codigohotel='+codigohotel+'&comision='+comision+'&franquiciatario='+idfranquiciatario+'&hotel='+idhotel,
 					})
 					.done(function(data) {
 											
@@ -974,13 +1088,22 @@ if($('#solicitudes').length){
 					var comision = valorslider;
 					var codigohotel = document.getElementById("codigohotel").value;
 
+					var idhotel = null;
+					var idreferidor = null;
+					if($(this).attr('data-hotel')){
+						idhotel = $(this).attr('data-hotel');
+					}
+					if($(this).attr('data-referidor')){
+						idreferidor = $(this).attr('data-referidor');
+					}
+
 					var path = $(this).attr('data-path');
 					
 
 					$.ajax({
 						url: path,
 						type: 'POST',
-						data: 'action=adjudicar&perfil=Referidor&codigohotel='+codigohotel+'&comision='+comision,
+						data: 'action=adjudicar&perfil=Referidor&codigohotel='+codigohotel+'&comision='+comision+'&referidor='+idreferidor+'&hotel='+idhotel,
 					})
 					.done(function(data) {
 											

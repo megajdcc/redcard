@@ -132,3 +132,9 @@ width: 100%;
 	color: black;
 }
 
+.modal{
+	z-index: 900 !important;
+}
+.modal-backdrop{
+    z-index: 10;        
+}​

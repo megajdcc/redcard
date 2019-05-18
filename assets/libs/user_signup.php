@@ -17,8 +17,27 @@ class user_signup {
 
 	public function setData(array $post,$proviene = null){
 
+		
 		if(!empty($proviene)){
 			$this->proviene = $proviene;
+			$this->setUsername($post['username']);
+			$this->setEmail($post['email']);
+			$this->setPassword($post['password'], $post['password-retype']);
+			$this->referral['id']= $post['referral'];
+			if($this->username && $this->email && $this->password && !array_filter($this->errors)){
+			$this->register();
+
+
+			$sql = 'select max(id_usuario) as iduser from usuario';
+
+			$stm = $this->con->prepare($sql);
+			$stm->execute();
+			
+			$iduser = $stm->fetch(PDO::FETCH_ASSOC)['iduser'];
+			return $iduser;
+			}
+		return false;
+
 		}
 		$this->setUsername($post['username']);
 		$this->setEmail($post['email']);
@@ -34,6 +53,9 @@ class user_signup {
 
 
 	private function register(){
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
 		$query = "INSERT INTO usuario (
 			username, 
 			email, 
@@ -105,8 +127,15 @@ class user_signup {
 
 		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
 		$_SESSION['register_email'] = $this->email;
-		header('Location: '.HOST.'/login');
-		die();
+
+		if(empty($this->proviene)){
+			header('Location: '.HOST.'/login');
+			die();
+		}else{
+			
+		}
+		
+		
 	}
 
 	private function email_template($email, $hash){

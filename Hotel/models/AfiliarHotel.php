@@ -85,7 +85,10 @@ class AfiliarHotel {
 		'clabe'                => null,
 		'swift'                => null,
 		'numero_tarjeta'       => null,
-		'email_paypal'         => null
+		'email_paypal'         => null,
+		'country_id'           => null,
+		'state_id'             => null,
+		'iata'                 =>null
 	);
 	private $error = array(
 		'codigo'               => null,
@@ -118,8 +121,16 @@ class AfiliarHotel {
 		'numero_tarjeta'       => null,
 		'email_paypal'         => null,
 		'warning'              => null,
-		'error'                => null
+		'error'                => null,
+		'country_id'           => null,
+		'state_id'             => null,
+		'iata'                 =>	null
 	);
+
+
+	private $solicitante = 0;
+	private $registropago = false;
+
 
 	public function __construct($con){
 		$this->con = $con->con;
@@ -127,7 +138,23 @@ class AfiliarHotel {
 		return;
 	}
 
-	public function set_data(array $post, array $files = null){
+
+	public function capturarultimo(){
+
+
+					$sql = "SELECT sh.id as solicitud,i.codigo,h.nombre as nombrehotel,h.id as idhotel  from solicitudhotel as sh join hotel as h on sh.id_hotel = h.id join iata as i on h.id_iata = i.id  where sh.id = (select max(id) from solicitudhotel)";
+					
+					$stm = $this->con->prepare($sql);
+					$stm->execute();
+
+					$array = $stm->fetchAll(PDO::FETCH_ASSOC);
+					return $array;
+
+
+	}
+	public function set_data(array $post,array $datospagos = null,$iduser=0, array $files = null){
+
+
 		$this->setNombreHotel($post['nombre']);
 		$this->setIata($post['iata']);
 		$this->setWebsite($post['website']);
@@ -145,27 +172,247 @@ class AfiliarHotel {
 
 		$this->setTelefono($post['telefonofijo']);
 		$this->setMovil($post['movil']);
-// Datos para el pago de comision no van en el formulario de solicitud
-		// $this->setNombreBanco($post['nombre_banco']);
-		// $this->setCuenta($post['cuenta']);
-		// $this->setClabe($post['clabe']);
-		// $this->setSwift($post['swift']);
 
-		// $this->setNombreBancoTarjeta($post['nombre_banco_tarjeta']);
-		// $this->setNumeroTarjeta($post['numero_targeta']);
+		$this->solicitante = $iduser;
+		if($datospagos != null){
 
-		// $this->setEmailPaypal($post['email_paypal']);
-		
+			$this->registropago = true;
+			
+			// Datos para el pago de comision no van en el formulario de solicitud
+			 $this->setNombreBanco($datospagos['nombre_banco']);
+			 $this->setCuenta($datospagos['cuenta']);
+			 $this->setClabe($datospagos['clabe']);
+			 $this->setSwift($datospagos['swift']);
 
-		
-		if(!array_filter($this->error)){
+			 $this->setNombreBancoTarjeta($datospagos['nombre_banco_targeta']);
+			 $this->setNumeroTarjeta($datospagos['numero_targeta']);
 
-	
-			$this->RegistrarHotel();
-			 return true;
+			 $this->setEmailPaypal($datospagos['email_paypal']);
 		}
+
+
+		if($iduser > 0){
+			$this->RegistrarHotelPago();
+			return true;
+		}else if(!array_filter($this->error)){
+				$this->RegistrarHotel();
+			 	return true;
+			 	
+		}
+		
 		$this->error['warning'] = 'Uno o más campos tienen errores. Verifícalos cuidadosamente.';
 		return false;
+	}
+
+
+	private function RegistrarHotelPago(){
+
+			// quitamos las transacciones activas si las hay la regresamos y cerramos...
+			if($this->con->inTransaction()){
+				$this->con->rollBack();
+			}
+			//Preparamos la transaccion...
+			$this->con->beginTransaction();
+
+			try {
+
+				// query para registrar a la persona responsable del area de promocion...
+				$querypersona = "INSERT INTO persona (nombre,apellido) values(
+										:nombre,:apellido)";
+
+				// Preparamos la sentencia sql...
+				$stm = $this->con->prepare($querypersona);
+
+
+				//le pasamos los parametros correspondientes..
+				$resultperson = $stm->execute(array(':nombre'=>$this->getNombreResponsable(), ':apellido' => $this->getApellidoResponsable()));
+
+				// verificamos si la transaccion se ejecuto con exito o no ... 
+				if($resultperson){ 
+					//con exito...
+
+					//capturamos el ultimo ID insertado 
+	 
+					$dniperson = $this->con->lastInsertId();
+
+					// query para registrar el responsable de area de promocion...
+					$queryresponsable = "INSERT INTO responsableareapromocion(cargo,email,telefono_fijo,telefono_movil,dni_persona) 
+							values(:cargo,:email,:telefono_fijo,:telefono_movil,:dni_persona)";
+
+					// preparamos la sentencia sql..
+					$stm2 = $this->con->prepare($queryresponsable);
+
+
+					//Ejecutamos la sentencia pasandole los parametros...
+					$resultresponsable = $stm2->execute(array(':cargo' => $this->getCargo(),
+									':email' => $this->getEmail(),
+									':telefono_fijo' => $this->getTelefono(),
+									':telefono_movil' =>$this->getMovil(),
+									':dni_persona' => $dniperson));
+
+					if($resultresponsable){
+
+						$idresponsable =  "SELECT max(id) as id from responsableareapromocion";
+
+						$stm = $this->con->prepare($idresponsable);
+						$stm->execute();
+						$idresponsable = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+
+
+						if($this->registropago){
+
+							$querydatospagocomision = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,numero_tarjeta,email_paypal,banco_tarjeta)
+																values(:banco,:cuenta,:clabe,:swift,:numero_tarjeta,:email_paypal,:banco_tarjeta)";
+
+							$stm3 = $this->con->prepare($querydatospagocomision);
+
+							$resultdatospagocomsion = $stm3->execute(array(	':banco' => $this->getBanco(), 
+							                                              	':cuenta' => $this->getCuenta(),
+							                                              	':clabe' => $this->getClabe(),
+							                                              	':swift' => $this->getSwift(),
+							                                              	':numero_tarjeta' => $this->getTarjeta(),
+							                                              	':email_paypal' => $this->getEmailPaypal(),
+							                                          		':banco_tarjeta' => $this->getBancoTarjeta())); 
+
+				
+							$iddatos                    = $this->con->lastInsertId();
+							
+							$query                      = "INSERT INTO hotel (
+							codigo, 
+							nombre, 
+							direccion, 
+							latitud,
+							longitud,
+							sitio_web,
+							id_ciudad,
+							id_responsable_promocion,
+							id_datospagocomision,
+							codigo_postal,
+							comision,
+							aprobada,
+							id_iata 
+							) VALUES (
+							:codigo, 
+							:nombre, 
+							:direccion, 
+							:latitud, 
+							:longitud, 
+							:sitio_web, 
+							:id_ciudad, 
+							:id_responsable_promocion,
+							:datopago, 
+							:codigo_postal, 
+							:comision,
+							:aprobada, 
+							:id_iata
+							)";
+							
+							$query_params               = array(
+							':codigo'                   => 'ninguna',
+							':nombre'                   => $this->register['nombre'],
+							':direccion'                => $this->register['direccion'],
+							':latitud'                  => $this->register['latitud'],
+							':longitud'                 => $this->register['longitud'],
+							':sitio_web'                => $this->register['sitio_web'],
+							':id_ciudad'                => $this->register['id_ciudad'],
+							':id_responsable_promocion' =>$idresponsable,
+							':datopago'                 =>$iddatos,
+							':codigo_postal'            => $this->register['codigopostal'],
+							':comision'                 => 0,
+							':aprobada'                 => 0,
+							':id_iata'                  => $this->register['id_iata']);
+
+
+						}else{
+
+							$query                      = "INSERT INTO hotel (
+							codigo, 
+							nombre, 
+							direccion, 
+							latitud,
+							longitud,
+							sitio_web,
+							id_ciudad,
+							id_responsable_promocion,
+							
+							codigo_postal,
+							comision,
+							aprobada,
+							id_iata 
+							) VALUES (
+							:codigo, 
+							:nombre, 
+							:direccion, 
+							:latitud, 
+							:longitud, 
+							:sitio_web, 
+							:id_ciudad, 
+							:id_responsable_promocion,
+							:datopago, 
+							:codigo_postal, 
+							:comision,
+							:aprobada, 
+							:id_iata
+							)";
+							
+							$query_params               = array(
+							':codigo'                   => 'ninguna',
+							':nombre'                   => $this->register['nombre'],
+							':direccion'                => $this->register['direccion'],
+							':latitud'                  => $this->register['latitud'],
+							':longitud'                 => $this->register['longitud'],
+							':sitio_web'                => $this->register['sitio_web'],
+							':id_ciudad'                => $this->register['id_ciudad'],
+							':id_responsable_promocion' =>$idresponsable,
+							
+							':codigo_postal'            => $this->register['codigopostal'],
+							':comision'                 => 0,
+							':aprobada'                 => 0,
+							':id_iata'                  => $this->register['id_iata']);
+						}
+
+
+					$stmt = $this->con->prepare($query);
+					$resultperson = $stmt->execute($query_params);
+
+					if($resultperson){
+						$last_id = $this->con->lastInsertId();
+
+
+						$querysolicitud = "INSERT INTO solicitudhotel(id_hotel,id_usuario,condicion)values(:id_hotel,:id_usuario,:condicion)";
+
+						$stm = $this->con->prepare($querysolicitud);
+						
+						$resultado = $stm->execute(array(':id_hotel' => $last_id,
+											':id_usuario' => $this->solicitante,
+											':condicion' => 1
+											));
+
+						$this->con->commit();
+						return true;
+
+					}else{
+						$this->con->rollBack();
+						$this->error['error'] = 'Estamos teniendo problemas técnicos, disculpa las molestias. Intenta más tarde.';
+						return false;
+					}
+				
+				}else{
+						$this->con->rollBack();
+							return $false;
+					}
+
+
+			}else{
+					$this->con->rollBack();
+						return $false;
+			}
+			$this->con->commit();
+		} catch (PDOException $e) {
+			$this->con->rollBack();
+			return $false;
+		}
+
 	}
 
 	private function RegistrarHotel(){
@@ -321,7 +568,8 @@ class AfiliarHotel {
 						$mail->Password = '20464273jd';
 						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 						// El correo al que se enviará
-						$mail->addAddress('corporativo@infochannel.si');
+						 $mail->addAddress('corporativo@infochannel.si');
+						// $mail->addAddress('megajdcc2009@gmail.com');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo
@@ -938,6 +1186,7 @@ class AfiliarHotel {
 
 	public function getIata(){
 		$iatas = null;
+		$iata = null;
 		$query = "SELECT i.id,i.codigo,c.ciudad FROM iata  as i join ciudad as c on i.id_ciudad = c.id_ciudad";
 
 		$query = "(select i.id, i.codigo from iata as i 

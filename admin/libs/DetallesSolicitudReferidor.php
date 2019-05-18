@@ -989,6 +989,52 @@ class DetallesSolicitudReferidor{
 
 
 
+		public function adjudicaradmin($comision,$codigohotel = null,$hotel = null,$referidor = null){
+
+		
+			
+			if($this->con->inTransaction()){
+			$this->con->rollBack();
+			}
+			
+			$this->con->beginTransaction();
+
+			$query  = "UPDATE referidor set comision =:comision, codigo_hotel=:codigo where id =:id_referidor";
+
+			try {
+			$stm = $this->con->prepare($query);
+
+			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_referidor' =>$referidor ));
+				
+		} catch (PDOException $ex) {
+			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
+			$this->con->rollback();
+			return false;
+		}
+
+		$sql = "UPDATE hotel set comision =:comision, codigo=:codigo where id=:hotel";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':comision'=>0,':codigo'=>$codigohotel,':hotel'=>$hotel));
+			$this->con->commit();
+
+		} catch (PDOException $e) {
+
+			$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollback();
+			return false;
+			
+		}
+
+		return true;
+	
+
+	}
+
+
+
+
 	public function adjudicar($comision,$codigohotel = null){
 
 

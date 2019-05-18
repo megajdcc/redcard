@@ -887,7 +887,7 @@ class DetallesSolicitud {
 	}
 
 
-	public function adjudicar($perfil, $comision = 0, $codigohotel = null){
+	public function adjudicar($perfil, $comision = 0, $codigohotel = null,$id_hotel = 0){
 
 
 			if($perfil == "Hotel"){
@@ -903,8 +903,15 @@ class DetallesSolicitud {
 
 				try {
 					$stm = $this->con->prepare($query);
-					$stm->execute(array(':comision'=>$comision,':codigo'=>$codigohotel,':id_hotel'=>$this->solicitudhotel['id_hotel']));
+					if($id_hotel > 0){
+						$stm->execute(array(':comision'=>$comision,':codigo'=>$codigohotel,':id_hotel'=>$id_hotel));
+					}else{
+						$stm->execute(array(':comision'=>$comision,':codigo'=>$codigohotel,':id_hotel'=>$this->solicitudhotel['id_hotel']));
+					}
+					
 					$this->con->commit();
+
+					$_SESSION['notification']['registro_hotel'] = "Se ha registrado y asignado codigo de hotel exitosamente...";
 					return true;
 				} catch (PDOException $e) {
 					$this->con->rollback();

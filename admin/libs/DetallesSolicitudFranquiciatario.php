@@ -1,7 +1,6 @@
 <?php 
 
 namespace admin\libs;
-
 use PDO;
 /**
  * @author Crespo jhonatan...
@@ -66,7 +65,7 @@ class DetallesSolicitudFranquiciatario{
 		'error' => null
 	);
 
-	function __construct($con = null, $solicitud = null){
+	function __construct( $con = null, $solicitud = null){
 		
 		$this->con = $con;
 		
@@ -993,6 +992,48 @@ class DetallesSolicitudFranquiciatario{
 	<?php }
 
 
+	public function adjudicaradmin($comision,$codigohotel = null,$hotel = null,$franquiciatario = null){
+
+		
+			
+			if($this->con->inTransaction()){
+			$this->con->rollBack();
+			}
+			
+			$this->con->beginTransaction();
+
+			$query  = "UPDATE franquiciatario set comision =:comision, codigo_hotel=:codigo where id =:id_franquiciatario";
+
+			try {
+			$stm = $this->con->prepare($query);
+
+			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_franquiciatario' =>$franquiciatario ));
+				
+		} catch (PDOException $ex) {
+			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
+			$this->con->rollback();
+			return false;
+		}
+
+		$sql = "UPDATE hotel set comision =:comision, codigo=:codigo where id=:hotel";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':comision'=>0,':codigo'=>$codigohotel,':hotel'=>$hotel));
+			$this->con->commit();
+
+		} catch (PDOException $e) {
+
+			$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollback();
+			return false;
+			
+		}
+
+		return true;
+	
+
+	}
 
 	public function adjudicar($comision,$codigohotel = null){
 
@@ -1011,7 +1052,14 @@ class DetallesSolicitudFranquiciatario{
 		
 		try {
 			$stm = $this->con->prepare($query);
-			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_franquiciatario' => $this->registro['id_franquiciatario']));
+
+			
+					
+			
+			
+					$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_franquiciatario' => $this->registro['id_franquiciatario']));
+				
+			
 			
 		} catch (PDOException $ex) {
 			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
