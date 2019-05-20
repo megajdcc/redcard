@@ -898,7 +898,6 @@ if($('#solicitudes').length){
 		$('.crearcodigo').click(function(){
 			var iata =  $(this).attr('data-iata');
 			var hotel =  $(this).attr('data-hotel');
-
 		
 			var cadena = hotel.split(" ");
 

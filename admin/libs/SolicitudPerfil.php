@@ -89,16 +89,19 @@ class SolicitudPerfil {
 		$sentenciaSQL = "(SELECT sh.id, CONCAT(u.nombre,' ', u.apellido)as nombre,u.username, 'Hotel' as perfil, sh.condicion, sh.creado
 							FROM solicitudhotel as sh 
 							INNER JOIN usuario as u on sh.id_usuario = u.id_usuario
+							where sh.comentario != ''
 							ORDER BY sh.creado DESC)
 								UNION
 								(SELECT sfr.id, CONCAT(u.nombre,' ',u.apellido) as nombre,u.username, 'Franquiciatario' as perfil, sfr.condicion,sfr.creado
 												from solicitudfr as sfr
 												INNER JOIN usuario as u on sfr.id_usuario = u.id_usuario 
+												where sfr.hotel !=''
 												order by sfr.creado DESC)
 								UNION
 								(SELECT sr.id, CONCAT(u.nombre,' ',u.apellido) as nombre,u.username, 'Referidor' as perfil, sr.condicion, sr.creado
 												from solicitudreferidor as sr
 												INNER JOIN usuario as u on sr.id_usuario = u.id_usuario 
+												where sr.hotel !=''
 												order by sr.creado DESC)";
 
 		$result = $this->con->prepare($sentenciaSQL);

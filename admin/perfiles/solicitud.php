@@ -23,7 +23,7 @@ $perfil = filter_input(INPUT_GET, 'perfil');
 
 $solicitud = new admin\libs\DetallesSolicitud($con);
 
-if(!$solicitud->load_data($id,$perfil)){
+if(!$solicitud->load_data($id,$perfil,'Solicitud')){
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');
 	die();

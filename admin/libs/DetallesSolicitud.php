@@ -349,7 +349,24 @@ class DetallesSolicitud {
 			
 
 	}
-	public function CargarHotel($id){
+
+	public function cargarDatosActualizacionFranquiciatario(array $datos,int $solicitud){
+
+
+			$this->DetallesSolicitudFranquiciatario = new DetallesSolicitudFranquiciatario($this->con,$solicitud);
+
+
+			return $this->DetallesSolicitudFranquiciatario->CargarDatosActualizacion($datos,$solicitud);
+
+	}
+
+
+	public function CargarFranquiciatarioAdmin($id){
+		$this->DetallesSolicitudFranquiciatario =  new DetallesSolicitudFranquiciatario($this->con, $id);
+		$this->DetallesSolicitudFranquiciatario->cargarDatosAdmin();
+		return true;
+	}
+	public function CargarHotel($id,$proviene = null){
 
 		$this->setSolicitud($id);
 
@@ -400,10 +417,17 @@ class DetallesSolicitud {
 	}
 
 
-	public function getDatos(){
-		return $this->solicitudhotel;
+	public function getDatos($perfil = null){
+		if($perfil == 'Hotel'){
+			return $this->solicitudhotel;
+		}else if($perfil == 'Franquiciatario'){
+			return $this->DetallesSolicitudFranquiciatario->getDatos();
+		}else if($perfil == 'Referidor'){
+
+		}
+		
 	}
-	private function CargarFranquiciatario($id){
+	public function CargarFranquiciatario($id,$proviene =null){
 
 		$this->DetallesSolicitudFranquiciatario =  new DetallesSolicitudFranquiciatario($this->con, $id);
 		return true;
@@ -1123,15 +1147,15 @@ class DetallesSolicitud {
 
 	  }
 
-	public function load_data($id = null, $perfil = null){
+	public function load_data($id = null, $perfil = null,$proviene=null){
 
 			switch ($perfil) {
 				case 'Hotel':
-					return $this->CargarHotel($id);
+					return $this->CargarHotel($id,$proviene);
 					break;
 
 				case 'Franquiciatario':
-					return $this->CargarFranquiciatario($id);
+					return $this->CargarFranquiciatario($id,$proviene);
 					break;
 
 				case 'Referidor':
@@ -1177,9 +1201,9 @@ class DetallesSolicitud {
 				
 			}
 		}else if($perfil == 'Franquiciatario'){
-			$DetallesSolicitudFranquiciatario->crearcodigo($codigohotel);
+			return $this->DetallesSolicitudFranquiciatario->crearcodigo($codigohotel);
 		}else if($perfil == 'Referidor'){
-			$DetallesSolicitudReferidor->crearcodigo($codigohotel);
+			return $this->DetallesSolicitudReferidor->crearcodigo($codigohotel);
 		}
 
 	
@@ -1659,6 +1683,13 @@ class DetallesSolicitud {
 		}
 
 		
+	}
+
+	public function EliminarSolicitudFranquiciatario(){
+
+
+			return $this->DetallesSolicitudFranquiciatario->EliminarSolicitud('Admin');
+
 	}
 
 	public function EliminarSolicitud($perfil = null,$solicitud =0){

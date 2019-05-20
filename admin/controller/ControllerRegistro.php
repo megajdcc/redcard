@@ -34,6 +34,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 if(isset($_POST['solicitudhotel'])){
+
 	$response = array('peticion' => false,
 						'mensaje' => '',
 						'datos'=>array());
@@ -44,7 +45,27 @@ if(isset($_POST['solicitudhotel'])){
 
 		$response['peticion'] = true;
 		$response['mensaje'] = "Hotel encontrado";
-		$response['datos'] = $solicitud->getDatos(); 
+		$response['datos'] = $solicitud->getDatos('Hotel'); 
+	}
+
+	echo json_encode($response);
+
+
+}
+
+if(isset($_POST['solicitudfranquiciatario'])){
+	
+	$response = array('peticion' => false,
+						'mensaje' => '',
+						'datos'=>array());
+
+	$result = $solicitud->CargarFranquiciatarioAdmin($_POST['solicitudfranquiciatario']);
+
+	if($result){
+
+		$response['peticion'] = true;
+		$response['mensaje'] = "Franquiciatario encontrado";
+		$response['datos'] = $solicitud->getDatos('Franquiciatario'); 
 	}
 
 	echo json_encode($response);
@@ -53,25 +74,49 @@ if(isset($_POST['solicitudhotel'])){
 }
 
 if(isset($_POST['solicitudcodigo'])){
-	$response = array('peticion' => false,
-						'mensaje' => '');
 
-	$nrosolicitud = $_POST['solicitud'];
-	$codigo = $_POST['codigo'];
+	if(isset($_POST['perfil']) &&  $_POST['perfil'] == 'Franquiciatario'){
+		$response = array('peticion' => false,
+							'mensaje' => '');
 
-	$solicitud->CargarHotel($nrosolicitud);
+		$nrosolicitud = $_POST['solicitud'];
+		$codigo = $_POST['codigo'];
+
+		$solicitud->CargarFranquiciatarioAdmin($nrosolicitud);
 
 
-	$result = $solicitud->crearcodigo('Hotel', $codigo);
-	
-	if($result){
-
-		$response['peticion'] = true;
-		$response['mensaje'] = "Codigo Generado";
+		$result = $solicitud->crearcodigo('Franquiciatario', $codigo);
 		
+		if($result){
+
+			$response['peticion'] = true;
+			$response['mensaje'] = "Codigo Generado";
+			
+		}
+
+		echo json_encode($response);
+	}else{
+						$response = array('peticion' => false,
+						'mensaje' => '');
+						
+						$nrosolicitud = $_POST['solicitud'];
+						$codigo = $_POST['codigo'];
+						
+						$solicitud->CargarHotel($nrosolicitud);
+						
+						
+						$result = $solicitud->crearcodigo('Hotel', $codigo);
+						
+						if($result){
+						
+						$response['peticion'] = true;
+						$response['mensaje'] = "Codigo Generado";
+						
+						}
+						
+						echo json_encode($response);
 	}
 
-	echo json_encode($response);
 
 
 }
@@ -358,18 +403,38 @@ if(isset($_POST['solicitudcodigo'])){
 
 	if(isset($_POST['solicitud']) && $_POST['solicitud'] == 'eliminar'){
 
-		$response = array('peticion' =>false,'mensaje'=>'');
+		if($_POST['perfil'] == 'Franquicitario'){
+				$response = array('peticion' =>false,'mensaje'=>'');
+				$solicitud->CargarFranquiciatarioAdmin($_POST['franquiciatario']);
 
-		$result  = $solicitud->EliminarSolicitud('Hotel',$_POST['hotel']);
-		if($result){
+
+				$result  = $solicitud->EliminarSolicitudFranquiciatario();
+				if($result){
+				$response['peticion'] = true;
+				$response['mensaje'] = 'Eliminacion Exitosa';
+				}else{
+				$response['peticion'] = false;
+				$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
+				}
+				
+				echo json_encode($response);
+		}else{
+
+			$response = array('peticion' =>false,'mensaje'=>'');
+			
+			$result  = $solicitud->EliminarSolicitud('Hotel',$_POST['hotel']);
+			if($result){
 			$response['peticion'] = true;
 			$response['mensaje'] = 'Eliminacion Exitosa';
-		}else{
+			}else{
 			$response['peticion'] = false;
 			$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
+			}
+			
+			echo json_encode($response);
 		}
 
-		echo json_encode($response);
+		
 	
 	}
 
@@ -387,6 +452,26 @@ if(isset($_POST['solicitudcodigo'])){
 
 			$response['peticion'] = false;
 			$response['mensaje'] ="Hotel no se pudo actualizar, intente mas tarde...";
+
+		}
+		echo json_encode($response);
+	}
+
+	if(isset($_POST['actualizar-franquiciatario'])){
+		$response = array('peticion' => false ,
+						'mensaje'=>null);
+
+		$result = $solicitud->cargarDatosActualizacionFranquiciatario($_POST,$_POST['solicitud']);
+
+		if($result){
+
+			$response['peticion'] = true;
+			$response['mensaje'] ="Franquiciatario Actualizado exitosamente...";
+
+		}else{
+
+			$response['peticion'] = false;
+			$response['mensaje'] ="Franquicitario no se pudo actualizar, intente mas tarde...";
 
 		}
 		echo json_encode($response);
