@@ -1,5 +1,6 @@
 $(document).ready(function() {
     'use strict';
+    var map ;
     if($('#input-latitude').val() != '' && $('#input-longitude').val() != ''){
         var center = new google.maps.LatLng($('#input-latitude').val(), $('#input-longitude').val());
         var zoom = 17;
@@ -14,13 +15,14 @@ $(document).ready(function() {
             zoom: zoom,
             scrollwheel: false
         };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
+        map = new google.maps.Map(document.getElementById('map-canvas'),
         mapOptions);
 
         var input = /** @type {HTMLInputElement} */(
             document.getElementById('pac-input'));
 
             var types = document.getElementById('type-selector');
+
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(types);
 
@@ -84,8 +86,10 @@ $(document).ready(function() {
             });
         }
 
-        if ($('#map-canvas').length != 0) {
+         if ($('#map-canvas').length != 0) {
             google.maps.event.addDomListener(window, 'load', initialize);
         }
+    
+       
         
 });

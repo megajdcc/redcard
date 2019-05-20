@@ -131,6 +131,35 @@ width: 100%;
 	margin: 0px;
 	color: black;
 }
+.header-actualizacion{
+	display: flex;
+	justify-content: space-between;
+	/*background: red;*/
+
+}
+.header-actualizacion h5:nth-child(1){
+	flex: 2 0 200px;
+}
+
+.header-actualizacion button{
+	margin-left: 1rem;
+	background: transparent;
+	outline: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 0 0 50px;
+	padding: auto 0;
+	text-decoration: none;
+	border: 1px solid rgba(0,0,0,0.2);
+	border-radius: 10px;
+	z-index: 500;
+}
+.header-actualizacion .fa{
+	margin: 0px;
+}
+
+
 
 .modal{
 	z-index: 900 !important;
@@ -138,3 +167,15 @@ width: 100%;
 .modal-backdrop{
     z-index: 10;        
 }​
+.codigohotel{
+	background: red;
+}
+
+.actualizarperfil{
+	/*background: red;*/
+	justify-content: space-around;
+	display: flex;
+	width: 100px;
+	margin-left: 2rem:
+	color:white; 
+}

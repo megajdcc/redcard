@@ -77,6 +77,7 @@ use admin\libs\Iata;
 
 
 $iata = new Iata($con);
+
 $affiliate = new AfiliarHotel($con);
 
 $includes = new admin\libs\includes($con);

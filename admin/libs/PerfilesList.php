@@ -31,6 +31,71 @@ class PerfilesList {
 		return;
 	}
 
+
+	public function ListarHoteles(){
+				$sql = "(select sh.condicion,CONCAT(u.nombre,' ',u.apellido) as dueno,h.nombre as nombrehotel, u.username,u.telefono,u.ultimo_login,u.email,'Hotel' as proviene, sh.id as nrosolicitud,u.imagen, u.nombre, u.apellido,h.comision
+				from solicitudhotel as sh join usuario as u on sh.id_usuario = u.id_usuario join hotel as h on sh.id_hotel = h.id where sh.condicion = 1)";
+				
+		$result = $this->con->prepare($sql);
+		$result->execute();
+
+		$urlimg =  HOST.'/assets/img/user_profile/';
+		while ($fila = $result->fetch(PDO::FETCH_ASSOC)) {
+
+
+			if(!empty($fila['dueno'])){
+				$nombre = $fila['dueno'];
+				
+			}else{
+				$nombre = $fila['username'];
+			}
+			
+			$nombrehotel       = $fila['nombrehotel'];
+			$apellido     = $fila['apellido'];
+			$proviene     = $fila['proviene'];
+			$nrosolicitud = $fila['nrosolicitud'];
+			$foto         = $fila['imagen'];
+			if(empty($foto) || is_null($foto)){
+				$foto = 'default.jpg';
+			}
+			$comision     = $fila['comision'];
+			$email = $fila['email'];
+			$username = $fila['username'];
+			$ultimologin = date('d/m/Y g:i A', strtotime($fila['ultimo_login']));
+			$telefono = $fila['telefono'];
+			?>
+			<tr id="<?php echo $nrosolicitud; ?>">
+				
+			
+				<td>
+				
+					<div class="user user-md">
+						<a href="<?php echo HOST."/socio/".$username; ?>" target="_blank"><img src="<?php echo $urlimg.$foto;?>"></a>
+					</div>
+					
+				</td>
+				<td><?php echo $nombrehotel; ?></td>
+				<td><?php  echo $nombre?></td>
+			
+				<td style="text-align: center;"><?php  echo $comision .' %';?>
+					<button type="button"  data-toggle="tooltip" title="Actualizar Comisión." data-placement="left" data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarcomision  pull-right">
+						<i class="fa fa-pencil-square-o"></i>
+					</button>
+					
+				</td>
+				
+				<td><?php echo $ultimologin; ?></td>
+
+			
+				<td>
+					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
+					 Ver / Editar <i class="fa fa-cogs"></i> 
+					</button>
+				</td>
+            </tr>
+			<?php
+		}
+	}
 	public function ListarPerfiles(){
 
 		$sql = "(select sh.condicion,u.username,u.telefono,u.ultimo_login,u.email,'Hotel' as proviene, sh.id as nrosolicitud,u.imagen, u.nombre, u.apellido,h.comision

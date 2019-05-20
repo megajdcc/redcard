@@ -845,7 +845,7 @@ $(document).ready(function() {
 if($('#solicitudes').length){
 	 var t = $('#solicitudes').DataTable({
       "paging":         false,
-      "scrollY":        "400px",
+      "scrollY":        "800px",
         "scrollCollapse": true,
          "language": {
                         "lengthMenu": "Mostar _MENU_ registros por pagina",
@@ -879,6 +879,23 @@ if($('#solicitudes').length){
 		
 
 		$('.generarcodigo').click(function(){
+			var iata =  $(this).attr('data-iata');
+			var hotel =  $(this).attr('data-hotel');
+
+		
+			var cadena = hotel.split(" ");
+
+			var total = cadena.length;
+			var resultado = "";
+
+			for(var i = 0; i < total; resultado += cadena[i][0], i++);
+			
+
+			$('#codigohotel').val(iata+resultado.toUpperCase());
+
+		});
+
+		$('.crearcodigo').click(function(){
 			var iata =  $(this).attr('data-iata');
 			var hotel =  $(this).attr('data-hotel');
 

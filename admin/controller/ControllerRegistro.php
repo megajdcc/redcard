@@ -9,6 +9,10 @@ use assets\libs\user_signup;
 use Hotel\models\AfiliarHotel;
 use Franquiciatario\models\AfiliarFranquiciatario;
 use Referidor\models\AfiliarReferidor;
+use admin\libs\DetallesSolicitud;
+
+
+$solicitud = new DetallesSolicitud($con);
 
 $reg = new user_signup($con);
 $home = new Home($con);
@@ -26,7 +30,51 @@ $referidor = new AfiliarReferidor($con);
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
+//CAPTURA DE DATOS DE PERFILES>>>
 
+
+if(isset($_POST['solicitudhotel'])){
+	$response = array('peticion' => false,
+						'mensaje' => '',
+						'datos'=>array());
+
+	$result = $solicitud->CargarHotel($_POST['solicitudhotel']);
+
+	if($result){
+
+		$response['peticion'] = true;
+		$response['mensaje'] = "Hotel encontrado";
+		$response['datos'] = $solicitud->getDatos(); 
+	}
+
+	echo json_encode($response);
+
+
+}
+
+if(isset($_POST['solicitudcodigo'])){
+	$response = array('peticion' => false,
+						'mensaje' => '');
+
+	$nrosolicitud = $_POST['solicitud'];
+	$codigo = $_POST['codigo'];
+
+	$solicitud->CargarHotel($nrosolicitud);
+
+
+	$result = $solicitud->crearcodigo('Hotel', $codigo);
+	
+	if($result){
+
+		$response['peticion'] = true;
+		$response['mensaje'] = "Codigo Generado";
+		
+	}
+
+	echo json_encode($response);
+
+
+}
 
 // ACCIONES PARA REGSITRAR HOTEL
 	if(isset($_POST['form-hotel'])){
@@ -305,6 +353,43 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			}
 
 				echo json_encode($response);
+	}
+
+
+	if(isset($_POST['solicitud']) && $_POST['solicitud'] == 'eliminar'){
+
+		$response = array('peticion' =>false,'mensaje'=>'');
+
+		$result  = $solicitud->EliminarSolicitud('Hotel',$_POST['hotel']);
+		if($result){
+			$response['peticion'] = true;
+			$response['mensaje'] = 'Eliminacion Exitosa';
+		}else{
+			$response['peticion'] = false;
+			$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
+		}
+
+		echo json_encode($response);
+	
+	}
+
+
+	if(isset($_POST['actualizar-hotel'])){
+		$response = array('peticion' => false ,
+						'mensaje'=>null);
+
+		$result = $solicitud->cargarDatosActualizacion($_POST,$_POST['solicitud']);
+
+		if($result){
+			$response['peticion'] = true;
+			$response['mensaje'] ="Hotel Actualizado exitosamente...";
+		}else{
+
+			$response['peticion'] = false;
+			$response['mensaje'] ="Hotel no se pudo actualizar, intente mas tarde...";
+
+		}
+		echo json_encode($response);
 	}
 
 }

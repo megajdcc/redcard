@@ -94,11 +94,266 @@ class DetallesSolicitud {
 	}
 
 
-	private function CargarHotel($id){
+
+	public function cargarDatosActualizacion(array $datos,int $solicitud){
+
+			$pago = false;
+
+			if($datos['pago']){
+				//cargamos datos de pago de comision
+
+				$pago = true;
+				$banco         = $datos['nombre_banco'];
+				$bancotarjeta  = $datos['nombre_banco_tarjeta'];
+				$clabe         = $datos['clabe'];
+				$swift         = $datos['swift'];
+				$numerotarjeta = $datos['numero_targeta'];
+				$cuenta        = $datos['cuenta'];
+				$emailpaypal   = $datos['email_paypal'];
+
+			}
+			// cargamos datos de hotel
+			$nombrehotel          = $datos['nombre'];
+			$iata                 = $datos['iata'];
+			$sitioweb             = $datos['website'];
+			$direccion            = $datos['direccion'];
+			$codigopostal         = $datos['codigopostal'];
+			
+			$pais                 = $datos['pais'];
+			$estado               = $datos['estado'];
+			$ciudad               = $datos['ciudad'];
+			
+			$latitud              = $datos['latitud'];
+			$longitud             = $datos['longitud'];
+			
+			$nombre_responsable   = $datos['nombre_responsable'];
+			$apellido_responsable = $datos['apellido_responsable'];
+			$email                = $datos['email'];
+			$cargo                = $datos['cargo'];
+			
+			$telefonofijo         = $datos['telefonofijo'];
+			$movil                = $datos['movil'];
+
+			if($this->con->inTransaction()){
+				$this->con->rollBack();
+			}
+
+			$this->con->beginTransaction();
+
+			$idresponsable = 0;
+			$idhotel1 = 0;
+			$iddatos = 0;
+
+			if($pago){
+
+				$sql = "select h.id as idhotel, h.id_datospagocomision as idpago,h.id_responsable_promocion as responsable from hotel as h join solicitudhotel as sh on h.id=sh.id_hotel where sh.id = :solicitud";
+
+
+				try {
+					$stm1 = $this->con->prepare($sql);
+					
+
+					$stm1->bindParam(':solicitud',$solicitud);
+					$stm1->execute();
+					$fila = $stm1->fetch(PDO::FETCH_ASSOC);
+					$idhotel1      = $fila['idhotel'];
+					
+					$idresponsable = $fila['responsable'];
+
+					$idpago        = $fila['idpago'];
+					
+				} catch (PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						$this->con->rollBack();
+						return false;
+				}
+				
+
+
+				if($idpago != null){
+				
+
+					$sql = "update datospagocomision set banco=:banco,cuenta=:cuenta,clabe=:clabe,swift=:swift,banco_tarjeta=:bancotarjeta,numero_tarjeta=:numerotarjeta,email_paypal=:email where id=:id";
+
+					$datos1 = array(':banco'=>$banco,
+									':cuenta'       =>$cuenta,
+									':clabe'        =>$clabe,
+									':swift'        =>$swift,
+									':bancotarjeta' =>$bancotarjeta,
+									':numerotarjeta' =>$numerotarjeta,
+									':email'        =>$emailpaypal,
+									':id'           =>$idpago
+									);
+					try {
+						$stm = $this->con->prepare($sql);				
+						$stm->execute($datos1);
+
+						
+					} catch (PDOException $e) {
+						
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						$this->con->rollBack();
+						return false;
+					}
+					
+				}else{
+					$sql = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,banco_tarjeta,numero_tarjeta,email_paypal)values(':banco',':cuenta',':clabe',':swift',':bancotarjeta',':numerotarjeta',':emailpaypal')";
+
+
+					settype($clabe,'integer');
+					settype($swift,'integer');
+					settype($numerotarjeta,'integer');
+					
+					// echo var_dump($datos2);
+
+
+
+					try {
+							$stm = $this->con->prepare($sql);
+
+							$stm->bindParam(':banco',$banco, PDO::PARAM_STR);
+							$stm->bindParam(':cuenta',$cuenta, PDO::PARAM_STR);
+							$stm->bindParam(':clabe',$clabe, PDO::PARAM_INT);
+							$stm->bindParam(':swift',$swift, PDO::PARAM_INT);
+							$stm->bindParam(':banco_tarjeta',$bancotarjeta, PDO::PARAM_STR);
+							$stm->bindParam(':numero_tarjeta',$numerotarjeta, PDO::PARAM_INT);
+							$stm->bindParam(':email_paypal',$emailpaypal, PDO::PARAM_STR);
+				
+						$result = $stm->execute();
+						
+							$iddatos = $this->con->lastInsertId();
+
+
+					} catch (PDOException $e) {
+							$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+							$this->con->rollBack();
+							return false;
+					}
+
+
+				}
+			
+				if($iddatos == 0){
+								
+					$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata where id = :idhotel";
+									
+									$datoshotel = array(
+									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
+									':codigopostal'=>$codigopostal,':iata'=>$iata,':idhotel'=>$idhotel1
+									);
+
+				}else{
+
+					$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata, id_datospagocomision=:pago where id = :idhotel";
+									
+									$datoshotel = array(
+									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
+									':codigopostal'=>$codigopostal,':iata'=>$iata,':pago'=>$iddatos,':idhotel'=>$idhotel1
+									);
+					
+
+				}
+
+				
+				
+
+			}else{
+
+				$sql = "select h.id as idhotel,h.id_responsable_promocion as responsable from hotel as h join solicitudhotel as sh on h.id=sh.id_hotel where sh.id = :solicitud";
+
+				$stm = $this->con->preapre($sql);
+
+				$stm->bindParam(':solicitud',$solicitud);
+				$stm->execute();
+				$fila = $stm->fetch(PDO::FETCH_ASSOC);
+				$idresponsable =	$fila['responsable'];
+				$idhotel       = $fila['idhotel'];
+
+				$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata where id = :idhotel";
+
+								$datoshotel = array(
+									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
+									':codigopostal'=>$codigopostal,':iata'=>$iata,':idhotel'=>$idhotel
+									);
+
+
+			}
+
+
+			if($idresponsable > 0 || $idresponsable !=null){
+				$sql2 = "select p.id as personaid from persona as p join responsableareapromocion as r on p.id = r.dni_persona where r.id = :responsable";
+
+
+				try {
+					$stm = $this->con->prepare($sql2);
+					$stm->bindParam(':responsable',$idresponsable);
+					$stm->execute();
+				} catch (PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+					return false;
+				}
+				
+
+
+				$fila = $stm->fetch(PDO::FETCH_ASSOC);
+				$persona = $fila['personaid'];
+
+				$sql4 = "update persona set nombre=:nombre,apellido=:apellido where id=:persona";
+
+
+				try {
+					$stm= $this->con->prepare($sql4);
+					$datos = array(':nombre'=>$nombre_responsable,':apellido'=>$apellido_responsable,':persona'=>$persona);
+					$stm->execute($datos);
+				} catch (PDOException $e) {
+
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+					return false;
+					
+				}
+				
+
+				$sql6 = "update responsableareapromocion set cargo=:cargo,email=:email,telefono_fijo=:telefonofijo,telefono_movil=:movil where id=:responsable";
+
+				try {
+					$stm = $this->con->prepare($sql6);
+					
+					$datos8 = array(':cargo'=>$cargo,':email'=>$email,':telefonofijo' =>$telefonofijo,':movil'=>$movil,':responsable'=>$idresponsable);
+					$stm->execute($datos8);
+				} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						$this->con->rollBack();
+						return false;
+				}
+			}
+
+
+			try {
+				
+				$stm = $this->con->prepare($queryhotel);
+
+
+				$stm->execute($datoshotel);
+
+				$this->con->commit();
+				return true;
+			} catch (PDOException $e) {
+
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+				
+			}
+			
+
+	}
+	public function CargarHotel($id){
 
 		$this->setSolicitud($id);
 
-		$query = "select h.id as id_hotel, h.comision, sh.id, u.email as emailusuario, u.username, u.nombre as usuario_nombre,u.apellido as usuario_apellido, h.nombre as hotel, h.id_iata,i.codigo as iata, h.sitio_web,h.direccion, h.codigo_postal, h.id_ciudad,c.ciudad,est.id_estado,est.estado,
+		$query = "select h.codigo,h.id as id_hotel, h.comision, sh.id, u.email as emailusuario, u.username, u.nombre as usuario_nombre,u.apellido as usuario_apellido, h.nombre as hotel, h.id_iata,i.codigo as iata, h.sitio_web,h.direccion, h.codigo_postal, h.id_ciudad,c.ciudad,est.id_estado,est.estado,
 			pa.id_pais, pa.pais,h.longitud,h.latitud,per.id as id_persona,  per.nombre as nombre_responsable, per.apellido as apellido_responsable,rap.id as id_responsableareapromocion, rap.email,rap.cargo,
 			rap.telefono_fijo, rap.telefono_movil,dpc.id as id_datospagocomision, dpc.banco, dpc.cuenta,dpc.clabe, dpc.swift,
 			dpc.banco_tarjeta, dpc.numero_tarjeta, dpc.email_paypal,sh.condicion,sh.creado,sh.comentario 
@@ -145,6 +400,9 @@ class DetallesSolicitud {
 	}
 
 
+	public function getDatos(){
+		return $this->solicitudhotel;
+	}
 	private function CargarFranquiciatario($id){
 
 		$this->DetallesSolicitudFranquiciatario =  new DetallesSolicitudFranquiciatario($this->con, $id);
@@ -887,6 +1145,47 @@ class DetallesSolicitud {
 	}
 
 
+	public function crearcodigo($perfil, $codigohotel){
+
+
+		if($this->con->inTransaction()){
+			$this->con->rollback();
+
+		}
+
+		if($perfil == 'Hotel'){
+			$this->con->beginTransaction();
+				$query = "update hotel set codigo=:codigo where id=:id_hotel";
+				
+				try {
+				
+				$stm = $this->con->prepare($query);
+				
+				$stm->bindParam(':codigo',$codigohotel,PDO::PARAM_STR);
+				$stm->bindParam(':id_hotel',$this->solicitudhotel['id_hotel'],PDO::PARAM_INT);
+				
+				$stm->execute();
+				$this->con->commit();
+				return true;
+				
+				} catch (PDOException $e) {
+				
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				
+				$this->con->rollback();
+				return true;
+				
+			}
+		}else if($perfil == 'Franquiciatario'){
+			$DetallesSolicitudFranquiciatario->crearcodigo($codigohotel);
+		}else if($perfil == 'Referidor'){
+			$DetallesSolicitudReferidor->crearcodigo($codigohotel);
+		}
+
+	
+
+
+	}
 	public function adjudicar($perfil, $comision = 0, $codigohotel = null,$id_hotel = 0){
 
 
@@ -919,7 +1218,7 @@ class DetallesSolicitud {
 					return false;
 				}
 			}else if($perfil == "Franquiciatario"){
- 					$this->DetallesSolicitudFranquiciatario->adjudicar($comision,$codigohotel);
+ 					$this->DetallesSolicitudFranquiciatario->adjudicar($comision,$codigohotel,$id_hotel);
 				return true;
 			}
 			else if($perfil == "Referidor"){
@@ -1362,18 +1661,41 @@ class DetallesSolicitud {
 		
 	}
 
-	public function EliminarSolicitud($perfil = null){
+	public function EliminarSolicitud($perfil = null,$solicitud =0){
 
 		if($perfil == 'Hotel'){
+
+			$this->con->beginTransaction();
+
+
+			$query1 = "delete from hotel where id = (select id_hotel from solicitudhotel where id = :solicitud)";
 			$query = "delete from solicitudhotel where id=:id_solicitud";
 		try{
+			$st = $this->con->prepare($query1);
 			$stmt = $this->con->prepare($query);
-			$stmt->bindValue(':id_solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
-			$stmt->execute();
+			if($solicitud > 0){
+				$st->bindValue(':solicitud',$solicitud, PDO::PARAM_INT);
+				$stmt->bindValue(':id_solicitud',$solicitud, PDO::PARAM_INT);
+			}else{
+				$st->bindValue(':solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
+				$stmt->bindValue(':id_solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
+			}
+			$result = $st->execute();
+			if($result){
+				$stmt->execute();
+				$this->con->commit();
+			}else{
+				$this->con->rollBack();
+				return false;
+			}
+			
+
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+
+
 		// SE MANDA LA NOTIFICACION AL USUARIO
 			$header = 'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada';
 			$headeringles = 'We regret to inform you that the request for your hotel has been rejected';
@@ -1385,36 +1707,45 @@ class DetallesSolicitud {
 			$body_alt =
 				'Lamentamos informarte que la solicitud para afiliar tu negocio ha sido rechazada. Puedes ver tu solicitud aquí: '.HOST.'/socio/hotel/solicitud/'.$this->nrosolicitud;
 
-			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
-			$mail = new \PHPMailer;
-			$mail->CharSet = 'UTF-8';
-			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
-			$mail->isSMTP();
-			$mail->Host = 'single-5928.banahosting.com';
-			$mail->SMTPAuth = true;
-			$mail->SMTPSecure = 'ssl';
-			$mail->Port = 465;
-			// El correo que hará el envío
-			$mail->Username = 'notification@travelpoints.com.mx';
-			$mail->Password = '20464273jd';
-			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
-			// El correo al que se enviará
-			$mail->addAddress($this->getEmailUsuario());
-			if($this->getEmailUsuario() != $this->getEmailUsuario()){
-				$mail->AddCC($this->getEmailUsuario());
+			if($solicitud == 0){
+					require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+					$mail = new \PHPMailer;
+					$mail->CharSet = 'UTF-8';
+					// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+					$mail->isSMTP();
+					$mail->Host = 'single-5928.banahosting.com';
+					$mail->SMTPAuth = true;
+					$mail->SMTPSecure = 'ssl';
+					$mail->Port = 465;
+					// El correo que hará el envío
+					$mail->Username = 'notification@travelpoints.com.mx';
+					$mail->Password = '20464273jd';
+					$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+					// El correo al que se enviará
+					$mail->addAddress($this->getEmailUsuario());
+					if($this->getEmailUsuario() != $this->getEmailUsuario()){
+					$mail->AddCC($this->getEmailUsuario());
+					}
+					// Hacerlo formato HTML
+					$mail->isHTML(true);
+					// Formato del correo
+					$mail->Subject = 'Solicitud para afiliar tu hotel  has sido rechazada';
+					
+					$mail->Body    = $this->email_template($header,$headeringles, $link, $linkingles);
+					
+					$mail->AltBody = $body_alt;
+					// Enviar
+					// 
+					
+					if(!$mail->send()){
+						$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor.';
+					}
+					
+			}else{
+				return true;
 			}
-			// Hacerlo formato HTML
-			$mail->isHTML(true);
-			// Formato del correo
-			$mail->Subject = 'Solicitud para afiliar tu hotel  has sido rechazada';
 			
-			$mail->Body    = $this->email_template($header,$headeringles, $link, $linkingles);
-
-			$mail->AltBody = $body_alt;
-			// Enviar
-			if(!$mail->send()){
-				$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor.';
-			}
+			
 			$_SESSION['notification']['success'] = 'Solicitud rechazada y eliminada exitosamente';
 			
 			header('Location: '.HOST.'/admin/perfiles/solicitudes');
@@ -2236,7 +2567,8 @@ class DetallesSolicitud {
 	}
 
 	private function error_log($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\solicitudperfilerrror.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		echo "jhonatan";
+		file_put_contents(ROOT.'\assets\error_logs\solicitudperfilerror.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
 		return;
 	}

@@ -86,17 +86,17 @@ class SolicitudPerfil {
 
 	public function getSolicitudes(){
 
-		$sentenciaSQL = "(SELECT sh.id, CONCAT(u.nombre,' ', u.apellido)as nombre, 'Hotel' as perfil, sh.condicion, sh.creado
+		$sentenciaSQL = "(SELECT sh.id, CONCAT(u.nombre,' ', u.apellido)as nombre,u.username, 'Hotel' as perfil, sh.condicion, sh.creado
 							FROM solicitudhotel as sh 
 							INNER JOIN usuario as u on sh.id_usuario = u.id_usuario
 							ORDER BY sh.creado DESC)
 								UNION
-								(SELECT sfr.id, CONCAT(u.nombre,' ',u.apellido) as nombre, 'Franquiciatario' as perfil, sfr.condicion,sfr.creado
+								(SELECT sfr.id, CONCAT(u.nombre,' ',u.apellido) as nombre,u.username, 'Franquiciatario' as perfil, sfr.condicion,sfr.creado
 												from solicitudfr as sfr
 												INNER JOIN usuario as u on sfr.id_usuario = u.id_usuario 
 												order by sfr.creado DESC)
 								UNION
-								(SELECT sr.id, CONCAT(u.nombre,' ',u.apellido) as nombre, 'Referidor' as perfil, sr.condicion, sr.creado
+								(SELECT sr.id, CONCAT(u.nombre,' ',u.apellido) as nombre,u.username, 'Referidor' as perfil, sr.condicion, sr.creado
 												from solicitudreferidor as sr
 												INNER JOIN usuario as u on sr.id_usuario = u.id_usuario 
 												order by sr.creado DESC)";
@@ -117,7 +117,12 @@ class SolicitudPerfil {
 				$status = '<span class="label label-danger mr5">Rechazada</span>';
 			}
 			$solicitud = $fila['id'];
-			$nombre    = $fila['nombre'];
+			if($fila['nombre'] == null){
+				$nombre = $fila['username'];
+			}else{
+				$nombre    = $fila['nombre'];
+			}
+			
 			$perfil    = $fila['perfil'];
 			$condicion = $fila['condicion'];
 			

@@ -56,7 +56,33 @@ class user_signup {
 		if($this->con->inTransaction()){
 			$this->con->rollBack();
 		}
-		$query = "INSERT INTO usuario (
+
+		if($this->proviene != null){
+			$query = "INSERT INTO usuario (
+			username, 
+			email, 
+			password,
+			hash_activacion,
+			verificado
+			) VALUES (
+			:username, 
+			:email, 
+			:password,
+			:hash_activacion,
+			:verificado
+			)";
+			
+			$hash = md5( rand(0,1000) );
+			$query_params = array(
+			':username' => $this->username,
+			':email' => $this->email,
+			':password' => $this->password,
+			':hash_activacion' => $hash,
+			':verificado' =>1
+		);
+		}else{
+
+			$query = "INSERT INTO usuario (
 			username, 
 			email, 
 			password,
@@ -66,14 +92,19 @@ class user_signup {
 			:email, 
 			:password,
 			:hash_activacion
-		)";
-		$hash = md5( rand(0,1000) );
-		$query_params = array(
+			)";
+			
+			$hash = md5( rand(0,1000) );
+			$query_params = array(
 			':username' => $this->username,
 			':email' => $this->email,
 			':password' => $this->password,
 			':hash_activacion' => $hash
-		);
+			);
+
+		}
+		
+		
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($query_params);
@@ -94,6 +125,8 @@ class user_signup {
 				return false;
 			}
 		}
+
+
 
 		$body_alt ='Bienvenido a Travel Points | Welcome to Travel Points<br>
 		Para completar tu registro debes confirmar tu correo electrónico entrando a este enlace:<a href="'.HOST.'/login?email='.$this->email.'&codigo='.$hash.'"></a><br>
@@ -120,10 +153,12 @@ class user_signup {
 		$mail->Subject = 'Confirmación de correo electrónico.';
 		$mail->Body    = $this->email_template($this->email, $hash);
 		$mail->AltBody = $body_alt;
-
-		if(!$mail->send()){
-			$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
+		if(empty($this->proviene)){
+			if(!$mail->send()){
+				$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
+			}
 		}
+		
 
 		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
 		$_SESSION['register_email'] = $this->email;
