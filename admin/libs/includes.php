@@ -150,9 +150,7 @@ class includes {
 					case 'ventas.php':
 						$this->crumbs[1] = 'Ventas';
 						break;
-					case 'PreferenciaTienda.php':
-						$this->crumbs[1] = 'Preferencias de la Tienda';
-						break;
+					
 					default:
 						$this->crumbs[1] = '';
 						break;
@@ -181,13 +179,6 @@ class includes {
 								<span class="icon"><i class="fa fa-th-list"></i></span>
 								<span class="title">Ventas</span>
 								<span class="subtitle">Ventas de la tienda</span>
-							</a>
-						</li>
-						<li'.$this->set_active_sidebar_tab('PreferenciaTienda.php').'>
-							<a href="'.HOST.'/admin/tienda/PreferenciaTienda">
-								<span class="icon"><i class="fa fa-cogs"></i></span>
-								<span class="title">Preferencias</span>
-								<span class="subtitle">de la tienda</span>
 							</a>
 						</li>';
 				break;
@@ -466,7 +457,7 @@ class includes {
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-
+	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<meta name="robots" content="none" />
 	<meta name="robots" content="none, nindex, nfollow" />
 	<meta name="robots" content="noindex, nofollow" />
@@ -480,6 +471,8 @@ class includes {
 	<meta name="ia_archiver" content="none" />
 	<meta name="googlebot-image" content="none" />
 	<meta name="robots" content="none" />
+
+	
 
 	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
@@ -540,6 +533,16 @@ class includes {
 		}
 		$html =
 '<body class="">
+ <script>
+  (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+
+  ga("create", "UA-57870544-2", "auto");
+  ga("send", "pageview");
+
+</script>
 
 <div class="page-wrapper">
 	<header class="header header-minimal">

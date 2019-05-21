@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Info Channel
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
  
 use Hotel\models\AfiliarHotel;

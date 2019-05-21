@@ -1242,7 +1242,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							url:'/admin/controller/ControllerRegistro.php',
 							type: 'POST',
 							dataType: 'JSON',
-							data: {solicitud: 'eliminar',hotel:solicitud},
+							data: {solicitud: 'eliminar',hotel:solicitud,perfil:'Hotel'},
 						})
 						.done(function(response) {
 							

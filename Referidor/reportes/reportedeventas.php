@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -44,7 +44,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$reports->load_data();
 }
 
-$properties['title'] = 'Negocios | eSmart Club';
+$properties['title'] = 'Negocios | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>

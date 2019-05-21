@@ -24,7 +24,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Video del negocio | eSmart Club';
+$properties['title'] = 'Video del negocio | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

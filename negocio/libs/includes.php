@@ -499,7 +499,7 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 
-	
+		<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
 </head>
@@ -510,6 +510,16 @@ class includes {
 	public function get_navbar(){
 		$html =
 '<body class="">
+ <script>
+  (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+
+  ga("create", "UA-57870544-2", "auto");
+  ga("send", "pageview");
+
+</script>
 <div class="page-wrapper">
 	<header class="header header-minimal">
 		<div class="header-wrapper">
@@ -623,7 +633,7 @@ class includes {
 			if($_SESSION['business']['id_rol'] == 4){
 				$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/"><i class="fa fa-user-circle-o"></i></a></li>
 							<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias de negocio"><a href="'.HOST.'/negocio/preferencias/informacion"><i class="fa fa-cog"></i></a></li>';
-				$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/codigo-seguridad"><i class="fa fa-user-circle-o"></i></a></li>';
+				
 			}else{
 				
 			}

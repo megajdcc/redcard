@@ -232,7 +232,7 @@ class manage_sales {
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label for="sale-esmarties">eSmartties Bonificados</label>
+								<label for="sale-esmarties">Travel Points Bonificados</label>
 								<p id="sale-esmarties">'.$esmarties.'</p>
 							</div>
 						</div>

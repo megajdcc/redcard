@@ -278,7 +278,7 @@ class product_list {
 					</td>
 					<td>'.$name.'</td>
 					<td>'.$category.'</td>
-					<td>e$ '.$balance.'</td>
+					<td>Tp$ '.$balance.'</td>
 					<td>'.$left.' / '.$available.'</td>
 					<td>'.$send_price.'</td>
 					<td><button class="btn btn-xs btn-info mr5" type="button" data-toggle="modal" data-target="#modal-'.$key.'">Ver</button></td>

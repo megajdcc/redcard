@@ -380,7 +380,7 @@ class user_profile {
 
 	public function get_eSmarties(){
 		$eSmarties = round($this->user['eSmarties'],2);
-		return $eSmarties;
+		return number_format((float)$eSmarties,2,'.',',');
 	}
 
 	public function get_username(){

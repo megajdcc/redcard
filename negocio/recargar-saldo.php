@@ -15,7 +15,7 @@ if($_SESSION['business']['id_rol'] != 4 && $_SESSION['business']['id_rol'] != 5)
 $balance = new negocio\libs\business_balance($con);
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Recargar saldo | eSmart Club';
+$properties['title'] = 'Recargar saldo | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

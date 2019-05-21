@@ -35,13 +35,13 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					<div class="col-sm-4">
 						<h3>Phones | Tel&eacute;fonos</h3>
 						<p>
-							Of: 01 800 400 INFO (4636)<br>Of: +52 (322) 225 9635.
+							Of: 01 800 400 INFO (4636)<br>Of: +52 (55) 5014 0020.
 						</p>
 					</div><!-- /.col-sm-4 -->
 					<div class="col-sm-4">
 						<h3>Email | Correo electr&oacute;nico</h3>
 						<p>
-							<a href="mailto:soporte@esmartclub.com" target="_blank">soporte@infochannel.si</a>
+							<a href="mailto:soporte@infochannel.si" target="_blank">soporte@infochannel.si</a>
 						</p>
 					</div><!-- /.col-sm-4 -->
 				</div><!-- /.row -->

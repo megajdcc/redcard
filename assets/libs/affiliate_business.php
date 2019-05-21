@@ -42,8 +42,8 @@ class affiliate_business {
 		'perfil_socio',
 		'faq',
 		'preguntas-frecuentes',
-		'what-is-esmart-club',
-		'que-es-esmart-club',
+		'what-is-travel-points',
+		'que-es-travel-points',
 		'recover-account',
 		'recuperar-cuenta',
 		'terms-of-service',
@@ -193,7 +193,7 @@ class affiliate_business {
 		){
 			$content = 'Se ha recibido una nueva solicitud para afiliar un negocio. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/negocios/solicitud/'.$last_id.'">Haz clic aqu&iacute; para verla</a>.';
 
-			$content .= '<br>A new application has been received to affiliate a business.<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/negocios/solicitud/'.$last_id.'">Click here to se her</a>.';
+			$content .= '<br>A new application has been received to affiliate a business.<a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/negocios/solicitud/'.$last_id.'">Click here to view it</a>.';
 			$body_alt =
 				'Se ha recibido una nueva solicitud para afiliar negocio. Sigue este enlace para verla: '.HOST.'/admin/negocios/solicitud/'.$last_id;
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';

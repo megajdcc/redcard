@@ -23,8 +23,8 @@ echo $navbar = $includes->get_main_navbar();
 						<div class="row">
 							<div class="col-sm-8 col-sm-offset-2 col-xs-12 col-xs-offset-0">
 								<!-- <h1 class="logo-esmart">Club Regina<br><span class="logo-club">Red CARD</span></h1> -->
-								<figure class="logotipo">	
-								</figure>
+								<!-- <figure class="logotipo">	
+								</figure> -->
 								<p>Discover Vallarta's Top & gain Free Gifts</p>
 								<form method="get" action="<?php echo htmlspecialchars(HOST.'/listados');?>">
 									<div class="input-group">

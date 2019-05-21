@@ -17,7 +17,7 @@ $balance = new negocio\libs\business_balance($con);
 $_SESSION['notification']['success'] = 'El pago fue realizado con éxito.';
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Recarga exitosa | eSmart Club';
+$properties['title'] = 'Recarga exitosa | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

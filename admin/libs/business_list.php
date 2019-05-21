@@ -353,6 +353,34 @@ class business_list {
 		return;
 	}
 
+
+	public function EliminarNegocio($idnegocio){
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+
+		}
+
+		$this->con->beginTransaction();
+
+		$sql = "delete from negocio where id_negocio =:id";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':id',$idnegocio);
+			$stm->execute();
+			$this->con->commit();
+		} catch (PDOException $e) {
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollBack();
+			return false;
+		}
+
+		$_SESSION['notification']['success'] = 'El Negocio Se ha eliminado Exitosamente';
+		header('location: '.HOST.'/admin/negocios/');
+		die();
+		return;
+	}
 	private function get_dropdown_options($status, $business_id){
 		switch ($status) {
 			case 0:
@@ -373,7 +401,7 @@ class business_list {
 				break;
 			default:
 				$status_tag = '';
-				$class = 'btn-default';
+				$class = 'btn-warning';
 				break;
 		}
 		$options = null;
@@ -387,6 +415,10 @@ class business_list {
 				<input type="hidden" value="'.$key.'" name="suspend_id">
 				<input type="hidden" value="'.$business_id.'" name="business_id">
 			</form>';
+
+			
+
+
 		}
 		$html = 
 			'<div class="role-dropdown">
@@ -396,6 +428,12 @@ class business_list {
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 					'.$options.'
+					<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'">
+					<li><a href="#" class="eliminar-negocio">Eliminar</a></li>
+
+					
+					<input type="hidden" value="'.$business_id.'" name="negocioid">
+					</form>
 					</ul>
 				</div><!-- /.dropdown -->
 			</div><!-- /.header-nav-user -->';

@@ -432,7 +432,7 @@ class request_detail {
 			}
 			// SE MANDA LA NOTIFICACION AL USUARIO
 			$header = 'Tu solicitud de negocio ha sido aceptada por Travel Points';
-			$header .= '<br>Your business request has been accepted by Travel Points';
+			$header .= '  | Your business request has been accepted by Travel Points';
 			$link = 'Puedes ver tu negocio aquí: <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/'.$this->request['url'].'">'.HOST.'/'.$this->request['url'].'</a>.';
 			$body_alt = 'Tu solicitud de negocio ha sido aprobada por Travel Points. Puedes ver tu negocio aquí: '.HOST.'/'.$this->request['url'];
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';

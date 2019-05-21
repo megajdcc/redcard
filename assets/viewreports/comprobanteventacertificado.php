@@ -3,16 +3,16 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Travel Points: Comprobante de compra de <?php echo $this->getNameProduct();?></title>
+	<title>Travel Points: Comprobante de compra de <?php// echo $this->getNameProduct();?></title>
 	<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href="../assets/viewreports/css/stilo.css">
+		<link rel="stylesheet" type="text/css" href="../../assets/viewreports/css/stilo.css">
 </head>
 <body>
 
 <header id="header" class="cabezera-pdf">
 	<table width="100">
 		<tr>
-			<td><img src="../assets/img/LOGOV.png" alt="logotipo" class="logo"></td>
+			<td><img src="../../assets/img/LOGOV.png" alt="logotipo" class="logo"></td>
 		</tr>
 	</table>
 </header>
@@ -20,7 +20,7 @@
 	<h2 class="title">Comprobante de compra y certificado</h2>
 	
 
-	<p class="idventa" style="margin-right: 0px; text-align: right;">Nro de recibo:<strong><?php echo $this->getIdventa();?></strong></p>
+	<p class="idventa" style="margin-right: 0px; text-align: right;">Nro de recibo:<strong><?php //echo $this->getIdventa();?></strong></p>
 	<table width="100%" border="0">
 		<thead>
 			<tr>
@@ -33,17 +33,17 @@
 		<tbody>
 			<tr>
 				
-				<td><label><?php echo $this->getNameProduct(); ?></label></td>
-				<td><label>Tp$<?php echo $this->getPriceProduct().' Travel Points';?></label></td>
-				<td><label><?php echo $this->getCategoryProduct(); ?></label></td>
+				<td><label><?php //echo $this->getNameProduct(); ?></label></td>
+				<td><label>Tp$<?php //echo $this->getPriceProduct().' Travel Points';?></label></td>
+				<td><label><?php //echo $this->getCategoryProduct(); ?></label></td>
 			</tr>
 		</tbody>
 		
 	</table>
-			<h2 class="h2-2">!Felicidades por tu adquisición de servicio!.</h2><br> 
+			<h2 class="h2-2">!Felicidades por tu adquisición de servicio!</h2><br> 
 	<figure class="certificado">
 		<h4>Certificado</h4>
-		<img src="../assets/img/store/coupon/<?php echo $this->getCertificado();?>">
+		<img src="../assets/img/store/coupon/<?php //echo $this->getCertificado();?>">
 	</figure>
 </main> 
 

@@ -73,6 +73,26 @@ if(isset($_POST['solicitudfranquiciatario'])){
 
 }
 
+if(isset($_POST['solicitudreferidor'])){
+	
+	$response = array('peticion' => false,
+						'mensaje' => '',
+						'datos'=>array());
+
+	$result = $solicitud->CargarReferidorAdmin($_POST['solicitudreferidor']);
+
+	if($result){
+
+		$response['peticion'] = true;
+		$response['mensaje'] = "Referidor encontrado";
+		$response['datos'] = $solicitud->getDatos('Referidor'); 
+	}
+
+	echo json_encode($response);
+
+
+}
+
 if(isset($_POST['solicitudcodigo'])){
 
 	if(isset($_POST['perfil']) &&  $_POST['perfil'] == 'Franquiciatario'){
@@ -86,6 +106,26 @@ if(isset($_POST['solicitudcodigo'])){
 
 
 		$result = $solicitud->crearcodigo('Franquiciatario', $codigo);
+		
+		if($result){
+
+			$response['peticion'] = true;
+			$response['mensaje'] = "Codigo Generado";
+			
+		}
+
+		echo json_encode($response);
+	}else if(isset($_POST['perfil']) &&  $_POST['perfil'] == 'Referidor'){
+		$response = array('peticion' => false,
+							'mensaje' => '');
+
+		$nrosolicitud = $_POST['solicitud'];
+		$codigo = $_POST['codigo'];
+
+		$solicitud->CargarReferidorAdmin($nrosolicitud);
+
+
+		$result = $solicitud->crearcodigo('Referidor', $codigo);
 		
 		if($result){
 
@@ -414,7 +454,22 @@ if(isset($_POST['solicitudcodigo'])){
 				$response['mensaje'] = 'Eliminacion Exitosa';
 				}else{
 				$response['peticion'] = false;
-				$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
+				$response['mensaje'] = 'No se pudo eliminar a este franquiciatario Intente Eliminarlo mas tarde...';
+				}
+				
+				echo json_encode($response);
+		}else if($_POST['perfil'] == 'Referidor'){
+				$response = array('peticion' =>false,'mensaje'=>'');
+				$solicitud->CargarReferidorAdmin($_POST['referidor']);
+
+
+				$result  = $solicitud->EliminarSolicitudReferidor();
+				if($result){
+				$response['peticion'] = true;
+				$response['mensaje'] = 'Eliminacion Exitosa';
+				}else{
+				$response['peticion'] = false;
+				$response['mensaje'] = 'No se pudo eliminar a este referidor Intente Eliminarlo mas tarde...';
 				}
 				
 				echo json_encode($response);
@@ -472,6 +527,26 @@ if(isset($_POST['solicitudcodigo'])){
 
 			$response['peticion'] = false;
 			$response['mensaje'] ="Franquicitario no se pudo actualizar, intente mas tarde...";
+
+		}
+		echo json_encode($response);
+	}
+
+	if(isset($_POST['actualizar-referidor'])){
+		$response = array('peticion' => false ,
+						'mensaje'=>null);
+
+		$result = $solicitud->cargarDatosActualizacionReferidor($_POST,$_POST['solicitud']);
+
+		if($result){
+
+			$response['peticion'] = true;
+			$response['mensaje'] ="Referidor Actualizado exitosamente...";
+
+		}else{
+
+			$response['peticion'] = false;
+			$response['mensaje'] ="Referidor no se pudo actualizar, intente mas tarde...";
 
 		}
 		echo json_encode($response);

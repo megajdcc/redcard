@@ -403,6 +403,7 @@ class includes {
 	
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv ="x-ua-compatible" content="ie=edge">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
 	<meta name="robots" content="none" />
@@ -418,6 +419,8 @@ class includes {
 	<meta name="ia_archiver" content="none" />
 	<meta name="googlebot-image" content="none" />
 	<meta name="robots" content="none" />
+
+		
 
 	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
@@ -438,7 +441,7 @@ class includes {
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 
-	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/logo2.png" sizes="16x8">
+	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -453,7 +456,7 @@ class includes {
 
 	public function get_main_navbar(){
 		if($this->user['id'] && basename(dirname($_SERVER['SCRIPT_NAME'])) == 'tienda'){
-			$esm = number_format((float)$this->user['esmarties'], 2, '.', '');
+			$esm = number_format((float)$this->user['esmarties'], 2, '.', ',');
 			$e = '<li><a href="'.HOST.'/tienda/">Tp$ '.$esm.'</a></li>';
 		}else{
 			$e = '';
@@ -461,6 +464,18 @@ class includes {
 		?>
 
 		<body class="">
+
+
+				<script>
+				(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+				
+				ga("create", "UA-57870544-2", "auto");
+				ga("send", "pageview");
+				
+				</script>
 <div id="fb-root"></div>
 <div class="page-wrapper">
 	<header class="header">

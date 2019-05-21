@@ -89,7 +89,8 @@ class SolicitudPerfil {
 		$sentenciaSQL = "(SELECT sh.id, CONCAT(u.nombre,' ', u.apellido)as nombre,u.username, 'Hotel' as perfil, sh.condicion, sh.creado
 							FROM solicitudhotel as sh 
 							INNER JOIN usuario as u on sh.id_usuario = u.id_usuario
-							where sh.comentario != ''
+							JOIN hotel as h on sh.id_hotel = h.id
+							
 							ORDER BY sh.creado DESC)
 								UNION
 								(SELECT sfr.id, CONCAT(u.nombre,' ',u.apellido) as nombre,u.username, 'Franquiciatario' as perfil, sfr.condicion,sfr.creado

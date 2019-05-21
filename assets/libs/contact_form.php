@@ -44,11 +44,12 @@ class contact_form {
 			// $mail->Port = 465;
 			// El correo que hará el envío
 			$mail->Username = 'notification@travelpoints.com.mx';
-			$mail->Password = 'jhonatan1991';
+			$mail->Password = '20464273jd';
 			
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
-			$mail->addAddress("corporativo@infochannel.si");
+			$mail->addAddress("soporte@infochannel.si");
+				// $mail->addAddress("megajdcc2009@gmail.com");
 			$mail->isHTML(true);
 			$mail->Subject = $this->form['subject'];
 			$mail->Body    = $this->email_template($this->form);
@@ -107,7 +108,7 @@ class contact_form {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.jpg" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px; height:auto">
 										</a>
 									</td>
 								</tr>
@@ -153,7 +154,7 @@ class contact_form {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -170,7 +171,7 @@ class contact_form {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Info Channel 2018 Todos los derechos reservados.
+							&copy; Info Channel '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

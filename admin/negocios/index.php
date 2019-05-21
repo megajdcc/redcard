@@ -39,6 +39,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(isset($_POST['business_id']) && isset($_POST['suspend_id'])){
 		$businesses->change_business_status($_POST);
 	}
+
+	if(isset($_POST['negocioid'])){
+		$businesses->EliminarNegocio($_POST['negocioid']);
+	}
 	
 }
 $includes = new admin\libs\includes($con);

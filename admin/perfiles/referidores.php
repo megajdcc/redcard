@@ -32,8 +32,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 
-use Franquiciatario\models\AfiliarFranquiciatario;
-$affiliate = new AfiliarFranquiciatario($con);
+use Referidor\models\AfiliarReferidor;
+$affiliate = new AfiliarReferidor($con);
 
 
 
@@ -65,7 +65,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<?php echo $perfiles->get_notification();?>
 
 		<div class="page-title">
-			<h1>Perfiles de Franquiciatario
+			<h1>Perfiles de Referidores
 			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
 	
 			</form>
@@ -80,7 +80,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
             	
             	<th>Foto</th>
             	<th>Hotel</th>
-                <th>Franquiciatario</th>
+                <th>Referidores</th>
                 
                 <th>Comisión</th>
                
@@ -92,7 +92,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
         </thead>
 
         <tbody>
-   			<?php echo $perfiles->ListarFranquiciatario(); ?>
+   			<?php echo $perfiles->ListarReferidores(); ?>
 
 
         </tbody>
@@ -112,7 +112,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
          "language": {
                         "lengthMenu": "Mostar _MENU_ "+" "+"Registros por pagina",
                         "info": "",
-                        "infoEmpty": "No se encontro ningún perfil de usuario",
+                        "infoEmpty": "No se encontro ningún perfil de referidor",
                         "infoFiltered": "(filtrada de _MAX_ registros)",
                         "search": "Buscar:",
                         "paginate": {
@@ -377,11 +377,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 
 							
-							$('actualizar').attr('data-perfil','franquiciatario');
-							$('actualizar').attr('data-solicitud',solicitud);
+							$('.actualizar').attr('data-perfil','franquiciatario');
+							$('.actualizar').attr('data-solicitud',solicitud);
 
 							$('.pcomi').text(comision+" %");
-							$('.modal').modal('show');
+							$('#comision').modal('show');
 						}else{
 
 							var ele = document.getElementById('sliderdinamico');
@@ -410,7 +410,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							$('.actualizar').attr('data-perfil','referidor');
 							$('.actualizar').attr('data-solicitud',solicitud);
 							$('.pcomi').text(comision+" %");
-							$('.modal').modal('show');
+							$('#comision').modal('show');
 
 						}
 						
@@ -838,7 +838,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				</div>
 
 			</div>
-	<input type="hidden" name="actualizar-franquiciatario">
+	<input type="hidden" name="actualizar-referidor">
 		</form>	
 				
 		</div>
@@ -961,7 +961,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						url: '/admin/controller/ControllerRegistro.php',
 						type: 'POST',
 						dataType: 'JSON',
-						data: {solicitudfranquiciatario: solicitud},
+						data: {solicitudreferidor: solicitud},
 					})
 					.done(function(response) {
 
@@ -1159,7 +1159,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									url: '/admin/controller/ControllerRegistro.php',
 									type: 'POST',
 									dataType: 'JSON',
-									data: {solicitudcodigo: 'crearcodigo',codigo:codigo,solicitud:solicitud,perfil:'Franquiciatario'},
+									data: {solicitudcodigo: 'crearcodigo',codigo:codigo,solicitud:solicitud,perfil:'Referidor'},
 								})
 								.done(function(response) {
 									if(response.peticion){
@@ -1210,14 +1210,14 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				var solicitud = $(this).attr('data-solicitud');
 				var path = $(this).attr('data-path');
 
-				var result = confirm('Esta seguro de eliminar a este Franquiciatario?');
+				var result = confirm('Esta seguro de eliminar a este Referidor?');
 
 				if(result){
 						$.ajax({
 							url:'/admin/controller/ControllerRegistro.php',
 							type: 'POST',
 							dataType: 'JSON',
-							data: {solicitud: 'eliminar',franquiciatario:solicitud,perfil:'Franquicitario'},
+							data: {solicitud: 'eliminar',referidor:solicitud,perfil:'Referidor'},
 						})
 						.done(function(response) {
 							

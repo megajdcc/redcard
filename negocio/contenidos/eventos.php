@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Mis eventos | eSmartClub';
+$properties['title'] = 'Mis eventos | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>

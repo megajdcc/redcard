@@ -6721,14 +6721,17 @@ blockquote {
 .document-title {
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url("../img/esmartclub/puerto-vallarta-3.jpg");
+  background-image: url("../img/travelpoints/puerto-vallarta-3.jpg");
   background-position: center center;
 /*  margin: -80px -750px 80px -750px;
   padding: 70px 750px;*/
   background-color: #1b2c45;
   padding: 30px; /*70*/
   margin-bottom: 40px;
-  height: 100px; /*220*/
+  display: flex;
+  justify-content:  center;
+  align-items: center;
+  height: 100%; /*220*/
   position: relative; }
   .document-title h1 {
     color: #fff;
@@ -7817,7 +7820,7 @@ h2.widgettitle {
 */
 .hero-video {
   background-color: #1b2c45;
-  height: 650px;
+  height: 400px;
   position: relative;
   overflow: hidden; }
   .hero-video h1 {

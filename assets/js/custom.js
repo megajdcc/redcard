@@ -649,6 +649,15 @@ $(document).ready(function() {
 		}
 	});
 
+	// Eliminar negocio
+	$('.eliminar-negocio').on('click', function(e) {
+		e.preventDefault();
+		var is_good = confirm('¿Realmente desea eliminar este negocio?');
+		if(is_good){
+			$(this).closest("form").submit();
+		}
+	});
+
 	// Borrar un empleado
 	$('.delete-employee').on('click', function(){
 		return confirm('¿Realmente desea eliminar a este empleado?');

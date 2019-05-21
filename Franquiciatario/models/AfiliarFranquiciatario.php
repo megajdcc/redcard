@@ -134,7 +134,7 @@ class AfiliarFranquiciatario {
 		'nombre'               =>null,
 		'apellido'             =>null,
 		'emailfranquiciatario' =>null,
-		'location'=>null
+		'location'             =>null
 
 
 	);

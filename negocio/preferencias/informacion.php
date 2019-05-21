@@ -36,13 +36,13 @@ echo $navbar = $includes->get_navbar(); ?>
 				<div class="page-title">
 					<h4>Informaci&oacute;n del negocio</h4>
 				</div>
-				<div class="form-group" data-toggle="tooltip" title="Este es el enlace directo al perfil de tu negocio. eSmart Club puede cambiar tu enlace en cualquier momento.">
+				<div class="form-group" data-toggle="tooltip" title="Este es el enlace directo al perfil de tu negocio. Travel Points puede cambiar tu enlace en cualquier momento.">
 					<label for="url">Enlace al perfil de negocio <i class="fa fa-question-circle text-secondary"></i></label>
 					<input class="form-control" type="text" id="url" value="http://www.travelpoints.com.mx/<?php echo $info->get_url();?>" readonly>
 				</div><!-- /.form-group -->
 				<div class="row">
 					<div class="col-lg-8">
-						<div class="form-group" data-toggle="tooltip" title="El buscador de eSmart Club podr&aacute; encontrar tu negocio con este nombre.">
+						<div class="form-group" data-toggle="tooltip" title="El buscador de Travel Points podr&aacute; encontrar tu negocio con este nombre.">
 							<label for="business-name">Nombre de negocio <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
 							<input class="form-control" type="text" id="name" name="name" value="<?php echo $info->get_name();?>" placeholder="Nombre de negocio" required/>
 							<?php echo $info->get_name_error();?>
@@ -73,7 +73,7 @@ echo $navbar = $includes->get_navbar(); ?>
 						</div>
 					</div><!-- /.col-* -->
 				</div><!-- /.row -->
-				<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle sobre tu negocio. El buscador de eSmart Club tambi&eacute;n puede encontrar tu negocio por su descripci&oacute;n. Agrega palabras clave que creas convenientes.">
+				<div class="form-group" data-toggle="tooltip" title="Explica con m&aacute;s detalle sobre tu negocio. El buscador de Travel Points tambi&eacute;n puede encontrar tu negocio por su descripci&oacute;n. Agrega palabras clave que creas convenientes.">
 					<label for="description">Descripci&oacute;n del negocio <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
 					<textarea class="form-control" id="description" placeholder="Breve descripci&oacute;n del negocio" name="description" rows="3" required><?php echo $info->get_description();?></textarea>
 					<?php echo $info->get_description_error();?>

@@ -63,8 +63,8 @@
 										Por un monto de <?php echo $this->getMontoRetiro();?>.
 										
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.com">
+											soporte@infochannel.com
 										</a>
 									</td>
 								</tr>
@@ -106,7 +106,7 @@
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points <?php echo date('Y') ?> Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

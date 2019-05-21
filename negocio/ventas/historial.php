@@ -24,7 +24,7 @@ $pag = new assets\libraries\pagination\pagination($page, $total);
 $pag->setRPP($rpp);
 
 $includes = new negocio\libs\includes($con);
-$properties['title'] = 'Historial de ventas | eSmart Club';
+$properties['title'] = 'Historial de ventas | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_navbar(); ?>
