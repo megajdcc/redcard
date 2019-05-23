@@ -787,7 +787,7 @@ class Home {
 	// }
 
 	public function getComisiones(){
-
+$pref = null;
 		if($this->fechas['inicio'] and $this->fechas['fin']){
 			$query  = "SELECT distinct(nven.iso) as divisa, (SELECT  bh.balance as balance
  					from  balancehotel as bh 
@@ -803,7 +803,7 @@ class Home {
 									':fecha2'=>$this->fechas['fin'],
 									':fecha3'=>$this->fechas['inicio'],
 									':fecha4'=>$this->fechas['fin'],));
-				$pref = null;
+				
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
 					if($row['divisa'] == 'EUR'){

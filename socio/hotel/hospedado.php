@@ -140,7 +140,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
 
 								         	<?php if(!empty($Huesped->getNombreHotel())){?>
-	 										<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo _safe(HOST.'/socio/perfil/huesped'); ?>" type="button" value="grabar" name="send"><i class="fa fa-remove"></i>retirarme</button>
+	 										<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo _safe(HOST.'/socio/perfil/huesped'); ?>" type="button" value="grabar" name="send"><i class="fa fa-remove"></i>Borrar Hotel</button>
 								         	<?php }else{?>
  											<button  class="enviar btn btn-outline-success btn-xl" type="submit" value="grabar" name="send"><i class="fa fa-save"></i>Grabar</button>
 								         <?php 	}  ?>

@@ -556,12 +556,12 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
+								<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es Travel Points</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
 								<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">Travel Points Facebook</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>

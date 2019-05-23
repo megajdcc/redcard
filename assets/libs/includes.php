@@ -133,7 +133,11 @@ class includes {
 				</li>
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
-				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hoteles</a></li>
+				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
+
+				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
+				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
+				<li'.$this->set_active_tab('compras').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras</a></li>
 
 			</ul>
 		</div>';
@@ -250,7 +254,7 @@ class includes {
 				</li>
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
-				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hoteles</a></li>
+				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
 
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
@@ -508,7 +512,7 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="<?php echo HOST.'/que-es-esmart-club'; ?>" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
+								<a href="<?php echo HOST.'/que-es-travel-points'; ?>" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
@@ -516,7 +520,7 @@ class includes {
 								 
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<?php echo $e ?>
-								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-travel-points'; ?>">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="<?php echo HOST.'/tienda/' ?>">Gift Store | Tienda de Regalos</a></li>
 								
 								<li class="visible-xs"><a href="<?php echo HOST.'/contacto'; ?>">Contact | Contacto</a></li>
@@ -555,6 +559,36 @@ class includes {
 								$request = '';
 							}
 
+							$perfil = '';
+							if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
+							switch ($_SESSION['perfil']) {
+							case 'Hotel':
+								$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
+							
+							
+							
+							break;
+							
+							case 'Franquiciatario':	
+							
+							$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
+							
+							
+							break;
+							
+							case 'Referidor':	
+							
+							$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
+							
+							
+							break;
+							
+							default:
+							# code...
+							break;
+							}
+							}
+
 							 ?>
 								</div><!-- /.user-image -->
 										<span class="header-nav-user-name"><?php echo $this->user['alias']; ?></span> <i class="fa fa-chevron-down"></i>
@@ -563,7 +597,7 @@ class includes {
 										<li><a href="<?php echo HOST.'/socio/'; ?>">Mi inicio</a></li>
 										<li><a href="<?php echo HOST.'/socio/perfil/'; ?>">Mi perfil</a></li>
 										<?php  
-										echo $review.$request;
+										echo $review.$request.$perfil;
 								if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){?>
 									
 									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel Travel Points</a><li>
@@ -598,7 +632,7 @@ class includes {
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<li><a href="<?php echo HOST.'/login'; ?>">Login | Iniciar sesi&oacute;n</a></li>
 								<li><a href="<?php echo HOST.'/hazte-socio';?>">Join | Hazte socio</a></li>
-								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-esmart-club'; ?>">What is Travel Points | ¿Qu&eacute; es Red Card?</a></li>
+								<li class="visible-xs"><a href="<?php echo HOST.'/que-es-travel-points'; ?>">What is Travel Points | ¿Qu&eacute; es Red Card?</a></li>
 								<li class="visible-xs"><a href="<?php echo HOST.'/tienda'; ?>">Gift Store | Tienda de Regalos</a></li>
 								
 								<li class="visible-xs"><a href="<?php echo HOST."/contacto" ?>">Contacto</a></li>

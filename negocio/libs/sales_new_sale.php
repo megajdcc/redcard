@@ -242,12 +242,19 @@ class sales_new_sale {
 			:bono_esmarties,
 			:bono_referente
 		)";
+
+
+		if($this->sale['currency'] != 'MXN'){
+			$valor = $this->sale['total'] *  19.02;
+		}else{
+			$valor = $this->sale['total'];
+		}
 		$params = array(
 			':id_usuario' => $this->sale['id'],
 			':id_negocio' => $this->business['id'],
 			':id_empleado' => $this->user['id'],
 			':iso' => $this->sale['currency'],
-			':venta' => $this->sale['total'],
+			':venta' => $valor,
 			':comision' => $this->sale['commission'],
 			':bono_esmarties' => $this->sale['eSmarties'],
 			':bono_referente' => $this->sale['referral_commission']
@@ -679,11 +686,12 @@ class sales_new_sale {
 	public function get_currencies(){
 		$html = null;
 		foreach ($this->currencies as $key => $value) {
-			if($this->sale['currency'] == $key){
+			if($key == 'MXN'){
 				$html .= '<option value="'.$key.'" selected>'.$value.'</option>';
-			}else{
-				$html .= '<option value="'.$key.'">'.$value.'</option>';
 			}
+			// else{
+			// 	$html .= '<option value="'.$key.'">'.$value.'</option>';
+			// }
 		}
 		return $html;
 	}

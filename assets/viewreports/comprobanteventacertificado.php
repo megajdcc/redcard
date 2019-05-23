@@ -12,7 +12,7 @@
 <header id="header" class="cabezera-pdf">
 	<table width="100">
 		<tr>
-			<td><img src="../../assets/img/LOGOV.png" alt="logotipo" class="logo"></td>
+			<td><img src="../../assets/img/travelpointslogofondoazul.png" alt="logotipo" class="logo"></td>
 		</tr>
 	</table>
 </header>

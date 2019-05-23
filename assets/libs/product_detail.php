@@ -269,7 +269,7 @@ class product_detail {
 			$mail->Subject = 'Compra realizada exitosamente | Purchase made successfully';
 			$mail->Body    = $this->email_template($content,$contentingles);
 			if($this->product['category_id'] && $this->product['coupon']){
-				$path = ROOT.'\assets\img\store\coupon\.'.$this->product['coupon'];
+				$path =  $_SERVER['DOCUMENT_ROOT'].'/assets/img/store/coupon/'.$this->product['coupon'];
 				$mail->addAttachment($path);
 			}
 
@@ -291,7 +291,7 @@ class product_detail {
 			$mail2->Password = '20464273jd';
 			$mail2->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
-			$mail2->addAddress('tienda@travelpoints.com.mx');
+			$mail2->addAddress('soporte@infochannel.si');
 			// Hacerlo formato HTML
 			$mail2->isHTML(true);
 			// Formato del correo

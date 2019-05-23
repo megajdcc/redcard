@@ -147,7 +147,7 @@ class product_list {
 					<td>'.$status.'</td>
 					<td>'.$name.'</td>
 					<td>'.$category.'</td>
-					<td>e$'.$price.'</td>
+					<td>Tp$'.$price.'</td>
 					<td>'.$left.' / '.$available.'</td>
 					<td>'.$send.'</td>
 					<td>'.$date.'</td>

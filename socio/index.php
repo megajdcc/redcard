@@ -21,34 +21,34 @@ $options = $home->load_data($page, $rpp);
 $paging = new assets\libraries\pagination\pagination($options['page'], $options['total']);
 $paging->setRPP($rpp);
 $paging->setCrumbs(10);
-if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
-	switch ($_SESSION['perfil']) {
-		case 'Hotel':
+// if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
+// 	switch ($_SESSION['perfil']) {
+// 		case 'Hotel':
 			
-			header('location:'.HOST.'/Hotel/');
+// 			header('location:'.HOST.'/Hotel/');
 			
-			die();
-		break;
+// 			die();
+// 		break;
 
-		case 'Franquiciatario':	
+// 		case 'Franquiciatario':	
 			
-			header('location:'.HOST.'/Franquiciatario/');
+// 			header('location:'.HOST.'/Franquiciatario/');
 			
-			die();
-		break;
+// 			die();
+// 		break;
 
-		case 'Referidor':	
+// 		case 'Referidor':	
 		
-			header('location:'.HOST.'/Referidor/');
+// 			header('location:'.HOST.'/Referidor/');
 		
-			die();
-		break;
+// 			die();
+// 		break;
 		
-		default:
-			# code...
-			break;
-	}
-}
+// 		default:
+// 			# code...
+// 			break;
+// 	}
+// }
 $includes = new assets\libs\includes($con);
 $properties['title'] = 'Novedades de negocios | Travel Points';
 $properties['description'] = '';
@@ -83,14 +83,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											<h4><?php echo $home->get_location();?></h4>
 										</div><!-- /.page-title -->
 
-										<?php 
+										
 
-										if(!isset($_SESSION['perfil'])){?>
+										
 											<h2><span class="mr20">Tp$<?php echo $home->get_eSmarties();?></span><a href="<?php echo HOST;?>/tienda/" class="btn btn-xs btn-primary">Ir a tienda</a><label class="btn-block">Travel Points</label></h2>
 										
-										<?php }else{?>
-											
-										<?php } ?>
+										
 										<h5>Amigos invitados a Travel Points: <span class="mr20"><?php echo $home->get_invited();?></span>
 											<a href="<?php echo HOST;?>/socio/perfil/" class="btn btn-success btn-xs">Invitar</a>
 											<a href="<?php echo HOST;?>/socio/perfil/invitados" class="btn btn-secondary btn-xs">Ver</a>

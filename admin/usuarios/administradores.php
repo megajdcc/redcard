@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Administradores | eSmart Club';
+$properties['title'] = 'Administradores | TravelPoints';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>

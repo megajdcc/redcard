@@ -120,6 +120,7 @@ class includes {
 						$this->crumbs[1] = '';
 						break;
 				}
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/admin/">
@@ -135,6 +136,7 @@ class includes {
 								<span class="subtitle">Movimientos</span>
 							</a>
 						</li>';
+					}
 				break;
 
 				
@@ -163,7 +165,7 @@ class includes {
 								<span class="subtitle">Todos los productos</span>
 							</a>
 						</li>';
-			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 9){
+			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){
 				$this->sidebar .= 
 						'<li'.$this->set_active_sidebar_tab('nuevo-producto.php').'>
 							<a href="'.HOST.'/admin/tienda/nuevo-producto">
@@ -198,6 +200,7 @@ class includes {
 						$this->crumbs[1] = '';
 						break;
 				}
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/admin/usuarios/">
@@ -206,6 +209,7 @@ class includes {
 								<span class="subtitle">Todos los usuarios</span>
 							</a>
 						</li>';
+					}
 			if($_SESSION['user']['id_rol'] == 1){
 				$this->sidebar .= 
 						'<li'.$this->set_active_sidebar_tab('administradores.php').'>
@@ -254,6 +258,9 @@ class includes {
 				}else{
 					$noti = '';
 				}
+
+
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/admin/negocios/">
@@ -269,6 +276,7 @@ class includes {
 								<span class="subtitle">Ver todas las solicitudes</span>
 							</a>
 						</li>';
+					}
 			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar .= 
 						'
@@ -290,6 +298,7 @@ class includes {
 							</a>
 						</li>';
 			}
+			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 			$this->sidebar .= 
 					'<li'.$this->set_active_sidebar_tab('reporte.php').'>
 						<a href="'.HOST.'/admin/negocios/reporte">
@@ -298,6 +307,7 @@ class includes {
 							<span class="subtitle">Movimientos de saldos</span>
 						</a>
 					</li>';
+				}
 				break;
 
 				case 'perfiles':
@@ -331,6 +341,8 @@ class includes {
 				}else{
 					$notif = '';
 				}
+
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/admin/perfiles/">
@@ -385,6 +397,8 @@ class includes {
 							</a>
 						</li>
 						';
+
+					}
 				break;
 
 			case 'preferencias':
@@ -403,6 +417,8 @@ class includes {
 						$this->crumbs[1] = '';
 						break;
 				}
+
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 				$this->sidebar =
 						'<li'.$this->set_active_sidebar_tab('codigo-seguridad.php').'>
 							<a href="'.HOST.'/admin/preferencias/codigo-seguridad">
@@ -419,6 +435,7 @@ class includes {
 								<span class="subtitle">Del sistema</span>
 							</a>
 						</li>';
+					}
 				break;
 			default:
 				$this->crumbs[0] = '';
@@ -580,12 +597,12 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
+								<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel Points?">
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-								<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es Travel Points?</a></li>
+								<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
 								<li class="visible-xs"><a href="http://www.facebook.com/TravelPointsMX" target="_blank">Travel Points Facebook</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>
@@ -649,7 +666,7 @@ class includes {
 			<div class="wrapper-admin">
 				<div class="sidebar-admin">
 					<ul>';
-				if($_SESSION['user']['id_rol'] != 9){
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 
 			$html .=	'<li'.$this->set_active_tab('admin').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/admin/"><i class="fa fa-home"></i></a></li>
 						<li'.$this->set_active_tab('negocios').' data-toggle="tooltip" data-placement="right" title="Negocios"><a href="'.HOST.'/admin/negocios/"><i class="fa fa-briefcase"></i></a></li>
@@ -660,11 +677,19 @@ class includes {
 
 								<li'.$this->set_active_tab('perfiles').' data-toggle="tooltip" data-placement="right" title="Perfiles"><a href="'.HOST.'/admin/perfiles/"><i class="fa fa-users"></i></a></li>';
 				}
+					if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){
 
-			$html .=	'<li'.$this->set_active_tab('tienda').' data-toggle="tooltip" data-placement="right" title="Tienda de regalos"><a href="'.HOST.'/admin/tienda/"><i class="fa fa-shopping-bag"></i></a></li>
-						<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias"><a href="'.HOST.'/admin/preferencias/codigo-seguridad"><i class="fa fa-cog"></i></a></li>
-						<li'.$this->set_active_tab('administracion').' data-toggle="tooltip" data-placement="right" title="Administrativo"><a href="'.HOST.'/admin/adminstracion/Iata"><i class="fa fa-coogs"></i></a></li>
-					</ul>
+			$html .=	'<li'.$this->set_active_tab('tienda').' data-toggle="tooltip" data-placement="right" title="Tienda de regalos"><a href="'.HOST.'/admin/tienda/"><i class="fa fa-shopping-bag"></i></a></li>';
+
+			}
+			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
+
+				
+			$html .='<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias"><a href="'.HOST.'/admin/preferencias/codigo-seguridad"><i class="fa fa-cog"></i></a></li>
+						<li'.$this->set_active_tab('administracion').' data-toggle="tooltip" data-placement="right" title="Administrativo"><a href="'.HOST.'/admin/adminstracion/Iata"><i class="fa fa-coogs"></i></a></li>';
+
+					}
+			$html .='</ul>
 				</div><!-- /.sidebar-admin-->
 				<div class="sidebar-secondary-admin">
 					<ul>

@@ -11,6 +11,11 @@ if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SES
 	include(ROOT.'/errores/404.php');
 	die();
 }
+if($_SESSION['user']['id_rol'] == 3){
+
+	header('location:/admin/tienda/');
+
+}
 if(!isset($_SESSION['user']['admin_authorize'])){
 	header('Location: '.HOST.'/admin/acceso');
 	die();
@@ -229,10 +234,7 @@ echo $navbar = $includes->get_admin_navbar();
 											 		renderTo: 'grafica1',
 											        type: 'pie'
 											    },
-											   lang:{
-															decimalPoint: ',',
-								   						thousandsSep: '.'
-													},
+											  
 											    title: {
 											        text: 'Ventas promedio por negocios'
 											    },
@@ -247,6 +249,10 @@ echo $navbar = $includes->get_admin_navbar();
 											    
 											    plotOptions: {
 											        pie: {
+											        	 lang:{
+															decimalPoint: '.',
+								   						thousandsSep: ','
+													},
 														allowPointSelect:true,
 														cursor:'pointer',
 														borderWidth: 0,

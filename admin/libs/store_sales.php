@@ -212,7 +212,7 @@ class store_sales{
 					<td>'.$id.'</td>
 					<td>'.$status.'</td>
 					<td>'.$name.'</td>
-					<td>e$ '.$price.'</td>
+					<td>Tp$ '.$price.'</td>
 					<td>'.$date.'</td>
 					<td>'.$label.'</td>
 					<td>'.$alias.'</td>

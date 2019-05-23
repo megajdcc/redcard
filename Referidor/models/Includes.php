@@ -274,6 +274,7 @@ class Includes {
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
 				
+				<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 
 				<title>'.$title.'</title>
 				<meta name="description" content="'.$description.'" />
@@ -290,6 +291,16 @@ class Includes {
 		}
 		$html =
 				'<body class="">
+					<script>
+				(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				})(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+				
+				ga("create", "UA-57870544-2", "auto");
+				ga("send", "pageview");
+				
+				</script>
 				<div id="fb-root"></div>
 				<div class="page-wrapper">
 					<header class="header">
@@ -319,7 +330,7 @@ class Includes {
 											
 										
 											<div class="header-button">
-												<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
+												<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="What is Travel Points | ¿Qu&eacute; es Travel Points?">
 													<i class="fa fa-question"></i>
 												</a>
 											</div>';
@@ -329,7 +340,7 @@ class Includes {
 												$html .= 
 											'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 												'.$e.'
-												<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
+												<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
 												
 												
 												<li class="visible-xs"><a href="'.HOST.'/contacto">Contact | Contacto</a></li>
@@ -364,7 +375,7 @@ class Includes {
 											'<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 												<li><a href="'.HOST.'/login">Login | Iniciar sesi&oacute;n</a></li>
 												<li><a href="'.HOST.'/hazte-socio">Join | Hazte socio</a></li>
-												<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
+												<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">What is Travel Points | ¿Qu&eacute; es Travel Points?</a></li>
 												
 												
 												<li class="visible-xs"><a href="'.HOST.'/contacto">Contacto</a></li>
@@ -423,12 +434,12 @@ class Includes {
 										</div>
 										
 										<div class="header-button">
-											<a href="'.HOST.'/que-es-esmart-club" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es eSmart Club?">
+											<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es eSmart Club?">
 												<i class="fa fa-question"></i>
 											</a>
 										</div>
 										<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-											<li class="visible-xs"><a href="'.HOST.'/que-es-esmart-club">¿Qu&eacute; es eSmart Club?</a></li>
+											<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es eSmart Club?</a></li>
 											
 											<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">eSmart Club Facebook</a></li>
 											<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta eSmart Club</a></li>

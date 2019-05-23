@@ -187,7 +187,7 @@ class member_list {
 						<th>Foto</th>
 						<th>Username</th>
 						<th>Correo electr&oacute;nico</th>
-						<th>eSmartties</th>
+						<th>Travel Points</th>
 						<th></th>
 						<th>Nombre</th>
 						<th>Apellido</th>

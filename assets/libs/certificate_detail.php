@@ -77,7 +77,7 @@ class certificate_detail {
 	}
 
 	public function get_value(){
-		$price = number_format((float)$this->certificate['valued'], 2, '.', '');
+		$price = number_format((float)$this->certificate['valued'], 2, '.', ',');
 		return $price.' '.$this->certificate['iso'];
 	}
 
@@ -134,8 +134,8 @@ class certificate_detail {
 	}
 
 	public function get_condition(){
-		if(!empty($this->certificate['condition'])){
-			return nl2br(_safe($this->certificate['condition']));
+		if(!empty($this->certificate['condiciones'])){
+			return nl2br(_safe($this->certificate['condiciones']));
 		}else{
 			return 'No tiene.';
 		}

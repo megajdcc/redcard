@@ -58,7 +58,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							<label for="price">Precio en Travel Points <span class="required">*</span></label>
 							<div class="input-group">
 								<span class="input-group-addon">Tp$</span>
-								<input class="form-control" type="text" id="price" name="price" value="<?php echo $product->get_price();?>" placeholder="Precio en eSmartties"/ required>
+								<input class="form-control" type="text" id="price" name="price" value="<?php echo $product->get_price();?>" placeholder="Precio en TravelPoints"/ required>
 							</div>
 							<?php echo $product->get_price_error();?>
 						</div><!-- /.form-group -->

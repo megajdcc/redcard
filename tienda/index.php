@@ -3,11 +3,7 @@ $con = new assets\libs\connection();
 
 $catalog = new assets\libs\product_catalog($con);
 
-if (isset($_SESSION['perfil'])) {
-	header('Location: ../index.php');
-	die();
-	
-}
+
 
 $filter['category'] = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE_INT);
 $filter['sorting'] = filter_input(INPUT_GET, 'ordenar');

@@ -25,7 +25,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 }
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Nuevo administrador | eSmart Club';
+$properties['title'] = 'Nuevo administrador | TravelPoints';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -40,12 +40,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				</div>
 				<div class="row">
 					<div class="col-md-8">
-						<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de eSmart Club al que desea darle privilegios de administrador. Verifique su coincidencia cuidadosamente.">
-							<label for="user-search-input">Socio de eSmart Club <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de TravelPoints al que desea darle privilegios de administrador. Verifique su coincidencia cuidadosamente.">
+							<label for="user-search-input">Socio de TravelPoints <i class="fa fa-question-circle text-secondary"></i></label>
 							<div class="search-placeholder" id="user-search-placeholder">
 										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
-							<input class="form-control typeahead" type="text" id="user-search-input" name="username" value="<?php echo $admin->get_username();?>" placeholder="Socio de eSmart Club" autocomplete="off" required />
+							<input class="form-control typeahead" type="text" id="user-search-input" name="username" value="<?php echo $admin->get_username();?>" placeholder="Socio de TravelPoints" autocomplete="off" required />
 							<?php echo $admin->get_username_error();?>
 						</div>
 					</div>

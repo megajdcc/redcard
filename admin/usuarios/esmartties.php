@@ -29,7 +29,7 @@ $paging->setRPP($rpp);
 $paging->setCrumbs(10);
 
 $includes = new admin\libs\includes($con);
-$properties['title'] = 'Historial de movimientos | eSmart Club';
+$properties['title'] = 'Historial de movimientos | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
@@ -41,7 +41,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			<div class="page-title">
 				<h4>Historial de <?php echo $esmarties->get_alias();?></h4>
 			</div>
-			eSmartties actuales: <strong class="text-primary"><?php echo $esmarties->get_eSmarties();?></strong>
+			Travel Points actuales: <strong class="text-primary"><?php echo $esmarties->get_eSmarties();?></strong>
 			<?php echo $esmarties->get_moves(); echo $paging->parse(); ?>
 		</div>
 	</div>
