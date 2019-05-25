@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if(!$url = filter_input(INPUT_GET, 'url')){
@@ -13,6 +13,8 @@ $business = new assets\libs\business_certificates($con);
 
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
 $rpp = 10;
+
+
 $options = $business->load_data($url, $page, $rpp);
 
 if(!$options){

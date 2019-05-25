@@ -51,7 +51,9 @@ class user_expenses {
 			$this->pagination['rpp'] = $rpp;
 			$this->pagination['max'] = (int)ceil($this->pagination['total'] / $this->pagination['rpp']);
 			$this->pagination['page'] = min($this->pagination['max'], $page);
-			$this->pagination['offset'] = ($this->pagination['page'] - 1) * $this->pagination['rpp'];
+			$this->pagination['offset'] = ($this->pagination['page'] -1) * $this->pagination['rpp'];
+
+
 			// Variables retornables
 			$pagination['page'] = $this->pagination['page'];
 			$pagination['total'] = $this->pagination['total'];
@@ -64,6 +66,7 @@ class user_expenses {
 				ORDER BY v.creado DESC
 				LIMIT :limit OFFSET :offset";
 			try{
+
 				$stmt = $this->con->prepare($query);
 				$stmt->bindValue('id_usuario', $this->user['id'], PDO::PARAM_INT);
 				$stmt->bindValue(':limit', $this->pagination['rpp'], PDO::PARAM_INT);
@@ -203,10 +206,12 @@ class user_expenses {
 	public function get_expenses(){
 		$html = null;
 		$count = $this->pagination['total']-$this->pagination['offset'];
+
+		
 		foreach ($this->user['expenses'] as $key => $value) {
-			$sale = number_format((float)$value['sale'], 2, '.', '');
+			$sale = number_format((float)$value['sale'], 2, '.', ',');
 			$commission = _safe($value['commission']);
-			$eSmarties = number_format((float)$value['eSmarties_bonus'], 2, '.', '');
+			$eSmarties = number_format((float)$value['eSmarties_bonus'], 2, '.', ',');
 			$url = _safe($value['business_url']);
 			$name = _safe($value['business_name']);
 			$date = date('d/m/Y \a \l\a\s g:i A', strtotime($value['created_at']));

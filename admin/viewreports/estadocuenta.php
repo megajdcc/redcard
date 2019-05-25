@@ -54,14 +54,24 @@
 			<?php } ?>
 
 
-			<?php if(!empty($this->usuario) && !empty($this->negocio)){ ?>
+			<?php if(!empty($this->usuario)){ ?>
 						<td><?php echo $this->getNombreUsuario(); ?></td>
-						<td><?php echo $this->getNombreNegocio(); ?></td>
+						
 				<?php  }else{?>
 						
 						<td>Todos los usuarios</td>
-						<td >Todos los negocios</td>
+					
 				<?php  }?>
+
+				<?php if(!empty($this->negocio)){ ?>
+						<td><?php echo $this->getNombreNegocio(); ?></td>
+						
+				<?php  }else{?>
+						
+						<td>Todos los negocios</td>
+					
+				<?php  }?>
+
 			</tr>
 		</tbody>
 	</table>
@@ -94,17 +104,22 @@
 			  	
 			  	$comision = '<strong class="negativo">$'.$value["comision"].'</strong>';
 			  }else{
-			  	$comision = '$'.$value['comision'];
+			  	$comision = '$'.number_format((float)$value['comision'],2,'.',',');
 			  }
 			if(!empty($value['nombre'])){
 				$nombre = $value['nombre'];
 			}else{
 				$nombre = $value['username'];
 			}
+
+			$negocio = 'Eliminado';
+			if(!empty($value['negocio'])){
+				$negocio = $value['negocio'];
+			}
 			?>
 		 		<tr class="estado">
 					<td class="b1"><?php echo $fecha ?></td>
-					<td class="b1"><?php echo $value['negocio'] ?></td>
+					<td class="b1"><?php echo $negocio;?></td>
 					<td class="b1"><?php echo $nombre ?></td>
 					<td class="b1"><?php echo $venta; ?></td>
 					<td class="b1"><?php echo $comision; ?></td>

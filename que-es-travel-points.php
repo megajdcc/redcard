@@ -38,7 +38,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							<mark>Gana Regalos</mark>  de calidad, Productos y Servicios como joyas, hospedajes, masajes y mucho más. Velos ahora mismo en nuestra <a href="<?php echo HOST.'/tienda/';?>">tienda</a>.
 						</p>
 						<p>
-							Elige tus regalos favoritos y págalos con tus puntos (<strong>Travel Points</strong>) qque vas acumulando con cada compra registrada en cualquiera de los negocios afiliados.
+							Elige tus regalos favoritos y págalos con tus puntos (<strong>Travel Points</strong>) que vas acumulando con cada compra registrada en cualquiera de los negocios afiliados.
 						</p>
 						<p>
 							Cada negocio te regala un porcentaje de tu compra en puntos, y se suman todos en tu cuenta de Travel Points: así sumas puntos mucho más rápido.
@@ -47,7 +47,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							Para saber cuánto te ofrece cada negocio puedes visitarlo y verlo. Está en el cuadrito de color ubicado junto a la categoría del negocio.
 						</p>
 						<p>
-							Cuando ingresas a tu cuenta podrás ver tus puntos, y si vas a Compras podrás ver todas las comprs que te han registrado. No te olvides de pedir que te registren tus puntos cada vez que compres en cualquiera de los negocios afiliados.
+							Cuando ingresas a tu cuenta podrás ver tus puntos, y si vas a compras podrás ver todas las compras que te han registrado. No te olvides de pedir que te registren tus puntos cada vez que compres en cualquiera de los negocios afiliados.
 						</p>
 						<p>
 							También puedes seguir a tus negocios favoritos para enterarte de todas sus novedades y promociones.

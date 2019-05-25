@@ -87,7 +87,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 				<section class="collapse" id="collapse">
 					
-								<form action="<?php echo _safe($_SERVER['REQUEST_URI']);?>"  method="POST"  class="was-validated pull-right" accept-charset="utf-8">
+								<form action="<?php echo _safe($_SERVER['REQUEST_URI']);?>"  method="POST"  class="was-validated" accept-charset="utf-8">
 								<section class=" content-solicitud">
 										<div class="row">
 											<div class="titulo">

@@ -88,19 +88,35 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<div class="col-sm-3">
 						<div class="form-group">
 							<label for="category">Usuario</label>
-								<select  data-live-search="true" class="form-control" id="user" name="usuario" title="Seleccionar usuario" required>
-									<?php echo $reports->getUsuario(); ?>
+								<select  data-live-search="true" class="form-control" id="users" name="usuario" title="Seleccionar usuario" >
+									<?php echo $reports->getUsuario($reports->usuario); ?>
 									
 								</select>
+
+								<script>
+									$(document).ready(function() {
+									
+										$('#users').selectpicker('refresh');
+									});
+								</script>
+
+
 								
 						</div>
 					</div>
 					<div class="col-sm-3">
 						<div class="form-group">
 							<label for="category">Negocios </label>
-								<select class="form-control" data-live-search="true" id="category" name="negocio" title="Seleccionar categor&iacute;a" required>
-									<?php echo $info->getNegocios();?>
+								<select class="form-control" data-live-search="true" id="negocios" name="negocio" title="Seleccionar categor&iacute;a" >
+									<?php echo $info->getNegocios($reports->negocio);?>
 								</select>
+
+								<script>
+									$(document).ready(function() {
+										$('#negocios').selectpicker('refresh');
+										$('#user').selectpicker('refresh');
+									});
+								</script>
 								<?php echo $info->get_category_error();?>
 						</div>
 					</div>
@@ -170,13 +186,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				<script>
 
 				 var t = $('#estadodecuenta').DataTable( {
-					"paging"        :         false,
+					"paging"        :         true,
 					"scrollY"       :        "400px",
 					"scrollCollapse": true,
 			         "language": {
-			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
+			                        "lengthMenu": "Mostrar _MENU_ registros por paginas",
 			                        "info": "",
-			                        "infoEmpty": "No se encontro ningún estado por este filtro intente de nuevo con otro...",
+			                        "infoEmpty": "No se encontro ningúna venta por este filtro intente de nuevo con otro...",
 			                        "infoFiltered": "(filtrada de _MAX_ registros)",
 			                        "search": "Buscar: ",
 			                        "paginate": {

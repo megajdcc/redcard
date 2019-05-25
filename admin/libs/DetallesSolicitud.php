@@ -146,7 +146,7 @@ class DetallesSolicitud {
 
 			if($pago){
 
-				$sql = "select h.id as idhotel, h.id_datospagocomision as idpago,h.id_responsable_promocion as responsable from hotel as h join solicitudhotel as sh on h.id=sh.id_hotel where sh.id = :solicitud";
+				$sql = "select h.id as idhotel, h.id_datospagocomision as idpago,h.id_responsable_promocion as responsable from hotel as h where h.id = :solicitud";
 
 
 				try {
@@ -387,10 +387,10 @@ class DetallesSolicitud {
 
 		$this->setSolicitud($id);
 
-		$query = "select h.codigo,h.id as id_hotel, h.comision, sh.id, u.email as emailusuario, u.username, u.nombre as usuario_nombre,u.apellido as usuario_apellido, h.nombre as hotel, h.id_iata,i.codigo as iata, h.sitio_web,h.direccion, h.codigo_postal, h.id_ciudad,c.ciudad,est.id_estado,est.estado,
+		$query = "select h.codigo,h.imagen,h.id as id_hotel, h.comision, h.nombre as hotel, h.id_iata,i.codigo as iata, h.sitio_web,h.direccion, h.codigo_postal, h.id_ciudad,c.ciudad,est.id_estado,est.estado,
 			pa.id_pais, pa.pais,h.longitud,h.latitud,per.id as id_persona,  per.nombre as nombre_responsable, per.apellido as apellido_responsable,rap.id as id_responsableareapromocion, rap.email,rap.cargo,
 			rap.telefono_fijo, rap.telefono_movil,dpc.id as id_datospagocomision, dpc.banco, dpc.cuenta,dpc.clabe, dpc.swift,
-			dpc.banco_tarjeta, dpc.numero_tarjeta, dpc.email_paypal,sh.condicion,sh.creado,sh.comentario 
+			dpc.banco_tarjeta, dpc.numero_tarjeta, dpc.email_paypal 
 			from hotel as h
 			join iata as i on h.id_iata = i.id
 			join ciudad as c on h.id_ciudad = c.id_ciudad
@@ -399,9 +399,7 @@ class DetallesSolicitud {
 			join responsableareapromocion as rap on h.id_responsable_promocion = rap.id
 			join persona as per on rap.dni_persona = per.id
 			left join datospagocomision as dpc on h.id_datospagocomision = dpc.id
-			join solicitudhotel as sh on h.id = sh.id_hotel 
-			join usuario as u on sh.id_usuario = u.id_usuario
-			where sh.id = :nrosolicitud";
+			where h.id = :nrosolicitud";
 
 		try {
 				$stm = $this->con->prepare($query);
@@ -1324,7 +1322,7 @@ class DetallesSolicitud {
 
 				$query5 = "update solicitudhotel set comentario =:comentario, condicion=:condicion where id =:nrosolicitud";
 
-				$query6 = "update usuario set id_rol =:rol where id_usuario = (select id_usuario from solicitudhotel where id=:nrosolicitud)";
+				
 						
 						try {
 							$stm = 	$this->con->prepare($query1);
@@ -1408,11 +1406,7 @@ class DetallesSolicitud {
 											$resultado = $stm4->execute(array(':comentario'=>$this->getComentario(),
 															':condicion'=>1,
 															':nrosolicitud'=>$this->getId()));
-											$this->con->commit();
-
-											$stm5 = $this->con->prepare($query6);
-											$resultado = $stm5->execute(array(':rol'=>10,
-																				':nrosolicitud'=>$this->getId()));
+									
 											$this->con->commit();
 
 

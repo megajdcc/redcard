@@ -165,64 +165,56 @@ class PerfilesList {
 	}
 
 	public function ListarHoteles(){
-				$sql = "(select sh.condicion,CONCAT(u.nombre,' ',u.apellido) as dueno,h.nombre as nombrehotel, u.username,u.telefono,u.ultimo_login,u.email,'Hotel' as proviene, sh.id as nrosolicitud,u.imagen, u.nombre, u.apellido,h.comision
-				from solicitudhotel as sh join usuario as u on sh.id_usuario = u.id_usuario join hotel as h on sh.id_hotel = h.id where sh.condicion = 1)";
+				$sql = "SELECT h.imagen, h.id as idhotel,h.comision, h.nombre as nombrehotel, h.codigo, concat(c.ciudad,' ',e.estado,' ',p.pais) as direccion from hotel as h join ciudad as c on h.id_ciudad = c.id_ciudad join estado as e on h.id_estado = e.id_estado join pais as p on e.id_pais = p.id_pais";
 				
 		$result = $this->con->prepare($sql);
 		$result->execute();
 
-		$urlimg =  HOST.'/assets/img/user_profile/';
+		$urlimg =  HOST.'/assets/img/hoteles/';
 		while ($fila = $result->fetch(PDO::FETCH_ASSOC)) {
-
-
-			if(!empty($fila['dueno'])){
-				$nombre = $fila['dueno'];
-				
-			}else{
-				$nombre = $fila['username'];
-			}
 			
 			$nombrehotel       = $fila['nombrehotel'];
-			$apellido     = $fila['apellido'];
-			$proviene     = $fila['proviene'];
-			$nrosolicitud = $fila['nrosolicitud'];
+			$direccion     = $fila['direccion'];
+			
 			$foto         = $fila['imagen'];
 			if(empty($foto) || is_null($foto)){
 				$foto = 'default.jpg';
 			}
 			$comision     = $fila['comision'];
-			$email = $fila['email'];
-			$username = $fila['username'];
-			$ultimologin = date('d/m/Y g:i A', strtotime($fila['ultimo_login']));
-			$telefono = $fila['telefono'];
+			
+			$direccion = $fila['direccion'];
+			$idhotel = $fila['idhotel'];
 			?>
-			<tr id="<?php echo $nrosolicitud; ?>">
+			<tr id="<?php echo $idhotel; ?>">
 				
 			
 				<td>
 				
-					<div class="user user-md">
-						<a href="<?php echo HOST."/socio/".$username; ?>" target="_blank"><img src="<?php echo $urlimg.$foto;?>"></a>
+					<div class="user user-md detail-gallery-preview">
+						<a href="<?php echo $urlimg.$foto;?>">
+							<img class="img-thumbnail img-rounded" src="<?php echo $urlimg.$foto;?>">
+						</a>
 					</div>
 					
 				</td>
 				<td><?php echo $nombrehotel; ?></td>
-				<td><?php  echo $nombre?></td>
+				<td><?php  echo $direccion?></td>
 			
 				<td style="text-align: center;"><?php  echo $comision .' %';?>
-					<button type="button"  data-toggle="tooltip" title="Actualizar Comisión." data-placement="left" data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarcomision  pull-right">
+					<button type="button"  data-toggle="tooltip" title="Actualizar Comisión." data-placement="left" data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $idhotel; ?>" data-perfil="<?php echo 'Hotel'; ?>" class="actualizarcomision  pull-right">
 						<i class="fa fa-pencil-square-o"></i>
 					</button>
 					
 				</td>
 				
-				<td><?php echo $ultimologin; ?></td>
+
 
 			
 				<td>
-					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
+					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $idhotel; ?>" data-perfil="<?php echo 'Hotel'; ?>" class="actualizarperfil btn-xs pull-right">
 					 Ver / Editar <i class="fa fa-cogs"></i> 
 					</button>
+				
 				</td>
             </tr>
 			<?php
@@ -308,7 +300,7 @@ class PerfilesList {
 				$this->con->beginTransaction();
 
 
-				$query = "update hotel set comision = :comision where id = (select id_hotel from solicitudhotel where id =:solicitud)";
+				$query = "update hotel set comision = :comision where id = :solicitud";
 
 				try {
 

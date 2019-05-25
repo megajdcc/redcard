@@ -5,6 +5,13 @@ unset($_SESSION['user']);
 unset($_SESSION['business']);
 unset($_SESSION['notification']);
 unset($_SESSION['notificacion']);
+
 unset($_SESSION['perfil']);
 header('Location: '.HOST.'/');
+
+if(isset($_SESSION['nombrehotel']) and isset($_SESSION['codigohotel'])){
+	unset($_SESSION['nombrehotel']);
+	unset($_SESSION['codigohotel']);
+}
+
 die(); ?>

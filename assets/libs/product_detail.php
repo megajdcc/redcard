@@ -128,10 +128,10 @@ class product_detail {
 			$dompdf = new pdf($option);
 		
 			$dompdf->loadHtml($html);
-			$dompdf->setPaper('A4', 'landscape');
+			$dompdf->setPaper('A5', 'landscape');
 			$dompdf->render();
 
-			$dato = array('Attachment' => 1);
+			$dato = array('Attachment' => 0);
 			$titulo = "Travel Points: Comprobante de compra de ".$this->product['name'];
 			$dompdf->stream($titulo.'.pdf',$dato);
 
@@ -151,10 +151,10 @@ class product_detail {
 			$dompdf = new pdf($option);
 		
 			$dompdf->loadHtml($html);
-			$dompdf->setPaper('A4', 'landscape');
+			$dompdf->setPaper('A5', 'landscape');
 			$dompdf->render();
 
-			$dato = array('Attachment' => 1);
+			$dato = array('Attachment' => 0);
 			$titulo = "Travel Points: Comprobante de compra de ".$this->product['name'];
 			$dompdf->stream($titulo.'.pdf',$dato);
 
@@ -173,7 +173,7 @@ class product_detail {
 			$dompdf = new pdf($option);
 		
 			$dompdf->loadHtml($html);
-			$dompdf->setPaper('A4', 'portrait');
+			$dompdf->setPaper('A5', 'landscape');
 			$dompdf->render();
 
 			$dato = array('Attachment' => 0);
@@ -383,7 +383,7 @@ class product_detail {
 
 			if($type == 1){
 				$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y podrás recogerlo en nuestra tienda ubicada en Marina Vallarta Business Center, Oficina 204. Interior Plaza Marina, en el fraccionamiento Marina Vallarta, Puerto Vallarta. Teléfono (322) 2259635. de lunes a viernes de 9AM a 6PM y los Sabados de 9AM a 2PM. Guarda este comprobante para futuras referencias.
-				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" > 
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" target="_blank"> 
 				<br>
 				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante" class="emit-comprobante btn btn-danger"><i class="fa fa-file-pdf-o"></i>Descargar Comprobante</button>
 				</form>
@@ -392,7 +392,7 @@ class product_detail {
 
 				$_SESSION['notification']['ventaexitosa'] = true; 
 				$_SESSION['notification']['success'] = '!Felicidades! Has comprado <strong>'.$this->product['name'].'</strong> con exito y podrás recogerlo en nuestra tienda ubicada en Marina Vallarta Business Center, Oficina 204. Interior Plaza Marina, en el fraccionamiento Marina Vallarta, Puerto Vallarta. Teléfono (322) 2259635. de lunes a viernes de 9AM a 6PM y los Sabados de 9AM a 2PM. Guarda este comprobante para futuras referencias.
-				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'"> 
+				<form method="post" action="'._safe($_SERVER['REQUEST_URI']).'" target="_blank"> 
 				<br>
 
 				<button type="submit" data-path="'._safe($_SERVER['REQUEST_URI']).'" name="emitircomprobante2" class="emit-comprobante btn btn-danger"><i class="fa fa-file-pdf-o"></i>Descargar Comprobante</button>

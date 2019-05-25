@@ -15,8 +15,8 @@ echo $navbar = $includes->get_main_navbar();
 		<div class="content">
 			<div class="mt-80">
 				<div class="hero-video">
-					<video preload="metadata" autoplay="" muted="" loop="">
-						<source src="<?php echo HOST.'/assets/img/esmartclub/sky.mp4';?>" type="video/mp4">
+					<video preload="auto" autoplay="autoplay" muted="" loop="loop">
+						<source src="<?php echo HOST.'/assets/img/travelpoints/sky.mp4';?>" type="video/mp4">
 					</video>
 					<div class="video-overlay"></div>
 					<div class="container centro">

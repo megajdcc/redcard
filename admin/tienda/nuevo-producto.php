@@ -7,7 +7,7 @@ if(!isset($_SESSION['user'])){
 	include(ROOT.'/errores/404.php');
 	die();
 }
-if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SESSION['user']['id_rol'] != 9){
+if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SESSION['user']['id_rol'] != 3 && $_SESSION['user']['id_rol'] != 9){
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');
 	die();

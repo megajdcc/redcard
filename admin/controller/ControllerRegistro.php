@@ -176,11 +176,11 @@ if(isset($_POST['solicitudcodigo'])){
 		'codigoiata'         =>null,
 		'id_hotel'           =>null);
 			
-			$datosusuario = array(	'username'=>$_POST['username'],
-									'email'           =>$_POST['emailuser'],
-									'password'        =>$_POST['password'],
-									'password-retype' =>$_POST['password-retype'],
-									'referral'        =>$_SESSION['user']['id_usuario']);
+			// $datosusuario = array(	'username'=>$_POST['username'],
+			// 						'email'           =>$_POST['emailuser'],
+			// 						'password'        =>$_POST['password'],
+			// 						'password-retype' =>$_POST['password-retype'],
+			// 						'referral'        =>$_SESSION['user']['id_usuario']);
 
 
 			$datohotel = array('nombre'=>$_POST['nombre'],
@@ -200,7 +200,7 @@ if(isset($_POST['solicitudcodigo'])){
 								'telefonofijo'         =>$_POST['telefonofijo'],
 								'movil'                =>$_POST['movil']);
 
-
+		
 			if($_POST['pago'] == false){
 
 				$datopago = null;
@@ -217,13 +217,13 @@ if(isset($_POST['solicitudcodigo'])){
 			}
 			
 
-			$result = $reg->setData($datosusuario,'Admin');
+			$result = 1;
 			
 
 			if($result > 0){
 				$response['usuario_registrado'] = true;
 				
-				$result = $hotel->set_data($datohotel,$datopago,$result);
+				$result = $hotel->set_data($datohotel,$datopago,3,$_FILES);
 
 				if($result){
 					$response['peticion'] = true;
@@ -231,12 +231,8 @@ if(isset($_POST['solicitudcodigo'])){
 					$response['pago_registrado'] = true;
 					$response['mensaje'] = "Hotel registrado con exito, Si Desea Genere el Codigo de hotel y adjudique su comision de una vez...";
 
-
-
 					$datos = $hotel->capturarultimo();
-
-					
-					$response['nrosolicitud'] = $datos[0]['solicitud'];
+				
 					$response['nombrehotel']  = $datos[0]['nombrehotel'];
 					$response['codigoiata']   = $datos[0]['codigo'];
 					$response['id_hotel']   = $datos[0]['idhotel'];

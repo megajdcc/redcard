@@ -1,4 +1,4 @@
-<?php # Desarrollado por Info Channel
+<?php 
 namespace assets\libs;
 use PDO;
 

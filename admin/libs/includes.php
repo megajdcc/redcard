@@ -352,13 +352,7 @@ class includes {
 							</a>
 						</li>
 
-						<li'.$this->set_active_sidebar_tab('solicitudes.php').'>
-							<a href="'.HOST.'/admin/perfiles/solicitudes">
-								<span class="icon"><i class="fa fa-file"></i></span>
-								<span class="title">Solicitudes'.$noti.'</span>
-								<span class="subtitle">Ver todas las solicitudes</span>
-							</a>
-						</li>
+						
 						<li'.$this->set_active_sidebar_tab('hoteles.php').'>
 							<a href="'.HOST.'/admin/perfiles/hoteles">
 								<span class="icon"><i class="fa fa-hotel"></i></span>
@@ -366,21 +360,7 @@ class includes {
 								<span class="subtitle">Todos los hoteles</span>
 							</a>
 						</li>
-						<li'.$this->set_active_sidebar_tab('franquiciatarios.php').'>
-							<a href="'.HOST.'/admin/perfiles/franquiciatarios">
-								<span class="icon"><i class="fa fa-black-tie"></i></span>
-								<span class="title">Franquiciatarios</span>
-								<span class="subtitle">Todos los franquiciatario</span>
-							</a>
-						</li>
-						<li'.$this->set_active_sidebar_tab('referidores.php').'>
-							<a href="'.HOST.'/admin/perfiles/referidores">
-								<span class="icon"><i class="fa fa-black-tie"></i></span>
-								<span class="title">Referidores</span>
-								<span class="subtitle">Todos los Referidores</span>
-							</a>
-						</li>
-
+					
 						<li'.$this->set_active_sidebar_tab('comprobantes.php').'>
 							<a href="'.HOST.'/admin/perfiles/comprobantes">
 								<span class="icon"><i class="fa fa-file-pdf-o"></i></span>

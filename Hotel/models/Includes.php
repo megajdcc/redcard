@@ -1,6 +1,7 @@
 <?php 
 namespace Hotel\models;
 use assets\libs\connection;
+
 use PDO;
 
 /**
@@ -25,6 +26,8 @@ class Includes {
 	private $sidebar = null;
 	private $crumbs = array();
 	
+
+
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -496,7 +499,7 @@ class Includes {
 								</h1>
 
 								<h1 class="logo-esmart">
-								<span class="header-text"> Hotel</span></h1>
+								<span class="header-text">'.$_SESSION['nombrehotel']. ' | Código: '.$_SESSION['codigohotel'].'</span></h1>
 							</div>
 							<!-- /.header-statusbar-left -->
 							<div class="header-statusbar-right">

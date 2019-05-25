@@ -561,32 +561,32 @@ class includes {
 
 							$perfil = '';
 							if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
-							switch ($_SESSION['perfil']) {
-							case 'Hotel':
-								$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
-							
-							
-							
-							break;
-							
-							case 'Franquiciatario':	
-							
-							$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
-							
-							
-							break;
-							
-							case 'Referidor':	
-							
-							$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
-							
-							
-							break;
-							
-							default:
-							# code...
-							break;
-							}
+								switch ($_SESSION['perfil']) {
+								case 'Hotel':
+									$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
+								
+								
+								
+								break;
+								
+								case 'Franquiciatario':	
+								
+								$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
+								
+								
+								break;
+								
+								case 'Referidor':	
+								
+								$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
+								
+								
+								break;
+								
+								default:
+								# code...
+								break;
+								}
 							}
 
 							 ?>
@@ -606,7 +606,8 @@ class includes {
 										<li><a href="<?php echo HOST.'/admin/negocios/solicitudes'; ?>">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>
 
 							
-								<?php }} 
+								<?php }
+							} 
 								
 								
 								if($_SESSION['user']['id_rol'] == 9 and !isset($_SESSION['perfil'])){

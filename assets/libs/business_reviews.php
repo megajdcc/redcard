@@ -65,7 +65,7 @@ class business_reviews {
 			$this->pagination['rpp'] = $rpp;
 			$this->pagination['max'] = (int)ceil($this->pagination['total'] / $this->pagination['rpp']);
 			$this->pagination['page'] = min($this->pagination['max'], $page);
-			$this->pagination['offset'] = ($this->pagination['page'] - 1) * $this->pagination['rpp'];
+			$this->pagination['offset'] = ($this->pagination['page'] -1) * $this->pagination['rpp'];
 			// Variables retornables
 			$pagination['page'] = $this->pagination['page'];
 			$pagination['total'] = $this->pagination['total'];

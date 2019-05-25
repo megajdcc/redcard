@@ -58,7 +58,7 @@ src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
 	/* margin: 0px 20px; */
 }
 #estadodecuenta td{
-		font-family: 'Myriad Bold' !important;
+		font-family: 'Myriad' !important;
 		color: #0082b7 !important;
 		font-weight: 400 !important;
 }
@@ -178,4 +178,15 @@ width: 100%;
 	width: 100px;
 	margin-left: 2rem:
 	color:white; 
+}
+
+.area-image figure{
+	display: flex;
+	justify-content: center;
+}
+.area-image img{
+	width: auto;
+	height: auto;
+	max-height: 200px;
+	border-radius: 10px;
 }

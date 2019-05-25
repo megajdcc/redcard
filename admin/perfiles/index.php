@@ -660,33 +660,7 @@ $(document).ready(function(){
 
 		// Captura de formulario para registrar Hotel
 		$('#formulario').bind("submit",function(){
-
-			
-
-
-					var contra1 = $('#password').val();
-					var contra2 = $('#password-retype').val();
-
-					var verificado = true;
-					if(contra1 != contra2){
-						verificado = false;
-						alert('Las contrasenas no son iguales por favor verifique...hotel');
-						return false;
-
-					}
-
-					if(contra1.length < 7){
-						verificado = false;
-						alert('La contrasena debe tener al menos 7 caracteres...');
-						return false;
-					}
-
-					if(contra1 == null){
-						verificado = false;
-						alert('La contrasena no debe estar vacia o simplemente tener datos vacios...');
-						return false;
-					}
-
+					
 					var nombrehotel = $('#nombrehotel').val();
 					if(nombrehotel.length < 2 ){
 						verificado = false;
@@ -744,17 +718,23 @@ $(document).ready(function(){
 					function registrar(){
 						var btngrabar = $('.grabar');
 									
-									btngrabar.attr('disabled', 'disabled');
-									btngrabar.text("Guardando Por favor espere");
-									var formulario = $('#formulario');
-									formulario.append('<input type="hidden" name="pago" value="'+datopago+'">');
+									 btngrabar.attr('disabled', 'disabled');
+									 btngrabar.text("Guardando Por favor espere");
+									 var formulario = $('#formulario');
+									// formulario.append('<input type="hidden" name="pago" value="'+datopago+'">');
+
+									var form = new FormData(document.getElementById("formulario"));
+								 	form.append("pago",datopago);
 									
 									$.ajax({
 									url: formulario.attr('action'),
 									type: 'POST',
 									dataType: 'JSON',
-									data:formulario.serialize()
-									//data: ,
+									data: form,
+									cache:false,
+									contentType:false,
+									processData:false
+								
 									})
 									.done(function(response) {
 									
@@ -1220,13 +1200,13 @@ $(document).ready(function(){
         <h5 class="modal-title" id="exampleModalScrollableTitle">Nuevo Usuario con perfil de hotel</h5>
 		
       </div>
-      <form method="post" id="formulario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
+      <form method="post" id="formulario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" enctype="multipart/form-data">
       <div class="modal-body">
 			<div class="alert alert-icon alert-dismissible alert-info" role="alert">
 									<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<i class="fa fa-times" aria-hidden="true"></i>
 									</button>
-				<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepci&oacute;n del formulario del pago de comisi&oacute;n que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón anadir datos de pago, de todo lo demas, al enviar los datos se pedira confirmaci&oacute;n de esto. <br> Los Campos necesareos al enviarlos se validaran y se te pedira correcci&oacute;n de ser necesareo. </small>
+				<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario.</small>
 			</div>
 
 		<style>
@@ -1265,7 +1245,8 @@ $(document).ready(function(){
 
       	<section class="btn-modal">
       		<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-						<button type="button" data-toggle="collapse" href="#vtn-date-user" aria-expanded="true" aria-controls="collapseExample"class="date-user btn btn-secondary"><i class="fa fa-user"></i>Datos de Usuario</button>
+						<!-- <button type="button" data-toggle="collapse" href="#vtn-date-user" aria-expanded="true" aria-controls="collapseExample"class="date-user btn btn-secondary"><i class="fa fa-user"></i>Datos de Usuario</button> -->
+
 						<button type="button" data-toggle="collapse" aria-expanded="false" href="#vtn-date-hotel" aria-controls="vtn-date-hotel" class="date-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Datos de Hotel</button>
 						<button type="button"  data-toggle="collapse" aria-expanded="false" href="#vtn-date-pago" aria-controls="vtn-date-pago" class="date-pago btn btn-secondary"><i class="fa fa-money"></i>Datos Para el Pago de Comisiones</button>
 			</div>
@@ -1274,35 +1255,7 @@ $(document).ready(function(){
 
       	<section class="content-formulario">
       		
-      	
-      	<div class="collapse" id="vtn-date-user">
-				<div class="vtn-new-user">
-				
-								<div class="form-group" data-toggle="tooltip" title="Tu nombre de usuario debe ser alfanum&eacute;rico. No puede contener espacios, acentos o caracteres especiales. Debe contener entre 3 y 50 caracteres. Recomendamos 20 o menos caracteres.">
-									<label for="username" >Username (use no space)| Nombre de usuario (sin espacios o acentos) <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-									<input type="text" class="form-control" name="username" id="username" value="<?php echo $reg->getUsername();?>" placeholder="Nombre de usuario (sin espacios o acentos)" required minlength="3" maxlength="50" />
-									<?php echo $reg->getUsernameError();?>
-								</div><!-- /.form-group -->
-								<div class="form-group">
-									<label for="email">Email | Correo electr&oacute;nico <span class="required">*</span></label>
-									<input type="email" class="form-control" name="emailuser" value="<?php echo $reg->getEmail();?>" placeholder="Correo electr&oacute;nico" required />
-									<?php echo $reg->getEmailError();?>
-								</div><!-- /.form-group -->
-								<div class="form-group" data-toggle="tooltip" title="La contrase&ntilde;a debe contener al menos 6 caracteres y debe ser distinta de tu nombre de usuario y tu correo electr&oacute;nico.">
-									<label for="password">Password | Contrase&ntilde;a <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
-									<input type="password" class="form-control" name="password" id="password" placeholder="Contrase&ntilde;a" required />
-									<?php echo $reg->getPasswordError();?>
-								</div><!-- /.form-group -->
-								<div class="form-group">
-									<label for="password-retype">Rewrite Password | Confirmar contrase&ntilde;a <span class="required">*</span></label>
-									<input type="password" class="form-control" name="password-retype" id="password-retype" placeholder="Confirmar contrase&ntilde;a" required />
-									<?php echo $reg->getRetypePasswordError();?>
-								</div><!-- /.form-group -->
-								
-						
-				</div>
-		</div>
-
+    
 		<div class="collapse" id="vtn-date-hotel">
 		
 				<div class="row">
@@ -1508,7 +1461,18 @@ $(document).ready(function(){
 											</div><!-- /.form-group -->
 										</div>
 									
-									</div><!-- /.row -->
+									</div>
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="form-group" data-toggle="tooltip" title="Esta ser&aacute; la imagen de perfil de tu Hotel. Se recomienda una imagen horizontal panor&aacute;mica y un peso inferior a 2 MB. La imagen debe ser formato JPG o PNG.">
+												<label for="photo">Adjunta una fotograf&iacute;a de tu hotel <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
+												<input type="file" id="affiliate-hotel" name="foto" required />
+											
+											</div><!-- /.form-group -->
+										
+										</div>
+									</div>
+								
 										<div class="row">
 											<div class="col-xs-6">
 												<p>Los campos marcados son obligatorios <span class="required">*</span></p>
@@ -1532,23 +1496,23 @@ $(document).ready(function(){
 												<span class="input-group-addon"><i class="fa fa-bank"></i></span>
 													<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco" name="nombre_banco" value="<?php //echo $affiliate->getBanco();?>" placeholder="Nombre del banco"  >
 										</div>
-												<?php //echo $affiliate->getBancoError();?>
+												
 									</div>
 
 											<div class="form-group">
 												<label for="cuenta">Cuenta<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="<?php //echo $affiliate->getCuenta();?>" placeholder="Cuenta."  >
+													<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta" name="cuenta" value="" placeholder="Cuenta."  >
 												</div>
-												<?php //echo $affiliate->getCuentaError();?>
+												
 											</div>
 
 											<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
 												<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="<?php //echo $affiliate->getClabe();?>" placeholder="Clabe"  >
+													<input class="form-control" type="text" maxlength="18" id="clabe" pattern="[0-9]{18}" name="clabe" value="" placeholder="Clabe"  >
 												</div>
 											
 											</div>
@@ -1557,9 +1521,9 @@ $(document).ready(function(){
 												<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle"></i></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-													<input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="<?php //echo $affiliate->getSwift();?>" placeholder="Swift"  >
+													<input class="form-control" type="text" id="swift" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="" placeholder="Swift"  >
 												</div>
-												<?php //echo $affiliate->getSwiftError();?>
+												
 											</div>
 
 						</div>
@@ -1637,7 +1601,7 @@ $(document).ready(function(){
 										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 										<i class="fa fa-times" aria-hidden="true"></i>
 										</button>
-					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepci&oacute;n del formulario del pago de comisi&oacute;n que los puedes omitir si desea, esto lo puedes añadir desde el panel de franquiciatario en el botón anadir datos de pago, de todo lo demas, al enviar los datos se pedira confirmaci&oacute;n de esto. <br> Los Campos necesareos al enviarlos se validaran y se te pedira correcci&oacute;n de ser necesareo. </small>
+					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario. </small>
 				</div>
 
 			<style>
@@ -2006,7 +1970,7 @@ $(document).ready(function(){
 										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 										<i class="fa fa-times" aria-hidden="true"></i>
 										</button>
-					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepci&oacute;n del formulario del pago de comisi&oacute;n que los puedes omitir si desea, esto lo puedes añadir desde el panel de franquiciatario en el botón anadir datos de pago, de todo lo demas, al enviar los datos se pedira confirmaci&oacute;n de esto. <br> Los Campos necesareos al enviarlos se validaran y se te pedira correcci&oacute;n de ser necesareo. </small>
+					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario. </small>
 				</div>
 
 			<style>

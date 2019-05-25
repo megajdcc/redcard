@@ -12,7 +12,7 @@ use PDO;
 class reports_sales {
 	private $con;
 
-	public $usuario = 0,$negocio = 0;
+	public $usuario = null,$negocio = null;
 
 	private $business = array(
 		'id' => null,
@@ -103,6 +103,46 @@ UNION
 								':usuario1' => $this->usuario,
 								':negocio1' => $this->negocio));
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && !empty($this->usuario) && empty($this->negocio)){
+							$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
+										FROM balancesistema as bs
+										LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
+										LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and nv.creado BETWEEN :fecha1 and :fecha2  )
+												UNION 
+												(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
+												from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+												)
+												ORDER BY creado 
+												";
+												$stm = $this->con->prepare($query);
+												$stm->execute(array(':fecha1' => $this->busqueda['fechainicio'],
+												':fecha2' => $this->busqueda['fechafin'],
+												':fecha3' => $this->busqueda['fechainicio'],
+												':fecha4' => $this->busqueda['fechafin'],
+												':usuario1' => $this->usuario));
+												
+												$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && empty($this->usuario) && !empty($this->negocio)){
+							$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
+										FROM balancesistema as bs
+										LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
+										LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_negocio = :negocio1 and nv.creado BETWEEN :fecha1 and :fecha2  )
+												UNION 
+												(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
+												from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+												)
+												ORDER BY creado 
+												";
+												$stm = $this->con->prepare($query);
+												$stm->execute(array(':fecha1' => $this->busqueda['fechainicio'],
+												':fecha2' => $this->busqueda['fechafin'],
+												':fecha3' => $this->busqueda['fechainicio'],
+												':fecha4' => $this->busqueda['fechafin'],
+												':negocio1' => $this->negocio));
+												
+												$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}
 	}
 
@@ -210,7 +250,7 @@ UNION
 		$this->negocios['fecha_fin'] = $fecha;
 	}
 
-	private function setUsuario(int $usuario){
+	private function setUsuario(int $usuario = 0){
 		$this->usuario =$usuario;
 	}
 
@@ -244,7 +284,7 @@ UNION
 
 	}
 
-	public function getUsuario(){
+	public function getUsuario(int $idusuario = null){
 
 		$html = null;	
 
@@ -261,9 +301,9 @@ UNION
 				$nombre = $value['nombre'];
 			}
 
-			if($value['id_usuario'] == $this->usuario){
+			if($idusuario == $value['id_usuario']){
 
-				$html .='<option value="'.$value['id_usuario'].'" selected>'.$nombre.'</option>';
+				$html .='<option selected value="'.$value['id_usuario'].'">'.$nombre.'</option>';
 			}else{
 					$html .='<option value="'.$value['id_usuario'].'">'.$nombre.'</option>';
 			}
@@ -285,8 +325,16 @@ UNION
 		$this->setFechainicio($post['date_start']);
 		$this->setFechafin($post['date_end']);
 
-		$this->setUsuario($post['usuario']);
-		$this->setNegocio($post['negocio']);
+
+		if($post['usuario'] != null){
+			$this->setUsuario($post['usuario']);
+		}
+		
+
+		if($post['negocio'] != null){
+			$this->setNegocio($post['negocio']);
+		}
+		
 
 		$this->CargarData();
 
@@ -298,8 +346,15 @@ UNION
 		$this->setFechainicio($post['date_start']);
 		$this->setFechafin($post['date_end']);
 
-		$this->setUsuario($post['usuario']);
-		$this->setNegocio($post['negocio']);
+
+		if(!empty($post['usuario'])){
+			$this->setUsuario($post['usuario']);
+		}
+		
+		if(!empty($post['negocio'])){
+			$this->setNegocio($post['negocio']);
+		}
+		
 
 		$this->CargarData();
 		

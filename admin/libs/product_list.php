@@ -202,7 +202,7 @@ class product_list {
 
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/vendor/autoload.php';
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/vendor/spipu/html2pdf/html2pdf.class.php';
-		$html2pdf = new \HTML2PDF('P','A4','es');
+		$html2pdf = new \HTML2PDF('P','A3','es');
 		$html2pdf->WriteHTML($html);
 		$html2pdf->Output('reporte.pdf');
 		return;

@@ -20,7 +20,7 @@ if(!isset($_SESSION['user'])){
 	$affiliate = new AfiliarHotel($con);
 	if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		if(isset($_POST['send'])){
-			$affiliate->set_data($_POST);
+			$affiliate->set_data($_POST,null,null,$_FILES);
 		}
 	}
 }
@@ -284,10 +284,21 @@ echo $navbar = $includes->get_main_navbar(); ?>
 													<input class="form-control" type="text" id="movil"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="<?php echo $affiliate->getMovil();?>" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
 												</div><!-- /.input-group -->
 												<?php echo $affiliate->getMovilError();?>
-											</div><!-- /.form-group -->
+										</div><!-- /.form-group -->
 										</div>
 									
 									</div><!-- /.row -->
+
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="form-group" data-toggle="tooltip" title="Esta ser&aacute; la imagen de perfil de tu Hotel. Se recomienda una imagen horizontal panor&aacute;mica y un peso inferior a 2 MB. La imagen debe ser formato JPG o PNG.">
+												<label for="photo">Adjunta una fotograf&iacute;a de tu hotel <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
+												<input type="file" id="affiliate-hotel" name="foto" required />
+											
+											</div><!-- /.form-group -->
+										
+										</div>
+									</div>
 								
 								</div><!-- /.box -->
 								

@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace assets\libs;
 use PDO;
 
@@ -61,11 +61,14 @@ class business_certificates {
 			return false;
 		}
 		if($row = $stmt->fetch()){
+
 			$this->pagination['total'] = $row['COUNT(*)'];
 			$this->pagination['rpp'] = $rpp;
 			$this->pagination['max'] = (int)ceil($this->pagination['total'] / $this->pagination['rpp']);
+			
 			$this->pagination['page'] = min($this->pagination['max'], $page);
-			$this->pagination['offset'] = ($this->pagination['page'] - 1) * $this->pagination['rpp'];
+			//echo $this->pagination['page'];
+			$this->pagination['offset'] = ($this->pagination['page']) * $this->pagination['rpp'];
 			// Variables retornables
 			$pagination['page'] = $this->pagination['page'];
 			$pagination['total'] = $this->pagination['total'];
@@ -75,16 +78,22 @@ class business_certificates {
 				WHERE ne.id_negocio = :id_negocio AND ne.situacion != 0
 				ORDER BY ne.creado DESC LIMIT :limit OFFSET :offset";
 			try{
+
+				//echo $this->pagination['offset'];
 				$stmt = $this->con->prepare($query);
 				$stmt->bindValue(':id_negocio', $this->business['id'], PDO::PARAM_INT);
 				$stmt->bindValue(':limit', $this->pagination['rpp'], PDO::PARAM_INT);
 				$stmt->bindValue(':offset', $this->pagination['offset'], PDO::PARAM_INT);
-				$stmt->execute();
+				$result = $stmt->execute();
+				//echo var_dump($stmt);
 			}catch(\PDOException $ex){
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				return false;
 			}
+		
 			while($row = $stmt->fetch()){
+
+
 				$this->certificates[$row['id_certificado']] = array(
 					'url' => $row['url'],
 					'image' => $row['imagen'],
@@ -166,6 +175,7 @@ class business_certificates {
 				}else{
 					$this->business['score'] = ($service + $product + $ambient) / ($count * 3);
 				}
+
 				return true;
 			}
 		}
@@ -197,8 +207,13 @@ class business_certificates {
 
 	public function get_certificates(){
 		$html = null;
+		// echo var_dump($this->certificates);
 		foreach ($this->certificates as $key => $value) {
+
+
 			$name = _safe($value['name']);
+
+			
 			$description = _safe($value['description']);
 			$start = strtotime($value['date_start']);
 			$end = strtotime($value['date_end']);

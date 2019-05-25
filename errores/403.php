@@ -1,7 +1,7 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
 $con = new assets\libs\connection();
 $includes = new assets\libs\includes($con);
-$properties['title'] = 'Acceso Prohibido | eSmart Club';
+$properties['title'] = 'Acceso Prohibido | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); ?>

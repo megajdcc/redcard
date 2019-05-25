@@ -1,4 +1,4 @@
-// Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+
 $(document).ready(function() {
 	'use strict';
 

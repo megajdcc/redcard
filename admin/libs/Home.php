@@ -260,15 +260,67 @@ private function cargarData(){
     //
     //
     
-    $query = "select  (select  sum(nv.venta) from negocio_venta as nv) - sum(nv.bono_esmarties) as bruto from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+   $query = "select sum(nv.bono_esmarties) as utilidad  from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
     $stm = $this->conection->prepare($query);
-    
     $stm->bindParam(':fecha1',$this->fechas['inicio']);
  	$stm->bindParam(':fecha2',$this->fechas['fin']);
-    
     $stm->execute();
 
-    $this->negocios['utilidad_bruta'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['bruto'],2,',','.');
+    $utilidad = $stm->fetch(PDO::FETCH_ASSOC)['utilidad'];
+
+
+    $sql = "select max(bh.balance) as balance from balancehotel as bh where bh.creado between :fecha1 and :fecha2";
+
+    $stm = $this->conection->prepare($sql);
+    $stm->bindParam(':fecha1',$this->fechas['inicio']);
+ 	$stm->bindParam(':fecha2',$this->fechas['fin']);
+
+    $stm->execute();
+
+    $utilidadhotel = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+
+    $saldohotel = 0;
+    if($utilidadhotel != null){
+    	$saldohotel = $utilidadhotel;
+    }
+
+
+
+	$sql = "select max(bfr.balance) as balance from balancefranquiciatario as bfr where bfr.creado between :fecha1 and :fecha2";
+	
+	$stmt = $this->conection->prepare($sql);
+	 $stmt->bindParam(':fecha1',$this->fechas['inicio']);
+ 	$stmt->bindParam(':fecha2',$this->fechas['fin']);
+	
+	$stmt->execute();
+
+ 	$utilidadfranquiciatario = $stmt->fetch(PDO::FETCH_ASSOC)['balance'];
+
+
+ 	 $saldofranquiciatario = 0;
+    if($utilidadfranquiciatario != null){
+    	$saldofranquiciatario = $utilidadfranquiciatario;
+    }
+
+    $sql = "select max(brf.balance) as balance from balancereferidor as brf where brf.creado between :fecha1 and :fecha2";
+	
+	$stmtt = $this->conection->prepare($sql);
+	$stmtt->bindParam(':fecha1',$this->fechas['inicio']);
+ 	$stmtt->bindParam(':fecha2',$this->fechas['fin']);
+	
+	$stmtt->execute();
+
+ 	$utilidadreferidor = $stmtt->fetch(PDO::FETCH_ASSOC)['balance'];
+
+		$saldoreferidor = 0;
+		if($utilidadreferidor != null){
+		$saldoreferidor = $utilidadreferidor;
+		}
+
+	$utilidadbruta = ($utilidad - $saldohotel - $saldofranquiciatario - $saldoreferidor);
+
+
+	$this->negocios['utilidad_bruta'] = number_format((float)$utilidadbruta,2,'.',',');
 
 
 	}else{
@@ -384,11 +436,61 @@ private function cargarData(){
     //
     //
     
-    $query = "select  (select  sum(nv.venta) from negocio_venta as nv) - sum(nv.bono_esmarties) as bruto from negocio_venta as nv ";
+    $query = "select sum(nv.bono_esmarties) as utilidad  from negocio_venta as nv";
     $stm = $this->conection->prepare($query);
     $stm->execute();
 
-    $this->negocios['utilidad_bruta'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['bruto'],2,',','.');
+    $utilidad = $stm->fetch(PDO::FETCH_ASSOC)['utilidad'];
+
+
+    $sql = "select max(bh.balance) as balance from balancehotel as bh";
+
+    $stm = $this->conection->prepare($sql);
+
+    $stm->execute();
+
+    $utilidadhotel = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
+
+    $saldohotel = 0;
+    if($utilidadhotel != null){
+    	$saldohotel = $utilidadhotel;
+    }
+
+
+
+	$sql = "select max(bfr.balance) as balance from balancefranquiciatario as bfr";
+	
+	$stmt = $this->conection->prepare($sql);
+	
+	$stmt->execute();
+
+ 	$utilidadfranquiciatario = $stmt->fetch(PDO::FETCH_ASSOC)['balance'];
+
+
+ 	 $saldofranquiciatario = 0;
+    if($utilidadfranquiciatario != null){
+    	$saldofranquiciatario = $utilidadfranquiciatario;
+    }
+
+    $sql = "select max(brf.balance) as balance from balancereferidor as brf";
+	
+	$stmtt = $this->conection->prepare($sql);
+	
+	$stmtt->execute();
+
+ 	$utilidadreferidor = $stmtt->fetch(PDO::FETCH_ASSOC)['balance'];
+
+		$saldoreferidor = 0;
+		if($utilidadreferidor != null){
+		$saldoreferidor = $utilidadreferidor;
+		}
+
+	$utilidadbruta = ($utilidad - $saldohotel - $saldofranquiciatario - $saldoreferidor);
+
+
+	$this->negocios['utilidad_bruta'] = number_format((float)$utilidadbruta,2,'.',',');
+
+   
 	}
 
 }
@@ -505,7 +607,7 @@ public function getVentasPromedioNegocios($fecha1 = null,$fecha2 = null){
 
 public function getNuevosPerfiles(){
 
-	$query ="(select 'Hotel' as perfil, (select count(*) as usuarios from solicitudhotel) as usuarios from solicitudhotel)
+	$query ="(select 'Hotel' as perfil, count(*) as usuarios from hotel)
 					UNION
 				(select 'Franquiciatario' as perfil, (select count(*) as usuarios from solicitudfr) as usuarios from solicitudfr)
 					UNION
@@ -862,7 +964,7 @@ public function getRegalosPorUsuarioDeseo(){
 
 	
 	if(!empty($this->fechas['inicio'])){
-		$sql="SELECT count(*) FROM lista_deseos_certificado where creado between :fecha1 and :fecha2";
+		$sql="SELECT count(*) FROM lista_deseos_producto where creado between :fecha1 and :fecha2";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->bindParam(':fecha1',$this->fechas['inicio']);
 		$stmt->bindParam(':fecha2',$this->fechas['fin']);
@@ -879,7 +981,7 @@ public function getRegalosPorUsuarioDeseo(){
 
 		return round($total/$users);
 	}else{
-		$sql="SELECT count(*) as cuenta FROM lista_deseos_certificado";
+		$sql="SELECT count(*) as cuenta FROM lista_deseos_producto";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->execute(); 
 		// $number_of_rows = $stmt->fetchColumn();
@@ -892,7 +994,8 @@ public function getRegalosPorUsuarioDeseo(){
 		
 		$users=$stmt3->fetch(PDO::FETCH_ASSOC)['users'];
 		
-		return round($users/$total);
+		echo $total;
+		// return round($users/$total);
 
 	}
 	

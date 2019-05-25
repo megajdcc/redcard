@@ -626,16 +626,16 @@ echo $navbar = $includes->get_admin_navbar();
 				</div>
 			</div>
 
-			<div class="col-sm-3">
+			<!-- <div class="col-sm-3">
 				<div class="statusbox">
 					<h2>Regalos Por Usuario</h2>
 					<div class="statusbox-content">
-						<strong><?php echo $home->getRegalosPorUsuarioDeseo()?></strong>
-					</div><!-- /.statusbox-content -->
+						<strong><?php// echo $home->getRegalosPorUsuarioDeseo()?></strong>
+					</div>
 				</div>
-			</div>
+			</div> -->
 
-		</div><!-- /.row -->
+		</div>
 		
 	</div>
 </div>

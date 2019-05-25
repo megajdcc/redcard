@@ -698,7 +698,7 @@ class preference_info {
 		return $html;
 	}
 
-	public function getNegocios(){
+	public function getNegocios(int $idnegocio =null){
 
 
 		$query = "select n.nombre, n.id_negocio from negocio as n";
@@ -709,7 +709,13 @@ class preference_info {
 
 		$html = null;
 		while($value = $stm->fetch(PDO::FETCH_ASSOC)) {
-			$html .='<option value="'.$value['id_negocio'].'">'.$value['nombre'].'</option>' ;
+
+			if($idnegocio  == $value['id_negocio']){
+				$html .='<option selected value="'.$value['id_negocio'].'">'.$value['nombre'].'</option>' ;
+			}else{
+				 $html .='<option value="'.$value['id_negocio'].'">'.$value['nombre'].'</option>' ;
+			}
+			
 		}
 
 		return $html;

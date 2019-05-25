@@ -69,7 +69,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<?php echo $perfiles->get_notification();?>
 
 		<div class="page-title">
-			<h1>Perfiles de Hoteles
+			<h1>Hoteles
 			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
 	
 			</form>
@@ -82,13 +82,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
             <tr>
             	
             	
-            	<th>Foto</th>
+            	<th></th>
             	<th>Hotel</th>
-                <th>Dueño</th>
+                <th>Direcci&oacute;n</th>
                 
                 <th>Comisión</th>
                
-                <th>Ultimo Logín</th>
+                
                 <th></th>
                
 
@@ -531,6 +531,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				<section class="btn-modal">
 						      		<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 												
+												
 												<button type="button" data-toggle="collapse" aria-expanded="true" href="#vtn-date-hotel" aria-controls="vtn-date-hotel" class="date-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Datos de Hotel</button>
 												<button type="button"  data-toggle="collapse" aria-expanded="false" href="#vtn-date-pago" aria-controls="vtn-date-pago" class="date-pago btn btn-secondary"><i class="fa fa-money"></i>Datos Para el Pago de Comisiones</button>
 									</div>
@@ -853,11 +854,20 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 								</div>
 								
-				</section>     		
+				<article class="area-image">
+					<figure class="img-hotel">
+						<img  class="foto-hotel">
+					</figure>
+				</article>    
+				</section> 
+
+						
 						     
 		
 							
 				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-usuario"><i class="fa fa-black-tie"></i>Usuario adjudicado</button>
+					
 					<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="elminar" class="eliminar btn btn-danger"><strong class="fa fa-remove"> Eliminar</strong></button>
 					<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="modificar btn btn-success">Actualizar</button>
 					<button  type="button" data-dismiss="modal" class="btn btn-secondary" >Cerrar</button>
@@ -931,6 +941,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						}
 
 						formulario.append('<input type="hidden" class="pago" name="pago" value="'+datopago+'">');
+
 						formulario.append('<input type="hidden" class="solicitud" name="solicitud" value="'+solicitud+'">');
 
 						
@@ -1089,6 +1100,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							$('input[name="movil"]').val(response.datos.telefono_movil);
 							$('input[name="numero_targeta"]').val(response.datos.numero_tarjeta);
 							$('input[name="nombre_banco"]').val(response.datos.banco);
+							$('.foto-hotel').attr('src', '/assets/img/hoteles/'+response.datos.imagen);
 
 							if(response.datos.clabe != 0){
 								$('input[name="clabe"]').val(response.datos.clabe);

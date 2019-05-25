@@ -6,6 +6,7 @@
 
 namespace Hotel\models;
 use PDO;
+use \assets\libraries\bulletproof\bulletproof;
 
 class AfiliarHotel {
 	private $con;
@@ -88,7 +89,8 @@ class AfiliarHotel {
 		'email_paypal'         => null,
 		'country_id'           => null,
 		'state_id'             => null,
-		'iata'                 =>null
+		'iata'                 =>null,
+		'foto' => array('tmp' => null, 'name' => null, 'path' => null)
 	);
 	private $error = array(
 		'codigo'               => null,
@@ -124,7 +126,8 @@ class AfiliarHotel {
 		'error'                => null,
 		'country_id'           => null,
 		'state_id'             => null,
-		'iata'                 =>	null
+		'iata'                 => null,
+		'foto'                 => null
 	);
 
 
@@ -142,7 +145,7 @@ class AfiliarHotel {
 	public function capturarultimo(){
 
 
-					$sql = "SELECT sh.id as solicitud,i.codigo,h.nombre as nombrehotel,h.id as idhotel  from solicitudhotel as sh join hotel as h on sh.id_hotel = h.id join iata as i on h.id_iata = i.id  where sh.id = (select max(id) from solicitudhotel)";
+					$sql = "SELECT i.codigo,h.nombre as nombrehotel,h.id as idhotel  from hotel as h join iata as i on h.id_iata = i.id  where h.id = (select max(id) from hotel)";
 					
 					$stm = $this->con->prepare($sql);
 					$stm->execute();
@@ -153,6 +156,7 @@ class AfiliarHotel {
 
 	}
 	public function set_data(array $post,array $datospagos = null,$iduser=0, array $files = null){
+
 
 
 		$this->setNombreHotel($post['nombre']);
@@ -172,8 +176,8 @@ class AfiliarHotel {
 
 		$this->setTelefono($post['telefonofijo']);
 		$this->setMovil($post['movil']);
-
-		$this->solicitante = $iduser;
+		$this->setFoto($files);
+		// $this->solicitante = $iduser;
 		if($datospagos != null){
 
 			$this->registropago = true;
@@ -191,7 +195,7 @@ class AfiliarHotel {
 		}
 
 
-		if($iduser > 0){
+		if($iduser == 3){
 			$this->RegistrarHotelPago();
 			return true;
 		}else if(!array_filter($this->error)){
@@ -285,12 +289,14 @@ class AfiliarHotel {
 							longitud,
 							sitio_web,
 							id_ciudad,
+							id_estado,
 							id_responsable_promocion,
 							id_datospagocomision,
 							codigo_postal,
 							comision,
 							aprobada,
-							id_iata 
+							id_iata,
+							imagen 
 							) VALUES (
 							:codigo, 
 							:nombre, 
@@ -298,13 +304,15 @@ class AfiliarHotel {
 							:latitud, 
 							:longitud, 
 							:sitio_web, 
-							:id_ciudad, 
+							:id_ciudad,
+							:estado, 
 							:id_responsable_promocion,
 							:datopago, 
 							:codigo_postal, 
 							:comision,
 							:aprobada, 
-							:id_iata
+							:id_iata,
+							:imagen
 							)";
 							
 							$query_params               = array(
@@ -315,12 +323,15 @@ class AfiliarHotel {
 							':longitud'                 => $this->register['longitud'],
 							':sitio_web'                => $this->register['sitio_web'],
 							':id_ciudad'                => $this->register['id_ciudad'],
+							':estado'                   =>$this->register['id_estado'],
 							':id_responsable_promocion' =>$idresponsable,
 							':datopago'                 =>$iddatos,
 							':codigo_postal'            => $this->register['codigopostal'],
 							':comision'                 => 0,
 							':aprobada'                 => 0,
-							':id_iata'                  => $this->register['id_iata']);
+							':id_iata'                  => $this->register['id_iata'],
+							':imagen'                   => $this->register['foto']['name']
+						);
 
 
 						}else{
@@ -333,12 +344,14 @@ class AfiliarHotel {
 							longitud,
 							sitio_web,
 							id_ciudad,
+							id_estado,
 							id_responsable_promocion,
 							
 							codigo_postal,
 							comision,
 							aprobada,
-							id_iata 
+							id_iata,
+							imagen 
 							) VALUES (
 							:codigo, 
 							:nombre, 
@@ -346,13 +359,15 @@ class AfiliarHotel {
 							:latitud, 
 							:longitud, 
 							:sitio_web, 
-							:id_ciudad, 
+							:id_ciudad,
+							:estado, 
 							:id_responsable_promocion,
 							:datopago, 
 							:codigo_postal, 
 							:comision,
 							:aprobada, 
-							:id_iata
+							:id_iata,
+							:imagen
 							)";
 							
 							$query_params               = array(
@@ -363,39 +378,54 @@ class AfiliarHotel {
 							':longitud'                 => $this->register['longitud'],
 							':sitio_web'                => $this->register['sitio_web'],
 							':id_ciudad'                => $this->register['id_ciudad'],
-							':id_responsable_promocion' =>$idresponsable,
-							
+							':estado'                   => $this->register['id_estado'],
+							':id_responsable_promocion' => $idresponsable,
 							':codigo_postal'            => $this->register['codigopostal'],
 							':comision'                 => 0,
 							':aprobada'                 => 0,
-							':id_iata'                  => $this->register['id_iata']);
+							':id_iata'                  => $this->register['id_iata'],
+							':imagen'                   => $this->register['foto']['name']);
 						}
 
-
-					$stmt = $this->con->prepare($query);
-					$resultperson = $stmt->execute($query_params);
-
-					if($resultperson){
-						$last_id = $this->con->lastInsertId();
-
-
-						$querysolicitud = "INSERT INTO solicitudhotel(id_hotel,id_usuario,condicion)values(:id_hotel,:id_usuario,:condicion)";
-
-						$stm = $this->con->prepare($querysolicitud);
-						
-						$resultado = $stm->execute(array(':id_hotel' => $last_id,
-											':id_usuario' => $this->solicitante,
-											':condicion' => 1
-											));
-
+					
+						try {
+						$stmt = $this->con->prepare($query);
+						$resultperson = $stmt->execute($query_params);
 						$this->con->commit();
+						move_uploaded_file($this->register['foto']['tmp'], $this->register['foto']['path']);
 						return true;
-
-					}else{
+						} catch (PDOException $e) {
+						
 						$this->con->rollBack();
 						$this->error['error'] = 'Estamos teniendo problemas técnicos, disculpa las molestias. Intenta más tarde.';
 						return false;
-					}
+						
+						}
+					
+
+
+
+					// if($resultperson){
+					// 	$last_id = $this->con->lastInsertId();
+
+
+					// 	$querysolicitud = "INSERT INTO solicitudhotel(id_hotel,id_usuario,condicion)values(:id_hotel,:id_usuario,:condicion)";
+
+					// 	$stm = $this->con->prepare($querysolicitud);
+						
+					// 	$resultado = $stm->execute(array(':id_hotel' => $last_id,
+					// 						':id_usuario' => $this->solicitante,
+					// 						':condicion' => 1
+					// 						));
+
+					// 	$this->con->commit();
+					// 	return true;
+
+					// }else{
+					// 	$this->con->rollBack();
+					// 	$this->error['error'] = 'Estamos teniendo problemas técnicos, disculpa las molestias. Intenta más tarde.';
+					// 	return false;
+					// }
 				
 				}else{
 						$this->con->rollBack();
@@ -413,6 +443,32 @@ class AfiliarHotel {
 			return $false;
 		}
 
+	}
+
+
+	private function setFoto($files = null){
+
+		$image = new bulletproof($files);
+		$image->setLocation(ROOT.'/assets/img/hoteles');
+
+		if($image['foto']){
+			if($image->upload()){
+				
+				$this->register['foto']['tmp'] = $files['foto']['tmp_name'];
+				$this->register['foto']['name'] = $image->getName().'.'.$image->getMime();
+				$this->register['foto']['path'] = $image->getFullPath();
+				return true;
+			}
+				
+			$this->error['foto'] = $image['error'];
+			return false;
+		}
+		if($files['foto']['error'] == 1){
+			$this->error['foto'] = 'Has excedido el límite de imagen de 2MB.';
+		}else{
+			$this->error['foto'] = 'Este campo es obligatorio.';
+		}
+		return false;
 	}
 
 	private function RegistrarHotel(){
@@ -499,7 +555,8 @@ class AfiliarHotel {
 						codigo_postal,
 						comision,
 						aprobada,
-						id_iata 
+						id_iata,
+						imagen
 						) VALUES (
 						:codigo, 
 						:nombre, 
@@ -512,7 +569,8 @@ class AfiliarHotel {
 						:codigo_postal, 
 						:comision,
 						:aprobada, 
-						:id_iata
+						:id_iata,
+						:imagen
 					)";
 
 					$query_params = array(
@@ -528,7 +586,8 @@ class AfiliarHotel {
 					':codigo_postal' => $this->register['codigopostal'],
 					':comision' => 0,
 					':aprobada' => 0,
-					':id_iata' => $this->register['id_iata']);
+					':id_iata' => $this->register['id_iata'],
+					':imagen' => $this->register['foto']['name']);
 
 
 					$stmt = $this->con->prepare($query);
@@ -551,6 +610,9 @@ class AfiliarHotel {
 
 						if($resultado){
 							$this->con->commit();
+
+						move_uploaded_file($this->register['foto']['tmp'], $this->register['foto']['path']);
+			
 						$content = 'Se ha recibido una nueva solicitud para afiliar un hotel. <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=Hotel">Haz clic aqu&iacute; para verla</a>.';
 						$body_alt =
 							'Se ha recibido una nueva solicitud para afiliar hotel. Sigue este enlace para verla: '.HOST.'/admin/perfiles/solicitud.php?solicitud='.$idsolicitud.'&perfil=Hotel';

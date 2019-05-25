@@ -117,14 +117,14 @@ class recover_account {
 					$mail->CharSet = 'UTF-8';
 					// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 					$mail->isSMTP();
-					$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+					$mail->Host = 'single-5928.banahosting.com';
 					$mail->SMTPAuth = true;
 					$mail->SMTPSecure = 'ssl';
 					$mail->Port = 465;
 					// El correo que hará el envío
-					$mail->Username = 'notificacion@esmartclub.com';
-					$mail->Password = 'Alan@2017_pv';
-					$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+					$mail->Username = 'notification@travelpoints.com.mx';
+					$mail->Password = '20464273jd';
+					$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 					// El correo al que se enviará
 					$mail->addAddress($email);
 					// Hacerlo formato HTML
@@ -205,7 +205,7 @@ class recover_account {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px;height:auto">
 										</a>
 									</td>
 								</tr>
@@ -229,8 +229,8 @@ class recover_account {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -255,7 +255,7 @@ class recover_account {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -272,7 +272,7 @@ class recover_account {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>

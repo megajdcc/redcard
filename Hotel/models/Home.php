@@ -39,10 +39,11 @@ class Home {
 
 	private $fecha1, $fecha2;
 
-		private $error = array('notificacion' => null,
+	public static $nombrehotel;
+	
+	private $error = array('notificacion' => null,
 								'fechainicio' => null,
-								'fechafin' => null,
-								);
+								'fechafin' => null);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -55,7 +56,7 @@ class Home {
 
 	private function CargarHotel(){
 
-		$query = "select h.id from hotel as h 
+		$query = "select h.id,h.nombre as nombrehotel,h.codigo from hotel as h 
 			inner join solicitudhotel as sh on h.id = sh.id_hotel
 			inner join usuario as u on sh.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
@@ -63,9 +64,11 @@ class Home {
 		$stm = $this->con->prepare($query);
 		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
 		$stm->execute();
-
-		$this->hotel['id'] = $stm->fetch(PDO::FETCH_ASSOC)['id'];
-		$_SESSION['id_hotel'] = $this->hotel['id'];
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+		$this->hotel['id'] =$fila['id'];
+		$_SESSION['nombrehotel'] = $fila['nombrehotel'];
+		$_SESSION['codigohotel'] = $fila['codigo'];
+		$_SESSION['id_hotel']    = $this->hotel['id'];
 	}
 
 	public function busqueda(array $post){
