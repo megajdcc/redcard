@@ -1619,7 +1619,7 @@ $(document).ready(function(){
 									<div class="search-placeholder" id="user-search-placeholder">
 										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
-									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+									<input type="text" class="form-control typeahead" name="usuario" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
 								
 						</div>
 
@@ -1721,7 +1721,7 @@ $(document).ready(function(){
 									<div class="search-placeholder" id="user-search-placeholder-referidor">
 										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
-									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input-referidor" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+									<input type="text" class="form-control " name="usuario" id="user-search-input-referidor" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
 								
 						</div>
 

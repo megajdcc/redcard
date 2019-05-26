@@ -337,6 +337,7 @@ $(document).ready(function() {
 		limit: 15,
 		name: 'users',
 		display: 'username',
+
 		source: users,
 		templates: {
 			empty: [
@@ -375,6 +376,7 @@ $(document).ready(function() {
 			},
 			success: function(data){
 				$('#user-search-placeholder').empty();
+
 				$('#user-search-placeholder').append( data );
 			}
 		});
@@ -385,7 +387,7 @@ $(document).ready(function() {
 
 
 
-	$('#user-search-referidor .typeahead').typeahead({
+	$('#user-search-input-referidor').typeahead({
 			hint: false,
 			highlight: true,
 			minLength: 3,

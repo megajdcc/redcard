@@ -222,11 +222,54 @@ class PerfilesList {
 
 			
 				<td style="display:flex;padding-top: 20px; padding-right: 0px !important; justify-content: flex-end;padding-left: 0px;margin: 0px;">
-					<?php if($usershotel > 0){?>
+					<?php if($usershotel > 0){
+						$sql = "SELECT * from usuario u join solicitudhotel as su on u.id_usuario = su.id_usuario where su.id_hotel = :hotel";
+
+						$stm = $this->con->prepare($sql);
+						$stm->bindParam(':hotel',$idhotel);
+						$stm->execute();
+
+						$fila4 = $stm->fetch(PDO::FETCH_ASSOC);	
+
+
+						if($fila4['activo'] == 1){
+						$status = ' green';
+						$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+						}elseif($fila4['activo'] == 2){
+						$status = ' yellow';
+						$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+						}else{
+						$status = '';
+						$btn = '<button class="btn btn-xs btn-success user-ban" name="unban_user" value="" type="submit"><i class="fa fa-check-circle m0"></i></button>';
+						}
+
+						$imagen = 'default.jpg';
+						if(!empty($fila4['imagen'])){
+							$imagen = $fila4['imagen'];
+						}
+
+						$nameuser = $fila4['username'];
+
+						if(!empty($fila4['nombre']) && !empty($fila4['apellido'])){
+							$nameuser = $fila4['nombre'].' '.$fila4['apellido'];
+						}
+
+						?>
+
+						<style>
+							.notification .green{
+								display: flex !important;
+								z-index: 100;
+							}
+						</style>
+						<div class="user user-md">
+							<a data-toggle="tooltip" title="<?php echo $nameuser; ?>" data-placement="left" href="<?php echo HOST.'/socio/'.$fila4['username']?>" target="_blank"><img src="<?php echo HOST.'/assets/img/user_profile/'.$imagen;?>"></a>
+							<div class="notification<?php echo $status;?>"></div>
+						</div>
+
+						<button data-toggle="tooltip" title="Quitar." data-placement="bottom"  data-user="<?php echo $fila4['id_usuario'];?>" class="quitaruserhotel" style="background: transparent; outline: none; border: 1px; display:flex;justify-content: center;"><i class="fa fa-remove"></i></button>
 					
-					<button class="ver-users-hotel btn btn-info" data-hotel="<?php echo $idhotel ?>" data-toggle="tooltip" title="Usuarios con perfil de este hotel." data-placement="left">
-				 	<i class="fa fa-black-tie"></i><?php echo $usershotel.' | Ver'; ?>
-					</button>
+					
 
 				<?php }else{?>
 					<button class="new-user-hotel btn btn-info" data-hotel="<?php echo $idhotel ?>" data-toggle="tooltip" title="Asignar usuario para este hotel.." data-placement="left">

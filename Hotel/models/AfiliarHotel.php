@@ -90,7 +90,9 @@ class AfiliarHotel {
 		'country_id'           => null,
 		'state_id'             => null,
 		'iata'                 =>null,
-		'foto' => array('tmp' => null, 'name' => null, 'path' => null)
+		'foto'                 => array('tmp' => null, 'name' => null, 'path' => null),
+		'username'             =>null,
+		'id_usuario'           =>null,
 	);
 	private $error = array(
 		'codigo'               => null,
@@ -127,7 +129,8 @@ class AfiliarHotel {
 		'country_id'           => null,
 		'state_id'             => null,
 		'iata'                 => null,
-		'foto'                 => null
+		'foto'                 => null,
+		'referente'=>null,
 	);
 
 
@@ -155,6 +158,102 @@ class AfiliarHotel {
 
 
 	}
+
+
+	public function cargarDatos(array $post){
+
+
+		if($this->con->inTransaction()){
+			$this->rollBack();
+		}
+		$this->con->beginTransaction();
+
+		$this->setReferente($post['usuario']);
+		// echo $this->registrar['id_usuario'];
+
+
+		$hotel = $post['hotel'];
+
+		settype($hotel, 'integer');
+
+		$sql = "INSERT into solicitudhotel(id_hotel,id_usuario,condicion)values(:hotel,:usuario,1)";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':hotel',$hotel);
+			$stm->bindParam(':usuario',$this->register['id_usuario']);
+			$stm->execute();
+			
+			$this->con->commit();
+		} catch (PDOException $e) {
+			$this->con->rollBack();
+			
+			return false;
+		}
+
+		return true;
+	}
+
+
+	public function setReferente($referral){
+		if($referral){
+			$referral = trim($referral);
+			if(!preg_match('/^[a-zA-Z0-9]+$/ui',$referral)){
+				// $this->errors['referral'] = 'The username must only contain letters and numbers. Special characters including accents are not allowed.';
+				$this->error['referente'] = 'El nombre de usuario debe contener solo caracteres alfanuméricos.';
+				$this->register['username'] = $referral;
+				return $this;
+			}
+			$query = "SELECT id_usuario FROM usuario WHERE username = :username";
+			try{
+				$stmt = $this->con->prepare($query);
+				$stmt->bindValue(':username', $referral, PDO::PARAM_STR);
+				$stmt->execute();
+			}catch(\PDOException $ex){
+				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+				return false;
+			}
+			if($row = $stmt->fetch()){
+				$this->register['id_usuario'] = $row['id_usuario'];
+				$this->register['username'] = $referral;
+				return $this;
+			}
+			$this->error['referente'] = 'El nombre de usuario es incorrecto o no existe.';
+			$this->register['username'] = $referral;
+			return $this;
+		}
+		return $this;
+	}
+
+
+	public function quitaruser(int $iduser){
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+
+		$sql = "DELETE FROM solicitudhotel where id_usuario = :user";
+
+		try {
+				$stm = $this->con->prepare($sql);
+				$stm->bindParam(':user',$iduser);
+				$stm->execute();
+
+				$this->con->commit();
+				
+		} catch (PDOException $e) {
+			$this->error_log(__METHOD__,__LINE__,$e);
+			$this->con->rollBack();
+			return false;
+		}
+
+		return true;
+		
+	}
+
 	public function set_data(array $post,array $datospagos = null,$iduser=0, array $files = null){
 
 

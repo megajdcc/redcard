@@ -184,7 +184,7 @@ if(isset($_POST['solicitudcodigo'])){
 }
 
 // ACCIONES PARA REGSITRAR HOTEL
-	if(isset($_POST['form-hotel'])){
+	if(isset($_POST['asociar-hotel'])){
 
 		$response = array(
 		'peticion'           => false,
@@ -198,78 +198,21 @@ if(isset($_POST['solicitudcodigo'])){
 		'codigoiata'         =>null,
 		'id_hotel'           =>null);
 			
-			// $datosusuario = array(	'username'=>$_POST['username'],
-			// 						'email'           =>$_POST['emailuser'],
-			// 						'password'        =>$_POST['password'],
-			// 						'password-retype' =>$_POST['password-retype'],
-			// 						'referral'        =>$_SESSION['user']['id_usuario']);
-
-
-			$datohotel = array('nombre'=>$_POST['nombre'],
-								'iata'                 =>$_POST['iata'],
-								'website'              =>$_POST['website'],
-								'direccion'            =>$_POST['direccion'],
-								'codigopostal'         =>$_POST['codigopostal'],
-								'pais'                 =>$_POST['pais'],
-								'estado'               =>$_POST['estado'],
-								'ciudad'               =>$_POST['ciudad'],
-								'latitud'              =>$_POST['latitud'],
-								'longitud'             =>$_POST['longitud'],
-								'nombre_responsable'   =>$_POST['nombre_responsable'],
-								'apellido_responsable' =>$_POST['apellido_responsable'],
-								'email'                =>$_POST['email'],
-								'cargo'                =>$_POST['cargo'],
-								'telefonofijo'         =>$_POST['telefonofijo'],
-								'movil'                =>$_POST['movil']);
-
-		
-			if($_POST['pago'] == false){
-
-				$datopago = null;
-			}else{
-
-				$datopago = array('nombre_banco'=>$_POST['nombre_banco'],
-								'cuenta'               =>$_POST['cuenta'],
-								'clabe'                =>$_POST['clabe'],
-								'swift'                =>$_POST['swift'],
-								'nombre_banco_targeta' =>$_POST['nombre_banco_tarjeta'],
-								'numero_targeta'       =>$_POST['numero_targeta'],
-								'email_paypal'         =>$_POST['email_paypal']);
-
-			}
+			$datohotel = $_POST['hotel'];
 			
-
-			$result = 1;
-			
-
-			if($result > 0){
-				$response['usuario_registrado'] = true;
+			$response['usuario_registrado'] = true;
 				
-				$result = $hotel->set_data($datohotel,$datopago,3,$_FILES);
+			$result = $hotel->cargarDatos($_POST);
 
-				if($result){
+			if($result){
 					$response['peticion'] = true;
 					$response['hotel_registrado'] = true;
 					$response['pago_registrado'] = true;
-					$response['mensaje'] = "Hotel registrado con exito, Si Desea Genere el Codigo de hotel y adjudique su comision de una vez...";
-
-					$datos = $hotel->capturarultimo();
-				
-					$response['nombrehotel']  = $datos[0]['nombrehotel'];
-					$response['codigoiata']   = $datos[0]['codigo'];
-					$response['id_hotel']   = $datos[0]['idhotel'];
-
-
+					$response['mensaje'] = "Usuario Asociado con exito.";
 				}else{
 					$response['peticion']           = true;
 					$response['mensaje'] = "El registro no tuvo exito...";
 				}
-			
-			}else{
-				$response['peticion']           = true;
-				$response['usuario_registrado'] = false;
-			}
-
 				echo json_encode($response);
 	}
 
@@ -404,17 +347,32 @@ if(isset($_POST['solicitudcodigo'])){
 				}
 				
 				echo json_encode($response);
+		}else if($_POST['perfil'] == 'UserHotel'){
+			$response = array('peticion' =>false,'mensaje'=>'');
+			$result = $hotel->quitaruser($_POST['user']);
+
+			if($result){
+				$response['peticion'] = true;
+				$response['mensaje'] = "Usuario quitado exitosamente";
+
+			}else{
+				$response['peticion'] = false;
+				$response['mensaje'] = "No se pudo completar la operaci&oacute;n, intente mas tarde.";
+			}
+
+			echo json_encode($response);
 		}else{
 
 			$response = array('peticion' =>false,'mensaje'=>'');
 			
 			$result  = $solicitud->EliminarSolicitud('Hotel',$_POST['hotel']);
+			
 			if($result){
-			$response['peticion'] = true;
-			$response['mensaje'] = 'Eliminacion Exitosa';
+				$response['peticion'] = true;
+				$response['mensaje'] = 'Eliminacion Exitosa';
 			}else{
-			$response['peticion'] = false;
-			$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
+				$response['peticion'] = false;
+				$response['mensaje'] = 'No se pudo eliminar a este hotel Intente Eliminarlo mas tarde...';
 			}
 			
 			echo json_encode($response);

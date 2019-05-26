@@ -864,11 +864,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		
 							
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary btn-usuario"><i class="fa fa-black-tie"></i>Usuario adjudicado</button>
+			
+					<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="modificar btn btn-success"><i class="fa fa-save"></i>Actualizar</button>
+					<button type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="elminar" class="eliminar btn btn-danger"><strong class="fa fa-remove"> Eliminar</strong></button>
 					
-					<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="elminar" class="eliminar btn btn-danger"><strong class="fa fa-remove"> Eliminar</strong></button>
-					<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="modificar btn btn-success">Actualizar</button>
-					<button  type="button" data-dismiss="modal" class="btn btn-secondary" >Cerrar</button>
+					<button  type="button" data-dismiss="modal" class="btn btn-secondary" ><i class="fa fa-close"></i>Cerrar</button>
 				</div>
 
 			</div>
@@ -1560,6 +1560,94 @@ $(document).ready(function() {
 			
 
 		});
+
+		$('#formulario-hotel').bind("submit",function(e){
+
+				e.preventDefault();
+						var btngrabar = $('.grabar');
+									
+									btngrabar.attr('disabled', 'disabled');
+									 btngrabar.text("Guardando Por favor espere");
+								
+									var data = new FormData(document.getElementById("formulario-hotel"));
+									data.append('hotel',$('#asociaruserhotel').attr('data-hotel'));
+									data.append('asociar-hotel',true);
+
+								
+									
+									$.ajax({
+										url: '/admin/controller/ControllerRegistro.php',
+										type: 'POST',
+										dataType: 'JSON',
+										data:data,
+										cache:false,
+										contentType:false,
+										processData:false
+									})
+									.done(function(response) {
+
+									
+										if(response.hotel_registrado){
+										
+										alert(response.mensaje);
+
+										location.reload();
+									
+										}else{
+											alert(response.mensaje);
+
+											// location.reload();
+										}
+									
+									return false;
+									})
+									.fail(function() {
+
+										return false;
+										console.log("error");
+									})
+									.always(function(){
+										return false;
+									})
+									
+
+									return false;
+
+		})
+
+	$('.quitaruserhotel').click(function(){
+		var usuario = $(this).attr('data-user');
+
+
+		var result = confirm('Acepta quitar a este usuario?');
+
+		if(result){
+			$.ajax({
+				url: '/admin/controller/ControllerRegistro.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {solicitud: 'eliminar',perfil:'UserHotel',user:usuario}
+				})
+				.done(function(response) {
+				if(response.peticion){
+				alert(response.mensaje);
+				location.reload();
+				}else{
+				alert(response.mensaje);
+				}
+				})
+				.fail(function() {
+				console.log("error");
+				})
+				.always(function() {
+				console.log("complete");
+				});
+		}
+		
+		
+	});
+
+
 	});
 </script>
 
@@ -1577,7 +1665,7 @@ $(document).ready(function() {
 		
       </div>
 
-      <form method="post" id="formulario-franquiciatario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
+      <form method="post" id="formulario-hotel" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
 	     
 	     <div class="modal-body">
 
@@ -1624,7 +1712,7 @@ $(document).ready(function() {
 									<div class="search-placeholder" id="user-search-placeholder">
 										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
-									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+									<input type="text" class="form-control typeahead" name="usuario" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
 								
 						</div>
 
