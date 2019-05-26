@@ -40,6 +40,8 @@
 	$paging = new pagination($options['page'], $options['total']);
 	$paging->setRPP($rpp);
 	$paging->setCrumbs(10);
+
+
 	$home = new Home($con);
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
 
@@ -47,7 +49,12 @@
 		if(isset($_POST['fecha_inicio']) and !empty($_POST['fecha_inicio'])){
 			$home->busqueda($_POST);
 		}
-	} 
+	}
+
+if(isset($_POST['cambiar-hotel'])){
+
+	 $home->cambiarhotel($_POST['cambiar-hotel']);
+} 
 
 	
 	 

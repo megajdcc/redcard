@@ -45,7 +45,7 @@ class Home {
 								'fechainicio' => null,
 								'fechafin' => null);
 
-	public function __construct(connection $con){
+	public function __construct(connection $con,$namehotel = null){
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
@@ -54,16 +54,32 @@ class Home {
 		return;
 	}
 
-	private function CargarHotel(){
 
-		$query = "select h.id,h.nombre as nombrehotel,h.codigo from hotel as h 
+	public function cambiarhotel($idhotel = null){
+		$_SESSION['id_hotel'] = $idhotel;
+
+		$this->CargarHotel($idhotel);
+	}
+	private function CargarHotel(int $idhotel =null){
+
+
+		if(!is_null($idhotel)){
+			$query = "select h.id,h.nombre as nombrehotel,h.codigo from hotel as h where id =:hotel";
+
+			$datos = array(':hotel' => $idhotel); 
+			
+		}else{
+			$query = "select h.id,h.nombre as nombrehotel,h.codigo from hotel as h 
 			inner join solicitudhotel as sh on h.id = sh.id_hotel
 			inner join usuario as u on sh.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
 
+			$datos = array(':id' => $this->user['id']);
+		}
+		
+
 		$stm = $this->con->prepare($query);
-		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
-		$stm->execute();
+		$stm->execute($datos);
 		$fila = $stm->fetch(PDO::FETCH_ASSOC);
 		$this->hotel['id'] =$fila['id'];
 		$_SESSION['nombrehotel'] = $fila['nombrehotel'];

@@ -702,6 +702,14 @@ $(document).ready(function() {
 			$(this).closest("form").submit();
 		}
 	});
+	// Enviar formulario para cambiar de negocio
+	$('.cambiar-hotel').on('click', function(e) {
+		e.preventDefault();
+		var is_good = confirm('¿Cambiar de hotel?');
+		if(is_good){
+			$(this).closest("form").submit();
+		}
+	});
 
 	// Enviar formulario para cambair el rol de un empleado
 	$('.change-role').on('click', function(e) {

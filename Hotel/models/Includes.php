@@ -27,6 +27,10 @@ class Includes {
 	private $crumbs = array();
 	
 
+	private $hoteles = array('id' =>null ,
+								'nombrehotel'=>null,
+								'otroshoteles'=>array('idhotel'=>null,'nombrehotel'=>null));
+
 
 
 	public function __construct(connection $con){
@@ -77,20 +81,60 @@ class Includes {
 			}
 
 		}
-		$query = "SELECT COUNT(*) FROM solicitud_negocio WHERE situacion = 2";
+
+
+		// Hoteles Data
+		$query = "SELECT h.id as idhoteles, h.nombre as nombrehotel FROM hotel h 
+			INNER JOIN solicitudhotel sh ON h.id = sh.id_hotel
+			WHERE sh.id_usuario = :usuario";
 		try{
 			$stmt = $this->con->prepare($query);
+			$stmt->bindValue(':usuario',$this->user['id'], PDO::PARAM_INT);
 			$stmt->execute();
 		}catch(\PDOException $ex){
 			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
-		if($row = $stmt->fetch()){
-			$this->admin['pending_request'] = $row['COUNT(*)'];
+		while($row = $stmt->fetch()){
+			if($_SESSION['id_hotel']  == $row['idhoteles']){
+				$this->hoteles['nombrehotel'] = _safe($row['nombrehotel']);
+			}else{
+					$this->hoteles['otroshoteles'][$row['idhoteles']] = _safe($row['nombrehotel']);
+				
+			}
 		}
 		return;
+		
 	}
+	private function gethoteles(){
+		$html = null;
+		if(!is_null($this->hoteles['otroshoteles'])){
+		if(count($this->hoteles['otroshoteles']) > 0){
+			$html =
+			'<div class="header-nav-user">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle mimic-header-nav-user-image" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span>'.$this->hoteles['nombrehotel'].'</span> <i class="fa fa-chevron-down"></i>
+					</button>
+					<ul class="dropdown-menu reverse-dropdown" aria-labelledby="dropdownMenu1">';
+			foreach ($this->hoteles['otroshoteles'] as $fila=>$value) {
+				
+				
+				$html .= 
+				'<form method="post" action="'.HOST.'/Hotel/">
+					<li><a href="#" class="cambiar-hotel">'.$value.'</a></li>
 
+					<input type="hidden" value="'.$fila.'" name="cambiar-hotel">
+				</form>';
+			}
+			$html .= 
+			'		</ul>
+				</div><!-- /.dropdown -->
+			</div><!-- /.header-nav-user -->';
+		}
+	}
+		return $html;
+	}
 	private function load_sidebar(){
 		
 		switch (basename(dirname($_SERVER['SCRIPT_NAME']))) {
@@ -486,6 +530,7 @@ class Includes {
 												</ul>
 											</div><!-- /.dropdown -->
 										</div><!-- /.header-nav-user -->
+										'.$this->gethoteles().'
 									</div><!-- /.header-bottom -->
 								</div><!-- /.header-content -->
 							</div><!-- /.header-inner -->
