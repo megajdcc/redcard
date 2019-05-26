@@ -110,7 +110,7 @@ class DetallesSolicitudFranquiciatario{
 						rf.telefonofijo, 
 						rf.comision, 
 						rf.aprobada, 
-						rf.codigo_hotel,
+						
 						rf.nombre,
 						rf.apellido,
 						rf.email as emailfranquiciatario,
@@ -131,7 +131,7 @@ class DetallesSolicitudFranquiciatario{
 				from franquiciatario as rf
 				
 				 join solicitudfr as srf on rf.id = srf.id_franquiciatario 
-			 join hotel as h on rf.codigo_hotel = h.codigo
+			 join hotel as h on rf.id_hotel = h.id
                  join ciudad as c on h.id_ciudad = c.id_ciudad
 				 join estado as e on h.id_estado = e.id_estado
 				 join pais as p on e.id_pais = p.id_pais
@@ -211,14 +211,16 @@ class DetallesSolicitudFranquiciatario{
 						srf.comentario,
 						srf.condicion,
 						srf.creado, 
-						srf.hotel,
-						srf.sitioweb,
-						srf.direccion,
-						srf.codigopostal,
-						srf.id_iata,
+						h.nombre as hotel,
+						h.sitio_web as sitioweb,
+						h.direccion,
+						h.codigo_postal as codigopostal,
+						h.id_iata,
+						h.latitud,h.longitud,
+						h.id as idhotel,
 
-
-						i.codigo,
+						h.codigo,
+						i.codigo as iata,
 
 						CONCAT(u.nombre,' ',u.apellido) as nombrecompleto, 
 						u.email,
@@ -227,7 +229,7 @@ class DetallesSolicitudFranquiciatario{
 						rf.telefonofijo, 
 						rf.comision, 
 						rf.aprobada, 
-						rf.codigo_hotel,
+						
 						rf.nombre,
 						rf.apellido,
 						rf.email as emailfranquiciatario,
@@ -242,18 +244,21 @@ class DetallesSolicitudFranquiciatario{
 						c.ciudad,
 						c.id_ciudad, 
 						p.pais,
+						p.id_pais,
 						e.estado,
-						e.id_estado
+						e.id_estado,i.id as id_iata
 				from franquiciatario as rf
 				
-				 left join solicitudfr as srf on rf.id = srf.id_franquiciatario 
+				 join solicitudfr as srf on rf.id = srf.id_franquiciatario 
+			 join hotel as h on rf.id_hotel = h.id
+                 join ciudad as c on h.id_ciudad = c.id_ciudad
+				 join estado as e on h.id_estado = e.id_estado
+				 join pais as p on e.id_pais = p.id_pais
 				
-				left join iata i on srf.id_iata = i.id
+				 join iata i on h.id_iata = i.id
 				 join usuario as u on srf.id_usuario = u.id_usuario	
 				left join datospagocomision as dpc on rf.id_datospagocomision = dpc.id 
-				 left join ciudad as c on srf.id_ciudad = c.id_ciudad
-				 left join estado as e on srf.id_estado = e.id_estado
-				 left join pais as p on e.id_pais = p.id_pais
+				
 
 
 			where srf.id = :solicitud";
@@ -324,40 +329,29 @@ class DetallesSolicitudFranquiciatario{
 			if($datos['pago']){
 				//cargamos datos de pago de comision
 
-				$pago = true;
+				$pago          = true;
 				$banco         = $datos['nombre_banco'];
 				$bancotarjeta  = $datos['nombre_banco_tarjeta'];
 				$clabe         = $datos['clabe'];
 				$swift         = $datos['swift'];
 				$numerotarjeta = $datos['numero_targeta'];
-				$cuenta        = $datos['cuenta'];
+				$cuenta        = $datos['cuenta_franquiciatario'];
 				$emailpaypal   = $datos['email_paypal'];
 
 			}
 
 
-			// cargamos datos de hotel
-			$nombrehotel          = $datos['nombre'];
-			$iata                 = $datos['iata'];
-			$sitioweb             = $datos['website'];
-			$direccion            = $datos['direccion'];
-			$codigopostal         = $datos['codigopostal'];
+			// cargamos datos de franquiciatario
 			
-			$pais                 = $datos['pais'];
-			$estado               = $datos['estado'];
-			$ciudad               = $datos['ciudad'];
-			
-			$latitud              = $datos['latitud'];
-			$longitud             = $datos['longitud'];
-			
-			$nombrecontacto   = $datos['nombrecontacto'];
-			$apellidocontacto = $datos['apellidocontacto'];
+			$nombrecontacto   = $datos['nombre'];
+			$apellidocontacto = $datos['apellido'];
 
 			
 			
 			
 			$telefonofijo         = $datos['telefonofijo'];
 			$movil                = $datos['movil'];
+			$email                = $datos['email'];
 
 
 			if($this->con->inTransaction()){
@@ -367,11 +361,49 @@ class DetallesSolicitudFranquiciatario{
 			$this->con->beginTransaction();
 
 			
-			
+			$sql = "SELECT fr.id_datospagocomision from franquiciatario as fr where fr.id_hotel = :hotel";
 
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':hotel'=>$datos['actualizarfr']));
+
+			$id_dato = $stm->fetch(PDO::FETCH_ASSOC)['id_datospagocomision'];
+
+			
 			if($pago){
 
-				$sql = "update datospagocomision set banco=:banco,cuenta=:cuenta,clabe=:clabe,swift=:swift,banco_tarjeta=:bancotarjeta,numero_tarjeta=:numerotarjeta,email_paypal=:email where id=:id";
+				if(is_null($id_dato)){
+					$sql = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,banco_tarjeta,numero_tarjeta,email_paypal) values(:banco,:cuenta,:clabe,:swift,:bancotarjeta,:numerotarjeta,:emailpaypal)";
+
+
+					$datos = array(':banco' =>$banco ,':cuenta'=>$cuenta,':clabe'=>$clabe,':swift'=>$swift,':bancotarjeta'=>$bancotarjeta,':numerotarjeta'=>$numerotarjeta,':emailpaypal'=>$emailpaypal);
+
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+
+						$dpg = $this->con->lastInsertId();
+					} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());	
+						$this->con->rollback();
+						return false;
+					}
+
+
+					$sql = "UPDATE franquiciatario set id_datospagocomision=:dpg where id=:fr";
+
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute(array(':dpg'=>$dpg,':fr'=>$this->registro['id_franquiciatario']));
+
+					} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());	
+						$this->con->rollback();
+						return false;
+					}
+
+
+				}else{
+					$sql = "update datospagocomision set banco=:banco,cuenta=:cuenta,clabe=:clabe,swift=:swift,banco_tarjeta=:bancotarjeta,numero_tarjeta=:numerotarjeta,email_paypal=:email where id=:id";
 
 				try {
 						$stm = $this->con->prepare($sql);
@@ -387,6 +419,8 @@ class DetallesSolicitudFranquiciatario{
 								);
 						$stm->execute($datos);
 
+						
+
 				} catch (PDOException $e) {
 					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
 					
@@ -395,69 +429,18 @@ class DetallesSolicitudFranquiciatario{
 				
 					
 				}
-
-			
-
+				}
 			}
 
 
-			if($ciudad == '' || $ciudad == null){
-				$sql2 = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,codigo_postal=:codigopostal,id_iata=:iata,id_estado=:estado where id=:hotel";
-			$datos = array(
-							':nombre'       =>$nombrehotel,
-							':direccion'    =>$direccion,
-							':latitud'      =>$latitud,
-							':longitud'     =>$longitud,
-							':sitioweb'     =>$sitioweb,
-							
-							':codigopostal' =>$codigopostal,
-							':iata'         =>$iata,
-							':estado'       =>$estado,
-							':hotel'        =>$this->registro['idhotel']
-							);
-			}else{
-
-				$sql2 = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,codigo_postal=:codigopostal,id_iata=:iata,id_estado=:estado where id=:hotel";
-				$datos = array(
-							':nombre'       =>$nombrehotel,
-							':direccion'    =>$direccion,
-							':latitud'      =>$latitud,
-							':longitud'     =>$longitud,
-							':sitioweb'     =>$sitioweb,
-							':ciudad'       =>$ciudad,
-							':codigopostal' =>$codigopostal,
-							':iata'         =>$iata,
-							':estado'       =>$estado,
-							':hotel'        =>$this->registro['idhotel']
-							);
-			}
-
-			
-
-
-			try {
-				
-							$stm = $this->con->prepare($sql2);
-							
-							
-							
-							$stm->execute($datos);
-			} catch (PDOException $e) {
-					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-					
-					$this->con->rollback();
-					return false;
-				
-			}
-
-
-			$sql3 = "update franquiciatario set telefonofijo=:telefonofijo,telefonomovil=:telefonomovil,nombre=:nombre,apellido=:apellido where id=:franquiciatario";
+			$sql3 = "update franquiciatario set email=:emailfr, telefonofijo=:telefonofijo,telefonomovil=:telefonomovil,nombre=:nombre,apellido=:apellido where id=:franquiciatario";
 
 
 			try {
 							$stm = $this->con->prepare($sql3);
 							
 							$datos = array(
+								':emailfr'=>$email,
 							':telefonofijo'=>$telefonofijo,
 							':telefonomovil'=>$movil,
 							':nombre'=>$nombrecontacto,
@@ -698,29 +681,7 @@ class DetallesSolicitudFranquiciatario{
 		$this->con->beginTransaction();
 
 
-
-
-			// ELMIMINACION DE HOTEL
-			// 
-			
-			$sql = "DELETE from hotel where id=:hotel";
-
-
-			try {
-					$stm = $this->con->prepare($sql);
-					
-					$stm->bindParam(':hotel',$this->registro['idhotel']);
-
-					$stm->execute();
-				
-			} catch (PDOException $e) {
-				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-				$this->con->rollBack();
-				return false;
-			}
-
-
-			// ELIMINACINO DE DATOS DE PAGO COMISION
+			// ELIMINACION DE DATOS DE PAGO COMISION
 			// 
 			
 			$sql2 = "DELETE from datospagocomision where id= :pago";
@@ -746,6 +707,7 @@ class DetallesSolicitudFranquiciatario{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindParam(':id_franquiciatario', $this->registro['id_franquiciatario'], PDO::PARAM_INT);
 			$stmt->execute();
+
 
 			$this->con->commit();
 			}catch(PDOException $ex){
@@ -1403,32 +1365,19 @@ class DetallesSolicitudFranquiciatario{
 			
 			$this->con->beginTransaction();
 
-			$query  = "UPDATE franquiciatario set comision =:comision, codigo_hotel=:codigo where id =:id_franquiciatario";
+			$query  = "UPDATE franquiciatario set comision =:comision,codigo_hotel=:codigohotel where id =:id_franquiciatario";
 
 			try {
 			$stm = $this->con->prepare($query);
 
-			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_franquiciatario' =>$franquiciatario ));
-				
+			$stm->execute(array(':comision' => $comision,':codigohotel'=>$codigohotel,':id_franquiciatario' =>$franquiciatario ));
+			
+			$this->con->commit();
+
 		} catch (PDOException $ex) {
 			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
 			$this->con->rollback();
 			return false;
-		}
-
-		$sql = "UPDATE hotel set comision =:comision, codigo=:codigo where id=:hotel";
-
-		try {
-			$stm = $this->con->prepare($sql);
-			$stm->execute(array(':comision'=>0,':codigo'=>$codigohotel,':hotel'=>$hotel));
-			$this->con->commit();
-
-		} catch (PDOException $e) {
-
-			$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
-			$this->con->rollback();
-			return false;
-			
 		}
 
 		return true;

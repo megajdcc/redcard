@@ -114,8 +114,8 @@ class Home {
 
 	private function CargarHotel(){
 
-		$query = "select h.id, fr.id  as idfranquiciatario from hotel as h 
-			inner join franquiciatario as fr on h.codigo = fr.codigo_hotel
+		$query = "select h.id,h.nombre as nombrehotel, fr.id  as idfranquiciatario from hotel as h 
+			inner join franquiciatario as fr on h.id = fr.id_hotel
 inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario 
 			inner join usuario as u on sfr.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
@@ -130,6 +130,8 @@ inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario
 
 		$_SESSION['id_hotel'] = $this->hotel['id'];
 		$_SESSION['id_franquiciatario'] = $this->franquiciatario['id'];
+
+		$_SESSION['nombrehotel'] = $fila['nombrehotel'];
 	}
 
 	public function getOperaciones(){

@@ -75,6 +75,7 @@ class AfiliarFranquiciatario {
 		'nrosolicitud'         => null,
 		'condicion'            => null,
 		'comentario'           => null,
+		'username' =>null,
 
 
 	
@@ -134,12 +135,13 @@ class AfiliarFranquiciatario {
 		'nombre'               =>null,
 		'apellido'             =>null,
 		'emailfranquiciatario' =>null,
-		'location'             =>null
+		'location'             =>null,
+		'referente' =>null,
 
 
 	);
 
-
+	private $referente = array();
 	private $solicitante = 0;
 	private $registropago = false;
 	public $ultimohotel = 0;
@@ -150,6 +152,89 @@ class AfiliarFranquiciatario {
 	
 	}
 
+
+	public function cargarDatos(array $post){
+
+
+		if($this->con->inTransaction()){
+			$this->rollBack();
+		}
+		$this->con->beginTransaction();
+
+		$this->setReferente($post['usuario']);
+		// echo $this->registrar['id_usuario'];
+
+
+		$hotel = $post['hotel'];
+
+		settype($hotel, 'integer');
+
+		$sql = "INSERT into franquiciatario(id_hotel)values(:hotel)";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':hotel',$hotel);
+			$stm->execute();
+			
+			$ultimoid = $this->con->lastInsertId();
+		} catch (PDOException $e) {
+			$this->con->rollBack();
+			
+			return false;
+		}
+
+
+		$sql = 'INSERT into solicitudfr(id_franquiciatario,id_usuario,condicion)values(:franquiciatario,:usuario,1)';
+
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':franquiciatario',$ultimoid);
+			$stm->bindParam(':usuario',$this->registrar['id_usuario']);
+
+			$stm->execute();
+
+			$this->con->commit();
+
+			return true;
+
+		} catch (PDOException $e) {
+			$this->con->rollBack();
+			
+			return false;
+		}
+	}
+
+
+	public function setReferente($referral){
+		if($referral){
+			$referral = trim($referral);
+			if(!preg_match('/^[a-zA-Z0-9]+$/ui',$referral)){
+				// $this->errors['referral'] = 'The username must only contain letters and numbers. Special characters including accents are not allowed.';
+				$this->error['referente'] = 'El nombre de usuario debe contener solo caracteres alfanuméricos.';
+				$this->registrar['username'] = $referral;
+				return $this;
+			}
+			$query = "SELECT id_usuario FROM usuario WHERE username = :username";
+			try{
+				$stmt = $this->con->prepare($query);
+				$stmt->bindValue(':username', $referral, PDO::PARAM_STR);
+				$stmt->execute();
+			}catch(\PDOException $ex){
+				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+				return false;
+			}
+			if($row = $stmt->fetch()){
+				$this->registrar['id_usuario'] = $row['id_usuario'];
+				$this->registrar['username'] = $referral;
+				return $this;
+			}
+			$this->error['referente'] = 'El nombre de usuario es incorrecto o no existe.';
+			$this->registrar['username'] = $referral;
+			return $this;
+		}
+		return $this;
+	}
 	public function set_data(array $post,array $datospagos = null,$iduser =null, array $files = null){
 
 

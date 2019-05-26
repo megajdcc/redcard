@@ -107,7 +107,7 @@ class DetallesSolicitudReferidor{
 						rf.telefonofijo, 
 						rf.comision, 
 						rf.aprobada, 
-						rf.codigo_hotel,
+						
 						rf.nombre,
 						rf.apellido,
 						rf.email as emailreferidor,
@@ -128,7 +128,7 @@ class DetallesSolicitudReferidor{
 				from referidor as rf
 				
 				 join solicitudreferidor as srf on rf.id = srf.id_referidor 
-			 join hotel as h on rf.codigo_hotel = h.codigo
+			 join hotel as h on rf.id_hotel = h.id
                  join ciudad as c on h.id_ciudad = c.id_ciudad
 				 join estado as e on h.id_estado = e.id_estado
 				 join pais as p on e.id_pais = p.id_pais
@@ -153,6 +153,7 @@ class DetallesSolicitudReferidor{
 					$valores = $stm->fetch(PDO::FETCH_ASSOC);
 
 						$this->registro['id_usuario']           = $valores['id_usuario'];
+		$this->registro['id_usuario']           = $valores['id_usuario'];
 		$this->registro['username']             = $valores['username'];
 		$this->registro['apellido_usuario']     = $valores['apellido_usuario'];
 		$this->registro['nombre_usuario']       = $valores['nombre_usuario'];
@@ -165,18 +166,15 @@ class DetallesSolicitudReferidor{
 		$this->registro['telefonomovil']        = $valores['telefonomovil'];
 		$this->registro['id_datospagocomision'] = $valores['id_datospagocomision'];
 		$this->registro['banco']                = $valores['banco'];
-		$this->registro['cuenta']               =$valores['cuenta'];
-		
+		$this->registro['cuenta']               = $valores['cuenta'];
 		$this->registro['nombre']               = $valores['nombre'];
 		$this->registro['apellido']             = $valores['apellido'];
 		$this->registro['emailreferidor'] = $valores['emailreferidor'];
-		
 		$this->registro['clabe']                = $valores['clabe'];
 		$this->registro['swift']                = $valores['swift'];
 		$this->registro['banco_tarjeta']        = $valores['banco_tarjeta'];
 		$this->registro['numero_tarjeta']       = $valores['numero_tarjeta'];
 		$this->registro['email_paypal']         = $valores['email_paypal'];
-		
 		$this->registro['nombrehotel']          = $valores['hotel'];
 		$this->registro['direccion']            = $valores['direccion'];
 		$this->registro['sitioweb']             = $valores['sitioweb'];
@@ -185,17 +183,16 @@ class DetallesSolicitudReferidor{
 		$this->registro['ciudad']               = $valores['ciudad'];
 		$this->registro['comision']             = $valores['comision'];
 		$this->registro['codigo']               = $valores['codigo'];
-		$this->registro['iata']               = $valores['iata'];
-		$this->registro['id_iata']               = $valores['id_iata'];
+		$this->registro['iata']                 = $valores['iata'];
+		$this->registro['id_iata']              = $valores['id_iata'];
 		$this->registro['id_ciudad']            = $valores['id_ciudad'];
 		$this->registro['id_estado']            = $valores['id_estado'];
-		$this->registro['id_pais']            = $valores['id_pais'];
-		$this->registro['codigopostal']            = $valores['codigopostal'];
-		$this->registro['id_iata']            = $valores['id_iata'];
-		$this->registro['latitud']            = $valores['latitud'];
-		$this->registro['longitud']            = $valores['longitud'];
-		$this->registro['idhotel']            = $valores['idhotel'];
-		
+		$this->registro['id_pais']              = $valores['id_pais'];
+		$this->registro['codigopostal']         = $valores['codigopostal'];
+		$this->registro['id_iata']              = $valores['id_iata'];
+		$this->registro['latitud']              = $valores['latitud'];
+		$this->registro['longitud']             = $valores['longitud'];
+		$this->registro['idhotel']              = $valores['idhotel'];
 		$this->registro['creado']               = $valores['creado'];
 
 	}
@@ -220,30 +217,12 @@ class DetallesSolicitudReferidor{
 				$emailpaypal   = $datos['email_paypal'];
 
 			}
-
-
-			// cargamos datos de hotel
-			$nombrehotel          = $datos['nombre'];
-			$iata                 = $datos['iata'];
-			$sitioweb             = $datos['website'];
-			$direccion            = $datos['direccion'];
-			$codigopostal         = $datos['codigopostal'];
 			
-			$pais                 = $datos['pais'];
-			$estado               = $datos['estado'];
-			$ciudad               = $datos['ciudad'];
-			
-			$latitud              = $datos['latitud'];
-			$longitud             = $datos['longitud'];
-			
-			$nombrecontacto   = $datos['nombrecontacto'];
-			$apellidocontacto = $datos['apellidocontacto'];
-
-			
-			
-			
-			$telefonofijo         = $datos['telefonofijo'];
-			$movil                = $datos['movil'];
+			$nombrecontacto   = $datos['nombre'];
+			$apellidocontacto = $datos['apellido'];
+			$telefonofijo     = $datos['telefonofijo'];
+			$movil            = $datos['movil'];
+			$email            = $datos['email'];
 
 
 			if($this->con->inTransaction()){
@@ -252,12 +231,48 @@ class DetallesSolicitudReferidor{
 
 			$this->con->beginTransaction();
 
-			
-			
+			$sql = "SELECT rf.id_datospagocomision from referidor as rf where rf.id_hotel = :hotel";
+
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':hotel'=>$datos['actualizarrf']));
+
+			$id_dato = $stm->fetch(PDO::FETCH_ASSOC)['id_datospagocomision'];
 
 			if($pago){
 
-				$sql = "update datospagocomision set banco=:banco,cuenta=:cuenta,clabe=:clabe,swift=:swift,banco_tarjeta=:bancotarjeta,numero_tarjeta=:numerotarjeta,email_paypal=:email where id=:id";
+				if(is_null($id_dato)){
+					$sql = "INSERT INTO datospagocomision(banco,cuenta,clabe,swift,banco_tarjeta,numero_tarjeta,email_paypal) values(:banco,:cuenta,:clabe,:swift,:bancotarjeta,:numerotarjeta,:emailpaypal)";
+
+
+					$datos = array(':banco' =>$banco ,':cuenta'=>$cuenta,':clabe'=>$clabe,':swift'=>$swift,':bancotarjeta'=>$bancotarjeta,':numerotarjeta'=>$numerotarjeta,':emailpaypal'=>$emailpaypal);
+
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+
+						$dpg = $this->con->lastInsertId();
+					} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());	
+						$this->con->rollback();
+						return false;
+					}
+
+
+					$sql = "UPDATE referidor set id_datospagocomision=:dpg where id=:fr";
+
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute(array(':dpg'=>$dpg,':fr'=>$this->registro['id_referidor']));
+
+					} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());	
+						$this->con->rollback();
+						return false;
+					}
+
+
+				}else{
+					$sql = "update datospagocomision set banco=:banco,cuenta=:cuenta,clabe=:clabe,swift=:swift,banco_tarjeta=:bancotarjeta,numero_tarjeta=:numerotarjeta,email_paypal=:email where id=:id";
 
 				try {
 						$stm = $this->con->prepare($sql);
@@ -273,6 +288,8 @@ class DetallesSolicitudReferidor{
 								);
 						$stm->execute($datos);
 
+						
+
 				} catch (PDOException $e) {
 					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
 					
@@ -281,68 +298,23 @@ class DetallesSolicitudReferidor{
 				
 					
 				}
+				}
 			}
 
 
-			if($ciudad == '' || $ciudad == null){
-				$sql2 = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,codigo_postal=:codigopostal,id_iata=:iata,id_estado=:estado where id=:hotel";
-				$datos = array(
-							':nombre'       =>$nombrehotel,
-							':direccion'    =>$direccion,
-							':latitud'      =>$latitud,
-							':longitud'     =>$longitud,
-							':sitioweb'     =>$sitioweb,
-							
-							':codigopostal' =>$codigopostal,
-							':iata'         =>$iata,
-							':estado'       =>$estado,
-							':hotel'        =>$this->registro['idhotel']
-							);
-			}else{
-
-				$sql2 = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,codigo_postal=:codigopostal,id_iata=:iata,id_estado=:estado where id=:hotel";
-				$datos = array(
-							':nombre'       =>$nombrehotel,
-							':direccion'    =>$direccion,
-							':latitud'      =>$latitud,
-							':longitud'     =>$longitud,
-							':sitioweb'     =>$sitioweb,
-							':ciudad'       =>$ciudad,
-							':codigopostal' =>$codigopostal,
-							':iata'         =>$iata,
-							':estado'       =>$estado,
-							':hotel'        =>$this->registro['idhotel']
-							);
-			}
-
-			try {
-				
-							$stm = $this->con->prepare($sql2);
-							
-							
-							
-							$stm->execute($datos);
-			} catch (PDOException $e) {
-					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-					
-					$this->con->rollback();
-					return false;
-				
-			}
-
-
-			$sql3 = "update referidor set telefonofijo=:telefonofijo,telefonomovil=:telefonomovil,nombre=:nombre,apellido=:apellido where id=:referidor";
+			$sql3 = "update referidor set email=:email, telefonofijo=:telefonofijo,telefonomovil=:telefonomovil,nombre=:nombre,apellido=:apellido where id=:referidor";
 
 
 			try {
 							$stm = $this->con->prepare($sql3);
 							
 							$datos = array(
-							':telefonofijo'=>$telefonofijo,
-							':telefonomovil'=>$movil,
-							':nombre'=>$nombrecontacto,
-							':apellido'=>$apellidocontacto,
-							':referidor'=>$this->registro['id_referidor']);
+							':email'         =>$email,
+							':telefonofijo'  =>$telefonofijo,
+							':telefonomovil' =>$movil,
+							':nombre'        =>$nombrecontacto,
+							':apellido'      =>$apellidocontacto,
+							':referidor'     =>$this->registro['id_referidor']);
 							
 							$stm->execute($datos);
 							$this->con->commit();
@@ -520,30 +492,7 @@ class DetallesSolicitudReferidor{
 
 		$this->con->beginTransaction();
 
-
-
-
-			// ELMIMINACION DE HOTEL
-			// 
-			
-			$sql = "DELETE from hotel where id=:hotel";
-
-
-			try {
-					$stm = $this->con->prepare($sql);
-					
-					$stm->bindParam(':hotel',$this->registro['idhotel']);
-
-					$stm->execute();
-				
-			} catch (PDOException $e) {
-				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-				$this->con->rollBack();
-				return false;
-			}
-
-
-			// ELIMINACINO DE DATOS DE PAGO COMISION
+	// ELIMINACION DE DATOS DE PAGO COMISION
 			// 
 			
 			$sql2 = "DELETE from datospagocomision where id= :pago";
@@ -559,7 +508,8 @@ class DetallesSolicitudReferidor{
 			}
 
 
-			//ELIMINACION DE FRANQUICIATARIO
+
+			//ELIMINACION DE REFERIDOR
 			//
 			//
 			
@@ -585,8 +535,6 @@ class DetallesSolicitudReferidor{
 			}
 			
 			return true;
-
-
 	}
 	
 	public function getCodigo(){
@@ -1391,28 +1339,14 @@ class DetallesSolicitudReferidor{
 			$stm = $this->con->prepare($query);
 
 			$stm->execute(array(':comision' => $comision,':codigo'=>$codigohotel,':id_referidor' =>$referidor ));
-				
+			
+			$this->con->commit();
+
 		} catch (PDOException $ex) {
 			$this->registrarerror(__METHOD__,__LINE__,$ex->getMessage());
 			$this->con->rollback();
 			return false;
 		}
-
-		$sql = "UPDATE hotel set comision =:comision, codigo=:codigo where id=:hotel";
-
-		try {
-			$stm = $this->con->prepare($sql);
-			$stm->execute(array(':comision'=>0,':codigo'=>$codigohotel,':hotel'=>$hotel));
-			$this->con->commit();
-
-		} catch (PDOException $e) {
-
-			$this->registrarerror(__METHOD__,__LINE__,$e->getMessage());
-			$this->con->rollback();
-			return false;
-			
-		}
-
 		return true;
 	
 

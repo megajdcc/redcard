@@ -97,8 +97,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
         <tbody>
    			<?php echo $perfiles->ListarHoteles(); ?>
-
-
         </tbody>
     </table>
 
@@ -158,8 +156,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<div class="alert alert-success" role="alert" id="alerta" style="display:none">
 							Comisión actualizada. Si desea puede actualizar de nuevo.
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    						<span aria-hidden="true">&times;</span>
+  							</button>
 						</div>
 							<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
 								<section class="col-xs-12 acept-solicitud container" >
@@ -1547,4 +1545,109 @@ $(document).ready(function() {
 							</div>
 						</div>
 					</div>
+</div>
+
+<script>
+	
+	$(document).ready(function() {
+		$('.new-user-hotel').click(function(){
+			var hotel = $(this).attr('data-hotel');
+
+
+			 $('#asociaruserhotel').attr('data-hotel',hotel);
+			$('#modalnewuserhotel').modal('show');
+
+			
+
+		});
+	});
+</script>
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					ASOCIACION DE USUARIO AL HOTEL                                 -->
+<!-- --------------------------------------------------------------------------------- -->
+
+<div class="modal fade" id="modalnewuserhotel" tabindex="-1" role="dialog" aria-labelledby="modalnewfranquiciatario" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Nuevo Usuario con Perfil de hotel</h5>
+		
+      </div>
+
+      <form method="post" id="formulario-franquiciatario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
+	     
+	     <div class="modal-body">
+
+			<style>
+				.oculto{
+					display: none;
+				}
+			</style>
+
+	      	<div class="oculto notification-reg-hotel alert alert-icon alert-dismissible alert-info" role="alert">
+												
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<i class="fa fa-times" aria-hidden="true"></i>
+					</button>
+												
+					<strong class="notifi"></strong>
+			</div>
+
+	      	<style >
+	      		.btn-modal{
+	      			display: flex;
+	      			justify-content: center;
+	      			margin-bottom: 3rem;
+	      		}
+	      		.vtn-new-user{
+	      			padding: 1rem 2.5rem;
+	      		}
+
+	      		.content-formulario{
+	      			max-height: 400px;
+	      			overflow-y: auto;
+	      			padding: 0px 3rem;
+	      		}
+	      	</style>
+
+	 		<section class="content-formulario">
+
+			      	<!-- DATOS DE USUARIO -->
+			      	<div class=" col-lg-12" id="vtn-date-user-franquiciatario">
+					<div class="vtn-new-user">
+							
+						<div class="form-group" id="user-search" data-toggle="tooltip" title="" data-placement="bottom">
+									<label for="user-search-input">Usuario que se va asignar</label>
+									<div class="search-placeholder" id="user-search-placeholder">
+										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
+									</div>
+									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+								
+						</div>
+
+						<div class="alert alert-info">
+							<p>Encuentra a tu referente al perfil por su nombre o nombre de usuario (username). Este campo obligatorio</p>
+							<p>Despues podras asignar otros datos necesarios.</p>
+						</div>							
+									
+					</div>
+					</div>
+							
+			</section>     		
+	     </div>
+	      <div class="modal-footer footer-r">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="submit" id="asociaruserhotel" class="grabar btn btn-primary">Grabar</button>
+	      </div>
+
+	     
+      </form>
+
+    </div>
+
+  </div>
+</div>
 </div>

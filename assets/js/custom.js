@@ -325,6 +325,8 @@ $(document).ready(function() {
 		}
 	});
 
+	
+
 	$('#user-search .typeahead').typeahead({
 			hint: false,
 			highlight: true,
@@ -335,7 +337,6 @@ $(document).ready(function() {
 		limit: 15,
 		name: 'users',
 		display: 'username',
-
 		source: users,
 		templates: {
 			empty: [
@@ -379,9 +380,84 @@ $(document).ready(function() {
 		});
 	}
 
+
+
+
+
+
+	$('#user-search-referidor .typeahead').typeahead({
+			hint: false,
+			highlight: true,
+			minLength: 3,
+			autoselect: true,
+		},
+		{
+		limit: 15,
+		name: 'users',
+		display: 'username',
+
+		source: users,
+		templates: {
+			empty: [
+				'<div class="tt-empty-message">',
+					'Sé más específico.',
+				'</div>'
+			].join('\n'),
+			suggestion: function(data){
+				return '<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>';
+			}
+		}
+	}).on('typeahead:selected', function(object, data) {
+		if($('#user-search-placeholder-referidor').length){
+			$('#user-search-placeholder-referidor').empty();
+			$('#user-search-placeholder-referidor').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>');
+		}
+		if($('#certificate-load').length){
+			load_user_certs_referidor();
+		}
+	});
+
+	var placeholder_clone = $("#user-search-placeholder-referidor").clone();
+	var certificate_clone = $("#certificate-load").clone();
+	$("#user-search-input-referidor").on("input", function() {
+		$("#user-search-placeholder-referidor").replaceWith(placeholder_clone.clone());
+		$("#certificate-load").replaceWith(certificate_clone.clone());
+	});
+
+	if($('#user-search-input-referidor').val() != '' && $('#user-search-placeholder-referidor').length){
+		var username = $('#user-search-input-referidor').val();
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				load_username: username
+			},
+			success: function(data){
+				$('#user-search-placeholder-referidor').empty();
+				$('#user-search-placeholder-referidor').append( data );
+			}
+		});
+	}
+
 	// Cargar certificados pendiente en formulario de venta
 	function load_user_certs(){
 		var username = $('#user-search-input').val();
+		$.ajax({
+			type: "POST",
+			url: "/ajax.php",
+			data: {
+				cert_username: username
+			},
+			success: function(data){
+				$( "#certificate-load" ).empty();
+				$( "#certificate-load" ).append( data );
+			}
+		});
+		return;
+	}
+
+	function load_user_certs_referidor(){
+		var username = $('#user-search-input-referidor').val();
 		$.ajax({
 			type: "POST",
 			url: "/ajax.php",
@@ -926,6 +1002,7 @@ if($('#solicitudes').length){
 	if($('#ex8').length){
 		var slider = new Slider('#ex8');
 		var valorslider = slider.getValue();
+
 		slider.on("slide", function(sliderValue){
 			valorslider = sliderValue;
 				document.getElementById('val-slider').textContent = sliderValue + " %";
@@ -1052,6 +1129,8 @@ if($('#solicitudes').length){
 					idhotel = $(this).attr('data-hotel');
 				}
 
+
+				
 				if(perfil == 'Hotel'){
 					var codigohotel = document.getElementById("codigohotel").value;
 					var comision =  valorslider;
@@ -1076,7 +1155,7 @@ if($('#solicitudes').length){
 				}else if(perfil == 'Franquiciatario'){
 
 					var comision = valorslider;
-
+					
 					var path = $(this).attr('data-path');
 
 					var franquiciatario = $(this).attr('data-path');
@@ -1103,7 +1182,7 @@ if($('#solicitudes').length){
 							// $(document).load(path);
 
 						// document.innerHTML = path;
-						location.reload();
+						 location.reload();
 						
 					})
 					.fail(function() {

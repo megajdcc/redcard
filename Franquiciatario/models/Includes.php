@@ -482,7 +482,7 @@ class Includes {
 								</h1>
 
 								<h1 class="logo-esmart">
-								<span class="header-text"> Franquiciatario</span></h1>
+								<span class="header-text"> Franquiciatario - '.$_SESSION['nombrehotel'].'</span></h1>
 							</div>
 							<!-- /.header-statusbar-left -->
 							<div class="header-statusbar-right">

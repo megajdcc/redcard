@@ -51,17 +51,30 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 		if($_POST['perfil'] == 'Hotel'){
+
 			$solicitud->adjudicar($_POST['perfil'],$_POST['comision'],$_POST['codigohotel'],$_POST['hotel']);
+
 		}else if($_POST['perfil'] == 'Franquiciatario'){
+
 			$solicitudfr->adjudicaradmin($_POST['comision'],$_POST['codigohotel'],$_POST['hotel'], $_POST['franquiciatario']);
+
 		}else if($_POST['perfil'] == 'Referidor'){
+
 			$solicitudrf->adjudicaradmin($_POST['comision'],$_POST['codigohotel'],$_POST['hotel'], $_POST['referidor']);
+
 		}
 		
 	
 	}
 }
+if($_SERVER["REQUEST_METHOD"] == "POST"){
 
+	if(isset($_POST['actualizar'])){
+			$perfiles->actualizarcomision($_POST);
+	}
+
+
+}
 $reg = new assets\libs\user_signup($con);
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$reg->setData($_POST,'admin');
@@ -115,124 +128,17 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<div class="col-lg-4">
 						<h1 class="">Nuevos Perfiles</h1>
 						</div>
-						<div class="col-lg-8 d-flex justify-content-end">
-						<!-- Botones para agregar nuevos perfiles... -->
-						
-						<div class="btn-group" role="group" aria-label="Basic example">
-						<button type="button" class="new-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Nuevo Hotel</button>
-						<button type="button" data-toggle="tooltip" title="Nuevo Usuario con perfil de Hotel..." data-placement="bottom" class="new-franquiciatario btn btn-secondary"><i class="fa fa-black-tie"></i>Nuevo Franquiciatario</button>
-						<button type="button" class="new-referidor btn btn-secondary"><i class="fa fa-black-tie"></i>Nuevo Referidor</button>
-						</div>
-						
-						
-						
-						</div>
-
-				</div>
-
-
-				
-			</div>
-
-
-			
-			
-
-			<div class="row">
-				<div class="col-lg-12" id="perfilesnew">
 					
-				</div>
-
-
-				<script>
-					
-					$(document).ready(function() {
-						$(document).ready(function() {
-						
-							$.ajax({
-								url: '/admin/controller/grafica.php',
-								type: 'POST',
-								dataType: 'json',
-								data: {grafica: 'perfilesnuevos'},
-							})
-							.done(function(response) {
-								var options = {
-											 chart: {
-											 		renderTo: 'perfilesnew',
-											        type: 'pie'
-											    },
-											   lang:{
-															decimalPoint: ',',
-								   						thousandsSep: '.'
-													},
-											    title: {
-											        text: 'Perfiles Nuevos'
-											    },
-											    xAxis: {
-											        type: 'category'
-											    },
-											  
-											    
-											    plotOptions: {
-											        pie: {
-														allowPointSelect:true,
-														cursor:'pointer',
-														borderWidth: 0,
-											            dataLabels: {
-											               enabled: true,
-											               format: '{point.y:.0f}'
-											            },
-											            showInLegend:true,
-											        }},
-
-											    tooltip: {
-											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> {point.y:.0f}</b>'
-											    },
-											    series: [ {
-											    	name: "perfiles",
-            										colorByPoint: true,
-											    } ],
-								   				}; 
-									 options.series[0].data = response;
-									
-									var grafica = Highcharts.chart(options);
-									 	
-									})	
-							.fail(function() {
-								console.log("error");
-							})
-							.always(function() {
-								console.log("complete");
-							});
-						
-							});
-
-					});
-				</script>
-			</div>
-
-		</div>
-
-		<div class="page-title">
-			<h1>Usuarios con adjudicación de perfil
-			<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
-	
-			</form>
-			</h1>
-		</div>
-		<div class="background-white p20 mb50">
-			
-		<table  id="example" class="display" cellspacing="0" width="100%">
+								<table  id="example" class="display" cellspacing="0" width="100%">
 		<thead>
             <tr>
             	
             	
-            	<th>Foto</th>
-            	<th>Email</th>
-                <th>Nombre y apellido</th>
-                <th>Perfil</th>
-                <th>Comisión</th>
-               
+            	<th></th>
+            	<th>Hotel</th>
+                <th>Direcci&oacute;n</th>
+                <th>Franquiciatario</th>
+                <th>Referidores</th>
                 <th>Ultimo Logín</th>
                <!--  <th></th> -->
                
@@ -247,8 +153,17 @@ echo $navbar = $includes->get_admin_navbar(); ?>
         </tbody>
     </table>
 
-
-
+    	<div class="col-lg-8 d-flex justify-content-end">
+						<!-- Botones para agregar nuevos perfiles... -->
+						
+						<div class="btn-group" role="group" aria-label="Basic example">
+						<button type="button" class="new-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Nuevo Hotel</button>
+				
+						</div>
+						
+						
+						
+						</div>
 
     <script>
     	$(document).ready(function(){
@@ -281,13 +196,28 @@ echo $navbar = $includes->get_admin_navbar(); ?>
     </script>
 
 
-			
+				</div>
+
+
+				
+			</div>
 		</div>
 	</div>
 </div>
 
-<!-- Modal para adjudicar Franquiciatario -->
-		<div class="modal fade " id="comision" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+
+
+
+
+
+
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 	      MODAL PARA ADJUDICAR COMISION Y CODIGO AL FRANQUICIATARIO                -->
+<!-- --------------------------------------------------------------------------------- -->
+
+<div class="modal fade " id="comision" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
 			<div class="modal-dialog modal-dialog-centered modal-sm " role="document">
 				<div class="modal-content">
 					
@@ -331,7 +261,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					</div>
 				</div>
 			</div>
-		</div>
+</div>
 
 <script >
 			
@@ -454,7 +384,7 @@ $(document).ready(function(){
 							$('actualizar').attr('data-solicitud',solicitud);
 
 							$('.pcomi').text(comision+" %");
-							$('.modal').modal('show');
+							$('#comision').modal('show');
 						}else{
 
 							var ele = document.getElementById('sliderdinamico');
@@ -650,8 +580,7 @@ $(document).ready(function(){
 <!-- Script de activaciones de Modales -->
 <script>
 	
-
-	$(document).ready(function(){
+$(document).ready(function(){
 		
 		// Enviamos el Formulario
 		// 
@@ -812,166 +741,96 @@ $(document).ready(function(){
 
 		//Captura de formulario para registrar Franquiciatario
 		
-		$('#formulario-franquiciatario').bind("submit",function(){
+		$('#formulario-franquiciatario').bind("submit",function(e){
 
-
-					var contra1 = $('#password-franquiciatario').val();
-					var contra2 = $('#password-retype-franquiciatario').val();
-
-					var verificado = true;
-					if(contra1 != contra2){
-						verificado = false;
-						alert('Las contrasenas no son iguales por favor verifique...');
-						return false;
-
-					}
-
-					if(contra1.length < 7){
-						verificado = false;
-						alert('La contrasena debe tener al menos 7 caracteres...');
-						return false;
-					}
-
-					if(contra1 == null){
-						verificado = false;
-						alert('La contrasena no debe estar vacia o simplemente tener datos vacios... ');
-						return false;
-					}
-
-					var nombrehotel = $('#nombrehotel-franquiciatario').val();
-					if(nombrehotel.length < 2 ){
-						verificado = false;
-						alert('El Nombre de hotel debe ser un nombre Valido, mayor a 2 caracteres y no estar vacio');
-						return false;
-					}
-
-					var iata = $('#iata-franquiciatario').val();
-					
-					if(iata == null || iata == 0){
-						verificado = false;
-						alert('Seleccione un codigo IATA, si no conoce el Codigo IATA de tu zona, puedes ingresar uno en el panel de edicion de IATA alli tienes toda la info...');
-						return false;
-					}
-
-
-					var estado = $('#state-select-franquiciatario').val();
-					
-					
-					if(estado == null || estado == 0){
-						verificado = false;
-						alert('Seleccione un estado donde esta ubicado el Hotel');
-						return false;
-					}
-
-					var nombrebanco        = $('#nombre_banco_franquiciatario').val();
-					var cuenta             = $('#cuenta_franquiciatario').val();
-					var clabe              = $('#clabe_franquiciatario').val();
-					var emailpaypal        = $('#email_paypal_franquiciatario').val();
-					var nombrebancotargeta = $('#nombre_banco_targeta_franquiciatario').val();
-					var numerotargeta      = $('#numero_targeta_franquiciatario').val();
-					var swift              = $('#swift_franquiciatario').val();
-
-					var datopago = true;
-
-					var resut = false;
-
-					if(nombrebanco.length < 1 && cuenta.length < 1 && clabe.length < 1 && swift.length < 1 && nombrebancotargeta.length < 1 && numerotargeta < 1 && emailpaypal.length < 1){
-
-						resut = confirm("Acepta no agregar los datos para el pago de comisiones?");
-						if(resut){
-							datopago = false;
-							registrarfranquiciatario();
-							return false;
-						}else{
-							return false;
-						}
-						
-					}else{
-						
-						registrarfranquiciatario();
-						return false;
-					}
-
-					function registrarfranquiciatario(){
-
-			
-						
+				e.preventDefault();
 						var btngrabar = $('.grabar');
 									
 									btngrabar.attr('disabled', 'disabled');
-									btngrabar.text("Guardando Por favor espere");
-									var formulario = $('#formulario-franquiciatario');
-									formulario.append('<input type="hidden" name="pago" value="'+datopago+'">');
+									 btngrabar.text("Guardando Por favor espere");
+								
+									var data = new FormData(document.getElementById("formulario-franquiciatario"));
+									data.append('hotel',$('#asociarfranquiciatario').attr('data-hotel'));
+									data.append('asociar-franquiciatario',true);
+
+								
 									
 									$.ajax({
-									url: formulario.attr('action'),
+									url: '/admin/controller/ControllerRegistro.php',
 									type: 'POST',
 									dataType: 'JSON',
-									data:formulario.serialize()
-									//data: ,
+									data:data,
+									cache:false,
+									contentType:false,
+									processData:false
+						
 									})
 									.done(function(response) {
 
 									
-									if(response.hotel_registrado){
-									
-									
-									$('.notification-reg-hotel').removeClass('oculto');
-									
-									$('.notifi').text(response.mensaje);
-									
-									$('.notification-reg-hotel').removeClass('alert-info');
-									$('.notification-reg-hotel').addClass('alert-success');
-									btngrabar.css({
-									display: 'none',
-									
-									});
-									
-									
-									$('.footer-r').html('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="adjudicar-codigo btn btn-primary" data-toggle="modal" data-target="#exampleModal">Adjudicar Ahora</button>')
-									// $('.modal-footer').html('<button type="button" class="adjudicar-codigo btn btn-primary" >Adjudicar Ahora</button>')
-									
-									// $('.adjudicar-codigo').attr('data-toggle', 'tooltip');
-									$('.adjudicar-codigo').attr('title', 'Si desea puede Asignar el codigo de hotel y la comisión ahora mismo...');
-									// $('.adjudicar-codigo').attr('data-placement', 'left');
-									
-									
-									$('.nombrehotel').text('Hotel '+response.nombrehotel);
-									$('.iata').text('Codigo Iata '+response.codigoiata);
-									
-									
-									$('.generarcodigo').attr('data-iata', response.codigoiata);
-									$('.generarcodigo').attr('data-hotel', response.nombrehotel);
-									
-									
-									$('.adjudicar').attr('data-path', '/admin/perfiles/');
-									$('.adjudicar').attr('data-perfil', 'Franquiciatario');
-									$('.adjudicar').attr('data-hotel', response.id_hotel);
-									$('.adjudicar').attr('data-franquiciatario', response.id_franquiciatario);
-									$('#ex8').removeAttr('data-slider-max');
-
-									$('#ex8').attr('data-slider-max','8');
-									
-									}else{
-										$('.notification-reg-hotel').css({
-										display: 'flex !important',
-										color: 'Black'
-										});
+										if(response.hotel_registrado){
+										
+										
+										$('.notification-reg-hotel').removeClass('oculto');
 										
 										$('.notifi').text(response.mensaje);
 										
 										$('.notification-reg-hotel').removeClass('alert-info');
-										$('.notification-reg-hotel').addClass('alert-danger');
-										btngrabar.text('Reenviar Datos');
-										btngrabar.removeAttr('disabled');
-										btngrabar.attr({
-										title: 'Si desea puede reenviar los datos ahora mismo o intentarlo despues.',
+										$('.notification-reg-hotel').addClass('alert-success');
+										btngrabar.css({
+										display: 'none',
+										
 										});
 										
-										btngrabar.attr('data-toggle', 'tooltip');
-										btngrabar.attr('data-placement', 'left');
-										return false;
-									}
+										
+										$('.footer-r').html('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" class="adjudicar-codigo btn btn-primary" data-toggle="modal" data-target="#exampleModal">Adjudicar Ahora</button>')
+										// $('.modal-footer').html('<button type="button" class="adjudicar-codigo btn btn-primary" >Adjudicar Ahora</button>')
+										
+										// $('.adjudicar-codigo').attr('data-toggle', 'tooltip');
+										$('.adjudicar-codigo').attr('title', 'Si desea puede Asignar el codigo de hotel y la comisión ahora mismo...');
+										// $('.adjudicar-codigo').attr('data-placement', 'left');
+										
+										
+										$('.nombrehotel').text('Hotel '+response.nombrehotel);
+										$('.iata').text('Codigo Iata '+response.codigoiata);
+										
+										
+										$('.generarcodigo').attr('data-iata', response.codigoiata);
+										$('.generarcodigo').attr('data-hotel', response.nombrehotel);
+										
+										
+										$('.adjudicar').attr('data-path', '/admin/perfiles/');
+										$('.adjudicar').attr('data-perfil', 'Franquiciatario');
+										$('.adjudicar').attr('data-hotel', response.id_hotel);
+										$('.adjudicar').attr('data-franquiciatario', response.id_franquiciatario);
+										$('#ex8').removeAttr('data-slider-max');
+
+										
+
+										 $('#ex8').attr('data-slider-max','8');
+
+
+										
+										}else{
+											$('.notification-reg-hotel').css({
+											display: 'flex !important',
+											color: 'Black'
+											});
+											
+											$('.notifi').text(response.mensaje);
+											
+											$('.notification-reg-hotel').removeClass('alert-info');
+											$('.notification-reg-hotel').addClass('alert-danger');
+											btngrabar.text('Reenviar Datos');
+											btngrabar.removeAttr('disabled');
+											btngrabar.attr({
+											title: 'Si desea puede reenviar los datos ahora mismo o intentarlo despues.',
+											});
+											
+											btngrabar.attr('data-toggle', 'tooltip');
+											btngrabar.attr('data-placement', 'left');
+											return false;
+										}
 									
 									return false;
 									})
@@ -983,113 +842,36 @@ $(document).ready(function(){
 									.always(function(){
 										return false;
 									})
-									return false;
-					}
+									
 
-				return false;
+									return false;
 
 		});
 		
 
 		//Captura de formulario para registrar Referidor
 		
-		$('#formulario-referidor').bind("submit",function(){
+		$('#formulario-referidor').bind("submit",function(e){
+				e.preventDefault();
 
-
-					var contra1 = $('#password-referidor').val();
-					var contra2 = $('#password-retype-referidor').val();
-
-					var verificado = true;
-					if(contra1 != contra2){
-						verificado = false;
-						alert('Las contrasenas no son iguales por favor verifique...');
-						return false;
-
-					}
-
-					if(contra1.length < 7){
-						verificado = false;
-						alert('La contrasena debe tener al menos 7 caracteres...');
-						return false;
-					}
-
-					if(contra1 == null){
-						verificado = false;
-						alert('La contrasena no debe estar vacia o simplemente tener datos vacios... ');
-						return false;
-					}
-
-					var nombrehotel = $('#nombrehotel-referidor').val();
-					if(nombrehotel.length < 2 ){
-						verificado = false;
-						alert('El Nombre de hotel debe ser un nombre Valido, mayor a 2 caracteres y no estar vacio');
-						return false;
-					}
-
-					var iata = $('#iata-referidor').val();
-					
-					if(iata == null || iata == 0){
-						verificado = false;
-						alert('Seleccione un codigo IATA, si no conoce el Codigo IATA de tu zona, puedes ingresar uno en el panel de edicion de IATA alli tienes toda la info...');
-						return false;
-					}
-
-
-					var estado = $('#state-select-referidor').val();
-					
-					
-					if(estado == null || estado == 0){
-						verificado = false;
-						alert('Seleccione un estado donde esta ubicado el Hotel');
-						return false;
-					}
-
-					var nombrebanco        = $('#nombre_banco_referidor').val();
-					var cuenta             = $('#cuenta_referidor').val();
-					var clabe              = $('#clabe_referidor').val();
-					var emailpaypal        = $('#email_paypal_referidor').val();
-					var nombrebancotargeta = $('#nombre_banco_targeta_referidor').val();
-					var numerotargeta      = $('#numero_targeta_referidor').val();
-					var swift              = $('#swift_referidor').val();
-
-					var datopago = true;
-
-					var resut = false;
-
-					if(nombrebanco.length < 1 && cuenta.length < 1 && clabe.length < 1 && swift.length < 1 && nombrebancotargeta.length < 1 && numerotargeta < 1 && emailpaypal.length < 1){
-
-						resut = confirm("Acepta no agregar los datos para el pago de comisiones?");
-						if(resut){
-							datopago = false;
-							registrarreferidor();
-							return false;
-						}else{
-							return false;
-						}
-						
-					}else{
-						
-						registrarreferidor();
-						return false;
-					}
-
-					function registrarreferidor(){
-
-			
-						
-						var btngrabar = $('.grabar');
+					var btngrabar = $('.grabar');
 									
-									btngrabar.attr('disabled', 'disabled');
-									btngrabar.text("Guardando Por favor espere");
-									var formulario = $('#formulario-referidor');
-									formulario.append('<input type="hidden" name="pago" value="'+datopago+'">');
+							btngrabar.attr('disabled', 'disabled');
+							btngrabar.text("Guardando Por favor espere");
+								
+							var data = new FormData(document.getElementById("formulario-referidor"));
+							data.append('hotel',$('#asociarreferidor').attr('data-hotel'));
+							data.append('asociar-referidor',true);
 									
-									$.ajax({
-									url: formulario.attr('action'),
+							$.ajax({
+									url: '/admin/controller/ControllerRegistro.php',
 									type: 'POST',
 									dataType: 'JSON',
-									data:formulario.serialize()
-									//data: ,
+									data:data,
+									cache:false,
+									contentType:false,
+									processData:false
+						
 									})
 									.done(function(response) {
 
@@ -1165,7 +947,7 @@ $(document).ready(function(){
 										return false;
 									})
 									return false;
-					}
+					
 
 				return false;
 
@@ -1181,23 +963,218 @@ $(document).ready(function(){
 		});
 
 		$('.new-franquiciatario').click(function(){
+			var hotel = $(this).attr('data-hotel');
+
+
+			$('#asociarfranquiciatario').attr('data-hotel',hotel);
 			$('#modalnewfranquiciatario').modal('show');
+
+			
+
+		});
+
+
+
+
+
+		$('.ver-franquiciatario').click(function(event) {
+			/* Act on the event */
+
+			var hotel = $(this).attr('data-hotel');
+
+
+			$.ajax({
+				url: '/admin/controller/ControllerRegistro.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {solicitudfranquiciatario:true,hotel: hotel},
+			})
+			.done(function(response) {
+						$('.actualizarfr').attr('value', hotel);
+
+
+							if(response.datos.nombre == null){
+								$('.nombrehotel').text("Franquiciatario:"+response.datos.username);
+							}else{
+								$('.nombrehotel').text("Franquiciatario:"+response.datos.nombre+' '+response.datos.apellido);
+							}
+
+							
+
+
+							if(response.datos.comision == null){
+								$('.comision-fr').text('Comisión: 0 %');
+							}else{
+								$('.comision-fr').text('Comisión: '+response.datos.comision+' %');
+							}
+							
+
+							$('.camb-comision').attr('data-solicitud',response.datos.id_franquiciatario);
+							$('.camb-comision').attr('data-perfil','Franquiciatario');
+							$('.camb-comision').attr('data-comision',response.datos.comision);
+
+
+							if(response.datos.nombre == null){
+								$('input[name="nombre"]').val(response.datos.nombre_usuario);
+							}else{
+								$('input[name="nombre"]').val(response.datos.nombre);
+							}
+							if(response.datos.apellido == null){
+								$('input[name="apellido"]').val(response.datos.apellido_usuario);
+							}else{
+								$('input[name="apellido"]').val(response.datos.apellido);
+							}
+
+							if(response.datos.emailfranquiciatario == null){
+								$('input[name="email"]').val(response.datos.email);
+
+							}else{
+								$('input[name="email"]').val(response.datos.emailfranquiciatario);
+							}
+
+							
+							$('input[name="telefonofijo"]').val(response.datos.telefonofijo);
+							$('input[name="movil"]').val(response.datos.telefonomovil);
+
+							$('input[name="numero_targeta"]').val(response.datos.numero_tarjeta);
+							$('input[name="nombre_banco"]').val(response.datos.banco);
+
+							if(response.datos.clabe != 0){
+								$('input[name="clabe"]').val(response.datos.clabe);
+							}
+
+							if(response.datos.swift != 0){
+								$('input[name="swift"]').val(response.datos.swift);
+							}
+
+							$('input[name="cuenta"]').val(response.datos.cuenta);
+							$('input[name="nombre_banco_tarjeta"]').val(response.datos.banco_tarjeta);
+							$('input[name="email_paypal"]').val(response.datos.email_paypal);
+
+				$('#mostrarfranquiciatario').modal({
+					backdrop: true,
+					show:true
+				
+				});
+			})
+			.fail(function() {
+				console.log("error");
+			})
+			.always(function() {
+				console.log("complete");
+			});
+			
+
+			
+		});
+
+			$('.ver-referidor').click(function(event) {
+			/* Act on the event */
+
+			var hotel = $(this).attr('data-hotel');
+
+
+			$.ajax({
+				url: '/admin/controller/ControllerRegistro.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {solicitudreferidor:true,hotel: hotel},
+			})
+			.done(function(response) {
+						$('.actualizarrf').attr('value', hotel);
+
+
+							if(response.datos.nombre == null){
+								$('.nombrehotel').text("Referidor:"+response.datos.username);
+							}else{
+								$('.nombrehotel').text("Referidor:"+response.datos.nombre+' '+response.datos.apellido);
+							}
+
+							
+
+
+							if(response.datos.comision == null){
+								$('.comision-rf').text('Comisión: 0 %');
+							}else{
+								$('.comision-rf').text('Comisión: '+response.datos.comision+' %');
+							}
+							
+
+							$('.camb-comision').attr('data-solicitud',response.datos.id_referidor);
+							$('.camb-comision').attr('data-perfil','Referidor');
+							$('.camb-comision').attr('data-comision',response.datos.comision);
+
+
+							if(response.datos.nombre == null){
+								$('input[name="nombre"]').val(response.datos.nombre_usuario);
+							}else{
+								$('input[name="nombre"]').val(response.datos.nombre);
+							}
+							if(response.datos.apellido == null){
+								$('input[name="apellido"]').val(response.datos.apellido_usuario);
+							}else{
+								$('input[name="apellido"]').val(response.datos.apellido);
+							}
+
+							if(response.datos.emailreferidor == null){
+								$('input[name="email"]').val(response.datos.email);
+
+							}else{
+								$('input[name="email"]').val(response.datos.emailreferidor);
+							}
+
+							
+							$('input[name="telefonofijo"]').val(response.datos.telefonofijo);
+							$('input[name="movil"]').val(response.datos.telefonomovil);
+
+							$('input[name="numero_targeta"]').val(response.datos.numero_tarjeta);
+							$('input[name="nombre_banco"]').val(response.datos.banco);
+
+							if(response.datos.clabe != 0){
+								$('input[name="clabe"]').val(response.datos.clabe);
+							}
+
+							if(response.datos.swift != 0){
+								$('input[name="swift"]').val(response.datos.swift);
+							}
+
+							$('input[name="cuenta"]').val(response.datos.cuenta);
+							$('input[name="nombre_banco_tarjeta"]').val(response.datos.banco_tarjeta);
+							$('input[name="email_paypal"]').val(response.datos.email_paypal);
+
+				$('#mostrarreferidor').modal('show');
+			})
+			.fail(function() {
+				console.log("error");
+			})
+			.always(function() {
+				console.log("complete");
+			});
+			
+
+			
 		});
 		$('.new-referidor').click(function(){
+			var hotel = $(this).attr('data-hotel');
+			$('#asociarreferidor').attr('data-hotel',hotel);
 			$('#modalnewreferidor').modal('show');
 		});
 
 	});
 </script>
-<!-- Modales -->
 
 
-<!-- REGISTRO DE NUEVO HOTEL CON SU USUARIO>>> -->
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					      REGISTRO DE NUEVO HOTEL                                  -->
+<!-- --------------------------------------------------------------------------------- -->
+
 <div class="modal fade" id="modalnewhotel" tabindex="-1" role="dialog" aria-labelledby="modalnewhotel" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalScrollableTitle">Nuevo Usuario con perfil de hotel</h5>
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Nuevo Hotel</h5>
 		
       </div>
       <form method="post" id="formulario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" enctype="multipart/form-data">
@@ -1206,7 +1183,7 @@ $(document).ready(function(){
 									<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<i class="fa fa-times" aria-hidden="true"></i>
 									</button>
-				<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario.</small>
+				<p>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario.</p>
 			</div>
 
 		<style>
@@ -1582,7 +1559,9 @@ $(document).ready(function(){
 
 
 
-<!-- REGISTRO DE NUEVO FRANQUICIATARIO CON SU USUARIO>>>> -->
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					ASOCIACION DE FRANQUICIATARIO Y HOTEL                          -->
+<!-- --------------------------------------------------------------------------------- -->
 
 <div class="modal fade" id="modalnewfranquiciatario" tabindex="-1" role="dialog" aria-labelledby="modalnewfranquiciatario" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document">
@@ -1594,15 +1573,8 @@ $(document).ready(function(){
       </div>
 
       <form method="post" id="formulario-franquiciatario" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
-	      <div class="modal-body">
-
-
-				<div class="alert alert-icon alert-dismissible alert-info" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-										<i class="fa fa-times" aria-hidden="true"></i>
-										</button>
-					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario. </small>
-				</div>
+	     
+	     <div class="modal-body">
 
 			<style>
 				.oculto{
@@ -1618,9 +1590,6 @@ $(document).ready(function(){
 												
 					<strong class="notifi"></strong>
 			</div>
-
-
-	      	
 
 	      	<style >
 	      		.btn-modal{
@@ -1639,309 +1608,37 @@ $(document).ready(function(){
 	      		}
 	      	</style>
 
-	      	<section class="btn-modal">
-	      		<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-							<button type="button" data-toggle="collapse" href="#vtn-date-user-franquiciatario" aria-expanded="true" aria-controls="collapseExample"class="date-user btn btn-secondary"><i class="fa fa-user"></i>Datos de Usuario</button>
-							<button type="button" data-toggle="collapse" aria-expanded="false" href="#vtn-date-hotel-franquiciatario" aria-controls="vtn-date-hotel" class="date-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Datos de Hotel</button>
-							<button type="button"  data-toggle="collapse" aria-expanded="false" href="#vtn-date-pago-franquiciatario" aria-controls="vtn-date-pago" class="date-pago btn btn-secondary"><i class="fa fa-money"></i>Datos Para el Pago de Comisiones</button>
-				</div>
-	      	</section>
-
 	 		<section class="content-formulario">
 
 			      	<!-- DATOS DE USUARIO -->
-			      	<div class="collapse" id="vtn-date-user-franquiciatario">
-							<div class="vtn-new-user">
+			      	<div class=" col-lg-12" id="vtn-date-user-franquiciatario">
+					<div class="vtn-new-user">
 							
-											<div class="form-group" data-toggle="tooltip" title="Tu nombre de usuario debe ser alfanum&eacute;rico. No puede contener espacios, acentos o caracteres especiales. Debe contener entre 3 y 50 caracteres. Recomendamos 20 o menos caracteres.">
-												<label for="username" >Username (use no space)| Nombre de usuario (sin espacios o acentos) <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-												<input type="text" class="form-control" name="username" id="username-franquiciatario" value="<?php echo $reg->getUsername();?>" placeholder="Nombre de usuario (sin espacios o acentos)" required minlength="3" maxlength="50" />
-												<?php echo $reg->getUsernameError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group">
-												<label for="email">Email | Correo electr&oacute;nico <span class="required">*</span></label>
-												<input type="email" class="form-control" name="emailuser" value="<?php echo $reg->getEmail();?>" placeholder="Correo electr&oacute;nico" required />
-												<?php echo $reg->getEmailError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group" data-toggle="tooltip" title="La contrase&ntilde;a debe contener al menos 6 caracteres y debe ser distinta de tu nombre de usuario y tu correo electr&oacute;nico.">
-												<label for="password">Password | Contrase&ntilde;a <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
-												<input type="password" class="form-control" name="password" id="password-franquiciatario" placeholder="Contrase&ntilde;a" required />
-												<?php echo $reg->getPasswordError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group">
-												<label for="password-retype">Rewrite Password | Confirmar contrase&ntilde;a <span class="required">*</span></label>
-												<input type="password" class="form-control" name="password-retype" id="password-retype-franquiciatario" placeholder="Confirmar contrase&ntilde;a" required />
-												<?php echo $reg->getRetypePasswordError();?>
-											</div><!-- /.form-group -->
-											
-									
-							</div>
-					</div>
-				
-
-
-				<!-- DATOS DE HOTEL -->
-					<div class="collapse" id="vtn-date-hotel-franquiciatario">
-					
-							<div class="row">
-								<h3 class="page-title">Informaci&oacute;n del hotel</h3>
-										<div class="col-lg-8">
-													
-											<div class="form-group" data-toggle="tooltip" title="Los clientes Huespedes de Travel Points pueden afiliarse desde su propio perfil...">
-												<label for="business-name">Nombre del hotel <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-
-												<input class="form-control" type="text" id="nombrehotel-franquiciatario" name="nombrehotel" value="<?php echo $affiliate->getNombre();?>" placeholder="Nombre del hotel" required />
-																	<?php echo $affiliate->getNombreError();?>
-											</div>
-															
-										</div>
-															
-										<div class="col-lg-4">
-											<div class="row">
-												<div class="col-sm-6 col-md-12 form-group" data-toggle="tooltip" title="El codigo Iata es utilizado para ayudar a agilizar los procesos de transporte aereo y turistico.">
-													<label for="category">C&oacute;digo IATA <span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
-													<div class="input-group input-iata">
-														<select class="form-control" id="iata-franquiciatario" name="iata" title="Seleccionar c&oacute;digo IATA" data-live-search="true" required>
-															<option value="0" selected>Seleccione</option>
-															<?php echo $affiliate->getIata();?>
-														</select>
-															<?php echo $affiliate->getIataError();?>
-														<button type="button" class="input-group-addon new-iata btn btn-secondary" name="new-iata" data-toggle="tooltip" title="Agrega tu codigo IATA" data-placement="bottom"><i class="fa fa-pencil"></i></button>
-													</div>
-																			
-												</div>
-											</div>
-										</div>
-
-
-										<div class="col-sm-12">
-											<div class="form-group" data-toggle="tooltip" title="Si no tienes sitio web, deja el espacio en blanco.">
-												<label for="website">Sitio web del hotel <i class="fa fa-question-circle text-secondary"></i></label>
-												<div class="input-group">
-													<span class="input-group-addon"><i class="fa fa-globe"></i></span>
-													<input class="form-control" pattern="([--:\w?@%&+~#=]*\.[a-z]{2,4}\/{0,2})((?:[?&](?:\w+)=(?:\w+))+|[--:\w?@%&+~#=]+)?" type="text" id="website-franquiciatario" name="website" value="<?php echo $affiliate->getSitioWeb();?>" placeholder="Sitio web del hotel">
-												</div><!-- /.input-group -->
-													<?php echo $affiliate->getWebsiteError();?>
-											</div><!-- /.form-group -->
-										</div><!-- /.col-* -->
-
-							</div>
-
-							<h3 class="page-title">Ubicaci&oacute;n del hotel</h3>
-								<div class="row">
-									<div class="col-lg-8">
-										<div class="form-group">
-											<label for="address">Direcci&oacute;n del hotel <span class="required">*</span></label>
-											<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-map-o"></i></span>
-																<input class="form-control" type="text" id="address-franquiciatario" name="direccion" value="<?php echo $affiliate->getDireccion();?>" placeholder="Direcci&oacute;n del hotel" required >
-											</div><!-- /.input-group -->
-															<?php echo $affiliate->getDirecccionError();?>
-										</div><!-- /.form-group -->
-									</div><!-- /.col-* -->
-									
-									<div class="col-lg-4">
-										<div class="form-group">
-											<label for="postal-code">C&oacute;digo postal  del hotel <span class="required"></span></label>
-												<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-																<input class="form-control" type="text" id="postal-code-franquiciatario" name="codigopostal" value="<?php echo $affiliate->getCodigoPostal();?>" placeholder="C&oacute;digo postal del hotel">
-												</div><!-- /.input-group -->
-															<?php echo $affiliate->getCodigoPostalError();?>
-										</div><!-- /.form-group -->
-									</div><!-- /.col-* -->
-								</div><!-- /.row -->
-
-								<div class="row">
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="country-select">Pa&iacute;s <span class="required">*</span></label>
-															<select class="form-control" id="country-select-franquiciatario" name="pais" title="Selecciona un pa&iacute;s" data-size="10" data-live-search="true" required>
-																<?php echo $affiliate->get_countries();?>
-															</select>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="state-select">Estado <span class="required">*</span></label>
-															<select class="form-control" id="state-select-franquiciatario" name="estado" title="Luego un estado" data-size="10" data-live-search="true" required>
-																<?php echo $affiliate->get_states();?>
-															</select>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="city-select">Ciudad <span class="required"></span></label>
-															<select class="form-control" id="city-select-franquiciatario" name="ciudad" title="Luego una ciudad" data-size="10" data-live-search="true">
-																<?php echo $affiliate->get_cities();?>
-															</select>
-															<?php echo $affiliate->getCiudadError();?>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-								</div><!-- /.row -->
-
-									<hr>
-
-								         <h3 class="page-title">Tus Datos de contacto.</h3>
-								          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
-								         <div class="row">
-								         
-								         
-								        <div class="col-lg-6">
-								            <div class="form-group" data-toggle="tooltip" title="Tu nombre">
-								               <label for="phone">Nombre:<span class="required">*</span></label>
-								               <div class="input-group">
-								                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
-								                 <input class="form-control" type="text" id="nombre" name="nombre" value="" placeholder="Nombre" required>
-								               </div>
-								               
-								             
-								            </div>
-								            <div class="form-group" data-toggle="tooltip" title="Tu Apellido">
-								               <label for="phone">Apellido:<span class="required">*</span></label>
-								               <div class="input-group">
-								                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
-								                 <input class="form-control" type="text"  id="apellido" name="apellido" value="" placeholder="Apellido" required>
-								               </div>
-								               
-								               
-								            </div>
-
-								            <div class="form-group" data-toggle="tooltip" title="Confirmanos tu Email">
-								               <label for="emailfranquiciatario">Email:<span class="required"></span></label>
-								               <div class="input-group">
-								                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
-								                 <input class="form-control" type="email"  id="emailfranquiciatario" name="emailfranquiciatario" value="" placeholder="Email Franquiciatario" >
-								               </div>
-								               
-								            
-								            </div>
-								         
-								         </div>
-
-
-								    <div class="col-lg-6">
-								        <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-								            <label for="phone">T&eacute;lefono fijo <span class="required"></span><i class="fa fa-question-circle"></i></label>
-								            <div class="input-group">
-								             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-								             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone-franquiciatario" name="telefonofijo" value="" placeholder="N&uacute;mero de t&eacute;lefono fijo">
-								          	</div>
-
-								        </div>
-								          <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
-								            <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
-								            <div class="input-group">
-								             <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
-								             <input class="form-control" type="text" id="movil-franquiciatario"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
-								            </div>
-								            
-								           </div>
-								     </div>
-
-								          </div>
-			   
-												
-											<div class="row">
-														<div class="col-xs-6">
-															<p>Los campos marcados son obligatorios <span class="required">*</span></p>
-														</div>
-											</div>
-					</div>
-				
-
-
-				<!-- DATO DE PAGO DE COMISIONES -->
-					<div class="collapse" id="vtn-date-pago-franquiciatario">
-
-							<h3 class="page-title">Datos para el pago de comisiones</h3>
-								<div class="row">
-									
-									<div class="col-lg-6 col-sm-4">
-											<h5 class="page-title">Transferencia Bancaria</h5>
-												<div class="form-group">
-													<label for="nombre">Nombre del banco<span class="required"></span></label>
-													<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-																<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco_franquiciatario" name="nombre_banco" value="" placeholder="Nombre del banco"  >
-													</div>
-															
-												</div>
-
-														<div class="form-group">
-															<label for="cuenta">Cuenta<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta_franquiciatario" name="cuenta" value="" placeholder="Cuenta."  >
-															</div>
-															<?php //echo $affiliate->getCuentaError();?>
-														</div>
-
-														<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-															<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" maxlength="18" id="clabe_franquiciatario" pattern="[0-9]{18}" name="clabe" value="" placeholder="Clabe"  >
-															</div>
-														
-														</div>
-
-														<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-															<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" id="swift_franquiciatario" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="" placeholder="Swift"  >
-															</div>
-															
-														</div>
-
+						<div class="form-group" id="user-search" data-toggle="tooltip" title="" data-placement="bottom">
+									<label for="user-search-input">Usuario que se va asignar</label>
+									<div class="search-placeholder" id="user-search-placeholder">
+										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
+									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+								
+						</div>
 
-
-
-									<div class="col-lg-6 col-sm-4">
-														<h5 class="page-title">Deposito a tarjeta</h5>
-														<div class="form-group">
-															<label for="nombre">Nombre del banco<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-																<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta_franquiciatario" name="nombre_banco_tarjeta" value="" placeholder="Nombre del banco"  >
-															</div>
-															
-														</div>
-														<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-															<label for="nombre">N&uacute;mero de tarjeta<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-cc"></i></span>
-																<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta_franquiciatario" name="numero_targeta" value="" placeholder="N&uacute;mero de Tarjeta" >
-															</div>
-														
-														</div>
-											
-													
-															<h5 class="page-title">Transferencia PayPal</h5>
-														<div class="form-group">
-															<label for="nombre">Email de Paypal<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-																<input class="form-control" type="email" id="email_paypal_franquiciatario" name="email_paypal" value="" placeholder="Nombre del banco"  >
-															</div>
-															
-														</div>
-									</div>
-																			
-								</div>
-
+						<div class="alert alert-info">
+							<p>Encuentra a tu referente al perfil por su nombre o nombre de usuario (username). Este campo obligatorio</p>
+							<p>Despues podras asignar otros datos necesarios.</p>
+						</div>							
+									
 					</div>
-
+					</div>
+							
 			</section>     		
-	     
+	     </div>
 	      <div class="modal-footer footer-r">
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	        <button type="submit" class="grabar btn btn-primary">Grabar</button>
+	        <button type="submit" id="asociarfranquiciatario" class="grabar btn btn-primary">Grabar</button>
 	      </div>
 
-	      <input type="hidden" name="form-franquiciatario" value="true">
+	     
       </form>
 
     </div>
@@ -1951,7 +1648,19 @@ $(document).ready(function(){
 </div>
 
 
-<!-- REGISTRO DE NUEVO REFERIDOR CON SU USUARIO>>>> -->
+
+
+
+
+
+
+
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					ASOCIACION DE REFERIDOR Y HOTEL                                -->
+<!-- --------------------------------------------------------------------------------- -->
+
 
 <div class="modal fade" id="modalnewreferidor" tabindex="-1" role="dialog" aria-labelledby="modalnewreferidor" aria-hidden="true" data-backdrop="false">
   <div class="modal-dialog modal-lg" role="document">
@@ -1962,16 +1671,12 @@ $(document).ready(function(){
 		
       </div>
 
-      <form method="post" id="formulario-referidor" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
+      	<form method="post" id="formulario-referidor" action="<?php echo _safe(HOST.'/admin/controller/ControllerRegistro.php');?>" autocomplete="off">
 	      <div class="modal-body">
+	      
 
 
-				<div class="alert alert-icon alert-dismissible alert-info" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-										<i class="fa fa-times" aria-hidden="true"></i>
-										</button>
-					<small>Puedes alternar entre los distintos botones con formularios solicitados, El requerimiento es que llenes todos los campos a excepción del formulario del pago de comisión que los puedes omitir si desea, esto lo puedes añadir desde el panel de hotel en el botón añadir datos de pago, de todo lo demás, al enviar los datos se pedirá confirmación de esto. Los Campos necesarios al enviarlos se validaran y se te pedirá corrección de ser necesario. </small>
-				</div>
+				
 
 			<style>
 				.oculto{
@@ -1987,9 +1692,6 @@ $(document).ready(function(){
 												
 					<strong class="notifi"></strong>
 			</div>
-
-
-	      	
 
 	      	<style >
 	      		.btn-modal{
@@ -2008,298 +1710,37 @@ $(document).ready(function(){
 	      		}
 	      	</style>
 
-	      	<section class="btn-modal">
-	      		<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-							<button type="button" data-toggle="collapse" href="#vtn-date-user-referidor" aria-expanded="true" aria-controls="collapseExample"class="date-user btn btn-secondary"><i class="fa fa-user"></i>Datos de Usuario</button>
-							<button type="button" data-toggle="collapse" aria-expanded="false" href="#vtn-date-hotel-referidor" aria-controls="vtn-date-hotel" class="date-hotel btn btn-secondary"><i class="fa fa-hotel"></i>Datos de Hotel</button>
-							<button type="button"  data-toggle="collapse" aria-expanded="false" href="#vtn-date-pago-referidor" aria-controls="vtn-date-pago" class="date-pago btn btn-secondary"><i class="fa fa-money"></i>Datos Para el Pago de Comisiones</button>
-				</div>
-	      	</section>
-
-	 		<section class="content-formulario">
+	 			<section class="content-formulario">
 
 			      	<!-- DATOS DE USUARIO -->
-			      	<div class="collapse" id="vtn-date-user-referidor">
-							<div class="vtn-new-user">
+			      	<div class=" col-lg-12" id="vtn-date-user-referidor">
+					<div class="vtn-new-user">
 							
-											<div class="form-group" data-toggle="tooltip" title="Tu nombre de usuario debe ser alfanum&eacute;rico. No puede contener espacios, acentos o caracteres especiales. Debe contener entre 3 y 50 caracteres. Recomendamos 20 o menos caracteres.">
-												<label for="username" >Username (use no space)| Nombre de usuario (sin espacios o acentos) <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-												<input type="text" class="form-control" name="username" id="username-referidor" value="<?php echo $reg->getUsername();?>" placeholder="Nombre de usuario (sin espacios o acentos)" required minlength="3" maxlength="50" />
-												<?php echo $reg->getUsernameError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group">
-												<label for="email">Email | Correo electr&oacute;nico <span class="required">*</span></label>
-												<input type="email" class="form-control" name="emailuser" value="<?php echo $reg->getEmail();?>" placeholder="Correo electr&oacute;nico" required />
-												<?php echo $reg->getEmailError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group" data-toggle="tooltip" title="La contrase&ntilde;a debe contener al menos 6 caracteres y debe ser distinta de tu nombre de usuario y tu correo electr&oacute;nico.">
-												<label for="password">Password | Contrase&ntilde;a <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
-												<input type="password" class="form-control" name="password" id="password-referidor" placeholder="Contrase&ntilde;a" required />
-												<?php echo $reg->getPasswordError();?>
-											</div><!-- /.form-group -->
-											<div class="form-group">
-												<label for="password-retype">Rewrite Password | Confirmar contrase&ntilde;a <span class="required">*</span></label>
-												<input type="password" class="form-control" name="password-retype" id="password-retype-referidor" placeholder="Confirmar contrase&ntilde;a" required />
-												<?php echo $reg->getRetypePasswordError();?>
-											</div><!-- /.form-group -->
-											
-									
-							</div>
-					</div>
-				
-
-
-				<!-- DATOS DE HOTEL -->
-					<div class="collapse" id="vtn-date-hotel-referidor">
-					
-							<div class="row">
-								<h3 class="page-title">Informaci&oacute;n del hotel</h3>
-										<div class="col-lg-8">
-													
-											<div class="form-group" data-toggle="tooltip" title="Los clientes Huespedes de Travel Points pueden afiliarse desde su propio perfil...">
-												<label for="business-name">Nombre del hotel <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-
-												<input class="form-control" type="text" id="nombrehotel-referidor" name="nombrehotel" value="<?php echo $affiliate->getNombre();?>" placeholder="Nombre del hotel" required />
-																	<?php echo $affiliate->getNombreError();?>
-											</div>
-															
-										</div>
-															
-										<div class="col-lg-4">
-											<div class="row">
-												<div class="col-sm-6 col-md-12 form-group" data-toggle="tooltip" title="El codigo Iata es utilizado para ayudar a agilizar los procesos de transporte aereo y turistico.">
-													<label for="category">C&oacute;digo IATA <span class="required">*</span><i class="fa fa-question-circle text-secondary"></i></label>
-													<div class="input-group input-iata">
-														<select class="form-control" id="iata-referidor" name="iata" title="Seleccionar c&oacute;digo IATA" data-live-search="true" required>
-															<option value="0" selected>Seleccione</option>
-															<?php echo $affiliate->getIata();?>
-														</select>
-															<?php echo $affiliate->getIataError();?>
-														<button type="button" class="input-group-addon new-iata btn btn-secondary" name="new-iata" data-toggle="tooltip" title="Agrega tu codigo IATA" data-placement="bottom"><i class="fa fa-pencil"></i></button>
-													</div>
-																			
-												</div>
-											</div>
-										</div>
-
-
-										<div class="col-sm-12">
-											<div class="form-group" data-toggle="tooltip" title="Si no tienes sitio web, deja el espacio en blanco.">
-												<label for="website">Sitio web del hotel <i class="fa fa-question-circle text-secondary"></i></label>
-												<div class="input-group">
-													<span class="input-group-addon"><i class="fa fa-globe"></i></span>
-													<input class="form-control" pattern="([--:\w?@%&+~#=]*\.[a-z]{2,4}\/{0,2})((?:[?&](?:\w+)=(?:\w+))+|[--:\w?@%&+~#=]+)?" type="text" id="website-referidor" name="website" value="<?php echo $affiliate->getSitioWeb();?>" placeholder="Sitio web del hotel">
-												</div><!-- /.input-group -->
-													<?php echo $affiliate->getWebsiteError();?>
-											</div><!-- /.form-group -->
-										</div><!-- /.col-* -->
-
-							</div>
-
-							<h3 class="page-title">Ubicaci&oacute;n del hotel</h3>
-								<div class="row">
-									<div class="col-lg-8">
-										<div class="form-group">
-											<label for="address">Direcci&oacute;n del hotel <span class="required">*</span></label>
-											<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-map-o"></i></span>
-																<input class="form-control" type="text" id="address-referidor" name="direccion" value="<?php echo $affiliate->getDireccion();?>" placeholder="Direcci&oacute;n del hotel" required >
-											</div><!-- /.input-group -->
-															<?php echo $affiliate->getDirecccionError();?>
-										</div><!-- /.form-group -->
-									</div><!-- /.col-* -->
-									
-									<div class="col-lg-4">
-										<div class="form-group">
-											<label for="postal-code">C&oacute;digo postal  del hotel <span class="required"></span></label>
-												<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-																<input class="form-control" type="text" id="postal-code-referidor" name="codigopostal" value="<?php echo $affiliate->getCodigoPostal();?>" placeholder="C&oacute;digo postal del hotel">
-												</div><!-- /.input-group -->
-															<?php echo $affiliate->getCodigoPostalError();?>
-										</div><!-- /.form-group -->
-									</div><!-- /.col-* -->
-								</div><!-- /.row -->
-
-								<div class="row">
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="country-select">Pa&iacute;s <span class="required">*</span></label>
-															<select class="form-control" id="country-select-referidor" name="pais" title="Selecciona un pa&iacute;s" data-size="10" data-live-search="true" required>
-																<?php echo $affiliate->get_countries();?>
-															</select>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="state-select">Estado <span class="required">*</span></label>
-															<select class="form-control" id="state-select-referidor" name="estado" title="Luego un estado" data-size="10" data-live-search="true" required>
-																<?php echo $affiliate->get_states();?>
-															</select>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-													<div class="col-lg-4">
-														<div class="form-group">
-															<label for="city-select">Ciudad <span class="required"></span></label>
-															<select class="form-control" id="city-select-referidor" name="ciudad" title="Luego una ciudad" data-size="10" data-live-search="true">
-																<?php echo $affiliate->get_cities();?>
-															</select>
-															<?php echo $affiliate->getCiudadError();?>
-														</div><!-- /.form-group -->
-													</div><!-- /.col-* -->
-								</div><!-- /.row -->
-
-									<hr>
-
-								         <h3 class="page-title">Tus Datos de contacto.</h3>
-								          <small class="">Ya tenemos tus datos personales solo confirmanos tus números de contacto.</small>
-								<div class="row">
-								         
-								         
-								        <div class="col-lg-6">
-								            <div class="form-group" data-toggle="tooltip" title="Tu nombre">
-								               <label for="phone">Nombre:<span class="required">*</span></label>
-								               <div class="input-group">
-								                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
-								                 <input class="form-control" type="text" id="nombrereferidor" name="nombre" value="" placeholder="Nombre" required>
-								               </div>
-								               
-								             
-								            </div>
-								            <div class="form-group" data-toggle="tooltip" title="Tu Apellido">
-								               <label for="phone">Apellido:<span class="required">*</span></label>
-								               <div class="input-group">
-								                 <span class="input-group-addon"><i class="fa fa-file"></i></span>
-								                 <input class="form-control" type="text"  id="apellidoreferidor" name="apellido" value="" placeholder="Apellido" required>
-								               </div>
-								               
-								               
-								            </div>
-								         
-								        </div>
-
-
-									    <div class="col-lg-6">
-									        <div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
-									            <label for="phone">T&eacute;lefono fijo <span class="required"></span><i class="fa fa-question-circle"></i></label>
-									            <div class="input-group">
-									             <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
-									             <input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone-referdor" name="telefonofijo" value="" placeholder="N&uacute;mero de t&eacute;lefono fijo">
-									          	</div>
-
-									        </div>
-									          <div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
-									            <label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
-									            <div class="input-group">
-									             <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
-									             <input class="form-control" type="text" id="movil-referidor"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
-									            </div>
-									            
-									           </div>
-									     </div>
-												
-									<div class="row">
-											<div class="col-xs-6">
-															<p>Los campos marcados son obligatorios <span class="required">*</span></p>
-											</div>
+						<div class="form-group" id="user-search-referidor" data-toggle="tooltip" title="" data-placement="bottom">
+									<label for="user-search-input-referidor">Usuario que se va asignar</label>
+									<div class="search-placeholder" id="user-search-placeholder-referidor">
+										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
 									</div>
-								</div>
-					</div>
+									<input type="text" class="form-control typeahead" name="usuario" id="user-search-input-referidor" value="" placeholder="Nombre del usuario asociar." autocomplete="off" required />
+								
+						</div>
 
-				
-
-
-				<!-- DATO DE PAGO DE COMISIONES -->
-					<div class="collapse" id="vtn-date-pago-referidor">
-
-							<h3 class="page-title">Datos para el pago de comisiones</h3>
-								<div class="row">
+						<div class="alert alert-info">
+							<p>Encuentra a tu referente al perfil por su nombre o nombre de usuario (username). Este campo obligatorio</p>
+							<p>Despues podras asignar otros datos necesarios.</p>
+						</div>							
 									
-									<div class="col-lg-6 col-sm-4">
-											<h5 class="page-title">Transferencia Bancaria</h5>
-												<div class="form-group">
-													<label for="nombre">Nombre del banco<span class="required"></span></label>
-													<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-																<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco_referidor" name="nombre_banco" value="" placeholder="Nombre del banco"  >
-													</div>
-															
-												</div>
-
-														<div class="form-group">
-															<label for="cuenta">Cuenta<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta_referidor" name="cuenta" value="" placeholder="Cuenta."  >
-															</div>
-															<?php //echo $affiliate->getCuentaError();?>
-														</div>
-
-														<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
-															<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" maxlength="18" id="clabe_referidor" pattern="[0-9]{18}" name="clabe" value="" placeholder="Clabe"  >
-															</div>
-														
-														</div>
-
-														<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
-															<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
-																<input class="form-control" type="text" id="swift_referidor" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="" placeholder="Swift"  >
-															</div>
-															
-														</div>
-
-									</div>
-
-
-
-									<div class="col-lg-6 col-sm-4">
-														<h5 class="page-title">Deposito a tarjeta</h5>
-														<div class="form-group">
-															<label for="nombre">Nombre del banco<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-																<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta_referidor" name="nombre_banco_tarjeta" value="" placeholder="Nombre del banco"  >
-															</div>
-															
-														</div>
-														<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
-															<label for="nombre">N&uacute;mero de tarjeta<span class="required"></span><i class="fa fa-question-circle"></i></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-cc"></i></span>
-																<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta_referidor" name="numero_targeta" value="" placeholder="N&uacute;mero de Tarjeta" >
-															</div>
-														
-														</div>
-											
-													
-															<h5 class="page-title">Transferencia PayPal</h5>
-														<div class="form-group">
-															<label for="nombre">Email de Paypal<span class="required"></span></label>
-															<div class="input-group">
-																<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
-																<input class="form-control" type="email" id="email_paypal_referidor" name="email_paypal" value="" placeholder="Nombre del banco"  >
-															</div>
-															
-														</div>
-									</div>
-																			
-								</div>
-
 					</div>
+					</div>
+							
+				</section>  
 
-			</section>     		
-	     
+	     </div>
 	      <div class="modal-footer footer-r">
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	        <button type="submit" class="grabar btn btn-primary">Grabar</button>
+	        <button type="submit" id="asociarreferidor" class="grabar btn btn-primary">Grabar</button>
 	      </div>
-
-	      <input type="hidden" name="form-referidor" value="true">
+	
       </form>
 
     </div>
@@ -2307,9 +1748,6 @@ $(document).ready(function(){
   </div>
 </div>
 
-</div>
-
-</div>
 
 
 
@@ -2317,12 +1755,12 @@ $(document).ready(function(){
 
 
 
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA ADJUDICAR NEW CODIGO IATA                           -->
+<!-- --------------------------------------------------------------------------------- -->
 
 
-
-
-<!-- Modal para adjudicar recibo de pago... -->
-		<div class="modal fade " id="new-iata" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+<div class="modal fade " id="new-iata" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content modal-dialog-centered">
 					<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
@@ -2464,7 +1902,522 @@ $(document).ready(function(){
 	
 
 
+	<script>
 
+		$(document).ready(function() {
+			
+		
+			$('#formulario-edicion-franquiciatario').bind('submit', function(){
+			
+						var datopago = true;
+
+						var resut = false;
+
+						
+						var nombrebanco        = $('#nombre_banco_franquiciatario').val();
+						var cuenta             = $('#cuenta_franquiciatario').val();
+						var clabe              = $('#clabe_franquiciatario').val();
+						var emailpaypal        = $('#email_paypal_franquiciatario').val();
+						var nombrebancotargeta = $('#nombre_banco_targeta_franquiciatario').val();
+						var numerotargeta      = $('#numero_targeta_franquiciatario').val();
+						var swift              = $('#swift_franquiciatario').val();
+
+					
+
+						if(nombrebanco.length < 1 && cuenta.length < 1 && clabe.length < 1 && swift.length < 1 && nombrebancotargeta.length < 1 && numerotargeta < 1 && emailpaypal.length < 1){
+
+							resut = confirm("Acepta no agregar los datos para el pago de comisiones?");
+							if(resut){
+								datopago = false;
+
+					
+								registrar();
+								
+							}else{
+								return false;
+							}
+							
+						}else{
+							registrar();
+							
+						}
+
+						function registrar(){
+							var btngrabar = $('.actualizarfr');
+										
+							btngrabar.attr('disabled', 'disabled');
+							btngrabar.text("Actualizando Por favor espere");
+
+							$('.close-modal').attr('disabled','disabled');
+
+							var formulario = $('#formulario-edicion-franquiciatario');
+
+							if($('.pago')){
+								$('.pago').remove();
+							}
+
+							if($('.solicitud')){
+								$('.solicitud').remove();
+							}
+
+							formulario.append('<input type="hidden" class="pago" name="pago" value="'+datopago+'">');
+							formulario.append('<input type="hidden" class="pago" name="actualizar-franquiciatario" value="'+true+'">');
+							formulario.append('<input type="hidden" class="pago" name="actualizarfr" value="'+$('.actualizarfr').attr('value')+'">');
+
+							$.ajax({
+								url: '/admin/controller/ControllerRegistro.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data:formulario.serialize()
+										
+								})
+								.done(function(response) {
+								
+									if(response.peticion){
+										alert(response.mensaje);
+										btngrabar.removeAttr('disabled');
+										btngrabar.text("Grabar");
+										$('.close-modal').removeAttr('disabled');
+										// location.reload();
+
+									}else{
+										
+										btngrabar.removeAttr('disabled');
+
+
+										btngrabar.fadeIn('10000',function() {
+											
+											btngrabar.text("Grabar");
+										});
+										alert(response.mensaje);
+										
+									}
+									return false;
+								})
+								.fail(function() {
+
+									return false;
+									console.log("error");
+								})
+
+							
+
+							return false;
+						}
+						
+						return false;
+
+		});
+
+			$('#formulario-edicion-referidor').bind('submit', function(){
+			
+						var datopago = true;
+
+						var resut = false;
+
+						
+						var nombrebanco        = $('#nombre_banco_referidor').val();
+						var cuenta             = $('#cuenta_referidor').val();
+						var clabe              = $('#clabe_referidor').val();
+						var emailpaypal        = $('#email_paypal_referidor').val();
+						var nombrebancotargeta = $('#nombre_banco_targeta_referidor').val();
+						var numerotargeta      = $('#numero_targeta_referidor').val();
+						var swift              = $('#swift_referidor').val();
+
+					
+
+						if(nombrebanco.length < 1 && cuenta.length < 1 && clabe.length < 1 && swift.length < 1 && nombrebancotargeta.length < 1 && numerotargeta < 1 && emailpaypal.length < 1){
+
+							resut = confirm("Acepta no agregar los datos para el pago de comisiones?");
+							if(resut){
+								datopago = false;
+
+					
+								registrar();
+								
+							}else{
+								return false;
+							}
+							
+						}else{
+							registrar();
+							
+						}
+
+						function registrar(){
+							var btngrabar = $('.actualizarrdf');
+										
+							btngrabar.attr('disabled', 'disabled');
+							btngrabar.text("Actualizando Por favor espere");
+
+							$('.close-modal').attr('disabled','disabled');
+
+							var formulario = $('#formulario-edicion-referidor');
+
+							if($('.pago')){
+								$('.pago').remove();
+							}
+
+							if($('.solicitud')){
+								$('.solicitud').remove();
+							}
+
+							formulario.append('<input type="hidden" class="pago" name="pago" value="'+datopago+'">');
+							formulario.append('<input type="hidden" class="pago" name="actualizar-referidor" value="'+true+'">');
+							formulario.append('<input type="hidden" class="pago" name="actualizarrf" value="'+$('.actualizarrf').attr('value')+'">');
+
+							$.ajax({
+								url: '/admin/controller/ControllerRegistro.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data:formulario.serialize()
+										
+								})
+								.done(function(response) {
+								
+									if(response.peticion){
+										alert(response.mensaje);
+										btngrabar.removeAttr('disabled');
+										btngrabar.text("Grabar");
+										$('.close-modal').removeAttr('disabled');
+										// location.reload();
+
+									}else{
+										
+										btngrabar.removeAttr('disabled');
+
+
+										btngrabar.fadeIn('10000',function() {
+											
+											btngrabar.text("Grabar");
+										});
+										alert(response.mensaje);
+										
+									}
+									return false;
+								})
+								.fail(function() {
+
+									return false;
+									console.log("error");
+								})
+
+							
+
+							return false;
+						}
+						
+						return false;
+
+		});
+
+
+		$('.deletefr').click(function(event) {
+			/* Act on the event */
+
+
+
+			var hotel = $('.actualizarfr').attr('value');
+
+			var result = confirm('Acepta eliminar a este Franquiciatario');
+
+			if(result){
+				$(this).attr('disabled', 'disabled');
+				$(this).text("Eliminando Espere...");
+
+				$.ajax({
+					url: '/admin/controller/ControllerRegistro.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {eliminarfranquiciatario: true,idhotel:hotel,solicitud:"eliminar",perfil:'Franquicitario'},
+				})
+				.done(function(response) {
+					if(response.peticion){
+						alert("Franquicitario Eliminado, el Hotel esta ahora sin franquiciatario...");
+						location.reload();
+					}else{
+						alert("no se pudo eliminar el hotel intente mas tarde...");
+						$(this).removeAttr('disabled');
+					}
+					
+				})
+				.fail(function() {
+					console.log("error");
+				})
+				.always(function() {
+					console.log("complete");
+				});
+				
+			}
+
+
+
+		});
+
+		$('.deleterf').click(function(event) {
+			var hotel = $('.actualizarrf').attr('value');
+
+			var result = confirm('Acepta eliminar a este Referidor');
+
+			if(result){
+				$(this).attr('disabled', 'disabled');
+				$(this).text("Eliminando Espere...");
+
+				$.ajax({
+					url: '/admin/controller/ControllerRegistro.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {eliminarreferidor: true,idhotel:hotel,solicitud:"eliminar",perfil:'Referidor'},
+				})
+				.done(function(response) {
+					if(response.peticion){
+						alert("Referidor Eliminado, el Hotel esta ahora sin el mismo...");
+						location.reload();
+					}else{
+						alert("no se pudo eliminar el referidor intente mas tarde...");
+						$(this).removeAttr('disabled');
+					}
+					
+				})
+				.fail(function() {
+					console.log("error");
+				})
+				.always(function() {
+					console.log("complete");
+				});
+				
+			}
+
+
+
+		});
+
+		$('.camb-comision').click(function(){
+						$('#mostrarfranquiciatario').modal('hide');
+						$('#mostrarreferidor').modal('hide');
+						solicitud = $(this).attr('data-solicitud');
+						perfil = $(this).attr('data-perfil');
+						comision = $(this).attr('data-comision');
+					
+						var slider = null;
+						if(perfil == "Hotel"){
+
+								if($('#ex9').length){
+
+									var contenedor  = document.getElementById('sliderdinamico');
+									var eli = document.getElementById('ex9');
+									contenedor.removeChild(eli);
+
+									var slid = document.createElement('input');
+
+									$(slid).attr('data-slider-value',comision);
+									$(slid).attr('data-slider-min','0');
+									$(slid).attr('data-slider-max','40');
+									$(slid).attr('data-slider-step','1');
+									$(slid).attr('id','ex9');
+
+									contenedor.appendChild(slid);
+
+						
+									 slider = new Slider('#ex9');
+									 valorslider = slider.getValue();
+									slider.on("slide", function(sliderValue){
+										valorslider = sliderValue;
+											document.getElementById('val-slider').textContent = sliderValue + " %";
+											$('.actualizarfr').removeAttr('disabled');
+											$('.actualizarfr').attr('data-comision',valorslider);
+									});
+
+									
+									$('.actualizar').attr('data-perfil','hotel');
+									$('.actualizar').attr('data-solicitud',solicitud);
+									
+
+									$('.pcomi').text(comision+" %");
+									$('#comisionfr').modal('show');
+
+
+								}else{
+								
+									
+									var contenedor  = document.getElementById('sliderdinamico');
+
+									var slid = document.createElement('input');
+
+									$(slid).attr('data-slider-value',comision);
+									$(slid).attr('data-slider-min','0');
+									$(slid).attr('data-slider-max','40');
+									$(slid).attr('data-slider-step','1');
+									$(slid).attr('id','ex9');
+
+									contenedor.appendChild(slid);
+
+
+
+									if($('#ex9').length){
+									 slider = new Slider('#ex9');
+									 valorslider = slider.getValue();
+									slider.on("slide", function(sliderValue){
+										valorslider = sliderValue;
+											document.getElementById('val-slider').textContent = sliderValue + " %";
+												$('.actualizar').removeAttr('disabled');
+											$('.actualizar').attr('data-comision',valorslider);
+									});
+									}
+
+									
+									$('.actualizar').attr('data-perfil','hotel');
+									$('.actualizar').attr('data-solicitud',solicitud);
+									$('.pcomi').text(comision+" %");
+									$('#comisionfr').modal('show');
+								}
+								
+
+								
+
+								
+
+						}else if(perfil == 'Franquiciatario'){
+
+							if($('#ex9').length){
+								var ele = document.getElementById('sliderdinamicofr');
+								var eli = document.getElementById('ex9');
+								ele.removeChild(eli);
+
+
+								var slid = document.createElement('input');
+
+								$(slid).attr('data-slider-value',comision);
+								$(slid).attr('data-slider-min','0');
+								$(slid).attr('data-slider-max','8');
+								$(slid).attr('data-slider-step','1');
+								$(slid).attr('id','ex9');
+
+								ele.appendChild(slid);
+
+								slider = new Slider('#ex9');
+								valorslider = slider.getValue();
+								slider.on("slide", function(sliderValue){
+									valorslider = sliderValue;
+										document.getElementById('val-slider').textContent = sliderValue + " %";
+										$('.actualizarcomifr').attr('data-comision',valorslider);
+										$('.actualizarcomifr').removeAttr('disabled');
+								});
+
+
+								
+								$('.actualizarcomifr').attr('data-perfil','franquiciatario');
+								$('.actualizarcomifr').attr('data-solicitud',solicitud);
+
+								$('.pcomi').text(comision+" %");
+								$('#comisionfr').modal('show');
+							}else{
+
+								var ele = document.getElementById('sliderdinamicofr');
+								var slid = document.createElement('input');
+								$(slid).attr('data-slider-value',comision);
+								$(slid).attr('data-slider-min','0');
+								$(slid).attr('data-slider-max','8');
+								$(slid).attr('data-slider-step','1');
+								$(slid).attr('id','ex9');
+
+								ele.appendChild(slid);
+
+								 slider = new Slider('#ex9');
+								 valorslider = slider.getValue();
+								
+								
+								slider.on("slide", function(sliderValue){
+									valorslider = sliderValue;
+										document.getElementById('val-slider').textContent = sliderValue + " %";
+										 $('.actualizarcomifr').attr('data-comision',valorslider);
+										 	$('.actualizarcomifr').removeAttr('disabled');
+								});
+								 
+								
+							
+								$('.actualizarcomifr').attr('data-perfil','franquiciatario');
+								$('.actualizarcomifr').attr('data-solicitud',solicitud);
+								$('.pcomi').text(comision+" %");
+								$('#comisionfr').modal('show');
+
+							}
+							
+						}else if(perfil == 'Referidor'){
+
+							if($('#ex9').length){
+								var ele = document.getElementById('sliderdinamicorf');
+								var eli = document.getElementById('ex9');
+								ele.removeChild(eli);
+
+
+								var slid = document.createElement('input');
+
+								$(slid).attr('data-slider-value',comision);
+								$(slid).attr('data-slider-min','0');
+								$(slid).attr('data-slider-max','8');
+								$(slid).attr('data-slider-step','1');
+								$(slid).attr('id','ex9');
+
+								ele.appendChild(slid);
+
+								 slider = new Slider('#ex9');
+								 valorslider = slider.getValue();
+								slider.on("slide", function(sliderValue){
+									valorslider = sliderValue;
+										document.getElementById('val-slider').textContent = sliderValue + " %";
+										$('.actualizarcomirf').attr('data-comision',valorslider);
+										$('.actualizarcomirf').removeAttr('disabled');
+								});
+
+
+								
+								$('.actualizarcomirf').attr('data-perfil','referidor');
+								$('.actualizarcomirf').attr('data-solicitud',solicitud);
+
+								$('.pcomi').text(comision+" %");
+								$('#comisionrf').modal('show');
+							}else{
+
+								var ele = document.getElementById('sliderdinamicorf');
+								var slid = document.createElement('input');
+								$(slid).attr('data-slider-value',comision);
+								$(slid).attr('data-slider-min','0');
+								$(slid).attr('data-slider-max','8');
+								$(slid).attr('data-slider-step','1');
+								$(slid).attr('id','ex9');
+
+								ele.appendChild(slid);
+
+								 slider = new Slider('#ex9');
+								 valorslider = slider.getValue();
+								
+								
+								slider.on("slide", function(sliderValue){
+									valorslider = sliderValue;
+										document.getElementById('val-slider').textContent = sliderValue + " %";
+										 $('.actualizarcomirf').attr('data-comision',valorslider);
+										 	$('.actualizarcomirf').removeAttr('disabled');
+								});
+								 
+								
+							
+								$('.actualizarcomirf').attr('data-perfil','referidor');
+								$('.actualizarcomirf').attr('data-solicitud',solicitud);
+								$('.pcomi').text(comision+" %");
+								$('#comisionrf').modal('show');
+
+							}
+							
+						}
+
+					});
+	
+
+
+
+		});
+	</script>
 
 
 
@@ -2472,6 +2425,95 @@ $(document).ready(function(){
 <?php echo $footer = $includes->get_admin_footer(); ?>
 
 <script>
+	
+
+
+$(document).ready(function() {
+		$('.actualizarcomifr').click(function(){
+
+						var comision = $(this).attr('data-comision');
+						if(comision == 0){
+							comision = $(this).attr('data-comision');
+						} 
+						var perfil = $(this).attr('data-perfil');
+						var solicitud = $(this).attr('data-solicitud');
+						var path = $(this).attr('data-path');
+						
+							$.ajax({
+							url: path,
+							type: 'POST',
+							data: {
+							perfil: perfil,
+							comision: comision,
+							solicitud: solicitud,
+							actualizar: true
+							},
+							cache:false
+							})
+							
+							.done(function(response) {
+							
+							
+							
+							$('#alertacomifr').show('400', function() {
+							$('#alertacomifr').css('display', 'flex');
+							});
+							
+							$('.pcomi').text(valorslider+" %");
+							
+							$('.actualizarcomifr').attr('disabled');
+							
+							})
+							
+							.fail(function() {
+							console.log("error");
+							})
+
+				});
+		$('.actualizarcomirf').click(function(){
+
+						var comision = $(this).attr('data-comision');
+						if(comision == 0){
+							comision = $(this).attr('data-comision');
+						} 
+						var perfil = $(this).attr('data-perfil');
+						var solicitud = $(this).attr('data-solicitud');
+						var path = $(this).attr('data-path');
+						
+							$.ajax({
+							url: path,
+							type: 'POST',
+							data: {
+							perfil: perfil,
+							comision: comision,
+							solicitud: solicitud,
+							actualizar: true
+							},
+							cache:false
+							})
+							
+							.done(function(response) {
+							
+							
+							
+							$('#alertacomirf').show('400', function() {
+							$('#alertacomirf').css('display', 'flex');
+							});
+							
+							$('.pcomi').text(valorslider+" %");
+							
+							$('.actualizarcomirf').attr('disabled');
+							
+							})
+							
+							.fail(function() {
+							console.log("error");
+							})
+
+				});
+});
+
+
 
 	$('.actualizar').click(function(){
 
@@ -2545,16 +2587,23 @@ $(document).ready(function(){
 
 
 
+
 </script>
-<!-- Modal para Adjudicar codigo y comision -->
+
+
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA ADJUDICAR CODIGO Y COMISION                         -->
+<!-- --------------------------------------------------------------------------------- -->
 <div class="modal fade aceptar modales" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel"><label class="cert-date mr20"><label class="cert-date nombrehotel form"></label></label></h5>
 						
-						<small class="iata cert-date"></small>
-						<button type="button" class="close" >
+						<h3 class="comision cert-date"></h3>
+						<button type="button" class="close">
 						<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -2562,12 +2611,12 @@ $(document).ready(function(){
 						<div class="alert alert-success alert-aceptada" role="alert">
 								Genere el Codigo de Hotel y la Comision... 
 						</div>
-							<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
+							<form   action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
 								<section class="col-xs-12 acept-solicitud container" >
 									<div class="row">
 										<div class="codigohotel col-lg-5" data-toggle="tooltip" title="Cree o genere el Codigo de hotel, puedes asociar las siglas del Codigo iata, mas las Siglas del hotel o como desees...">
 											<div class="form-group">
-												<label for="codigohotel" >Codigo de Hotel * <i class="fa fa-question-circle"></i></label>
+												<label for="codigohotel">Codigo de Hotel * <i class="fa fa-question-circle"></i></label>
 												<div class="codigo">
 													<input type="text" name="codigohotel" class="form-control" id="codigohotel" placeholder="Ejemp AGUHCN" required>
 													<button type="button" name="generarcodigo" class="btn btn-outline-secondary generarcodigo">Generar</button>
@@ -2579,7 +2628,7 @@ $(document).ready(function(){
 											<div class="form-group">
 												<label for="comision">Comisión a adjudicar.</label>
 												
-												<input id="ex8" type="text" id="comision" data-slider-id="ex1Slider" data-slider-min="0" data-slider-max="40" data-slider-step="1" data-slider-value="0">
+												<input id="ex8" type="text" id="comision" data-slider-id="ex1Slider" data-slider-min="0" data-slider-step="1" data-slider-value="0">
 												<span class="form" id="val-slider">0 %</span>
 											</div>
 										</div>
@@ -2598,3 +2647,431 @@ $(document).ready(function(){
 </div>
 
 
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA MOSTRAR DATOS DE FRANQUICIATARIO                    -->
+<!-- --------------------------------------------------------------------------------- -->
+<div class="modal fade aceptar modales" id="mostrarfranquiciatario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel"><label class="cert-date mr20"><label class="cert-date nombrehotel form"></label></label></h5>
+						
+						<STRONG class="comision-fr"></STRONG> 
+						<button type="button" class="close" >
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form  id="formulario-edicion-franquiciatario" action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
+					<div class="modal-body">
+						<div class="alert alert-info alert-aceptada" role="alert">
+								Puedes Cambiar La comisi&oacute;n, llenar algunos campos importante para pagarle al Franquiciatario.
+						</div>
+							
+							
+							<div class="content-formulario">
+								
+							
+							<div class="row">
+
+								<!-- Datos Personales del Franquciatario -->
+								<section class="col-lg-6">
+									<p class="title">Datos del Franquiciatario</p>
+									<div class="form-group flex" data-toggle="tooltip" title="Nombre del Franquiciatario" data-placement="bottom">
+										<label for="business-name">Nombre:<span class="required"></span> <i class="fa fa-question-circle text-secondary"></i></label>
+										    <div class="input-hotel">
+											    <div class="input-group">
+												    <span class="input-group-addon"><i class="fa fa-file"></i></span>
+												        <input class ="nombre form-control" type="text" id="nombre" name="nombre" value="" placeholder="No registrado" required />
+											    </div>
+										    </div>
+									</div>	
+									<div class="form-group flex" data-toggle="tooltip" title="Apellido del Franquiciatario" data-placement="bottom">
+										<label for="business-name">Apellido:<span class="required"></span> <i class="fa fa-question-circle text-secondary"></i></label>
+										    <div class="input-hotel">
+											    <div class="input-group">
+												    <span class="input-group-addon"><i class="fa fa-file"></i></span>
+												        <input class ="apellido form-control" type="text" id="apellido" name="apellido" value="" placeholder="No registrado" required />
+											    </div>
+										    </div>
+									</div>
+
+									<div class="form-group">
+												<label for="email">Email<span class="required">*</span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+													<input class="form-control" type="email" id="email_franquiciatario" name="email" value="" placeholder="Email del responsable" required >
+												</div>
+												
+									</div>
+
+
+
+									<div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+												<label for="phone">T&eacute;lefono fijo <span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+													<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone_franquiciatario" name="telefonofijo" value="" placeholder="N&uacute;mero de t&eacute;lefono fijo">
+												</div>
+												
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
+												<label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
+													<input class="form-control" type="text" id="movil_franquiciatario"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
+												</div>
+												
+									</div>
+								</section>
+								
+
+								<!-- DATOS PARA EL PAGO DE COMISION -->
+								<section class="col-lg-6">
+									<p class="title">Datos para el pago de comisi&oacute;n</p>
+									<div class="form-group">
+										<label for="nombre">Nombre del banco<span class="required"></span></label>
+										<div class="input-group">
+												<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+													<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco_franquiciatario" name="nombre_banco" value="<?php //echo $affiliate->getBanco();?>" placeholder="Nombre del banco"  >
+										</div>
+												
+									</div>
+
+									<div class="form-group">
+										<label for="cuenta">Cuenta<span class="required"></span></label>
+											<div class="input-group">
+												<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+												<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta_franquiciatario" name="cuenta_franquiciatario" value="" placeholder="Cuenta."  >
+											</div>
+												
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
+												<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+													<input class="form-control" type="text" maxlength="18" id="clabe_franquiciatario" pattern="[0-9]{18}" name="clabe" value="" placeholder="Clabe"  >
+												</div>
+											
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
+												<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+													<input class="form-control" type="text" id="swift_franquiciatario" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="" placeholder="Swift"  >
+												</div>
+									</div>
+
+									<div class="form-group">
+												<label for="nombre">Nombre del banco<span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+													<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta_franquiciatario" name="nombre_banco_tarjeta" value="" placeholder="Nombre del banco"  >
+												</div>
+												
+									</div>
+									
+									<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
+												<label for="nombre">N&uacute;mero de tarjeta<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-cc"></i></span>
+													<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta_franquiciatario" name="numero_targeta" value="" placeholder="N&uacute;mero de Tarjeta" >
+												</div>
+									</div>
+										
+									<h5 class="page-title">Transferencia PayPal</h5>
+									<div class="form-group">
+												<label for="nombre">Email de Paypal<span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
+													<input class="form-control" type="email" id="email_paypal_franquiciatario" name="email_paypal" value="" placeholder="Nombre del banco"  >
+												</div>
+												
+									</div>
+												
+								</section>
+							</div>
+							</div>
+
+								
+							
+						</div>
+							<div class="modal-footer">
+							<button  type="submit" name="actualizarfr" class="actualizarfr btn btn-success"><i class="fa fa-save"></i>Grabar</button>
+							<button  type="button" name="eliminar" class="deletefr btn btn-warning"><i class="fa fa-trash"></i>Eliminar</button>
+							<button  type="button" name="camb-comision" class="camb-comision btn btn-secondary"><i class="fa fa-percent"></i>Cambiar Comisi&oacute;n</button>
+								
+							<button  style="margin-left: auto;" type="button" class="close-modal btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i>Cerrar</button>
+						
+							</div>
+							</form>		
+						</div>
+					</div>
+
+</div>
+
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA MOSTRAR DADTOS DE REFERIDOR                         -->
+<!-- --------------------------------------------------------------------------------- -->
+<div class="modal fade aceptar modales" id="mostrarreferidor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel"><label class="cert-date mr20"><label class="cert-date nombrehotel form"></label></label></h5>
+						
+						<STRONG class="comision-rf"></STRONG> 
+						<button type="button" class="close" >
+						<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form  id="formulario-edicion-referidor" action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
+					<div class="modal-body">
+						<div class="alert alert-info alert-aceptada" role="alert">
+								Puedes Cambiar La comisi&oacute;n, llenar algunos campos importante para pagarle al Referidor.
+						</div>
+							
+							
+							<div class="content-formulario">
+								
+							
+							<div class="row">
+
+								<!-- Datos Personales del Franquciatario -->
+								<section class="col-lg-6">
+									<p class="title">Datos del Referidor</p>
+									<div class="form-group flex" data-toggle="tooltip" title="Nombre del Franquiciatario" data-placement="bottom">
+										<label for="business-name">Nombre:<span class="required"></span> <i class="fa fa-question-circle text-secondary"></i></label>
+										    <div class="input-hotel">
+											    <div class="input-group">
+												    <span class="input-group-addon"><i class="fa fa-file"></i></span>
+												        <input class ="nombre form-control" type="text" id="nombre_referidor" name="nombre" value="" placeholder="No registrado" required />
+											    </div>
+										    </div>
+									</div>	
+									<div class="form-group flex" data-toggle="tooltip" title="Apellido del Franquiciatario" data-placement="bottom">
+										<label for="business-name">Apellido:<span class="required"></span> <i class="fa fa-question-circle text-secondary"></i></label>
+										    <div class="input-hotel">
+											    <div class="input-group">
+												    <span class="input-group-addon"><i class="fa fa-file"></i></span>
+												        <input class ="apellido form-control" type="text" id="apellido-referidor" name="apellido" value="" placeholder="No registrado" required />
+											    </div>
+										    </div>
+									</div>
+
+									<div class="form-group">
+												<label for="email">Email<span class="required">*</span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+													<input class="form-control" type="email" id="email_referidor" name="email" value="" placeholder="Email del responsable" required >
+												</div>
+												
+									</div>
+
+
+
+									<div class="form-group" data-toggle="tooltip" title="El número de teléfono fijo ejemp:+584128505504, 14128505504">
+												<label for="phone">T&eacute;lefono fijo <span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+													<input class="form-control" type="text" pattern="[+][0-9]{12,15}[+]?" id="phone_referidor" name="telefonofijo" value="" placeholder="N&uacute;mero de t&eacute;lefono fijo">
+												</div>
+												
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="El número de teléfono movil ejemp: +584128505504, 14128505504">
+												<label for="phone">T&eacute;lefono novil <span class="required">*</span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
+													<input class="form-control" type="text" id="movil_referidor"  pattern="[+][0-9]{11,15}[+]?" name="movil" value="" placeholder="N&uacute;mero de t&eacute;lefono movil" required>
+												</div>
+												
+									</div>
+								</section>
+								
+
+								<!-- DATOS PARA EL PAGO DE COMISION -->
+								<section class="col-lg-6">
+									<p class="title">Datos para el pago de comisi&oacute;n</p>
+									<div class="form-group">
+										<label for="nombre">Nombre del banco<span class="required"></span></label>
+										<div class="input-group">
+												<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+													<input class="form-control" type="text"  pattern="[a-zA-z]+" id="nombre_banco_referidor" name="nombre_banco" value="<?php //echo $affiliate->getBanco();?>" placeholder="Nombre del banco"  >
+										</div>
+												
+									</div>
+
+									<div class="form-group">
+										<label for="cuenta">Cuenta<span class="required"></span></label>
+											<div class="input-group">
+												<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+												<input class="form-control" type="text" pattern="[0-9a-zA-z]+" id="cuenta_referidor" name="cuenta" value="" placeholder="Cuenta."  >
+											</div>
+												
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="Solo se permiten digitos númericos, correspondientes a su clabe.">
+												<label for="clabe">Clabe<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+													<input class="form-control" type="text" maxlength="18" id="clabe_referidor" pattern="[0-9]{18}" name="clabe" value="" placeholder="Clabe"  >
+												</div>
+											
+									</div>
+
+									<div class="form-group" data-toggle="tooltip" title="Una serie alfanuméricas de 8 u 11 digitos, que sirve para identificar al banco receptor cuando se realiza una transferencia">
+												<label for="swift">Swift / Bic<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-wpforms"></i></span>
+													<input class="form-control" type="text" id="swift_referidor" maxlength="11" pattern="[A-Za-z0-9]{8,11}" name="swift" value="" placeholder="Swift"  >
+												</div>
+									</div>
+
+									<div class="form-group">
+												<label for="nombre">Nombre del banco<span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+													<input class="form-control" type="text" pattern="[a-zA-z]*" id="nombre_banco_targeta_referidor" name="nombre_banco_tarjeta" value="" placeholder="Nombre del banco"  >
+												</div>
+												
+									</div>
+									
+									<div class="form-group" data-toggle="tooltip" title="Número de la targeta de Credito, conlleva 16 digitos solo numéricos.">
+												<label for="nombre">N&uacute;mero de tarjeta<span class="required"></span><i class="fa fa-question-circle"></i></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-cc"></i></span>
+													<input class="form-control" type="text" pattern="[0-9]{16}" maxlength="16" minlength="16" id="numero_targeta_referidor" name="numero_targeta" value="" placeholder="N&uacute;mero de Tarjeta" >
+												</div>
+									</div>
+										
+									<h5 class="page-title">Transferencia PayPal</h5>
+									<div class="form-group">
+												<label for="nombre">Email de Paypal<span class="required"></span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-cc-paypal"></i></span>
+													<input class="form-control" type="email" id="email_paypal_referidor" name="email_paypal" value="" placeholder="Nombre del banco"  >
+												</div>
+												
+									</div>
+												
+								</section>
+							</div>
+							</div>
+
+								
+							
+						</div>
+							<div class="modal-footer">
+							<button  type="submit" name="actualizarrf" class="actualizarrf btn btn-success"><i class="fa fa-save"></i>Grabar</button>
+							<button  type="button" name="eliminar" class="deleterf btn btn-warning"><i class="fa fa-trash"></i>Eliminar</button>
+							<button  type="button" name="camb-comision" class="camb-comision btn btn-secondary"><i class="fa fa-percent"></i>Cambiar Comisi&oacute;n</button>
+								
+							<button  style="margin-left: auto;" type="button" class="close-modal btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i>Cerrar</button>
+						
+							</div>
+							</form>		
+						</div>
+					</div>
+
+</div>
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA CAMBIAR COMISION AL FRANQUICIATARIO                 -->
+<!-- --------------------------------------------------------------------------------- -->
+<div class="modal fade " id="comisionfr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm " role="document">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Cambiar Comisión</h5>
+							
+							
+						
+		
+					</div>
+
+					<div class="modal-body">
+						<div class="alert alert-success" role="alert" id="alertacomifr" style="display:none">
+							Comisión actualizada. Si desea puede actualizar de nuevo.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    						<span aria-hidden="true">&times;</span>
+  							</button>
+						</div>
+							<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
+								<section class="col-xs-12 acept-solicitud container" >
+									<div class="row">
+										<div class="comision col-lg-12">
+											<div class="form-group">
+												<label for="comision" class="form" id="comisionactual">Comisión actual: <strong class="pcomi"></strong></label>
+												
+												<div  id="sliderdinamicofr">
+													<!-- <input id="ex9" type="text" data-slider-value="" data-slider-min="0"  data-slider-step="1" > -->
+												</div>
+												
+												<span for="comision"  id="val-slider"> </span>
+											</div>
+										</div>
+									</div>
+								</section>
+							</form>		
+					</div>
+						
+					<div class="modal-footer">
+						<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="actualizarcomifr btn btn-success" disabled>Actualizar</button>
+						<button  type="button" class="cerrarfrmodal btn btn-secondary" onclick="location.reload();">Cerrar</button>
+					</div>
+				</div>
+			</div>
+</div>
+
+<!-- --------------------------------------------------------------------------------- -->
+<!-- 					MODAL PARA CAMBIAR COMISION AL REFERIDOR                       -->
+<!-- --------------------------------------------------------------------------------- -->
+<div class="modal fade " id="comisionrf" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-sm " role="document">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Cambiar Comisión</h5>
+							
+							
+						
+		
+					</div>
+
+					<div class="modal-body">
+						<div class="alert alert-success" role="alert" id="alertacomirf" style="display:none">
+							Comisión actualizada. Si desea puede actualizar de nuevo.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    						<span aria-hidden="true">&times;</span>
+  							</button>
+						</div>
+							<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8">
+								<section class="col-xs-12 acept-solicitud container" >
+									<div class="row">
+										<div class="comision col-lg-12">
+											<div class="form-group">
+												<label for="comision" class="form" id="comisionactual">Comisión actual: <strong class="pcomi"></strong></label>
+												
+												<div  id="sliderdinamicorf">
+													<!-- <input id="ex9" type="text" data-slider-value="" data-slider-min="0"  data-slider-step="1" > -->
+												</div>
+												
+												<span for="comision"  id="val-slider"> </span>
+											</div>
+										</div>
+									</div>
+								</section>
+							</form>		
+					</div>
+						
+					<div class="modal-footer">
+						<button style="margin-left: auto;" type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="actualizarcomirf btn btn-success" disabled>Actualizar</button>
+						<button  type="button" class="cerrarfrmodal btn btn-secondary" onclick="location.reload();">Cerrar</button>
+					</div>
+				</div>
+			</div>
+</div>

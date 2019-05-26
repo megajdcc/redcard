@@ -184,6 +184,18 @@ class PerfilesList {
 			
 			$direccion = $fila['direccion'];
 			$idhotel = $fila['idhotel'];
+
+			$sql = "SELECT count(*)  as cuenta from solicitudhotel where id_hotel = :hotel";
+
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':hotel',$idhotel);
+
+			$stm->execute();
+			$fila2 = $stm->fetch(PDO::FETCH_ASSOC);
+
+
+			$usershotel = $fila2['cuenta'];
+
 			?>
 			<tr id="<?php echo $idhotel; ?>">
 				
@@ -208,10 +220,20 @@ class PerfilesList {
 				</td>
 				
 
-
 			
-				<td>
-					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $idhotel; ?>" data-perfil="<?php echo 'Hotel'; ?>" class="actualizarperfil btn-xs pull-right">
+				<td style="display:flex;padding-top: 20px; padding-right: 0px !important; justify-content: flex-end;padding-left: 0px;margin: 0px;">
+					<?php if($usershotel > 0){?>
+					
+					<button class="ver-users-hotel btn btn-info" data-hotel="<?php echo $idhotel ?>" data-toggle="tooltip" title="Usuarios con perfil de este hotel." data-placement="left">
+				 	<i class="fa fa-black-tie"></i><?php echo $usershotel.' | Ver'; ?>
+					</button>
+
+				<?php }else{?>
+					<button class="new-user-hotel btn btn-info" data-hotel="<?php echo $idhotel ?>" data-toggle="tooltip" title="Asignar usuario para este hotel.." data-placement="left">
+				 	<i class="fa fa-black-tie"></i>Asignar
+					</button>
+				<?php  }?>	
+					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php echo $idhotel; ?>" data-perfil="<?php echo 'Hotel'; ?>" class="actualizarperfil btn-xs">
 					 Ver / Editar <i class="fa fa-cogs"></i> 
 					</button>
 				
@@ -222,72 +244,108 @@ class PerfilesList {
 	}
 	public function ListarPerfiles(){
 
-		$sql = "(select sh.condicion,u.username,u.telefono,u.ultimo_login,u.email,'Hotel' as proviene, sh.id as nrosolicitud,u.imagen, u.nombre, u.apellido,h.comision
- from solicitudhotel as sh join usuario as u on sh.id_usuario = u.id_usuario join hotel as h on sh.id_hotel = h.id where sh.condicion = 1)
-	UNION 
-(select sfr.condicion,u.username,u.telefono,u.ultimo_login, u.email, 'Franquiciatario' as proviene, sfr.id as nrosolicitud,u.imagen, u.nombre, u.apellido, f.comision
-	from solicitudfr as sfr join usuario as u on sfr.id_usuario = u.id_usuario
-	join franquiciatario as f on sfr.id_franquiciatario = f.id where sfr.condicion = 1)
-	UNION
-(select sr.condicion,u.username,u.telefono,u.ultimo_login, u.email,'Referidor' as proviene, sr.id as nrosolicitud,u.imagen, u.nombre, u.apellido,r.comision
- from solicitudreferidor as sr join usuario as u on sr.id_usuario = u.id_usuario join referidor as r on sr.id_referidor = r.id
-	where sr.condicion = 1)";
+		$sql = "select h.id as idhotel,h.codigo, h.nombre as nombrehotel,h.imagen,concat(c.ciudad,' ',e.estado,' ',p.pais) as direccion
+    from hotel as h join ciudad as c on h.id_ciudad = c.id_ciudad 
+    				join estado as e on h.id_estado = e.id_estado
+                    join pais as p on e.id_pais = p.id_pais";
 		$result = $this->con->prepare($sql);
 		$result->execute();
 
-		$urlimg =  HOST.'/assets/img/user_profile/';
-		while ($fila = $result->fetch(PDO::FETCH_ASSOC)) {
-
-			if(!empty($fila['nombre'])){
-				$nombre       = $fila['nombre']. ' ' .$fila['apellido'];
-			}else{
-				$nombre       = $fila['username'];
-			}
+		$urlimg =  HOST.'/assets/img/hoteles/';
+		while ($fila = $result->fetch(PDO::FETCH_ASSOC)) {			
 			
-			
-			
-			$proviene     = $fila['proviene'];
-			$nrosolicitud = $fila['nrosolicitud'];
+			$idhotel = $fila['idhotel'];
 			$foto         = $fila['imagen'];
 			if(empty($foto) || is_null($foto)){
 				$foto = 'default.jpg';
 			}
-			$comision     = $fila['comision'];
-			$email = $fila['email'];
-			$username = $fila['username'];
-			$ultimologin = date('d/m/Y g:i A', strtotime($fila['ultimo_login']));
-			$telefono = $fila['telefono'];
+			
+
+			$sql1 = "select max(u.ultimo_login) as ultimologin from usuario as u join solicitudfr as sfr on u.id_usuario = sfr.id_usuario
+			join franquiciatario as f on sfr.id_franquiciatario = f.id 
+			join hotel as h on f.id_hotel = h.id
+			where h.id = :idhotel";
+		
+
+			$stm = $this->con->prepare($sql1);
+			$stm->bindParam(':idhotel',$fila['idhotel']);
+
+			$stm->execute();
+
+			$fila2 = $stm->fetch(PDO::FETCH_ASSOC);
+
+
+			$sql  = "select count(*) as cuenta from franquiciatario as fr where id_hotel = :hotel1";
+			
+			$sql2 = "select count(*) as cuenta from referidor as rf where id_hotel = :hotel2";
+
+
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':hotel1' =>$idhotel));
+
+			$stm1 = $this->con->prepare($sql2);
+			$stm1->execute(array(':hotel2' =>$idhotel));
+
+
+
+			$filafr = $stm->fetch(PDO::FETCH_ASSOC);
+			$filarf = $stm1->fetch(PDO::FETCH_ASSOC);
+
+			
+			
+			$franquiciatarios = $filafr['cuenta'];
+	
+			$referidores        = $filarf['cuenta'];
+
+
+			if(empty($fila['ultimologin'])){
+				$ultimologin = 'Sin inicio de sesi&oacute;n';
+			}else{
+				$ultimologin = date('d/m/Y g:i A', strtotime($fila2['ultimologin']));
+			}
+			
 			?>
-			<tr id="<?php echo $nrosolicitud; ?>">
+			<tr id="<?php echo $idhotel; ?>">
 				
 			
 				<td>
 				
-					<div class="user user-md">
-						<a href="<?php echo HOST.'/socio/'.$username;?>" target="_blank"><img src="<?php echo $urlimg.$foto;?>"></a>
+					<div class="user user-md detail-gallery-preview">
+						<a href="<?php echo $urlimg.$foto;?>">
+							<img class="img-thumbnail img-rounded" src="<?php echo $urlimg.$foto;?>">
+						</a>
 					</div>
 					
 				</td>
-				<td><?php echo $email; ?></td>
-				<td><?php  echo $nombre;?></td>
-				
-				
-				<td><?php  echo $proviene;?></td>
-				<td><?php  echo $comision .' %';?>
-					<button type="button"  data-toggle="tooltip" title="Actualizar Comisión." data-placement="left" data-comision="<?php echo $comision; ?>" data-solicitud="<?php echo $nrosolicitud; ?>" data-perfil="<?php echo $proviene; ?>" class="actualizarcomision  pull-right">
-						<i class="fa fa-pencil-square-o"></i>
-					</button>
+				<td><?php echo $fila['nombrehotel'] ?></td>
+				<td><?php echo $fila['direccion']; ?></td>
+				<td>
+
+					<?php  
+						if($franquiciatarios == 0){
+							
+							echo '<button type="button" data-hotel="'.$idhotel.'" class="new-franquiciatario agr-franquiciatario btn btn-info"> <i class="fa fa-black-tie"></i> Asignar</button>';
+
+						}else{
+								echo '<button type="button" class="ver-franquiciatario btn btn-success" data-hotel="'.$idhotel.'"> <i class="fa fa-black-tie"></i> '.$franquiciatarios.' Ver</button>';
+						}?>
 					
-				</td>
+						
+					</td>
+				
+				
+				<td><?php  
+						if($referidores== 0){
+							
+							echo '<button type="button" data-hotel="'.$idhotel.'" class="new-referidor agr-referidor btn btn-secondary"> <i class="fa fa-black-tie"></i> Asignar</button>';
+
+						}else{
+								echo '<button type="button" data-hotel="'.$idhotel.'" class="ver-referidor btn btn-success"> <i class="fa fa-black-tie"></i>'.$referidores.' Ver</button>';
+						}?></td>
+			
 				
 				<td><?php echo $ultimologin; ?></td>
 
-			
-			<!-- 	<td>
-					<button type="button" data-toggle="tooltip" title="Editar" data-placement="left" data-solicitud="<?php //echo $nrosolicitud; ?>" data-perfil="<?php //echo $proviene; ?>" class="actualizarperfil btn-xs pull-right">
-					<i class="fa fa-cogs"></i>
-					</button>
-				</td> -->
             </tr>
 			<?php
 		}
@@ -321,14 +379,14 @@ class PerfilesList {
 				$this->con->beginTransaction();
 
 
-				$query = "update franquiciatario set comision = :comision where id = (select id_franquiciatario from solicitudfr where id =:solicitud)";
+				$query = "UPDATE franquiciatario set comision = :comision where id =:franquiciatario";
 
 				try {
 
 					$stm = $this->con->prepare($query);
 
 				$stm->execute(array(':comision'=>$post['comision'],
-									':solicitud'=> $post['solicitud']));
+									':franquiciatario'=> $post['solicitud']));
 					$this->con->commit();
 
 				} catch (PDOException $e) {
@@ -340,14 +398,14 @@ class PerfilesList {
 			}else if($post['perfil'] == 'referidor'){
 
 				$this->con->beginTransaction();
-				$query = "update referidor set comision = :comision where id = (select id_referidor from solicitudreferidor where id =:solicitud)";
+				$query = "update referidor set comision = :comision where id =:referidor";
 
 				try {
 
 					$stm = $this->con->prepare($query);
 
 				$stm->execute(array(':comision'=>$post['comision'],
-									':solicitud'=> $post['solicitud']));
+									':referidor'=> $post['solicitud']));
 					$this->con->commit();
 
 				} catch (PDOException $e) {

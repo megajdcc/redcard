@@ -59,13 +59,15 @@ if(isset($_POST['solicitudfranquiciatario'])){
 						'mensaje' => '',
 						'datos'=>array());
 
-	$result = $solicitud->CargarFranquiciatarioAdmin($_POST['solicitudfranquiciatario']);
+	$result = $solicitud->CargarFranquiciatarioAdmin($_POST['hotel']);
 
 	if($result){
 
 		$response['peticion'] = true;
 		$response['mensaje'] = "Franquiciatario encontrado";
 		$response['datos'] = $solicitud->getDatos('Franquiciatario'); 
+
+
 	}
 
 	echo json_encode($response);
@@ -79,7 +81,7 @@ if(isset($_POST['solicitudreferidor'])){
 						'mensaje' => '',
 						'datos'=>array());
 
-	$result = $solicitud->CargarReferidorAdmin($_POST['solicitudreferidor']);
+	$result = $solicitud->CargarReferidorAdmin($_POST['hotel']);
 
 	if($result){
 
@@ -92,6 +94,26 @@ if(isset($_POST['solicitudreferidor'])){
 
 
 }
+
+// if(isset($_POST['solicitudreferidor'])){
+	
+// 	$response = array('peticion' => false,
+// 						'mensaje' => '',
+// 						'datos'=>array());
+
+// 	$result = $solicitud->CargarReferidorAdmin($_POST['solicitudreferidor']);
+
+// 	if($result){
+
+// 		$response['peticion'] = true;
+// 		$response['mensaje'] = "Referidor encontrado";
+// 		$response['datos'] = $solicitud->getDatos('Referidor'); 
+// 	}
+
+// 	echo json_encode($response);
+
+
+// }
 
 if(isset($_POST['solicitudcodigo'])){
 
@@ -253,7 +275,7 @@ if(isset($_POST['solicitudcodigo'])){
 
 
 //ACCIONES PARA REGISTRAR FRANQUICIATARIO
-	if(isset($_POST['form-franquiciatario'])){
+	if(isset($_POST['asociar-franquiciatario'])){
 
 		$response = array(
 		'peticion'           => false,
@@ -268,60 +290,21 @@ if(isset($_POST['solicitudcodigo'])){
 		'id_hotel'           =>null,
 		'id_franquiciatario' =>null);
 			
-			$datosusuario = array(	'username'=>$_POST['username'],
-									'email'           =>$_POST['emailuser'],
-									'password'        =>$_POST['password'],
-									'password-retype' =>$_POST['password-retype'],
-									'referral'        =>$_SESSION['user']['id_usuario']);
+		
 
-
-			$datohotel = array('nombrehotel'=>$_POST['nombrehotel'],
-								'iata'                 =>$_POST['iata'],
-								'website'              =>$_POST['website'],
-								'direccion'            =>$_POST['direccion'],
-								'codigopostal'         =>$_POST['codigopostal'],
-								'pais'                 =>$_POST['pais'],
-								'estado'               =>$_POST['estado'],
-								'ciudad'               =>$_POST['ciudad'],
-								'nombre'               =>$_POST['nombre'],
-								'apellido'             =>$_POST['apellido'],
-								'emailfranquiciatario' =>$_POST['emailfranquiciatario'],
-								'telefonofijo'         =>$_POST['telefonofijo'],
-								'telefonomovil'        =>$_POST['movil']
-							);
-
-
-			if($_POST['pago'] == false){
-
-				$datopago = null;
-			}else{
-
-				$datopago = array('nombre_banco'=>$_POST['nombre_banco'],
-								'cuenta'               =>$_POST['cuenta'],
-								'clabe'                =>$_POST['clabe'],
-								'swift'                =>$_POST['swift'],
-								'nombre_banco_targeta' =>$_POST['nombre_banco_tarjeta'],
-								'numero_targeta'       =>$_POST['numero_targeta'],
-								'email_paypal'         =>$_POST['email_paypal']);
-
-			}
+			$datohotel = $_POST['hotel'];
 			
-
-			$result = $reg->setData($datosusuario,'Admin');
-			
-
-			if($result > 0){
-				$response['usuario_registrado'] = true;
+			$response['usuario_registrado'] = true;
 				
-				$result = $franquiciatario->set_data($datohotel,$datopago,$result);
+			$result = $franquiciatario->cargarDatos($_POST);
 
-				if($result){
+			if($result){
 					$response['peticion'] = true;
 					$response['hotel_registrado'] = true;
 					$response['pago_registrado'] = true;
 					$response['mensaje'] = "Franquiciatario registrado con exito, Si Desea Genere el Codigo de hotel y adjudique su comision de una vez...";
 
-					$datos = $franquiciatario->capturarultimo($franquiciatario->ultimohotel);
+					$datos = $franquiciatario->capturarultimo($datohotel);
 
 					
 					$response['nrosolicitud'] = $datos[0]['solicitud'];
@@ -336,17 +319,13 @@ if(isset($_POST['solicitudcodigo'])){
 					$response['mensaje'] = "El registro no tuvo exito...";
 				}
 			
-			}else{
-				$response['peticion']           = true;
-				$response['usuario_registrado'] = false;
-			}
 
 				echo json_encode($response);
 	}
 
 
 	//ACCIONES PARA REGISTRAR REFERIDOR
-	if(isset($_POST['form-referidor'])){
+	if(isset($_POST['asociar-referidor'])){
 
 		$response = array(
 		'peticion'           => false,
@@ -360,60 +339,22 @@ if(isset($_POST['solicitudcodigo'])){
 		'codigoiata'         =>null,
 		'id_hotel'           =>null,
 		'id_referidor' =>null);
+
+
 			
-			$datosusuario = array(	'username'=>$_POST['username'],
-									'email'           =>$_POST['emailuser'],
-									'password'        =>$_POST['password'],
-									'password-retype' =>$_POST['password-retype'],
-									'referral'        =>$_SESSION['user']['id_usuario']);
-
-
-			$datohotel = array('nombrehotel'=>$_POST['nombrehotel'],
-								'iata'                 =>$_POST['iata'],
-								'website'              =>$_POST['website'],
-								'direccion'            =>$_POST['direccion'],
-								'codigopostal'         =>$_POST['codigopostal'],
-								'pais'                 =>$_POST['pais'],
-								'estado'               =>$_POST['estado'],
-								'ciudad'               =>$_POST['ciudad'],
-								'nombre'               =>$_POST['nombre'],
-								'apellido'             =>$_POST['apellido'],
-								'telefonofijo'         =>$_POST['telefonofijo'],
-								'telefonomovil'        =>$_POST['movil']
-							);
-
-
-			if($_POST['pago'] == false){
-
-				$datopago = null;
-			}else{
-
-				$datopago = array('nombre_banco'=>$_POST['nombre_banco'],
-								'cuenta'               =>$_POST['cuenta'],
-								'clabe'                =>$_POST['clabe'],
-								'swift'                =>$_POST['swift'],
-								'nombre_banco_targeta' =>$_POST['nombre_banco_tarjeta'],
-								'numero_targeta'       =>$_POST['numero_targeta'],
-								'email_paypal'         =>$_POST['email_paypal']);
-
-			}
+			$datohotel = $_POST['hotel'];
 			
-
-			$result = $reg->setData($datosusuario,'Admin');
-			
-
-			if($result > 0){
-				$response['usuario_registrado'] = true;
+			$response['usuario_registrado'] = true;
 				
-				$result = $referidor->set_data($datohotel,$datopago,$result);
+			$result = $referidor->cargarDatos($_POST);
 
-				if($result){
+			if($result){
 					$response['peticion'] = true;
 					$response['hotel_registrado'] = true;
 					$response['pago_registrado'] = true;
 					$response['mensaje'] = "Referidor registrado con exito, Si Desea Genere el Codigo de hotel y adjudique su comision de una vez...";
 
-					$datos = $referidor->capturarultimo($referidor->ultimohotel);
+					$datos = $referidor->capturarultimo($datohotel);
 
 					
 					$response['nrosolicitud'] = $datos[0]['solicitud'];
@@ -427,11 +368,6 @@ if(isset($_POST['solicitudcodigo'])){
 					$response['peticion']           = true;
 					$response['mensaje'] = "El registro no tuvo exito...";
 				}
-			
-			}else{
-				$response['peticion']           = true;
-				$response['usuario_registrado'] = false;
-			}
 
 				echo json_encode($response);
 	}
@@ -441,8 +377,7 @@ if(isset($_POST['solicitudcodigo'])){
 
 		if($_POST['perfil'] == 'Franquicitario'){
 				$response = array('peticion' =>false,'mensaje'=>'');
-				$solicitud->CargarFranquiciatarioAdmin($_POST['franquiciatario']);
-
+				$solicitud->CargarFranquiciatarioAdmin($_POST['idhotel']);
 
 				$result  = $solicitud->EliminarSolicitudFranquiciatario();
 				if($result){
@@ -456,7 +391,7 @@ if(isset($_POST['solicitudcodigo'])){
 				echo json_encode($response);
 		}else if($_POST['perfil'] == 'Referidor'){
 				$response = array('peticion' =>false,'mensaje'=>'');
-				$solicitud->CargarReferidorAdmin($_POST['referidor']);
+				$solicitud->CargarReferidorAdmin($_POST['idhotel']);
 
 
 				$result  = $solicitud->EliminarSolicitudReferidor();
@@ -512,7 +447,9 @@ if(isset($_POST['solicitudcodigo'])){
 		$response = array('peticion' => false ,
 						'mensaje'=>null);
 
-		$result = $solicitud->cargarDatosActualizacionFranquiciatario($_POST,$_POST['solicitud']);
+		$result = $solicitud->cargarDatosActualizacionFranquiciatario($_POST,$_POST['actualizarfr']);
+
+
 
 		if($result){
 
@@ -532,7 +469,7 @@ if(isset($_POST['solicitudcodigo'])){
 		$response = array('peticion' => false ,
 						'mensaje'=>null);
 
-		$result = $solicitud->cargarDatosActualizacionReferidor($_POST,$_POST['solicitud']);
+		$result = $solicitud->cargarDatosActualizacionReferidor($_POST,$_POST['actualizarrf']);
 
 		if($result){
 
@@ -547,6 +484,10 @@ if(isset($_POST['solicitudcodigo'])){
 		}
 		echo json_encode($response);
 	}
+
+
+
+
 
 }
 	

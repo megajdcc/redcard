@@ -350,35 +350,61 @@ class DetallesSolicitud {
 
 	}
 
-	public function cargarDatosActualizacionReferidor(array $datos,int $solicitud){
+	public function cargarDatosActualizacionReferidor(array $datos,int $idhotel){
+			$sql = "select fr.id from solicitudreferidor fr join referidor as r on fr.id_referidor = r.id where r.id_hotel = :hotel";
+			
+			$stm = $this->con->prepare($sql);
+			$stm->execute(array(':hotel'=>$idhotel));
+			$id = $stm->fetch(PDO::FETCH_ASSOC)['id'];
 
 
-			$this->DetallesSolicitudReferidor = new DetallesSolicitudReferidor($this->con,$solicitud);
+			$this->DetallesSolicitudReferidor = new DetallesSolicitudReferidor($this->con,$id);
 
 
-			return $this->DetallesSolicitudReferidor->CargarDatosActualizacion($datos,$solicitud);
-
-	}
-
-
-	public function cargarDatosActualizacionFranquiciatario(array $datos,int $solicitud){
-
-
-			$this->DetallesSolicitudFranquiciatario = new DetallesSolicitudFranquiciatario($this->con,$solicitud);
-
-
-			return $this->DetallesSolicitudFranquiciatario->CargarDatosActualizacion($datos,$solicitud);
+			return $this->DetallesSolicitudReferidor->CargarDatosActualizacion($datos,$id);
 
 	}
 
 
-	public function CargarFranquiciatarioAdmin($id){
+	public function cargarDatosActualizacionFranquiciatario(array $datos,int $idhotel){	
+
+
+			$sql = "select fr.id from solicitudfr fr join franquiciatario as f on fr.id_franquiciatario = f.id where f.id_hotel = :hotel";
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':hotel'=>$idhotel));
+		$id = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+
+
+
+			$this->DetallesSolicitudFranquiciatario = new DetallesSolicitudFranquiciatario($this->con,$id);
+
+
+			return $this->DetallesSolicitudFranquiciatario->CargarDatosActualizacion($datos,$id);
+
+	}
+
+
+	public function CargarFranquiciatarioAdmin($idhotel){
+
+		$sql = "select fr.id from solicitudfr fr join franquiciatario as f on fr.id_franquiciatario = f.id where f.id_hotel = :hotel";
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':hotel'=>$idhotel));
+		$id = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+
 		$this->DetallesSolicitudFranquiciatario =  new DetallesSolicitudFranquiciatario($this->con, $id);
 		$this->DetallesSolicitudFranquiciatario->cargarDatosAdmin();
 		return true;
 	}
 
-	public function CargarReferidorAdmin($id){
+	public function CargarReferidorAdmin($idhotel){
+		$sql = "select fr.id from solicitudreferidor fr join referidor as r on fr.id_referidor = r.id where r.id_hotel = :hotel";
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':hotel'=>$idhotel));
+		$id = $stm->fetch(PDO::FETCH_ASSOC)['id'];
+
 		$this->DetallesSolicitudReferidor =  new DetallesSolicitudReferidor($this->con, $id);
 		$this->DetallesSolicitudReferidor->cargarDatosAdmin();
 		return true;
@@ -1715,58 +1741,22 @@ class DetallesSolicitud {
 			$this->con->beginTransaction();
 
 
-			$sql = 'select * from huespedhotel where id_hotel =(select id_hotel from solicitudhotel where id = :solicitud)';
-
-			try {
-				$stm = $this->con->prepare($sql);
-
-				if($solicitud > 0){
-					$stm->bindParam(':solicitud',$this->$solicitud);
-				}else{
-					$stmt->bindValue(':solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
-				}
-				
-
-				$stm->execute();
-
-				if($stm->rowCount() > 0){
-					$sql2 = "delete from huespedhotel where id_hotel =(select id_hotel from solicitudhotel where id = :solicitud)";
-					$stm = $this->con->prepare($sql2);
-					if($solicitud > 0){
-						$stm->bindParam(':solicitud',$this->$solicitud);
-					}else{
-						$stm->bindValue(':solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
-					}
-
-					$stm->execute();
-				}
-
-			} catch (PDOException $e) {
-				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
-				return false;
-			}
-			$query1 = "delete from hotel where id = (select id_hotel from solicitudhotel where id = :solicitud)";
-			$query = "delete from solicitudhotel where id=:id_solicitud";
+			
+			$query1 = "delete from hotel where id = :hotel";
+			
 		try{
 			$st = $this->con->prepare($query1);
-			$stmt = $this->con->prepare($query);
+			
 			if($solicitud > 0){
-				$st->bindValue(':solicitud',$solicitud, PDO::PARAM_INT);
-				$stmt->bindValue(':id_solicitud',$solicitud, PDO::PARAM_INT);
+				$st->bindValue(':hotel',$solicitud, PDO::PARAM_INT);
+				
 			}else{
 				$st->bindValue(':solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
-				$stmt->bindValue(':id_solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
+				
 			}
 			$result = $st->execute();
-			if($result){
-				$stmt->execute();
-				$this->con->commit();
-			}else{
-				$this->con->rollBack();
-				return false;
-			}
 			
-
+			$this->con->commit();
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;

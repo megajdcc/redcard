@@ -66,7 +66,7 @@ class Comprobantes
  					from usuario as u 
  					left join solicitudfr as sfr on u.id_usuario = sfr.id_usuario 
  					join franquiciatario as f on sfr.id_franquiciatario = f.id
- 					join hotel as h on f.codigo_hotel = h.codigo
+ 					join hotel as h on f.id_hotel = h.id
  					where f.id = :franquiciatario";
 			$stm = $this->con->prepare($query);
 			$stm->execute(array(':franquiciatario'=>$this->franquiciatario['id']));

@@ -60,7 +60,7 @@ class ReportesVentas{
 	
 	private function DatosHotel(){
 
-		$query = "select h.nombre as nombrehotel, h.comision from hotel  as h join franquiciatario fr on h.codigo = fr.codigo_hotel where fr.id = :franquiciatario";
+		$query = "select h.nombre as nombrehotel, h.comision from hotel  as h join franquiciatario fr on h.id = fr.id_hotel where fr.id = :franquiciatario";
 
 		$stm = $this->con->prepare($query);
 
