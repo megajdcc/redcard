@@ -267,7 +267,7 @@ class PerfilesList {
 							<div class="notification<?php echo $status;?>"></div>
 						</div>
 
-						<button data-toggle="tooltip" title="Quitar." data-placement="bottom"  data-user="<?php echo $fila4['id_usuario'];?>" class="quitaruserhotel" style="background: transparent; outline: none; border: 1px; display:flex;justify-content: center;"><i class="fa fa-remove"></i></button>
+						<button data-toggle="tooltip" title="Quitar." data-placement="left"  data-user="<?php echo $fila4['id_usuario'];?>" class="quitaruserhotel" style="background: transparent; outline: none; border: 1px; display:flex;justify-content: center;"><i class="fa fa-remove"></i></button>
 					
 					
 

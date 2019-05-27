@@ -528,6 +528,29 @@ class includes {
 			$noti .= '';
 			$link .= '';
 		}
+
+		$perfil = '';
+							if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
+							
+
+								foreach ($_SESSION['perfil'] as $key => $value) {
+
+
+									if($value['perfil'] == "Hotel"){
+											$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
+										}
+
+										if($value['perfil'] == 'Franquiciatario'){
+												$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
+										}
+										if($value['perfil'] == 'Referidor'){
+											$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
+										}
+								}
+
+								
+							}
+
 		$html =
 '<body class="">
  <script>
@@ -605,7 +628,7 @@ class includes {
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 										<li><a href="'.HOST.'/socio/">Mi inicio</a></li>
 										<li><a href="'.HOST.'/socio/perfil/">Mi perfil</a></li>
-										'.$link;
+										'.$link.$perfil;
 								if(isset($_SESSION['business']['id_negocio'])){
 									$html .= 
 										'<li><a href="'.HOST.'/negocio/">Panel de Negocio</a></li>';
@@ -646,6 +669,10 @@ class includes {
 			<div class="wrapper-admin">
 				<div class="sidebar-admin">
 					<ul>';
+
+
+				
+
 				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 
 			$html .=	'<li'.$this->set_active_tab('admin').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/admin/"><i class="fa fa-home"></i></a></li>

@@ -2628,7 +2628,7 @@ $(document).ready(function() {
 											<div class="form-group">
 												<label for="comision">Comisión a adjudicar.</label>
 												
-												<input id="ex8" type="text" id="comision" data-slider-id="ex1Slider" data-slider-min="0" data-slider-step="1" data-slider-value="0">
+												<input id="ex8" type="text" id="comision" data-slider-id="ex1Slider" data-slider-min="0" data-slider-step="1" data-slider-max="40" data-slider-value="0">
 												<span class="form" id="val-slider">0 %</span>
 											</div>
 										</div>

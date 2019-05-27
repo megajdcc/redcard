@@ -83,21 +83,9 @@ class user_login {
 						$stm->bindValue(':email3', $this->login['email'], PDO::PARAM_STR);
 						$stm->execute();
 
-						while ($fila = $stm->fetch(PDO::FETCH_ASSOC)) {
 
-							if(!empty($fila['perfil'])){
-								$_SESSION['perfil'] = $fila['perfil'];
-							}else{
-								if(isset($_SESSION['perfil'])){
-									unset($_SESSION['perfil']);
-								}
-
-							}
-							
-							
-							
-						}
-					
+						$_SESSION['perfil'] = $stm->fetchAll(PDO::FETCH_ASSOC);
+											
 					
 			
 

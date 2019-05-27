@@ -561,32 +561,24 @@ class includes {
 
 							$perfil = '';
 							if(isset($_SESSION['perfil']) && !empty($_SESSION['perfil'])){
-								switch ($_SESSION['perfil']) {
-								case 'Hotel':
-									$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
-								
-								
-								
-								break;
-								
-								case 'Franquiciatario':	
-								
-								$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
-								
-								
-								break;
-								
-								case 'Referidor':	
-								
-								$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
-								
-								
-								break;
-								
-								default:
-								# code...
-								break;
+							
+
+								foreach ($_SESSION['perfil'] as $key => $value) {
+
+
+									if($value['perfil'] == "Hotel"){
+											$perfil .= '<li><a href="'.HOST.'/Hotel/">Panel Hotel</a></li>';
+										}
+
+										if($value['perfil'] == 'Franquiciatario'){
+												$perfil .= '<li><a href="'.HOST.'/Franquiciatario/">Panel Franquiciatario</a></li>';
+										}
+										if($value['perfil'] == 'Referidor'){
+											$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
+										}
 								}
+
+								
 							}
 
 							 ?>
