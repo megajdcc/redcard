@@ -77,10 +77,9 @@ class Usuarios {
 					LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
 					LEFT JOIN estado as e ON c.id_estado = e.id_estado
 					LEFT JOIN pais as p ON e.id_pais = p.id_pais
- 					JOIN usuario_referencia as urf on u.id_usuario = urf.id_nuevo_usuario
- 					JOIN solicitudhotel as sh on urf.id_usuario = sh.id_usuario
-					RIGHT JOIN hotel as h  on sh.id_hotel = h.id
-					where  h.id=:hotel
+ 					JOIN huesped as hu on u.id_usuario = hu.id_usuario
+ 					JOIN huespedhotel as hh on hu.id = hh.id_huesped
+ 					where hh.id_hotel = :hotel
 					order by username";
 
 						try {

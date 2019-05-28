@@ -162,7 +162,7 @@ class Huesped
 		$this->hotel = $hotel;
 	}
 
-	private function setTelefonomovil(string $telefono){
+	private function setTelefonomovil(string $telefono = null){
 			$this->telefono = $telefono;
 	}
 

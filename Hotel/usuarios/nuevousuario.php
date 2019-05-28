@@ -39,17 +39,17 @@ $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_admin_navbar(); ?>
 <?php echo $con->get_notify();?>
-<div class="main">
-
-					
+<div class="">
+	<form method="post" action="<?php echo _safe(HOST.'/Hotel/usuarios/nuevousuario');?>" autocomplete="off">
+						
 					<div class="row">
 					
 						<?php echo $reg->getMethodError(); ?>
-						<div class="col-sm-12 col-sm-offset-2">
+						<div class="col-lg-6 ">
 							<div class="page-title">
-								<h1>Nuevo Usuario</h1>
+								<h2>Nuevo Usuario</h2>
 							</div><!-- /.page-title -->
-							<form method="post" action="<?php echo _safe(HOST.'/Hotel/usuarios/nuevousuario');?>" autocomplete="off">
+						
 								<div class="form-group" data-toggle="tooltip" title="Tu nombre de usuario debe ser alfanum&eacute;rico. No puede contener espacios, acentos o caracteres especiales. Debe contener entre 3 y 50 caracteres. Recomendamos 20 o menos caracteres.">
 									<label for="username" >Username (use no space)| Nombre de usuario (sin espacios o acentos) <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 									<input type="text" class="form-control" name="username" id="username" value="<?php echo $reg->getUsername();?>" placeholder="Nombre de usuario (sin espacios o acentos)" required minlength="3" maxlength="50" />
@@ -60,18 +60,29 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									<input type="email" class="form-control" name="email" id="email" value="<?php echo $reg->getEmail();?>" placeholder="Correo electr&oacute;nico" required />
 									<?php echo $reg->getEmailError();?>
 								</div><!-- /.form-group -->
-								<div class="form-group" data-toggle="tooltip" title="La contrase&ntilde;a debe contener al menos 6 caracteres y debe ser distinta de tu nombre de usuario y tu correo electr&oacute;nico.">
+								<!-- <div class="form-group" data-toggle="tooltip" title="La contrase&ntilde;a debe contener al menos 6 caracteres y debe ser distinta de tu nombre de usuario y tu correo electr&oacute;nico.">
 									<label for="password">Password | Contrase&ntilde;a <i class="fa fa-question-circle text-secondary"></i> <span class="required">*</span></label>
 									<input type="password" class="form-control" name="password" id="password" placeholder="Contrase&ntilde;a" required />
-									<?php //echo $reg->getPasswordError();?>
-								</div><!-- /.form-group -->
+									
+								</div>
 								<div class="form-group">
 									<label for="password-retype">Rewrite Password | Confirmar contrase&ntilde;a <span class="required">*</span></label>
 									<input type="password" class="form-control" name="password-retype" id="password-retype" placeholder="Confirmar contrase&ntilde;a" required />
-									<?php echo $reg->getRetypePasswordError();?>
-								</div><!-- /.form-group -->
-								<div class="form-group" id="user-search-hotel" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
-									<label for="user-search-input">Who invited you? (Hotel) | ¿Qui&eacute;n te invit&oacute;? (Hotel) <i class="fa fa-question-circle text-secondary"></i></label>
+					
+								</div> -->
+								
+			
+							
+						</div>
+
+						<div class="col-lg-6">
+							<div class="page-title">
+								<h2>Quien te Invit&oacute;</h2>
+							</div>
+
+
+							<div class="form-group" id="user-search-hotel" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
+									<label for="user-search-input">Who invited you? | ¿Qui&eacute;n te invit&oacute;? <i class="fa fa-question-circle text-secondary"></i></label>
 
 									
 										<div class="search-placeholder" id="user-search-placeholder" style="flex:1 1 auto;">
@@ -81,21 +92,23 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 									<input type="text" class="form-control typeahead" name="referral" id="user-search-input" value="<?php echo $reg->getReferral();?>" placeholder="Nombre de usuario del referente" autocomplete="off" />
 									<?php echo $reg->getReferralError();?>
-								</div><!-- /.form-group -->
-								<div class="row">
-									<div class="col-sm-8">
-										<div class="checkbox">
-											<input type="checkbox" id="tos-check" checked><label for="tos-check">I accept <a href="<?php echo HOST.'/terminos-y-condiciones';?>" target="_blank">Terms and Conditions</a> | Acepto los <a href="<?php echo HOST.'/terminos-y-condiciones';?>" target="_blank">T&eacute;rminos y condiciones</a></label>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<input type="hidden" name="new_usuario">
-										<button type="submit" class="btn btn-primary pull-right" id="register-btn">Join | ¡Hazme Socio!</button>
-									</div>
-								</div>
-							</form>
-						</div><!-- /.col-sm-12 -->
-					
-					</div><!-- /.row -->
+							</div>
 
+						</div>
+					
+					</div>
+
+					<div class="row">
+							<div class="col-sm-6 col-offset-2">
+								<div class="checkbox">
+									<input type="checkbox" id="tos-check" checked><label for="tos-check">I accept <a href="<?php echo HOST.'/terminos-y-condiciones';?>" target="_blank">Terms and Conditions</a> | Acepto los <a href="<?php echo HOST.'/terminos-y-condiciones';?>" target="_blank">T&eacute;rminos y condiciones</a></label>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<input type="hidden" name="new_usuario">
+								<input type="hidden" name="hotel_invitador" value="<?php echo $_SESSION['id_hotel'];?>">
+								<button type="submit" class="btn btn-primary pull-right" id="register-btn">Join | ¡Hazme Socio!</button>
+							</div>
+					</div>
+	</form>
 <?php echo $footer = $includes->get_admin_footer(); ?>

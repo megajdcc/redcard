@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
 namespace assets\libs;
 use PDO;
 
@@ -7,13 +7,107 @@ class user_login {
 	private $login = array('email' => null, 'password' => null);
 	private $error = array('login' => null, 'email' => null, 'password' => null, 'warning' => null, 'error' => null);
 
+
+	private $iduser = null;
+
+
+	private $errors = array('password' =>null,'retype'=>null);
+	private $password = null;
+
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		return;
 	}
 
+
+	public function registrarpass(array $post,int $iduser){
+
+		$this->iduser = $iduser;
+
+		$this->setPassword($post['password'], $post['password-retype']);
+		if($this->password && !array_filter($this->errors)){
+			$this->registerpass();
+			
+			return true;
+		}
+
+		return false;
+
+	}
+
+	public function getRetypePasswordError(){
+		if($this->errors['retype']){
+			$error = '<p class="text-danger">'._safe($this->errors['retype']).'</p>';
+			return $error;
+		}
+	}
+
+	private function registerpass(){
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+
+		$sql = "UPDATE usuario set password=:pass where id_usuario=:user";
+
+		try {
+
+			$stm = $this->con->prepare($sql);
+
+			$stm->bindParam(':pass',$this->password);
+			$stm->bindParam(':user',$this->iduser);
+
+			$stm->execute();
+
+			$this->con->commit();
+
+			unset($_SESSION['id_user']);
+			$_SESSION['notification']['success'] = "Bienvenido a Travel Points, ya puedes iniciar sesion.";
+			header('location:'.HOST.'/login');
+			die();
+			return;
+			
+		} catch (PDOException $e) {
+			$this->error_log(__METHOD__,__LINE__,$e);
+			$this->con->rollBack();
+			return false;
+		}
+	}
+	private function setPassword($password, $retype){
+		if($password){
+			// if($this->username && $password == $this->username){
+			// 	// $this->errors['password'] = 'Your username and password must be different.';
+			// 	$this->errors['password'] = 'Tu contraseña y nombre de usuario deben ser diferentes.';
+			// 	return $this;
+			// }
+			// if($this->email && $password == $this->email){
+			// 	// $this->errors['password'] = 'Your username and password must be different.';
+			// 	$this->errors['password'] = 'Tu contraseña y correo electrónico deben ser diferentes.';
+			// 	return $this;
+			// }
+			if(strlen($password) < 6){
+				$this->errors['password'] = 'Tu contraseña debe tener al menos 6 caracteres.';
+				return false;
+			}
+			if($password == $retype){
+				$options = ['cost' => 12];
+				$this->password = password_hash($password, PASSWORD_BCRYPT, $options);
+				return $this;
+			}
+			// $this->errors['retype'] = 'Passwords do not match.';
+			$this->errors['retype'] = 'Las contraseñas no coinciden.';
+			return $this;
+		}
+		// $this->errors['password'] = 'You must enter a password.';
+		$this->errors['password'] = 'Este campo es obligatorio.';
+		return $this;
+	}
+
 	public function validate_account($email, $hash){
-		$query = "SELECT id_usuario, hash_activacion, verificado FROM usuario WHERE email = :email";
+
+		$query = "SELECT id_usuario, hash_activacion, verificado,reg_hotel FROM usuario WHERE email = :email";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':email', $email, PDO::PARAM_STR);
@@ -35,25 +129,48 @@ class user_login {
 						$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 						return false;
 					}
-					$_SESSION['notification']['success'] = 'Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.';
-					header('Location: '.HOST.'/login');
-					die();
-					return;
+
+					if($row['reg_hotel'] == 1){
+					
+						$_SESSION['notification']['success'] = 'Tu cuenta ha sido verificada correctamente. Registra tu contraseña, para poder ingresar.';
+						$_SESSION['id_user'] = $row['id_usuario'];
+						header('Location: '.HOST.'/new-password');
+						die();
+						return;
+					
+					}else{
+					
+						$_SESSION['notification']['success'] = 'Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.';
+						header('Location: '.HOST.'/login');
+						die();
+						return;
+					
+					}
+					
 				}else{
 					$this->error['error'] = 'El c&oacute;digo de seguridad no coincide. Si has pedido multiples verificaciones recientemente es posible que debas utilizar el enlace enviado en el correo m&aacute;s reciente. Si a&uacute;n as&iacute; no funciona, prueba enviando otro correo de verificaci&oacute;n. <a href="'.HOST.'/recuperar-cuenta">aqu&iacute;</a>.';
 					return;
 				}
 			}else{
-				$_SESSION['notification']['info'] = 'Tu cuenta ya está verificada correctamente.';
-				header('Location: '.HOST.'/login');
-				die();
-				return;
+
+					$_SESSION['notification']['info'] = 'Tu cuenta ya está verificada correctamente.';
+					header('Location: '.HOST.'/login');
+					die();
+					return;
+
 			}
 		}
 		$this->error['error'] = _safe('No existe ninguna cuenta asociada a ese correo electrónico.');
 		return false;
 	}
 
+
+	public function getPasswordError(){
+		if($this->errors['password']){
+			$error = '<p class="text-danger">'._safe($this->errors['password']).'</p>';
+			return $error;
+		}
+	}
 	public function set_data(array $post){
 		if(!isset($_SESSION['user'])){
 			$this->set_email($post['email']);

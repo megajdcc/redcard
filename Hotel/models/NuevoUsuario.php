@@ -10,8 +10,10 @@ class NuevoUsuario {
 	private $username = null;
 	private $email = null;
 	private $password = null;
+
+	private $hotel = null;
 	private $referral = array ('id' => null, 'username' => null);
-	private $errors = array('method' => null, 'username' => null, 'email' => null, 'password' => null, 'retype' => null, 'referral' => null);
+	private $errors = array('method' => null, 'username' => null, 'email' => null,'referral' => null);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -21,64 +23,180 @@ class NuevoUsuario {
 
 		$this->setUsername($post['username']);
 		$this->setEmail($post['email']);
-		$this->setPassword($post['password'], $post['password-retype']);
+		// $this->setPassword($post['password'], $post['password-retype']);
+		$this->setHotel($post['hotel_invitador']);
 		$this->setReferral($post['referral']);
-		if($this->username && $this->email && $this->password && !array_filter($this->errors)){
+
+
+		if($this->username && $this->email && !array_filter($this->errors)){
 			$this->register();
 			return true;
 		}
 		return false;
 	}
 
+
+	private function setHotel(int $idhotel){
+
+		$this->hotel = $idhotel;
+
+	}
+
+	private function getHotel(int $idhotel = null){
+
+
+			$nombrehotel = null;
+
+			if(is_null($idhotel)){
+
+				$sql = "SELECT h.nombre as nombrehotel from hotel as h where h.id = :hotel";
+				try {
+						$stm = $this->con->prepare($sql);
+						$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+						$stm->execute();
+				} catch (PDOException $e) {
+
+					$this->error_log(__METHOD__,__LINE__,$e);
+					
+				}
+			
+
+				$nombrehotel = $stm->fetch(PDO::FETCH_ASSOC)['nombrehotel'];
+
+			}
+
+			return $nombrehotel;
+	}
+
 	private function register(){
-		$query = "INSERT INTO usuario (
+
+
+		if($this->con->inTransaction()){
+			$this->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		$query = "INSERT INTO usuario(
 			username, 
-			email, 
-			password,
-			verificado,
-			hash_activacion
+			email,
+			hash_activacion,
+			reg_hotel
 			) VALUES (
 			:username, 
 			:email, 
-			:password,
-			1,
-			:hash_activacion
+			:hash_activacion,
+			:hotel
 		)";
-		$hash = md5( rand(0,1000) );
+
+		$hash = md5( rand(0,1000));
 		$query_params = array(
 			':username' => $this->username,
 			':email' => $this->email,
-			':password' => $this->password,
-			':hash_activacion' => $hash
+			':hash_activacion' => $hash,
+			':hotel' => 1
 		);
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($query_params);
 			$lastId = $this->con->lastInsertId();
-
-
-		}catch(\PDOException $ex){
+		}catch(PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+			$this->con->rollBack();
 			return false;
 		}
 
-		// Lo registramos en solicitud hotel.
+		// Registramos al usuario como Huesped..
+		// 
 		
-		// $query1 = "insert into solicitudhotel(id_hotel,id_usuario,condicion) values(:hotel,:usuario, :condicion)";
 
-		// try {
-		// 	$stm = $this->con->prepare($query1);
+		// $sql = "SELECT count(*) FROM huesped where id_usuario =:usuario";
+		// $stm = $this->con->prepare($sql);
+		// $stm->execute(array(':usuario'=>$lastId));
+		// $fila = $stm->fetch(PDO::FETCH_ASSOC);
 
-		// 	$stm->execute(array(':hotel'=>$_SESSION['id_hotel'],
-		// 					':usuario'=>$lastId,
-		// 					':condicion'=>1));
-		// 	} catch (PDOException $e) {
-		// 	$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+		// if($stm->rowCount() > 0){
+
+		// 	$nombrehotel = $this->getHotel();
+		// 	$idhuesped = $fila['id'];
+
+
+		// 	try {
+
+		// 		$sql = "UPDATE huesped set hotel = :hotel where id=:h";
+		// 		$stm = $this->con->prepare($sql);
+		// 		$stm->bindParam(':hotel',$nombrehotel,PDO::PARAM_STR);
+		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
+		// 		$stm->execute();
+
+		// 	}catch (PDOException $e){
+
+		// 		$this->con->rollBack();
+		// 		return false;
 
 		// 	}
+
+		// 	$sql = "UPDATE huespedhotel set id_hotel =:hotel where id_huesped=:h";
+
+		// 	try {
+				
+		// 		$stm = $this->con->prepare($sql);
+		// 		$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
+
+		// 		$stm->execute();
+
+		// 	}catch (PDOException $e) {
+
+		// 		$this->con->rollBack();
+		// 		return false;
+
+		// 	}
+
+		// }else{
+
+			$nombrehotel = $this->getHotel();
+
+			$sql = "INSERT INTO huesped(id_usuario,hotel)values(:usuario,:hotel)";
+
+
+			try {
+					$stm = $this->con->prepare($sql);
+					
+					$stm->bindParam(':usuario',$lastId,PDO::PARAM_INT);
+					$stm->bindParam(':hotel',$nombrehotel,PDO::PARAM_STR);
+					$stm->execute();
+
+					$ultimohuesped = $this->con->lastInsertId();
+
+			} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+				$this->con->rollBack();
+				return false;
+				
+			}
+
+			$sql = "INSERT INTO huespedhotel(id_hotel,id_huesped)values(:hotel,:huesped)";
+
+			try {
+				$stm = $this->con->prepare($sql);
+				$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+				$stm->bindParam(':huesped',$ultimohuesped,PDO::PARAM_INT);
+				$stm->execute();
+				$this->con->commit();
+				
+			}catch (PDOException $e) {
+
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+				$this->con->rollBack();
+				return false;
+
+			}
+
+		// } 
 		
 
-		
+
 		// Si existe referencia, la inserta
 		if($this->referral['id']){
 			$query = "INSERT INTO usuario_referencia (id_usuario, id_nuevo_usuario) VALUES (:id_usuario, :id_nuevo_usuario)";
@@ -86,8 +204,10 @@ class NuevoUsuario {
 			try{
 				$stmt = $this->con->prepare($query);
 				$stmt->execute($query_params);
+				
 			}catch(\PDOException $ex){
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+				$this->con->rollBack();
 				return false;
 			}
 		}
@@ -99,14 +219,15 @@ class NuevoUsuario {
 		$mail->CharSet = 'UTF-8';
 		// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 		$mail->isSMTP();
-		$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+		$mail->Host = 'single-5928.banahosting.com';
 		$mail->SMTPAuth = true;
 		$mail->SMTPSecure = 'ssl';
 		$mail->Port = 465;
 		// El correo que hará el envío
-		$mail->Username = 'notificacion@esmartclub.com';
-		$mail->Password = 'Alan@2017_pv';
-		$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+		$mail->Username = 'notification@travelpoints.com.mx';
+		$mail->Password = '20464273jd';
+
+		$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 		// El correo al que se enviará
 		$mail->addAddress($this->email);
 		// Hacerlo formato HTML
@@ -166,7 +287,7 @@ class NuevoUsuario {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px;height:auto">
 										</a>
 									</td>
 								</tr>
@@ -190,8 +311,8 @@ class NuevoUsuario {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										Para completar tu registro debes confirmar tu correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -216,7 +337,7 @@ class NuevoUsuario {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -233,7 +354,7 @@ class NuevoUsuario {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -436,7 +557,7 @@ class NuevoUsuario {
 	}
 
 	private function error_log($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\regeistrodeusuariohotel.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'/assets/error_logs/registrodeusuariohotel.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		foreach ($this->errors as $key => $value){
 			$this->errors[$key] = null;
 		}
