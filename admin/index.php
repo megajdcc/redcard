@@ -29,6 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 }
 
+
+if(isset($_SESSION['id_hotel'])){
+	unset($_SESSION['id_hotel']);
+}
+
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
 $rpp = 20;
 $options = $businesses->load_data($page, $rpp);

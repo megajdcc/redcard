@@ -40,12 +40,11 @@
 			$home->busqueda($_POST);
 		}
 	} 
+if(isset($_POST['cambiar-hotel'])){
 
-	
-	 
-	if(isset($_POST['change_business'])){
-		$home->change_business($_POST['change_business']);
-	}
+	$home->cambiarhotel($_POST['cambiar-hotel']);
+} 
+
 
 	$includes = new Includes($con);
 

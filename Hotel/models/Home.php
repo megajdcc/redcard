@@ -49,7 +49,12 @@ class Home {
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
-		$this->CargarHotel();
+		if(isset($_SESSION['id_hotel'])){
+			$this->CargarHotel($_SESSION['id_hotel']);
+		}else{
+			$this->CargarHotel();
+		}
+		
 
 		return;
 	}

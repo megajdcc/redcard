@@ -325,7 +325,46 @@ $(document).ready(function() {
 		}
 	});
 
+// buscador de hoteles
+var hoteles = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('username'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/ajax.php?hotel=%QUERY',
+			wildcard: '%QUERY'
+		}
+	});
 	
+$('#user-search-hotel .typeahead').typeahead({
+			hint: false,
+			highlight: true,
+			minLength: 3,
+			autoselect: true,
+		},
+		{
+		limit: 15,
+		name: 'users',
+		display: 'username',
+
+		source: hoteles,
+		templates: {
+			empty: [
+				'<div class="tt-empty-message">',
+					'Sé más específico.',
+				'</div>'
+			].join('\n'),
+			suggestion: function(data){
+				return '<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '     |    <img src="/assets/img/hoteles/' + data.imghotel + '" class="meta-img img-rounded" alt=""><strong>' + data.displayhotel + '</strong></div>';
+			}
+		}
+	}).on('typeahead:selected', function(object, data) {
+		if($('#user-search-placeholder').length){
+			$('#user-search-placeholder').empty();
+			$('#user-search-placeholder').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '    | <img src="/assets/img/hoteles/' + data.imghotel + '" class="meta-img img-rounded" alt=""><strong>' + data.displayhotel + '</strong></div>');
+		}
+		
+	});
+
 
 	$('#user-search .typeahead').typeahead({
 			hint: false,
@@ -419,27 +458,27 @@ $(document).ready(function() {
 		}
 	});
 
-	var placeholder_clone = $("#user-search-placeholder-referidor").clone();
-	var certificate_clone = $("#certificate-load").clone();
-	$("#user-search-input-referidor").on("input", function() {
-		$("#user-search-placeholder-referidor").replaceWith(placeholder_clone.clone());
-		$("#certificate-load").replaceWith(certificate_clone.clone());
-	});
+	// var placeholder_clone = $("#user-search-placeholder-referidor").clone();
+	// var certificate_clone = $("#certificate-load").clone();
+	// $("#user-search-input-referidor").on("input", function() {
+	// 	$("#user-search-placeholder-referidor").replaceWith(placeholder_clone.clone());
+	// 	$("#certificate-load").replaceWith(certificate_clone.clone());
+	// });
 
-	if($('#user-search-input-referidor').val() != '' && $('#user-search-placeholder-referidor').length){
-		var username = $('#user-search-input-referidor').val();
-		$.ajax({
-			type: "POST",
-			url: "/ajax.php",
-			data: {
-				load_username: username
-			},
-			success: function(data){
-				$('#user-search-placeholder-referidor').empty();
-				$('#user-search-placeholder-referidor').append( data );
-			}
-		});
-	}
+	// if($('#user-search-input-referidor').val() != '' && $('#user-search-placeholder-referidor').length){
+	// 	var username = $('#user-search-input-referidor').val();
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/ajax.php",
+	// 		data: {
+	// 			load_username: username
+	// 		},
+	// 		success: function(data){
+	// 			$('#user-search-placeholder-referidor').empty();
+	// 			$('#user-search-placeholder-referidor').append( data );
+	// 		}
+	// 	});
+	// }
 
 	// Cargar certificados pendiente en formulario de venta
 	function load_user_certs(){

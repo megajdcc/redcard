@@ -2,7 +2,7 @@
 namespace admin\libs;
 use assets\libs\connection;
 use PDO;
-
+use \assets\libraries\bulletproof\bulletproof;
 class DetallesSolicitud {
 	private $con;
 
@@ -84,18 +84,45 @@ class DetallesSolicitud {
 		'photo'       => null,
 		'comment'     => null,
 		'warning'     => null,
-		'error'       => null
+		'error'       => null,
+		'foto'        =>null
 	);
 
+
+	private $register = array(
+							'foto' => array('tmp' => null, 'name' => null, 'path' => null));
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		return;
 	}
 
+	private function setFotoHotel($files = null){
 
+			$image = new bulletproof($files);
+			$image->setLocation(ROOT.'/assets/img/hoteles');
 
-	public function cargarDatosActualizacion(array $datos,int $solicitud){
+			if($image['foto']){
+				if($image->upload()){
+					
+					$this->register['foto']['tmp'] = $files['foto']['tmp_name'];
+					$this->register['foto']['name'] = $image->getName().'.'.$image->getMime();
+					$this->register['foto']['path'] = $image->getFullPath();
+					return true;
+				}
+					
+				$this->error['foto'] = $image['error'];
+				return false;
+			}
+			if($files['foto']['error'] == 1){
+				$this->error['foto'] = 'Has excedido el límite de imagen de 2MB.';
+			}else{
+				$this->error['foto'] = 'Este campo es obligatorio.';
+			}
+			return false;
+	}
+
+	public function cargarDatosActualizacion(array $datos,int $solicitud,$files = null){
 
 			$pago = false;
 
@@ -133,6 +160,16 @@ class DetallesSolicitud {
 			
 			$telefonofijo         = $datos['telefonofijo'];
 			$movil                = $datos['movil'];
+
+
+			
+
+			if (!empty($files['foto']['name'])) {
+				$this->setFotoHotel($files);
+			}
+			
+
+
 
 			if($this->con->inTransaction()){
 				$this->con->rollBack();
@@ -234,22 +271,45 @@ class DetallesSolicitud {
 				}
 			
 				if($iddatos == 0){
-								
-					$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata where id = :idhotel";
+						
+					if(!empty($files['foto']['name'])){
+						$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata,imagen=:imagen where id = :idhotel";
+									
+									$datoshotel = array(
+									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
+									':codigopostal'=>$codigopostal,':iata'=>$iata,':imagen'=>$this->register['foto']['name'],':idhotel'=>$idhotel1
+									);
+
+					}else{
+						$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata where id = :idhotel";
 									
 									$datoshotel = array(
 									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
 									':codigopostal'=>$codigopostal,':iata'=>$iata,':idhotel'=>$idhotel1
 									);
+								
+					}
+					
 
 				}else{
 
-					$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata, id_datospagocomision=:pago where id = :idhotel";
+					if(!empty($files['foto']['name'])){
+							$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata, id_datospagocomision=:pago,imagen=:imagen where id = :idhotel";
+									
+									$datoshotel = array(
+									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
+									':codigopostal'=>$codigopostal,':iata'=>$iata,':pago'=>$iddatos,':imagen'=>$this->register['foto']['name'],':idhotel'=>$idhotel1
+									);
+								}else{
+									$queryhotel = "update hotel set nombre=:nombre,direccion=:direccion,latitud=:latitud,longitud=:longitud,sitio_web=:sitioweb,id_ciudad=:ciudad,id_estado=:estado,codigo_postal=:codigopostal,id_iata=:iata, id_datospagocomision=:pago where id = :idhotel";
 									
 									$datoshotel = array(
 									':nombre'=>$nombrehotel,':direccion'=>$direccion,':latitud'=>$latitud,':longitud'=>$longitud,':sitioweb'=>$sitioweb,':ciudad'=>$ciudad,':estado'=>$estado,
 									':codigopostal'=>$codigopostal,':iata'=>$iata,':pago'=>$iddatos,':idhotel'=>$idhotel1
 									);
+								}
+
+				
 					
 
 				}
@@ -338,6 +398,11 @@ class DetallesSolicitud {
 				$stm->execute($datoshotel);
 
 				$this->con->commit();
+
+				if (!empty($files['foto']['name'])){
+					move_uploaded_file($this->register['foto']['tmp'], $this->register['foto']['path']);
+				}
+				
 				return true;
 			} catch (PDOException $e) {
 

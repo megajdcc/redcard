@@ -53,7 +53,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<th>Foto</th>
 						<th>Username</th>
 						<!-- <th>Correo electr&oacute;nico</th> -->
-						<th>eSmartties</th>
+						<th>Travel Points</th>
 						
 						<th>Nombre</th>
 						<th>Apellido</th>

@@ -1,5 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
-$con = new assets\libs\connection();
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 
 if(!isset($_SESSION['user']) || !isset($_SESSION['business'])){
 	http_response_code(404);

@@ -48,6 +48,7 @@ class ReportesVentas{
 
 	function __construct(connection $con){
 		$this->con = $con->con;
+	
  		$this->hotel['id']  = $_SESSION['id_hotel'];
  		$this->franquiciatario['id']  = $_SESSION['id_franquiciatario'];
 		$this->CargarData();

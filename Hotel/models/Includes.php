@@ -29,7 +29,7 @@ class Includes {
 
 	private $hoteles = array('id' =>null ,
 								'nombrehotel'=>null,
-								'otroshoteles'=>array('idhotel'=>null,'nombrehotel'=>null));
+								'otroshoteles'=>array());
 
 
 

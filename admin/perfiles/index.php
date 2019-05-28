@@ -72,8 +72,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(isset($_POST['actualizar'])){
 			$perfiles->actualizarcomision($_POST);
 	}
-
-
 }
 $reg = new assets\libs\user_signup($con);
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -139,7 +137,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
                 <th>Direcci&oacute;n</th>
                 <th>Franquiciatario</th>
                 <th>Referidores</th>
-                <th>Ultimo Logín</th>
+              <!--   <th>Ultimo Logín</th> -->
                <!--  <th></th> -->
                
 

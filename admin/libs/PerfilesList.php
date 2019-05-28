@@ -27,8 +27,33 @@ class PerfilesList {
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
+
+		
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
+		$this->recargarperfiles();
 		return;
+	}
+
+	private function recargarperfiles(){
+		$sql = "(SELECT 'Hotel' as perfil from usuario as u join solicitudhotel sh on u.id_usuario = sh.id_usuario where sh.condicion = 1 && u.id_usuario = :user1)
+					UNION
+					(SELECT 'Franquiciatario' as perfil from usuario as u join solicitudfr sfr on u.id_usuario = sfr.id_usuario 
+								where sfr.condicion = 1 && u.id_usuario = :user2)
+					UNION
+					(SELECT 'Referidor' as perfil from usuario as u join solicitudreferidor sr on u.id_usuario = sr.id_usuario 
+								where sr.condicion = 1 && u.id_usuario = :user3)";
+
+						$stm = $this->con->prepare($sql);
+						$stm->bindValue(':user1', $this->user['id'], PDO::PARAM_INT);
+						$stm->bindValue(':user2', $this->user['id'], PDO::PARAM_INT);
+						$stm->bindValue(':user3', $this->user['id'], PDO::PARAM_INT);
+						$stm->execute();
+
+						if(isset($_SESSION['perfil'])){
+							unset($_SESSION['perfil']);
+						}
+
+						$_SESSION['perfil'] = $stm->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 
@@ -370,7 +395,47 @@ class PerfilesList {
 							echo '<button type="button" data-hotel="'.$idhotel.'" class="new-franquiciatario agr-franquiciatario btn btn-info"> <i class="fa fa-black-tie"></i> Asignar</button>';
 
 						}else{
-								echo '<button type="button" class="ver-franquiciatario btn btn-success" data-hotel="'.$idhotel.'"> <i class="fa fa-black-tie"></i> '.$franquiciatarios.' Ver</button>';
+							$sql = "SELECT * from usuario u join solicitudfr as sfr on u.id_usuario = sfr.id_usuario
+												join franquiciatario as f on sfr.id_franquiciatario = f.id
+												where f.id_hotel = :hotel";
+												
+									$stm = $this->con->prepare($sql);
+									$stm->bindParam(':hotel',$idhotel);
+									$stm->execute();
+												
+									$fila4 = $stm->fetch(PDO::FETCH_ASSOC);	
+												
+												
+									if($fila4['activo'] == 1){
+												$status = ' green';
+												$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+												}elseif($fila4['activo'] == 2){
+												$status = ' yellow';
+												$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+												}else{
+												$status = '';
+												$btn = '<button class="btn btn-xs btn-success user-ban" name="unban_user" value="" type="submit"><i class="fa fa-check-circle m0"></i></button>';
+												}
+												
+												$imagen = 'default.jpg';
+												if(!empty($fila4['imagen'])){
+												$imagen = $fila4['imagen'];
+												}
+												
+												$nameuser = $fila4['username'];
+												
+												if(!empty($fila4['nombre']) && !empty($fila4['apellido'])){
+												$nameuser = $fila4['nombre'].' '.$fila4['apellido'];
+												}
+							?>					
+
+											<div class="user user-md">
+											<a data-toggle="tooltip" title="<?php echo $nameuser; ?>" data-placement="left" href="<?php echo HOST.'/socio/'.$fila4['username']?>" target="_blank"><img src="<?php echo HOST.'/assets/img/user_profile/'.$imagen;?>"></a>
+											<div class="notification<?php echo $status;?>"></div>
+											</div>
+						
+							<?php 
+								echo '<button type="button" class="ver-franquiciatario btn btn-success" data-hotel="'.$idhotel.'" style="background:transparent;border:0;color:black;outline:none;text-decoration:none;" data-toggle="tooltip" title="Editar datos" data-placement="left"> <i class="fa fa-cogs"></i></button>';
 						}?>
 					
 						
@@ -379,15 +444,55 @@ class PerfilesList {
 				
 				<td><?php  
 						if($referidores== 0){
-							
-							echo '<button type="button" data-hotel="'.$idhotel.'" class="new-referidor agr-referidor btn btn-secondary"> <i class="fa fa-black-tie"></i> Asignar</button>';
+										 echo '<button type="button" data-hotel="'.$idhotel.'" class="new-referidor agr-referidor btn btn-secondary"> <i class="fa fa-black-tie"></i> Asignar</button>';
 
 						}else{
-								echo '<button type="button" data-hotel="'.$idhotel.'" class="ver-referidor btn btn-success"> <i class="fa fa-black-tie"></i>'.$referidores.' Ver</button>';
+							$sql = "SELECT * from usuario u join solicitudreferidor as srf on u.id_usuario = srf.id_usuario
+												join referidor as r on srf.id_referidor = r.id
+												where r.id_hotel = :hotel";
+												
+									$stm = $this->con->prepare($sql);
+									$stm->bindParam(':hotel',$idhotel);
+									$stm->execute();
+												
+									$fila4 = $stm->fetch(PDO::FETCH_ASSOC);	
+												
+												
+									if($fila4['activo'] == 1){
+												$status = ' green';
+												$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+												}elseif($fila4['activo'] == 2){
+												$status = ' yellow';
+												$btn = '<button class="btn btn-xs btn-danger user-ban" name="ban_user" value="" type="submit"><i class="fa fa-ban m0"></i></button>';
+												}else{
+												$status = '';
+												$btn = '<button class="btn btn-xs btn-success user-ban" name="unban_user" value="" type="submit"><i class="fa fa-check-circle m0"></i></button>';
+												}
+												
+												$imagen = 'default.jpg';
+												if(!empty($fila4['imagen'])){
+												$imagen = $fila4['imagen'];
+												}
+												
+												$nameuser = $fila4['username'];
+												
+												if(!empty($fila4['nombre']) && !empty($fila4['apellido'])){
+												$nameuser = $fila4['nombre'].' '.$fila4['apellido'];
+												}
+							?>					
+
+											<div class="user user-md">
+											<a data-toggle="tooltip" title="<?php echo $nameuser; ?>" data-placement="left" href="<?php echo HOST.'/socio/'.$fila4['username']?>" target="_blank"><img src="<?php echo HOST.'/assets/img/user_profile/'.$imagen;?>"></a>
+											<div class="notification<?php echo $status;?>"></div>
+											</div>
+						
+							<?php 
+
+								echo '<button type="button" data-hotel="'.$idhotel.'" style="background:transparent;border:0;color:black;outline:none;text-decoration:none;" class="ver-referidor btn btn-success" data-toggle="tooltip" title="Editar datos" data-placement="left"> <i class="fa fa-cogs"></i></button>';
 						}?></td>
 			
 				
-				<td><?php echo $ultimologin; ?></td>
+				
 
             </tr>
 			<?php

@@ -55,6 +55,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 	if(filter_input(INPUT_GET, 'referral')){
 		echo $json->getUsers($_GET['referral']);
 	}
+
+	if(filter_input(INPUT_GET, 'hotel')){
+		echo $json->getHotel($_GET['hotel']);
+	}
 	// if(filter_input(INPUT_GET, 'certificate')){
 	// 	echo $json->get_certificates('%'.$_GET['certificate'].'%');
 	// }

@@ -9,6 +9,57 @@ class jsonSearch {
 		$this->con = $con->con;
 	}
 
+	public function getHotel($busqueda =null){
+
+		$sql = "SELECT h.imagen as imghotel, h.nombre as nombrehotel,u.username,u.nombre,u.apellido,u.imagen from hotel as h join solicitudhotel as sh on h.id = sh.id_hotel 
+					RIGHT JOIN usuario as u on sh.id_usuario = u.id_usuario where u.activo = 1 AND(CONCAT(u.nombre,' ',u.apellido) LIKE ? OR username LIKE ? OR h.nombre LIKE ? OR u.email LIKE ?)";
+
+					try {
+						
+						$stmt = $this->con->prepare($sql);
+						$stmt->bindValue(1, '%'.$busqueda.'%', PDO::PARAM_STR);
+						$stmt->bindValue(2, '%'.$busqueda.'%', PDO::PARAM_STR);
+						$stmt->bindValue(3, '%'.$busqueda.'%', PDO::PARAM_STR);
+						$stmt->bindValue(4, $busqueda, PDO::PARAM_STR);
+						$stmt->execute();
+					} catch (PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						return false;
+					}
+
+					$users = array();
+					while($row = $stmt->fetch()){
+					if(!$row['nombre'] || !$row['apellido']){
+						$row['display'] = '';
+					}else{
+						$row['display'] = htmlentities($row['nombre'].' '.$row['apellido']);
+					}
+					if(!$row['imagen']){
+						$row['imagen'] = 'default.jpg';
+					}
+
+					if(!$row['imghotel']){
+						$row['imghotel'] = 'default.jpg';
+					}
+
+					if(!$row['nombrehotel']){
+						$row['displayhotel'] = '';
+					}else{
+						$row['displayhotel'] = htmlentities($row['nombrehotel']);
+					}
+
+					unset($row['nombre']);
+					unset($row['apellido']);
+			
+
+					$row['username'] = htmlentities($row['username']);
+					$row['nombrehotel'] = htmlentities($row['nombrehotel']);
+						$users[] = $row;
+					}
+					return json_encode($users);
+
+	}
+
 	public function getUsers($search = null){
 		$query = "SELECT username, imagen, nombre, apellido 
 			FROM usuario WHERE activo = 1 

@@ -11,7 +11,6 @@
 
 	$hotel = new Dashboard($con);
 
-
 	if(!isset($_SESSION['perfil'])){
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');
@@ -44,10 +43,12 @@
 	} 
 
 
-	 
-	if(isset($_POST['change_business'])){
-		$home->change_business($_POST['change_business']);
-	}
+if(isset($_POST['cambiar-hotel'])){
+
+	$home->cambiarhotel($_POST['cambiar-hotel']);
+} 
+
+
 
 	$includes = new Includes($con);
 
@@ -850,7 +851,9 @@
 		
 	</div>
 </div>
-<?php echo $footer = $includes->get_admin_footer(); ?>
+<?php 
+	
+	echo $footer = $includes->get_admin_footer(); ?>
 
 
 

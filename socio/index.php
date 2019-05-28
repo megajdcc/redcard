@@ -10,6 +10,11 @@ if(!isset($_SESSION['user']['id_usuario'])){
 	die();
 }
 
+if(isset($_SESSION['id_hotel'])){
+	unset($_SESSION['id_hotel']);
+	unset($_SESSION['nombrehotel']);
+}
+
 
 
 $home = new socio\libs\user_home($con);

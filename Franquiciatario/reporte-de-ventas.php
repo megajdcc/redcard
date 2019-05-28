@@ -1,4 +1,5 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 
@@ -18,7 +19,7 @@ if(!isset($_SESSION['perfil'])){
 	}
 
 $Dashboard = new Dashboard($con);
-$includes = new Includes($con);
+
 $reporte = new ReportesVentas($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -30,6 +31,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	}
 
+
 // $info = new negocio\libs\preference_info($con);
 // $users = new admin\libs\get_allusers($con);
 
@@ -39,11 +41,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			$reporte->Buscar($_POST);
 		}
 
-
-
 	// $reporte->setFechas($_POST);
 }
 
+
+$includes = new Includes($con);
 $properties['title'] = 'Estado de Cuenta | Travel Points';
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
@@ -204,4 +206,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		</div>
 	</div>
 </div>
-<?php echo $footer = $includes->get_admin_footer(); ?>
+<?php 
+
+echo $footer = $includes->get_admin_footer(); ?>

@@ -68,11 +68,15 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									<input type="password" class="form-control" name="password-retype" id="password-retype" placeholder="Confirmar contrase&ntilde;a" required />
 									<?php echo $reg->getRetypePasswordError();?>
 								</div><!-- /.form-group -->
-								<div class="form-group" id="user-search" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
-									<label for="user-search-input">Who invited you? (Concierge) | ¿Qui&eacute;n te invit&oacute;? (Concierge) <i class="fa fa-question-circle text-secondary"></i></label>
-									<div class="search-placeholder" id="user-search-placeholder">
+								<div class="form-group" id="user-search-hotel" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
+									<label for="user-search-input">Who invited you? (Hotel) | ¿Qui&eacute;n te invit&oacute;? (Hotel) <i class="fa fa-question-circle text-secondary"></i></label>
+
+									
+										<div class="search-placeholder" id="user-search-placeholder" style="flex:1 1 auto;">
 										<img src="<?php //echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
-									</div>
+										</div>
+										
+
 									<input type="text" class="form-control typeahead" name="referral" id="user-search-input" value="<?php echo $reg->getReferral();?>" placeholder="Nombre de usuario del referente" autocomplete="off" />
 									<?php echo $reg->getReferralError();?>
 								</div><!-- /.form-group -->

@@ -25,7 +25,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					<?php echo $con->get_notify();?>
 					<div class="row">
 						<?php echo $reg->getMethodError(); ?>
-						<div class="col-sm-4 col-sm-offset-4">
+						<div class="col-sm-6 col-sm-offset-3">
 							<div class="page-title">
 								<h1>Join the club | ¡Regístrate!</h1>
 							</div><!-- /.page-title -->
@@ -50,11 +50,15 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									<input type="password" class="form-control" name="password-retype" id="password-retype" placeholder="Confirmar contrase&ntilde;a" required />
 									<?php echo $reg->getRetypePasswordError();?>
 								</div><!-- /.form-group -->
-								<div class="form-group" id="user-search" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
-									<label for="user-search-input">Who invited you? (Concierge) | ¿Qui&eacute;n te invit&oacute;? (Concierge) <i class="fa fa-question-circle text-secondary"></i></label>
-									<div class="search-placeholder" id="user-search-placeholder">
-										<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
-									</div>
+								<div class="form-group" id="user-search-hotel" data-toggle="tooltip" title="Encuentra tu referente al sitio por su nombre o nombre de usuario (username). Este campo es opcional.">
+									<label for="user-search-input">Who invited you? (Hotel) | ¿Qui&eacute;n te invit&oacute;? (Hotel) <i class="fa fa-question-circle text-secondary"></i></label>
+
+									
+										<div class="search-placeholder" id="user-search-placeholder" style="flex:1 1 auto;">
+										<img src="<?php //echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
+										</div>
+										
+
 									<input type="text" class="form-control typeahead" name="referral" id="user-search-input" value="<?php echo $reg->getReferral();?>" placeholder="Nombre de usuario del referente" autocomplete="off" />
 									<?php echo $reg->getReferralError();?>
 								</div><!-- /.form-group -->

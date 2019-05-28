@@ -329,7 +329,7 @@ class sales_new_sale {
 	private function registrarbalancehotel(int $idventa){
 
 		$query = 'select h.id as hotel, h.comision from 
-						hotel as h join huespedhotel as hh on h.id = hh.id_hotel
+						hotel as h join solicitudhotel as sh on h.id = hh.id_hotel
 							join huesped as hu on hh.id_huesped = hu.id
 							where hu.id_usuario = :usuario';
 				$stm = $this->con->prepare($query);

@@ -762,6 +762,19 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 												</div>
 
 												<div class="row">
+													<div class="row">
+														<div class="col-lg-12">
+														<div class="form-group" data-toggle="tooltip" title="Esta ser&aacute; la imagen de perfil de tu Hotel. Se recomienda una imagen horizontal panor&aacute;mica y un peso inferior a 2 MB. La imagen debe ser formato JPG o PNG.">
+														<label for="photo">Adjunta una fotograf&iacute;a de tu hotel <i class="fa fa-question-circle text-secondary"></i> <span class="required"></span></label>
+														<input type="file" id="affiliate-hotel" name="foto"/>
+														
+														</div>
+														
+														</div>
+													</div>
+												</div>
+
+												<div class="row">
 													<div class="col-xs-6">
 														<p>Los campos marcados son obligatorios <span class="required">*</span></p>
 													</div>
@@ -866,7 +879,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				<div class="modal-footer">
 			
 					<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="adjudicar" class="modificar btn btn-success"><i class="fa fa-save"></i>Actualizar</button>
-					<button type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="elminar" class="eliminar btn btn-danger"><strong class="fa fa-remove"> Eliminar</strong></button>
+					<button type="button"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="elminar" class="eliminar btn btn-danger"><strong class="fa fa-remove"></strong></button>
 					
 					<button  type="button" data-dismiss="modal" class="btn btn-secondary" ><i class="fa fa-close"></i>Cerrar</button>
 				</div>
@@ -938,17 +951,18 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							$('.solicitud').remove();
 						}
 
-						formulario.append('<input type="hidden" class="pago" name="pago" value="'+datopago+'">');
-
-						formulario.append('<input type="hidden" class="solicitud" name="solicitud" value="'+solicitud+'">');
-
-						
-									
+						var form = new FormData(document.getElementById("formulario-edicion"));
+						form.append("pago",datopago);
+						form.append("solicitud",solicitud);
+													
 						$.ajax({
-							url: '/admin/controller/ControllerRegistro.php',
-							type: 'POST',
-							dataType: 'JSON',
-							data:formulario.serialize()
+								url: '/admin/controller/ControllerRegistro.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data: form,
+								cache:false,
+								contentType:false,
+								processData:false
 									
 							})
 							.done(function(response) {

@@ -459,10 +459,11 @@ if(isset($_POST['solicitudcodigo'])){
 
 
 	if(isset($_POST['actualizar-hotel'])){
+	
 		$response = array('peticion' => false ,
 						'mensaje'=>null);
 
-		$result = $solicitud->cargarDatosActualizacion($_POST,$_POST['solicitud']);
+		$result = $solicitud->cargarDatosActualizacion($_POST,$_POST['solicitud'],$_FILES);
 
 		if($result){
 			$response['peticion'] = true;

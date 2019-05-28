@@ -53,8 +53,26 @@ class Home {
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
 
-		$this->CargarHotel();
+		if(isset($_SESSION['id_hotel'])){
+			$this->CargarHotel($_SESSION['id_hotel']);
+		}else{
+			$this->CargarHotel();
+		}
+
+		
 		return;
+	}
+
+	public function cambiarhotel($idhotel = null){
+
+		if($idhotel== $this->hotel['id']){
+			return;	
+				}
+
+
+		$_SESSION['id_hotel'] = $idhotel;
+
+		$this->CargarHotel($idhotel);
 	}
 
 
@@ -117,17 +135,29 @@ class Home {
 		return $this->fechas['fin'];
 	}
 
-	private function CargarHotel(){
+	private function CargarHotel(int $idhotel = null){
 
-		$query = "select h.id, rf.id  as idreferidor from hotel as h 
-			inner join referidor as rf on h.codigo = rf.codigo_hotel
-inner join solicitudreferidor as srf on rf.id = srf.id_referidor 
-			inner join usuario as u on srf.id_usuario = u.id_usuario
-				where u.id_usuario = :id";
+		if(!is_null($idhotel)){
+				$query = "select h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
+				inner join referidor as rf on h.id = rf.id_hotel
+				inner join solicitudreferidor as srf on rf.id = srf.id_referidor
+				where h.id = :hotel";
+
+				$datos = array(':hotel' => $idhotel); 
+			}else{
+				$query = "select h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
+				inner join referidor as rf on h.id = rf.id_hotel
+				inner join solicitudreferidor as srf on rf.id = srf.id_referidor 
+				where srf.id_usuario = :id";
+
+				$datos = array(':id' =>$this->user['id']);
+			}
+
+		
 
 		$stm = $this->con->prepare($query);
-		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
-		$stm->execute();
+		
+		$stm->execute($datos);
 
 		$fila = $stm->fetch(PDO::FETCH_ASSOC);
 		$this->hotel['id'] = $fila['id'];
@@ -135,6 +165,7 @@ inner join solicitudreferidor as srf on rf.id = srf.id_referidor
 
 		$_SESSION['id_hotel'] = $this->hotel['id'];
 		$_SESSION['id_referidor'] = $this->referidor['id'];
+		$_SESSION['nombrehotel'] = $fila['nombrehotel'];
 	}
 
 	public function getOperaciones(){

@@ -201,8 +201,6 @@ class includes {
 										'<div class="widget">
 											<ul class="menu-advanced">
 													<li'.$this->set_active_sidebar_tab('hospedado.php').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Hospedado</a></li>
-													<li'.$this->set_active_sidebar_tab('afiliar-hotel.php').'><a href="'.HOST.'/socio/hotel/afiliar-hotel"><i class="fa fa-plus-circle"></i> Afiliar mi hotel</a></li>
-													<li'.$this->set_active_sidebar_tab('solicitudes.php').'><a href="'.HOST.'/socio/hotel/solicitudes/"><i class="fa fa-file"></i> Solicitudes enviadas'.$noti.'</a></li>
 											</ul>
 										</div>';
 					}
@@ -665,9 +663,9 @@ class includes {
 					<div class="col-xs-6 col-sm-3">
 					
 						<h2>Gana con Travel Points</h2>
-						<p><a href="'.HOST.'/afiliar-hotel">Afilia tu Hotel</a></p>
-						<p><a href="'.HOST.'/afiliar-franquiciatario">Afiliate como franquiciatario de Hotel</a></p>
-						<p><a href="'.HOST.'/afiliar-referidor">Afiliate como referidor</a></p>
+						<p><a href="#" data-toggle="tooltip" title="En mantenimiento">Afilia tu Hotel</a></p>
+						<p><a href="#" data-toggle="tooltip" title="En mantenimiento">Afiliate como franquiciatario de Hotel</a></p>
+					
 					</div><!-- /.col-* -->
 					<div class="col-xs-6 col-sm-2">
 						<h2>Negocio</h2>

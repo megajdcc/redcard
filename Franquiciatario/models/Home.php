@@ -40,6 +40,8 @@ class Home {
 		'fin'    =>null
 		);
 	private $fecha1, $fecha2;
+
+	public static $idhotel;
 	
 	private $error = array('notificacion' => null,
 							'fechainicio' => null,
@@ -49,9 +51,29 @@ class Home {
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
-
-		$this->CargarHotel();
+		if(isset($_SESSION['id_hotel'])){
+			$this->CargarHotel($_SESSION['id_hotel']);
+		}else{
+			$this->CargarHotel();
+		}
+		
 		return;
+	}
+
+
+
+
+
+	public function cambiarhotel($idhotel = null){
+
+		if($idhotel== $this->hotel['id']){
+			return;	
+				}
+
+
+		$_SESSION['id_hotel'] = $idhotel;
+
+		$this->CargarHotel($idhotel);
 	}
 
 	public function busqueda(array $post){
@@ -112,25 +134,36 @@ class Home {
 		return $this->fechas['fin'];
 	}
 
-	private function CargarHotel(){
+	private function CargarHotel(int $idhotel = null){
 
-		$query = "select h.id,h.nombre as nombrehotel, fr.id  as idfranquiciatario from hotel as h 
-			inner join franquiciatario as fr on h.id = fr.id_hotel
-inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario 
-			inner join usuario as u on sfr.id_usuario = u.id_usuario
+
+		if(!is_null($idhotel)){
+			$query = "select h.id,h.nombre as nombrehotel, fr.id  as idfranquiciatario from hotel as h 
+				inner join franquiciatario as fr on h.id = fr.id_hotel where h.id = :hotel";
+			$datos = array(':hotel' => $idhotel); 
+		}else{
+				$query = "select h.id,h.nombre as nombrehotel, fr.id  as idfranquiciatario from hotel as h 
+				inner join franquiciatario as fr on h.id = fr.id_hotel
+				inner join solicitudfr as sfr on fr.id = sfr.id_franquiciatario 
+				inner join usuario as u on sfr.id_usuario = u.id_usuario
 				where u.id_usuario = :id";
 
+				$datos = array(':id' =>$this->user['id']);
+		}
+
 		$stm = $this->con->prepare($query);
-		$stm->bindParam(':id',$this->user['id'], PDO::PARAM_INT);
-		$stm->execute();
+		$stm->execute($datos);
 
 		$fila = $stm->fetch(PDO::FETCH_ASSOC);
 		$this->hotel['id'] = $fila['id'];
+
+		self::$idhotel = $fila['id'];
+
 		$this->franquiciatario['id']  = $fila['idfranquiciatario'];
 
 		$_SESSION['id_hotel'] = $this->hotel['id'];
 		$_SESSION['id_franquiciatario'] = $this->franquiciatario['id'];
-
+		
 		$_SESSION['nombrehotel'] = $fila['nombrehotel'];
 	}
 

@@ -78,11 +78,17 @@ class Usuarios {
 					LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
 					LEFT JOIN estado as e ON c.id_estado = e.id_estado
 					LEFT JOIN pais as p ON e.id_pais = p.id_pais
+					JOIN usuario_referencia as urf on u.id_usuario = urf.id_nuevo_usuario
+ 					JOIN solicitudreferidor as srf on urf.id_usuario = srf.id_usuario
+ 					JOIN referidor as r on srf.id_referidor = r.id
+					RIGHT JOIN hotel as h on r.id_hotel = h.id
+					where  h.id=:hotel and u.id_usuario =:usuario 
 					order by username";
 						try {
-							
+							echo $_SESSION['id_hotel'];
 							$stm = $this->con->prepare($query);
-							//$stm->bindParam(':referidor', $this->referidor['id']);
+							$stm->bindParam(':hotel', $_SESSION['id_hotel']);
+							$stm->bindParam(':usuario', $this->user['id']);
 							$stm->execute();
 							while($row = $stm->fetch()){
 							$this->usuarios[$row['id_usuario']] = array(
@@ -153,7 +159,7 @@ class Usuarios {
 			$email = _safe($valores['email']);
 			$phone = _safe($valores['phone']);
 			$date = date('d/m/Y', strtotime($valores['created_at']));
-			$eSmarties = _safe($valores['eSmarties']);
+			$eSmarties = 'Tp '.number_format((float)$valores['eSmarties'],2,'.',',');
 			
 			if(!empty($valores['birthdate'])){
 				$birthdate = date('d/m/Y', strtotime($valores['birthdate']));
@@ -590,7 +596,7 @@ class Usuarios {
 						$('#fnacimiento').val(fnac);
 						$('#verificado').text('Cuenta verificada: '+verificado);
 						$('#ultimo-login').text(ultimo_login);
-						$('#puntos').text('eSmarties: '+puntos);
+						$('#puntos').text(puntos);
 						$('#exampleModalCenter').modal('show');
 
 				});

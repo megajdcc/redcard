@@ -25,6 +25,9 @@ class Includes {
 	private $sidebar = null;
 	private $crumbs = array();
 	
+		private $hoteles = array('id' =>null ,
+								'nombrehotelfr'=>null,
+								'otroshoteles'=>array());
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -37,6 +40,37 @@ class Includes {
 
 
 	}
+
+	private function gethoteles(){
+		$html = null;
+		if(!is_null($this->hoteles['otroshoteles'])){
+		if(count($this->hoteles['otroshoteles']) > 0){
+			$html =
+			'<div class="header-nav-user">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle mimic-header-nav-user-image" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span>'.$this->hoteles['nombrehotelfr'].'</span> <i class="fa fa-chevron-down"></i>
+					</button>
+					<ul class="dropdown-menu reverse-dropdown" aria-labelledby="dropdownMenu1">';
+			foreach ($this->hoteles['otroshoteles'] as $fila=>$value) {
+			
+				
+				$html .= 
+				'<form method="post" action="'.HOST.'/Franquiciatario/">
+					<li><a href="#" class="cambiar-hotel">'.$value.'</a></li>
+
+					<input type="hidden" value="'.$fila.'" name="cambiar-hotel">
+				</form>';
+			}
+			$html .= 
+			'		</ul>
+				</div><!-- /.dropdown -->
+			</div><!-- /.header-nav-user -->';
+		}
+	}
+		return $html;
+	}
+
 
 	private function load_data(){
 		
@@ -74,6 +108,27 @@ class Includes {
 			}
 
 		}
+			// Hoteles Data
+		$query = "SELECT h.id as idhoteles, h.nombre as nombrehotel FROM hotel h 
+			INNER JOIN franquiciatario as f on h.id = f.id_hotel
+			INNER JOIN solicitudfr as sfr on f.id = sfr.id_franquiciatario
+			WHERE sfr.id_usuario = :usuario";
+		try{
+			$stmt = $this->con->prepare($query);
+			$stmt->bindValue(':usuario',$this->user['id'], PDO::PARAM_INT);
+			$stmt->execute();
+		}catch(\PDOException $ex){
+			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
+			return false;
+		}
+		while($row = $stmt->fetch()){
+			if($_SESSION['id_hotel'] == $row['idhoteles']){
+				$this->hoteles['nombrehotelfr'] = _safe($row['nombrehotel']);
+			}else{
+				$this->hoteles['otroshoteles'][$row['idhoteles']] = _safe($row['nombrehotel']);
+			}
+		}
+
 		return;
 	}
 
@@ -110,7 +165,6 @@ class Includes {
 							<a href="'.HOST.'/Franquiciatario/reporte-de-ventas">
 								<span class="icon"><i class="fa fa-dollar"></i></span>
 								<span class="title">Estado de Cuenta</span>
-								<span class="subtitle">Movimientos</span>
 							</a>
 						</li>
 
@@ -469,6 +523,7 @@ class Includes {
 												</ul>
 											</div><!-- /.dropdown -->
 										</div><!-- /.header-nav-user -->
+										'.$this->gethoteles().'
 									</div><!-- /.header-bottom -->
 								</div><!-- /.header-content -->
 							</div><!-- /.header-inner -->

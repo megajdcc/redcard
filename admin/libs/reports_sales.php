@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace admin\libs;
 
 require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';

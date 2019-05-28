@@ -1,0 +1,6 @@
+[27/May/2019 01:01:46 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'
+[27/May/2019 01:02:02 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'
+[27/May/2019 01:02:06 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'
+[27/May/2019 01:02:15 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'
+[27/May/2019 01:02:32 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'
+[27/May/2019 01:02:52 AM on Referidor\models\Includes::load_data on line 120] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.id' in 'on clause'

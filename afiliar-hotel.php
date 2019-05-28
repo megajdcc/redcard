@@ -409,7 +409,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
 
 	<!-- Modal para adjudicar recibo de pago... -->
-		<div class="modal fade " id="new-iata" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+	<div class="modal fade " id="new-iata" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content modal-dialog-centered">
 					<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
