@@ -511,8 +511,8 @@ if(isset($_POST['cambiar-hotel'])){
 											        type: 'column'
 											    },
 											   lang:{
-															decimalPoint: ',',
-								   						thousandsSep: '.'
+															decimalPoint: '.',
+								   						thousandsSep: ','
 													},
 											    title: {
 											        text: 'Total Consumos por Usuarios Huepedes'
@@ -522,7 +522,7 @@ if(isset($_POST['cambiar-hotel'])){
 											    },
 											    yAxis: {
 										        title: {
-										            text: 'Total miles de $'
+										            text: 'Total miles de MXN $'
 										          }
 										        },
 											    
@@ -531,7 +531,9 @@ if(isset($_POST['cambiar-hotel'])){
 														borderWidth: 0,
 											            dataLabels: {
 											               enabled: true,
-											               format: '$ {point.y:.2f} MXN'
+											               formatter:function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               }
 											            }
 											        }
 											    },
@@ -582,8 +584,8 @@ if(isset($_POST['cambiar-hotel'])){
 											        type: 'column'
 											    },
 											   lang:{
-															decimalPoint: ',',
-								   						thousandsSep: '.'
+															decimalPoint: '.',
+								   						thousandsSep: ','
 													},
 											    title: {
 											        text: 'Total Consumos por Usuarios Huepedes'
@@ -593,7 +595,7 @@ if(isset($_POST['cambiar-hotel'])){
 											    },
 											    yAxis: {
 										        title: {
-										            text: 'Total miles de $'
+										            text: 'Total miles de MXN $'
 										          }
 										        },
 											    
@@ -602,13 +604,21 @@ if(isset($_POST['cambiar-hotel'])){
 														borderWidth: 0,
 											            dataLabels: {
 											               enabled: true,
-											               format: '$ {point.y:.2f} MXN'
+											               // format: '$ {point.y:.2f} MXN'
+											                // format: '{point.y:.2f} MXN'
+											               formatter:function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               }
 											            }
 											        }
 											    },
 
-											    tooltip: {
-											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+												tooltip: {
+													formatter: function() {
+													return Highcharts.numberFormat(
+														this.y, 2,'.',','
+														)+' $ MXN';
+													}
 											    },
 											    series: [ {
 											    	name: "Negocio",
@@ -729,7 +739,9 @@ if(isset($_POST['cambiar-hotel'])){
 												            rotation: -90,
 												            color: '#FFFFFF',
 												            align: 'right',
-												            format: '{point.y:.0f}', // one decimal
+												            formatter:function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               	}, 
 												            y: 10, // 10 pixels down from the top
 												            style: {
 												                fontSize: '13px',
@@ -805,7 +817,9 @@ if(isset($_POST['cambiar-hotel'])){
 												            rotation: -90,
 												            color: '#FFFFFF',
 												            align: 'right',
-												            format: '{point.y:.0f}', // one decimal
+												            formatter:function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               }, // one decimal
 												            y: 10, // 10 pixels down from the top
 												            style: {
 												                fontSize: '13px',

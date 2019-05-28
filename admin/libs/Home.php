@@ -151,7 +151,7 @@ private function cargarData(){
 		// $total = $fila['totalventa'];
 		// settype($total,'float');
 
-		// $this->ventas['total'] = number_format((float)$fila['totalventa'],2,',','.');
+		// $this->ventas['total'] = number_format((float)$fila['totalventa'],2,'.',',');
 		// $this->ventas['iso'] = $fila['iso'];
 		// $this->ventas['operaciones'] = $fila['operaciones'];
 
@@ -201,7 +201,7 @@ private function cargarData(){
  		$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm->execute();
 
-		$this->negocios['total-adeudo'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['adeudo'],2,',','.');
+		$this->negocios['total-adeudo'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['adeudo'],2,'.',',');
 
 
 	// Saldo Favor
@@ -216,7 +216,7 @@ private function cargarData(){
  	$stm->bindParam(':fecha2',$this->fechas['fin']);
     $stm->execute();
 
-    $this->saldo['afavor'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['saldo'],2,',','.');
+    $this->saldo['afavor'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['saldo'],2,'.',',');
 
 
     // Comision total
@@ -230,7 +230,7 @@ private function cargarData(){
 
     $stm->execute();
 
-     $this->saldo['comision_total'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],2,',','.');
+     $this->saldo['comision_total'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],2,'.',',');
 
 
      //Comision Promedio
@@ -241,7 +241,7 @@ private function cargarData(){
  	$stm->bindParam(':fecha2',$this->fechas['fin']);
      $stm->execute();
 
-     $this->saldo['comision_promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],1,',','.');
+     $this->saldo['comision_promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],1,'.',',');
 
      //Consumo Promedio
      
@@ -253,7 +253,7 @@ private function cargarData(){
 
     $stm->execute();
 
-    $this->consumo['promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['consumopromedio'],2,',','.');
+    $this->consumo['promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['consumopromedio'],2,'.',',');
 
 
     //Utilidad Bruta.
@@ -338,7 +338,7 @@ private function cargarData(){
 		// $total = $fila['totalventa'];
 		// settype($total,'float');
 
-		// $this->ventas['total'] = number_format((float)$fila['totalventa'],2,',','.');
+		// $this->ventas['total'] = number_format((float)$fila['totalventa'],2,'.',',');
 		// $this->ventas['iso'] = $fila['iso'];
 		// $this->ventas['operaciones'] = $fila['operaciones'];
 
@@ -379,7 +379,7 @@ private function cargarData(){
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
 
-		$this->negocios['total-adeudo'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['adeudo'],2,',','.');
+		$this->negocios['total-adeudo'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['adeudo'],2,'.',',');
 
 
 	// Saldo Favor
@@ -410,7 +410,7 @@ private function cargarData(){
     $stm = $this->conection->prepare($query);
     $stm->execute();
 
-     $this->saldo['comision_total'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],2,',','.');
+     $this->saldo['comision_total'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],2,'.',',');
 
 
      //Comision Promedio
@@ -419,7 +419,7 @@ private function cargarData(){
      $stm = $this->conection->prepare($query);
      $stm->execute();
 
-     $this->saldo['comision_promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],1,',','.');
+     $this->saldo['comision_promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['comision'],1,'.',',');
 
      //Consumo Promedio
      
@@ -429,7 +429,7 @@ private function cargarData(){
 
     $stm->execute();
 
-    $this->consumo['promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['consumopromedio'],2,',','.');
+    $this->consumo['promedio'] = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['consumopromedio'],2,'.',',');
 
 
     //Utilidad Bruta.
@@ -501,7 +501,7 @@ public function getVentas(){
 
 
 			foreach($this->ventas as $key => $value) {
-			$total = number_format((float)$value['total'],2,',','.');
+			$total = number_format((float)$value['total'],2,'.',',');
 			if($total != 0){
 				
 				if($value['iso'] == 'EUR'){
@@ -719,7 +719,7 @@ public function getUsuariosParticipantes(){
 		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-		$porcentaje = number_format((float)$fila['porcentaje'],2,',','.');
+		$porcentaje = number_format((float)$fila['porcentaje'],2,'.',',');
 
 		$html = '<strong>'.$fila['participantes'].'</strong>
 				<p style="color: black;">'.$porcentaje.' %</p>';
@@ -734,7 +734,7 @@ public function getUsuariosParticipantes(){
 		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-		$porcentaje = number_format((float)$fila['porcentaje'],2,',','.');
+		$porcentaje = number_format((float)$fila['porcentaje'],2,'.',',');
 
 		$html = '<strong>'.$fila['participantes'].'</strong>
 				<p style="color: black;">'.$porcentaje.' %</p>';
@@ -794,7 +794,7 @@ public function getConsumoUsuarioPromedio(){
 		$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm ->execute();
 		
-		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,',','.');
+		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
 		
 		return $total;
 	}else{
@@ -803,7 +803,7 @@ public function getConsumoUsuarioPromedio(){
 			$stm = $this->conection->prepare($query);
 			$stm ->execute();
 			
-			$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,',','.');
+			$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
 			
 			return $total;
 	}
@@ -821,7 +821,7 @@ public function getRegistroPorUsuario(){
 					$stm->bindParam(':fecha2',$this->fechas['fin']);
 					$stm->execute();
 					
-					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,',','.');
+					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
 					
 					return $total;
 	}else{
@@ -830,7 +830,7 @@ public function getRegistroPorUsuario(){
 					$stm = $this->conection->prepare($query);
 					$stm->execute();
 					
-					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,',','.');
+					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
 					
 					return $total;
 	}
@@ -846,12 +846,12 @@ public function getTotalPuntos(){
 			$stm->bindParam(':fecha1',$this->fechas['inicio']);
 			$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm->execute();
-		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,',','.');
+		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,'.',',');
 	}else{
 		$query = "select sum(nv.bono_esmarties) as puntos from negocio_venta as nv";
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
-		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,',','.');
+		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,'.',',');
 
 	}
 	
@@ -898,7 +898,7 @@ public function getValorRegalosEntregado(){
 		$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm->execute();
 		
-		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['canjeados'],2,',','.');
+		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['canjeados'],2,'.',',');
 		return $total;
 	}else{
 		$query = "select sum(vt.precio) as canjeados from venta_tienda as vt join usuario as u on vt.id_usuario = u.id_usuario";
@@ -906,7 +906,7 @@ public function getValorRegalosEntregado(){
 	$stm = $this->conection->prepare($query);
 	$stm->execute();
 
-	$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['canjeados'],2,',','.');
+	$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['canjeados'],2,'.',',');
 	return $total;
 	}
 	
@@ -944,7 +944,7 @@ public function getValorRegaloPromedio(){
 		$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm->execute();
 		
-		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['promedio'],2,',','.');
+		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['promedio'],2,'.',',');
 		
 		return $total;
 	}else{
@@ -953,7 +953,7 @@ public function getValorRegaloPromedio(){
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
 		
-		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['promedio'],2,',','.');
+		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['promedio'],2,'.',',');
 		
 		return $total;
 	}

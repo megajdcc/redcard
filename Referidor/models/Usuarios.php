@@ -78,17 +78,15 @@ class Usuarios {
 					LEFT JOIN ciudad as c ON u.id_ciudad = c.id_ciudad
 					LEFT JOIN estado as e ON c.id_estado = e.id_estado
 					LEFT JOIN pais as p ON e.id_pais = p.id_pais
-					JOIN usuario_referencia as urf on u.id_usuario = urf.id_nuevo_usuario
- 					JOIN solicitudreferidor as srf on urf.id_usuario = srf.id_usuario
- 					JOIN referidor as r on srf.id_referidor = r.id
-					RIGHT JOIN hotel as h on r.id_hotel = h.id
-					where  h.id=:hotel and u.id_usuario =:usuario 
+ 					JOIN huesped as hu on u.id_usuario = hu.id_usuario
+ 					JOIN huespedhotel as hh on hu.id = hh.id_huesped
+ 					where hh.id_hotel = :hotel
 					order by username";
 						try {
-							echo $_SESSION['id_hotel'];
+							
 							$stm = $this->con->prepare($query);
 							$stm->bindParam(':hotel', $_SESSION['id_hotel']);
-							$stm->bindParam(':usuario', $this->user['id']);
+							// $stm->bindParam(':usuario', $this->user['id']);
 							$stm->execute();
 							while($row = $stm->fetch()){
 							$this->usuarios[$row['id_usuario']] = array(

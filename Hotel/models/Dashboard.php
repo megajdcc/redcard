@@ -27,7 +27,12 @@ class Dashboard {
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
-		$this->user['id'] = $_SESSION['user']['id_usuario'];
+		try {
+			$this->user['id'] = $_SESSION['user']['id_usuario'];
+		} catch (\Exception $e) {
+			
+		}
+		
 		return;
 	}
 

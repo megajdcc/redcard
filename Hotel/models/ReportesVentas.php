@@ -241,7 +241,7 @@ class ReportesVentas{
 			 $fecha = $value['creado'];
 			 // settype($value['venta'],'double');
 
-			 $venta = number_format((float)$value['venta'],2,',','.');
+			 $venta = number_format((float)$value['venta'],2,'.',',');
 			  if($venta < 0){
 			  	$venta = '<strong class="negativo">$'.$venta.'</strong>';
 			  }else{
@@ -251,7 +251,7 @@ class ReportesVentas{
 			  	
 			  	$comision = '<strong class="negativo">$'.$value["comision"].'</strong>';
 			  }else{
-			  	$comision = '$'.$value['comision'];
+			  	$comision = '$'.number_format((float)$value['comision'],2,'.',',');
 			  }
 			if(!empty($value['nombre'])){
 				$nombre = $value['nombre'];
@@ -269,7 +269,7 @@ class ReportesVentas{
 					<td class="b1"><?php echo $nombre ?></td>
 					<td class="b1"><?php echo $venta; ?></td>
 					<td class="b1"><?php echo $comision; ?></td>
-					<td class="b2">$<?php echo $value['balance'] ?></td>
+					<td class="b2">$<?php echo number_format((float)$value['balance'],2,'.',',')?></td>
 				</tr>
 <?php  }
 	}

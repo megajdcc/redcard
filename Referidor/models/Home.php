@@ -234,7 +234,7 @@ class Home {
 
 			$fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
+			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.',',');
 			$html = '
 				<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
 				<strong>OPERADOS: '.$fila['operados'].'</strong>
@@ -267,7 +267,7 @@ class Home {
 
 			$fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
-			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.', '');
+			$porcentaje = number_format((float)$fila['porcentaje'], 2, '.',',');
 			$html = '
 				<strong>AFILIADOS: '.$fila['afiliados'].'</strong>
 				<strong>OPERADOS: '.$fila['operados'].'</strong>
@@ -332,7 +332,7 @@ class Home {
   									':fecha1' =>$this->fechas['inicio'],
   									':fecha2' =>$this->fechas['fin']));
   				$fila = $stm->fetch(PDO::FETCH_ASSOC);
-  				$comision = number_format((float)$fila['adeudo'],2,'.','');
+  				$comision = number_format((float)$fila['adeudo'],2,'.',',');
   				if($fila['divisa'] == 'EUR'){
   					$div = '€';
   				}else{
@@ -354,7 +354,7 @@ class Home {
 				$stm = $this->con->prepare($query);
   				$stm->execute(array(':idhotel'=>$this->hotel['id']));
   				$fila = $stm->fetch(PDO::FETCH_ASSOC);
-  				$comision = number_format((float)$fila['adeudo'],2,'.','');
+  				$comision = number_format((float)$fila['adeudo'],2,'.',',');
   				if($fila['divisa'] == 'EUR'){
   					$div = '€';
   				}else{
@@ -420,7 +420,7 @@ class Home {
 		$stmt = $this->con->prepare($sql);
 		$stmt->execute(); 
 		$row = $stmt->fetch(PDO::FETCH_ASSOC);
-		return number_format((float)$row['total'], 2, '.', '');
+		return number_format((float)$row['total'], 2, '.',',');
 	}
 
 	public function get_total_requested_gifts(){
@@ -523,7 +523,7 @@ class Home {
 			$stmt->bindParam(':fecha2',$this->fechas['fin']);
 			$stmt->execute(); 
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['puntos'];
-			return number_format((float)$puntos, 2, ',','.');
+			return number_format((float)$puntos, 2, '.',',');
 
 		}else{
 			$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
@@ -536,7 +536,7 @@ class Home {
 			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
 			$stmt->execute(); 
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['puntos'];
-			return number_format((float)$puntos, 2, ',','.');
+			return number_format((float)$puntos, 2, '.',',');
 		}
 	}
 
@@ -554,7 +554,7 @@ class Home {
 			$stmt->bindParam(':fecha2',$this->fechas['fin']);
 			$stmt->execute(); 
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['canjeados'];
-			return number_format((float)$puntos, 2, ',','.');
+			return number_format((float)$puntos, 2, '.',',');
 		}else{
 			$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
@@ -566,7 +566,7 @@ class Home {
 			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
 			$stmt->execute(); 
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['canjeados'];
-			return number_format((float)$puntos, 2, ',','.');
+			return number_format((float)$puntos, 2, '.',',');
 		}
 	}
 
@@ -629,7 +629,7 @@ class Home {
 				$stmt->execute(); 
 
 				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
 				}else{
 					$valor = 0;
 				}
@@ -646,7 +646,7 @@ class Home {
 				$stmt->execute(); 
 
 				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
 				}else{
 					$valor = 0;
 				}
@@ -670,7 +670,7 @@ class Home {
 				$stmt->execute(); 
 
 				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
 				}else{
 					$valor = 0;
 				}
@@ -688,7 +688,7 @@ class Home {
 				$stmt->execute(); 
 
 				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,',','.');
+					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
 				}else{
 					$valor = 0;
 				}
@@ -758,7 +758,7 @@ class Home {
 							$sign = '$';
 					}
 
-					$comision = number_format((float)$row['balance'],2,'.','');
+					$comision = number_format((float)$row['balance'],2,'.',',');
 					
 					if($comision  > 0){
 						$pref ='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
@@ -794,7 +794,7 @@ class Home {
 							$sign = '$';
 					}
 
-					$comision = number_format((float)$row['balance'],2,'.','');
+					$comision = number_format((float)$row['balance'],2,'.',',');
 					
 					if($comision  > 0){
 						$pref ='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';

@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -6,16 +6,19 @@ if(!isset($_SESSION['user'])){
 	include(ROOT.'/errores/404.php');
 	die();
 }
+
 if($_SESSION['user']['id_rol'] != 1 && $_SESSION['user']['id_rol'] != 2 && $_SESSION['user']['id_rol'] != 3){
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');
 	die();
 }
+
 if($_SESSION['user']['id_rol'] == 3){
 
 	header('location:/admin/tienda/');
 
 }
+
 if(!isset($_SESSION['user']['admin_authorize'])){
 	header('Location: '.HOST.'/admin/acceso');
 	die();
@@ -200,6 +203,7 @@ echo $navbar = $includes->get_admin_navbar();
 											        }},
 
 											    tooltip: {
+
 											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
 											    },
 											    series: [ {
@@ -263,16 +267,24 @@ echo $navbar = $includes->get_admin_navbar();
 														borderWidth: 0,
 											            dataLabels: {
 											               enabled: true,
-											               format: '$ {point.y:.2f} MXN'
+											               formatter: function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               }
 											            },
 											            showInLegend:true,
 											        }},
 
 											    tooltip: {
-											        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+											        // pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b> ${point.y:.2f}</b>MXN<br/>'
+											        // Format:{
+											        	formatter:function(){
+											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               }
+											        // }
+											        
 											    },
 											    series: [ {
-											    	name: "Huespedes",
+											    	name: 'Venta',
             										colorByPoint: true,
 											    } ],
 								   				}; 

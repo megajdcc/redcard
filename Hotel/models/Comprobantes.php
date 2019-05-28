@@ -72,7 +72,7 @@ class Comprobantes
 
 			$this->con->beginTransaction();
 			$query = "insert into retiro(mensaje,id_usuario_solicitud,monto,id_hotel) values(:mensaje,:usuario,:monto,:hotel)";
-			$monto = number_format((float)$post['monto'],2,',','.');
+			$monto = number_format((float)$post['monto'],2,'.',',');
 
 			try {
 					$stm = $this->con->prepare($query);
@@ -189,7 +189,7 @@ public function getComprobantes(){
 
 		$usuarioaprobador = $this->getAprobador($value['id_usuario_aprobacion']);
 		$actualizado = $this->setFecha($value['actualizado']);
-		$monto = number_format((float)$value['monto'],2,',','.');
+		$monto = number_format((float)$value['monto'],2,'.',',');
 
 		//$usuarioaprobador = $this->getUsuario($value['id_usuario_aprobacion']);
 		if($value['aprobado']){
@@ -200,7 +200,6 @@ public function getComprobantes(){
 		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
 		?>
 
-			
 			<tr id="<?php echo $value['id'];?>">
 				<td><?php echo '# '.$value['id'];?></td>
 				<td><?php echo $creado; ?></td>

@@ -173,6 +173,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 								});
 															
 			$('.enviar').click(function(){
+
+						$(this).attr('disabled', 'disabled');
+						$(this).text('Enviando Por favor espere...');
 						var montoretiro = slider.getValue();
 						var mensaje = document.getElementById('mensaje').value;
 						var path = $(this).attr('data-path');
@@ -185,6 +188,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							 location.reload();
 						})
 						.fail(function() {
+							$(this).removeAttr('disabled');
+						$(this).text('Enviar Solicitud');
 							console.log("error");
 						})
 			});

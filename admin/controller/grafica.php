@@ -26,7 +26,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios')
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$promedio = number_format((float)$row['promedio'],2,'.','');
+				$promedio = $row['promedio'];
 
 
 				if($row['iso'] == 'EUR'){
@@ -50,7 +50,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios')
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$promedio = number_format((float)$row['promedio'],2,'.','');
+				$promedio = number_format((float)$row['promedio'],2,'.',',');
 
 
 				if($row['iso'] == 'EUR'){
@@ -85,7 +85,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'comisionperfiles'){
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$comision = number_format((float)$row['total'],2,'.','');
+				$comision = number_format((float)$row['total'],2,'.',',');
 				
 
 				 settype($comision,'float');
@@ -103,7 +103,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'comisionperfiles'){
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$comision = number_format((float)$row['total'],2,'.','');
+				$comision = number_format((float)$row['total'],2,'.',',');
 				
 
 				 settype($comision,'float');
@@ -180,7 +180,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'perfilesnuevos'){
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$usuarios = number_format((float)$row['usuarios'],2,'.','');
+				$usuarios = number_format((float)$row['usuarios'],2,'.',',');
 
 				$perfil = $row['perfil'];
 				 settype($usuarios,'float');

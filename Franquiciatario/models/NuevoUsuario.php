@@ -1,6 +1,4 @@
 <?php 
-
-
 namespace Franquiciatario\models;
 use assets\libs\connection;
 use PDO;
@@ -10,8 +8,9 @@ class NuevoUsuario {
 	private $username = null;
 	private $email = null;
 	private $password = null;
+	private $hotel = null;
 	private $referral = array ('id' => null, 'username' => null);
-	private $errors = array('method' => null, 'username' => null, 'email' => null, 'password' => null, 'retype' => null, 'referral' => null);
+	private $errors = array('method' => null, 'username' => null, 'email' => null,'referral' => null);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -21,48 +20,177 @@ class NuevoUsuario {
 
 		$this->setUsername($post['username']);
 		$this->setEmail($post['email']);
-		$this->setPassword($post['password'], $post['password-retype']);
+		// $this->setPassword($post['password'], $post['password-retype']);
+		$this->setHotel($post['hotel_invitador']);
 		$this->setReferral($post['referral']);
-		if($this->username && $this->email && $this->password && !array_filter($this->errors)){
+		if($this->username && $this->email && !array_filter($this->errors)){
 			$this->register();
 			return true;
 		}
 		return false;
 	}
 
+	private function setHotel(int $idhotel){
+
+		$this->hotel = $idhotel;
+
+	}
+
+	private function getHotel(int $idhotel = null){
+
+
+			$nombrehotel = null;
+
+			if(is_null($idhotel)){
+
+				$sql = "SELECT h.nombre as nombrehotel from hotel as h where h.id = :hotel";
+				try {
+						$stm = $this->con->prepare($sql);
+						$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+						$stm->execute();
+				} catch (PDOException $e) {
+
+					$this->error_log(__METHOD__,__LINE__,$e);
+					
+				}
+			
+
+				$nombrehotel = $stm->fetch(PDO::FETCH_ASSOC)['nombrehotel'];
+
+			}
+
+			return $nombrehotel;
+	}
+
 	private function register(){
-		$query = "INSERT INTO usuario (
+
+
+		if($this->con->inTransaction()){
+			$this->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		$query = "INSERT INTO usuario(
 			username, 
-			email, 
-			password,
-			verificado,
-			hash_activacion
+			email,
+			hash_activacion,
+			reg_hotel
 			) VALUES (
 			:username, 
 			:email, 
-			:password,
-			1,
-			:hash_activacion
+			:hash_activacion,
+			:hotel
 		)";
-		$hash = md5( rand(0,1000) );
+
+		$hash = md5( rand(0,1000));
 		$query_params = array(
 			':username' => $this->username,
 			':email' => $this->email,
-			':password' => $this->password,
-			':hash_activacion' => $hash
+			':hash_activacion' => $hash,
+			':hotel' => 1
 		);
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($query_params);
 			$lastId = $this->con->lastInsertId();
-
-
-		}catch(\PDOException $ex){
+		}catch(PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+			$this->con->rollBack();
 			return false;
 		}
 
+		// Registramos al usuario como Huesped..
+		// 
 		
+
+		// $sql = "SELECT count(*) FROM huesped where id_usuario =:usuario";
+		// $stm = $this->con->prepare($sql);
+		// $stm->execute(array(':usuario'=>$lastId));
+		// $fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+		// if($stm->rowCount() > 0){
+
+		// 	$nombrehotel = $this->getHotel();
+		// 	$idhuesped = $fila['id'];
+
+
+		// 	try {
+
+		// 		$sql = "UPDATE huesped set hotel = :hotel where id=:h";
+		// 		$stm = $this->con->prepare($sql);
+		// 		$stm->bindParam(':hotel',$nombrehotel,PDO::PARAM_STR);
+		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
+		// 		$stm->execute();
+
+		// 	}catch (PDOException $e){
+
+		// 		$this->con->rollBack();
+		// 		return false;
+
+		// 	}
+
+		// 	$sql = "UPDATE huespedhotel set id_hotel =:hotel where id_huesped=:h";
+
+		// 	try {
+				
+		// 		$stm = $this->con->prepare($sql);
+		// 		$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
+
+		// 		$stm->execute();
+
+		// 	}catch (PDOException $e) {
+
+		// 		$this->con->rollBack();
+		// 		return false;
+
+		// 	}
+
+		// }else{
+
+			$nombrehotel = $this->getHotel();
+
+			$sql = "INSERT INTO huesped(id_usuario,hotel)values(:usuario,:hotel)";
+
+
+			try {
+					$stm = $this->con->prepare($sql);
+					
+					$stm->bindParam(':usuario',$lastId,PDO::PARAM_INT);
+					$stm->bindParam(':hotel',$nombrehotel,PDO::PARAM_STR);
+					$stm->execute();
+
+					$ultimohuesped = $this->con->lastInsertId();
+
+			} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+				$this->con->rollBack();
+				return false;
+				
+			}
+
+			$sql = "INSERT INTO huespedhotel(id_hotel,id_huesped)values(:hotel,:huesped)";
+
+			try {
+				$stm = $this->con->prepare($sql);
+				$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+				$stm->bindParam(':huesped',$ultimohuesped,PDO::PARAM_INT);
+				$stm->execute();
+				$this->con->commit();
+				
+			}catch (PDOException $e) {
+
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+				$this->con->rollBack();
+				return false;
+
+			}
+
+		// } 
+		
+
+
 		// Si existe referencia, la inserta
 		if($this->referral['id']){
 			$query = "INSERT INTO usuario_referencia (id_usuario, id_nuevo_usuario) VALUES (:id_usuario, :id_nuevo_usuario)";
@@ -70,27 +198,30 @@ class NuevoUsuario {
 			try{
 				$stmt = $this->con->prepare($query);
 				$stmt->execute($query_params);
+				
 			}catch(\PDOException $ex){
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+				$this->con->rollBack();
 				return false;
 			}
 		}
 
 		$body_alt =
-			'Bienvenido a Travel Points '.$this->username;
+			'Bienvenido a Travel Points '.$this->username.'. El registro de esta cuenta no necesita verificacion.';
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
 		// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 		$mail->isSMTP();
-		$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+		$mail->Host = 'single-5928.banahosting.com';
 		$mail->SMTPAuth = true;
 		$mail->SMTPSecure = 'ssl';
 		$mail->Port = 465;
 		// El correo que hará el envío
-		$mail->Username = 'notificacion@esmartclub.com';
-		$mail->Password = 'Alan@2017_pv';
-		$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+		$mail->Username = 'notification@travelpoints.com.mx';
+		$mail->Password = '20464273jd';
+
+		$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 		// El correo al que se enviará
 		$mail->addAddress($this->email);
 		// Hacerlo formato HTML
@@ -106,127 +237,126 @@ class NuevoUsuario {
 
 		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
 		$_SESSION['register_email'] = $this->email;
-		header('Location: '.HOST.'/Franquiciatario/usuarios/nuevousuario');
+		header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
 		die();
 	}
 
 	private function email_template($email, $hash){
-		$html = 
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Confirmaci&oacute;n de correo electr&oacute;nico</title>
-<style type="text/css">
-@media only screen and (max-width: 600px) {
- table[class="contenttable"] {
- width: 320px !important;
- border-width: 3px!important;
-}
- table[class="tablefull"] {
- width: 100% !important;
-}
- table[class="tablefull"] + table[class="tablefull"] td {
- padding-top: 0px !important;
-}
- table td[class="tablepadding"] {
- padding: 15px !important;
-}
-}
-</style>
-</head>
-<body style="margin:0; border: none; background:#f7f8f9">
-	<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-		<tr>
-			<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
-				<tr>
-					<td>
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
+		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Confirmaci&oacute;n de correo electr&oacute;nico</title>
+				<style type="text/css">
+				@media only screen and (max-width: 600px) {
+				 table[class="contenttable"] {
+				 width: 320px !important;
+				 border-width: 3px!important;
+				}
+				 table[class="tablefull"] {
+				 width: 100% !important;
+				}
+				 table[class="tablefull"] + table[class="tablefull"] td {
+				 padding-top: 0px !important;
+				}
+				 table td[class="tablepadding"] {
+				 padding: 15px !important;
+				}
+				}
+				</style>
+				</head>
+				<body style="margin:0; border: none; background:#f7f8f9">
+					<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+						<tr>
+							<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-								<tr>
-									<td valign="top" align="center">
-										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
-										</a>
+									<td>
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+												<tr>
+													<td valign="top" align="center">
+														<a href="'.HOST.'" target="_blank">
+															<img alt="Travel Poitns" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;width:250px;height:auto">
+														</a>
+													</td>
+												</tr>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Bienvenido a Travel Points</strong>
+									<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														<strong>Bienvenido a Travel Points</strong>
+													</td>
+												</tr>
+												<tr>
+													<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														Para completar tu registro debes confirmar tu correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.
+														Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+															soporte@infochannel.si
+														</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										Para completar tu registro debes confirmar tu correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.
-										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
-										</a>
+									<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
+										<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
+														Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
+														Puerto Vallarta, México.<br>
+														01 800 400 INFO (4636), (322) 225 9635.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table align="center">
+											<tr>
+												<td style="padding-right:10px; padding-bottom:9px;">
+													<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
+														<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
+													</a>
+												</td>
+											</tr>
+										</table>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
-						<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
-										Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
-										Puerto Vallarta, México.<br>
-										01 800 400 INFO (4636), (322) 225 9635.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table align="center">
-							<tr>
-								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
-										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-				<tbody>
-					<tr>
-						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							</table>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		</td>
-	</tr>
-</table>
-</body>
-</html>';
+					<tr>
+						<td>
+							<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+								<tbody>
+									<tr>
+										<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
+											&copy; Travel Points '.date('Y').' Todos los derechos reservados.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+				</body>
+				</html>';
 		return $html;
 	}
 
