@@ -855,15 +855,14 @@ $pref = null;
 		}else{
 			$query  = "SELECT nven.iso as divisa, (SELECT  bh.balance as balance
  					from  balancehotel as bh 
- 				where bh.id_hotel =:idhotel1 ) as balance
+ 				where bh.id_hotel =:idhotel1 and bh.id = (select max(id) from balancehotel) as balance
  					FROM negocio_venta as nven 
  					JOIN  balancehotel as bh on nven.id_venta = bh.id_venta
- 				where bh.id_hotel = :idhotel2 and bh.id = (select max(id) from balancehotel where id_hotel =:idhotel3)";
+ 				where bh.id_hotel = :idhotel2 ";
 
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idhotel1'=>$this->hotel['id'],
-				                    ':idhotel2'=>$this->hotel['id'],
-				                	':idhotel3'=>$this->hotel['id']));
+				                    ':idhotel2'=>$this->hotel['id']));
 
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
