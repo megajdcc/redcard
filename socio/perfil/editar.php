@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -135,9 +135,17 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<label for="phone">N&uacute;mero Telef&oacute;nico</label>
 												<input class="form-control" type="text" id="phone" name="phone" value="<?php echo $edit->get_phone();?>" placeholder="N&uacute;mero Telef&oacute;nico" />
 												<?php echo $edit->get_phone_error();?>
-											</div><!-- /.form-group -->
+											</div>
+
+											<div class="custom-control custom-switch align-middle">
+												<input type="checkbox" name="whatsapp" class="custom-control-input" id="custom1"
+
+												<?php echo $edit->getWhasapp();?>>
+												<label class="custom-control-label" for="custom1">&iquest;El n&uacute;mero esta asociado a  Whatsapp?</label>
+											</div>
+											
 										</div>
-									</div><!-- /.row -->
+									</div>
 									<hr>
 									<h3 class="page-title">Vivo en</h3>
 									<div class="row">

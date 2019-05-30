@@ -32,9 +32,7 @@ class Huesped
 	public function procesar(array $post){
 
 		$this->setNombreHotel($post['hotel']);
-		$this->setTelefonomovil($post['telefono']);
-		$this->setWhatsapp($post['whatsapp']);
-
+		
 		
 
 		if($post['idhotel'] > 0){
@@ -43,15 +41,13 @@ class Huesped
 			 if($this->con->inTransaction()){$this->con->rollBack();};
 
 			 $this->con->beginTransaction();
-			$query = "insert into huesped(id_usuario,telefono_movil,whatsapp) value(:usuario,:telefono,:whatsapp)";
+			$query = "insert into huesped(id_usuario) value(:usuario)";
 
 
 			try {
 				$stm = $this->con->prepare($query);
 
-				$stm->execute(array(':usuario' => $this->user['id_usuario'],
-								':telefono' => $this->getTelefono(),
-								':whatsapp' => $this->whatsapp ));
+				$stm->execute(array(':usuario' => $this->user['id_usuario']));
 
 			} catch (PDOException $e) {
 				
@@ -83,14 +79,12 @@ class Huesped
 
 			$this->con->beginTransaction();
 
-			$query = "insert into huesped(hotel,telefono_movil,id_usuario,whatsapp) values(:hotel,:telefono,:usuario,:whatsapp)";
+			$query = "insert into huesped(hotel,id_usuario) values(:hotel,:usuario)";
 			
 			try {
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':hotel'=>$this->getNombreHotel(),
-								':telefono' => $this->getTelefono(),
-								':usuario' => $this->user['id_usuario'],
-								':whatsapp' => $this->whatsapp));
+								':usuario' => $this->user['id_usuario']));
 				$this->con->commit();
 				} catch (PDOException $e) {
 					$this->con->rollBack();

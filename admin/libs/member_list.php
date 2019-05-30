@@ -53,7 +53,7 @@ class member_list {
 			$pagination['page'] = $this->pagination['page'];
 			$pagination['total'] = $this->pagination['total'];
 			// Cargar los certificados
-			$query = "SELECT u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, u.apellido, u.sexo, u.fecha_nacimiento, c.ciudad, p.pais, u.telefono, u.id_rol, u.activo, u.verificado, u.ultimo_login, u.creado
+			$query = "SELECT u.id_usuario, u.username, u.email, u.esmarties, u.imagen, u.nombre, u.apellido, u.sexo, u.fecha_nacimiento, c.ciudad, p.pais, u.telefono, u.id_rol, u.activo, u.verificado, u.ultimo_login, u.creado,u.whatsapp
 				FROM usuario u
 				LEFT JOIN ciudad c ON u.id_ciudad = c.id_ciudad
 				LEFT JOIN estado e ON c.id_estado = e.id_estado
@@ -91,7 +91,8 @@ class member_list {
 					'active' => $row['activo'],
 					'verified' => $row['verificado'],
 					'last_login' => $row['ultimo_login'],
-					'created_at' => $row['creado']
+					'created_at' => $row['creado'],
+					'whatsapp'=>$row['whatsapp']
 				);
 			}
 		return $pagination;
@@ -136,6 +137,14 @@ class member_list {
 			$last_name = _safe($value['last_name']);
 			$email = _safe($value['email']);
 			$phone = _safe($value['phone']);
+
+
+			$whatsapp = "No posee.";
+			if($value['whatsapp'] > 0){
+				$whatsapp = "Si posee";
+			}
+
+
 			$date = date('d/m/Y', strtotime($value['created_at']));
 			$eSmarties = _safe($value['eSmarties']);
 			$birthdate = date('d/m/Y', strtotime($value['birthdate']));
@@ -171,6 +180,7 @@ class member_list {
 					<td>'.$gender.'</td>
 					<td>'.$birthdate.'</td>
 					<td>'.$phone.'</td>
+					<td>'.$whatsapp.'</td>
 					<td>'.$location.'</td>
 					<td>'.$verified.'</td>
 					<td>'.$last_login.'</td>
@@ -194,6 +204,7 @@ class member_list {
 						<th>Sexo</th>
 						<th>F.Nacimiento</th>
 						<th>Tel&eacute;fono</th>
+						<th>Whatsapp</th>
 						<th>Origen</th>
 						<th>Verif.</th>
 						<th>Ult. Login</th>

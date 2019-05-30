@@ -94,33 +94,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								           </div><!-- /.form-group -->
 									  	</div>
 
-									  	<div class="col-xs-12 d-flex">
-											
-											<div class="row" style="display:flex !important; align-items:center !important;">
-
-												<section class="col-xs-12 col-md-6">
-													<div class="form-group flex" data-toggle="tooltip"  title="Codigo de pais + número operadora + número">
-										            <label for="business-name">Teléfono celular:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-										            <div class="input-hotel">
-										            <div class="input-group d-flex">
-										            <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
-										            <input placeholder="Ejmpl: +0584128505504" class ="form-control" pattern="[+]?[0-9]{12,15}[+]?" type="text" id="business-name" name="telefono" value="<?php echo $Huesped->getTelefono(); ?>" required/>
-										            </div>
-										            </div>
-										           </div><!-- /.form-group -->
-												</section>
-
-												<section class="col-xs-12 col-md-6">
-													   <div class="custom-control custom-switch align-middle">
-														<input type="checkbox" name="whatsapp" class="custom-control-input" id="custom1"
-
-														<?php echo $Huesped->getWhasapp();?>>
-														<label class="custom-control-label" for="custom1">Tiene Whatsapp?</label>
-														</div>
-												</section>
-												
-											</div>
-									  	</div>
+									  	
 									  </div>
 
 

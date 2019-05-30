@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace socio\libs;
 use assets\libs\connection;
 use PDO;
@@ -6,24 +6,25 @@ use PDO;
 class user_edit {
 	private $con;
 	private $user = array(
-		'id' => null,
-		'username' => null,
-		'email' => null,
-		'eSmarties' => 0,
-		'image' => null,
-		'name' => null,
-		'last_name' => null,
-		'gender' => null,
-		'birthdate' => null,
-		'phone' => null,
-		'city_id' => null,
-		'city' => null,
-		'state_id' => null,
-		'state' => null,
+		'id'         => null,
+		'username'   => null,
+		'email'      => null,
+		'eSmarties'  => 0,
+		'image'      => null,
+		'name'       => null,
+		'last_name'  => null,
+		'gender'     => null,
+		'birthdate'  => null,
+		'phone'      => null,
+		'city_id'    => null,
+		'city'       => null,
+		'state_id'   => null,
+		'state'      => null,
 		'country_id' => null,
-		'country' => null,
-		'alias' => null
-	);
+		'country'    => null,
+		'alias'      => null,
+		'whatsapp'   => 0
+	); 
 	private $error = array(
 		'email' => null,
 		'name' => null,
@@ -36,6 +37,7 @@ class user_edit {
 		'country' => null,
 		'warning' => null,
 		'error' => null
+
 	);
 
 	public function __construct(connection $con){
@@ -46,7 +48,7 @@ class user_edit {
 	}
 
 	private function load_data(){
-		$query = "SELECT username, email, esmarties, imagen, nombre, apellido, sexo, fecha_nacimiento, telefono, id_ciudad 
+		$query = "SELECT username, email, esmarties, imagen, nombre, apellido, sexo, fecha_nacimiento, telefono, id_ciudad,whatsapp
 			FROM usuario 
 			WHERE id_usuario = :id_usuario";
 		try{
@@ -72,6 +74,7 @@ class user_edit {
 			$this->user['birthdate'] = $row['fecha_nacimiento'];
 			$this->user['phone'] = $row['telefono'];
 			$this->user['city_id'] = $row['id_ciudad'];
+			$this->user['whatsapp'] = $row['whatsapp'];
 			if(!empty($row['nombre']) || !empty($row['apellido'])){
 				$this->user['alias'] = $row['nombre'].' '.$row['apellido'];
 			}else{
@@ -143,6 +146,13 @@ class user_edit {
 		return;
 	}
 
+
+	public function getWhasapp(){
+
+			$result = null;
+			($this->user['whatsapp']) ? $result = 'checked' : $result = '';
+			return $result;
+	}
 	public function set_email(array $post){
 		if($post['email']){
 			$email = filter_var($post['email'], FILTER_VALIDATE_EMAIL);
@@ -175,14 +185,14 @@ class user_edit {
 				$mail->CharSet = 'UTF-8';
 				// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 				$mail->isSMTP();
-				$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+				$mail->Host = 'single-5928.banahosting.com';
 				$mail->SMTPAuth = true;
 				$mail->SMTPSecure = 'ssl';
 				$mail->Port = 465;
 				// El correo que hará el envío
-				$mail->Username = 'notificacion@esmartclub.com';
-				$mail->Password = 'Alan@2017_pv';
-				$mail->setFrom('notificacion@esmartclub.com', 'eSmart Club');
+				$mail->Username = 'notification@travelpoints.com.mx';
+				$mail->Password = '20464273jd';
+				$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 				// El correo al que se enviará
 				$mail->addAddress($email);
 				// Hacerlo formato HTML
@@ -261,7 +271,7 @@ class user_edit {
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="eSmart Club" src="'.HOST.'/assets/img/logo.png" style="padding-bottom: 0; display: inline !important;">
+											<img alt="eSmart Club" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important;whidth:250px;height:auto">
 										</a>
 									</td>
 								</tr>
@@ -285,8 +295,8 @@ class user_edit {
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										Hola, '.$this->user['alias'].'. Has solicitado un cambio de correo electrónico, para completar el proceso debes confirmar tu nuevo correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -311,7 +321,7 @@ class user_edit {
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
 										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
@@ -328,7 +338,7 @@ class user_edit {
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; eSmart Club 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -342,6 +352,8 @@ class user_edit {
 	}
 
 	public function set_information(array $post){
+
+
 		$this->set_name($post['name']);
 		$this->set_last_name($post['last_name']);
 		if(isset($post['gender'])){
@@ -349,6 +361,7 @@ class user_edit {
 		}
 		$this->set_birthdate($post['birthdate']);
 		$this->set_phone($post['phone']);
+		$this->setWhatsapp($post['whatsapp']);
 		$this->set_city($post['city'], $post['state'], $post['country']);
 		if(!array_filter($this->error)){
 			$query = "UPDATE usuario SET 
@@ -357,7 +370,8 @@ class user_edit {
 				sexo = :sexo,
 				fecha_nacimiento = :fecha_nacimiento,
 				telefono = :telefono,
-				id_ciudad = :id_ciudad 
+				id_ciudad = :id_ciudad,
+				whatsapp =:whatsapp 
 				WHERE id_usuario = :id_usuario";
 			$params = array(
 				':nombre' => $this->user['name'],
@@ -366,6 +380,7 @@ class user_edit {
 				':fecha_nacimiento' => $this->user['birthdate'],
 				':telefono' => $this->user['phone'],
 				':id_ciudad' => $this->user['city_id'],
+				':whatsapp'=>$this->user['whatsapp'],
 				'id_usuario' => $this->user['id']
 			);
 			try{
@@ -423,6 +438,16 @@ class user_edit {
 		}
 		$this->user['gender'] = null;
 		return;
+	}
+
+	private function setWhatsapp($whatsapp){
+
+		if($whatsapp === "on"){
+			$this->user['whatsapp'] = 1;
+		}else{
+			$this->user['whatsapp'] = 0;
+		}
+	
 	}
 
 	private function set_birthdate($birthdate = null){

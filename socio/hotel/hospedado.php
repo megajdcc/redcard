@@ -98,27 +98,8 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											
 											<div class="row" style="display:flex !important; align-items:center !important;">
 
-												<section class="col-xs-12 col-md-6">
-													<div class="form-group flex" data-toggle="tooltip"  title="Codigo de pais + número operadora + número">
-										            <label for="business-name">Teléfono celular:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-										            <div class="input-hotel">
-										            <div class="input-group d-flex">
-										            <span class="input-group-addon"><i class="fa fa-mobile-phone"></i></span>
-										            <input placeholder="Ejmpl: +0584128505504" class ="form-control" pattern="[+]?[0-9]{12,15}[+]?" type="text" id="business-name" name="telefono" value="<?php echo $Huesped->getTelefono(); ?>" required/>
-										            </div>
-										            </div>
-										           </div><!-- /.form-group -->
-												</section>
-
-												<section class="col-xs-12 col-md-6">
-													   <div class="custom-control custom-switch align-middle">
-														<input type="checkbox" name="whatsapp" class="custom-control-input" id="custom1"
-
-														<?php echo $Huesped->getWhasapp();?>>
-														<label class="custom-control-label" for="custom1">Tiene Whatsapp?</label>
-														</div>
-												</section>
-												
+										
+											
 											</div>
 									  	</div>
 									  </div>
@@ -128,6 +109,10 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									 
 									 	<div class="background-white p30 mb50">
 									 		<div class="row">
+
+									 		<div class="alert alert-warning">
+									 			<label>Para asociarte a otro hotel, primero debes eliminar el actual, buscas el hotel al que quieres vincularte "Grabar" y listo</label>
+									 		</div>
 								         <div class="col-xs-6">
 								         	 <p>Los campos marcados son obligatorios <span class="required">*</span></p>
 								         </div>
@@ -184,6 +169,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					   			 ?>
 					        </tbody>
 							</table>
+							<div class="alert alert-info">
+								<label>Seleccione el hotel al que quieres vincularte, con solo dar clics o pulsar encima de la linea...</label>
+							</div>
 						</section>
 					
 					</div>
