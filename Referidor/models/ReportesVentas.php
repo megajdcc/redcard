@@ -49,8 +49,10 @@ class ReportesVentas{
 	function __construct(connection $con){
 		$this->con = $con->con;
  		$this->hotel['id']  = $_SESSION['id_hotel'];
+
  		$this->referidor['id']  = $_SESSION['id_referidor'];
-			$this->CargarData();
+
+		$this->CargarData();
 		$this->DatosHotel();
 		return;
 	}
@@ -60,7 +62,7 @@ class ReportesVentas{
 
 private function DatosHotel(){
 
-		$query = "select h.nombre as nombrehotel, h.comision from hotel  as h join referidor rf on h.codigo = rf.codigo_hotel where rf.id = :referidor";
+		$query = "select h.nombre as nombrehotel, h.comision from hotel  as h join referidor rf on h.id = rf.id_hotel where rf.id = :referidor";
 
 		$stm = $this->con->prepare($query);
 

@@ -70,6 +70,10 @@ class Comprobantes
 
 	public function procesarretiro(array $post){
 
+			if($this->con->inTransaction()){
+				$this->con->rollBack();
+			}
+
 			$this->con->beginTransaction();
 			$query = "insert into retiro(mensaje,id_usuario_solicitud,monto,id_hotel) values(:mensaje,:usuario,:monto,:hotel)";
 			$monto = number_format((float)$post['monto'],2,'.',',');
@@ -81,26 +85,30 @@ class Comprobantes
 									':monto'=>$post['monto'],
 									':hotel'=>$this->hotel['id']));
 					$last_id = $this->con->lastInsertId();
-			} catch (PDOException $e) {
-				
+			} catch (\PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
 			}
 
 			$query2 = "insert into retirocomision(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
 
 			try {
-					$stm = $this->con->prepare($query2);
-					$stm->bindParam(':idretiro',$last_id,PDO::PARAM_INT);
-					$stm->execute();
-					$last_id_retiro = $this->con->lastInsertId();
-			} catch (PDOException $e) {
-				
+				$stm = $this->con->prepare($query2);
+				$stm->bindParam(':idretiro',$last_id,PDO::PARAM_INT);
+				$stm->execute();
+				$last_id_retiro = $this->con->lastInsertId();
+			} catch (\PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
 			}
 			
 			$query = "SELECT  bh.balance as balance
  					from  balancehotel as bh 
- 				where bh.id = (select max(id) from balancehotel)";
+ 				where bh.id_hotel = :idhotel order by bh.id desc limit 1";
 				$stm = $this->con->prepare($query);
-				$stm->execute();
+				$stm->execute(array(':idhotel'=>$this->hotel['id']));
 				$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 				$balance = $ultimobalance - $post['monto'];
 
@@ -112,7 +120,9 @@ class Comprobantes
 													':comision'=>'-'.$post['monto'],
 													':retiro'=>$last_id_retiro));
 						$this->con->commit();
-				} catch (PDOException $e) {
+				} catch (\PDOException $e) {
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						$this->con->rollBack();
 						return false;
 				}
 
@@ -123,14 +133,15 @@ class Comprobantes
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->preferencias['email-notificacion-retiro']);
 			// Hacerlo formato HTML
@@ -297,7 +308,7 @@ public function TemplateEmail($mensaje = null,$monto = null){
 								<tr>
 									<td valign="top" align="center">
 										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.svg" style="padding-bottom: 0; display: inline !important; width:200px">
+											<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px;height:auto;">
 										</a>
 									</td>
 								</tr>
@@ -322,8 +333,8 @@ public function TemplateEmail($mensaje = null,$monto = null){
 										Por un monto de $'.$monto.' MXN. Paga el monto correspondiente, aprueba y adjunta recibo de pago en el <a href="'.HOST.'/admin/perfiles/comprobantes" target="_blank">Panel Administrativo</a><br>
 											'.$mensaje.'.<br>
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
+										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+											soporte@infochannel.si
 										</a>
 									</td>
 								</tr>
@@ -348,8 +359,8 @@ public function TemplateEmail($mensaje = null,$monto = null){
 						<table align="center">
 							<tr>
 								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
-										<img src="" width="32" height="32" alt="Facebook">
+									<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
+										<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
 									</a>
 								</td>
 							</tr>
@@ -365,7 +376,7 @@ public function TemplateEmail($mensaje = null,$monto = null){
 				<tbody>
 					<tr>
 						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							&copy; Travel Points '.date('Y').' Todos los derechos reservados.
 						</td>
 					</tr>
 				</tbody>
@@ -377,6 +388,12 @@ public function TemplateEmail($mensaje = null,$monto = null){
 </html>';
 return $html;
   	
+	}
+
+
+	private function error_log($method, $line, $error){
+		file_put_contents(ROOT.'/assets/error_logs/comprobanteretirohotel.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		return;
 	}
 
 }

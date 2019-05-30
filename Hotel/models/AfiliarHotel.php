@@ -226,7 +226,7 @@ class AfiliarHotel {
 	}
 
 
-	public function quitaruser(int $iduser){
+	public function quitaruser(int $iduse,int $idhotel){
 
 		if($this->con->inTransaction()){
 			$this->con->rollBack();
@@ -235,11 +235,12 @@ class AfiliarHotel {
 		$this->con->beginTransaction();
 
 
-		$sql = "DELETE FROM solicitudhotel where id_usuario = :user";
+		$sql = "DELETE FROM solicitudhotel where id_hotel = :hotel";
 
 		try {
 				$stm = $this->con->prepare($sql);
-				$stm->bindParam(':user',$iduser);
+				// $stm->bindParam(':user',$iduser);
+				$stm->bindParam(':hotel',$idhotel);
 				$stm->execute();
 
 				$this->con->commit();

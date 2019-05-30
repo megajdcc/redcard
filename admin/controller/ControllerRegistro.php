@@ -424,7 +424,7 @@ if(isset($_POST['solicitudcodigo'])){
 				echo json_encode($response);
 		}else if($_POST['perfil'] == 'UserHotel'){
 			$response = array('peticion' =>false,'mensaje'=>'');
-			$result = $hotel->quitaruser($_POST['user']);
+			$result = $hotel->quitaruser($_POST['user'],$_POST['idhotel']);
 
 			if($result){
 				$response['peticion'] = true;

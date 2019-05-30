@@ -328,7 +328,7 @@ class sales_new_sale {
 
 	private function registrarbalancehotel(int $idventa){
 
-		$query = 'select h.id as hotel, h.comision from 
+		$query = 'SELECT h.id as hotel, h.comision from 
 						hotel as h join huespedhotel as hh on h.id = hh.id_hotel
 							join huesped as hu on hh.id_huesped = hu.id
 							where hu.id_usuario = :usuario';
@@ -343,7 +343,7 @@ class sales_new_sale {
 				
 					$ultimobalance = $this->capturarultimobalancehotel($idhotel);
 					$comisionhotelnew = ($this->sale['eSmarties'] * $comisionhotel / 100);
-					$balance = ($this->sale['eSmarties'] * $comisionhotel / 100) + $ultimobalance;
+					$balance = $comisionhotelnew + $ultimobalance;
 
 					$query = "insert into balancehotel(balance,id_hotel,id_venta,comision) values(:balance,:hotel,:venta,:comision)";
 					$stm  = $this->con->prepare($query);
@@ -354,8 +354,8 @@ class sales_new_sale {
 
 	private function registrarbalancefranquiciatario(int $idventa){
 
-		$query = 'select fr.id as franquiciatario, fr.comision from 
-						franquiciatario as fr join hotel as h on fr.codigo_hotel  = h.codigo 
+		$query = 'SELECT fr.id as franquiciatario, fr.comision from 
+						franquiciatario as fr join hotel as h on fr.id_hotel  = h.id 
 							join huespedhotel as hh on h.id = hh.id_hotel 
 							join huesped as hu on hh.id_huesped = hu.id 
 							where hu.id_usuario = :usuario';
@@ -381,8 +381,8 @@ class sales_new_sale {
 
 	private function registrarbalancereferidor(int $idventa){
 
-		$query = 'select rf.id as referidor, rf.comision from 
-						referidor as rf join hotel as h on rf.codigo_hotel  = h.codigo 
+		$query = 'SELECT rf.id as referidor, rf.comision from 
+						referidor as rf join hotel as h on rf.id_hotel  = h.id 
 							join huespedhotel as hh on h.id = hh.id_hotel 
 							join huesped as hu on hh.id_huesped = hu.id 
 							where hu.id_usuario = :usuario';
@@ -409,7 +409,7 @@ class sales_new_sale {
 		}
 
 	private function capturarultimobalancehotel(int $idhotel){
-		$query = "select balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
+		$query = "SELECT balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
 		$stm->execute(array(':hotel'=>$idhotel));
 		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
@@ -421,7 +421,7 @@ class sales_new_sale {
 	}
 
 	private function capturarultimobalancesistema(){
-		$query = "select balance from balancesistema order by id desc LIMIT 1";
+		$query = "SELECT balance from balancesistema order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
 		$stm->execute();
 		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
@@ -433,7 +433,7 @@ class sales_new_sale {
 	}
 
 	private function capturarultimobalancefranquiciatario(int $idfranquiciatario){
-		$query = "select balance from balancefranquiciatario where id_franquiciatario =:franquiciatario order by id desc LIMIT 1";
+		$query = "SELECT balance from balancefranquiciatario where id_franquiciatario =:franquiciatario order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
 		$stm->execute(array(':franquiciatario'=>$idfranquiciatario));
 		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
@@ -445,7 +445,7 @@ class sales_new_sale {
 	}
 
 	private function capturarultimobalancereferidor(int $idreferidor){
-		$query = "select balance from balancereferidor where id_referidor =:referidor order by id desc LIMIT 1";
+		$query = "SELECT balance from balancereferidor where id_referidor =:referidor order by id desc LIMIT 1";
 		$stm = $this->con->prepare($query);
 		$stm->execute(array(':referidor'=>$idreferidor));
 		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
@@ -687,7 +687,7 @@ class sales_new_sale {
 		$html = null;
 		foreach ($this->currencies as $key => $value) {
 			if($key == 'MXN'){
-				$html .= '<option value="'.$key.'" selected>'.$value.'</option>';
+				$html .= '<option value="'.$key.'" SELECTed>'.$value.'</option>';
 			}
 			// else{
 			// 	$html .= '<option value="'.$key.'">'.$value.'</option>';
@@ -717,7 +717,7 @@ class sales_new_sale {
 			$name = _safe($value['name']);
 			$image = HOST.'/assets/img/business/certificate/'._safe($value['image']);
 			if($this->sale['certificate_id'] == $key){
-				$html .= '<option title="'.$name.' - '.$price.'" data-content="<img src=\''.$image.'\' class=\'meta-img img-rounded\' alt=\'\'><strong>'.$name.'</strong> '.$price.'" value="'.$key.'" selected>'.$name.'</option>';
+				$html .= '<option title="'.$name.' - '.$price.'" data-content="<img src=\''.$image.'\' class=\'meta-img img-rounded\' alt=\'\'><strong>'.$name.'</strong> '.$price.'" value="'.$key.'" SELECTed>'.$name.'</option>';
 			}else{
 				$html .= '<option title="'.$name.' - '.$price.'" data-content="<img src=\''.$image.'\' class=\'meta-img img-rounded\' alt=\'\'><strong>'.$name.'</strong> '.$price.'" value="'.$key.'">'.$name.'</option>';
 			}

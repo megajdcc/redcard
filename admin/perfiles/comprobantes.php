@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
 if(!isset($_SESSION['user'])){
@@ -127,25 +127,43 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 </div>
 
 <!-- Modal para adjudicar recibo de pago... -->
-		<div class="modal fade " id="solicitud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
-			<div class="modal-dialog modal-dialog-centered modal-lg " role="document">
+		<div class="modal fade " id="solicitud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
+			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 					<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Aprobar solicitud #<span class="nrosolicitud"></span></h5>
+						<h5 class="modal-title" id="exampleModalLabel">Pagar solicitud  de retiro #<span class="nrosolicitud"></span></h5>
 						<h5 class="modal-title">Monto solicitado: <span class="monto"></span></h5>
 						<h5 class="modal-title">De fecha <span class="fechasolicitud"></span></h5>
 					</div>
 
+					<script>
+						$(document).ready(function() {
+							$('.total').click(function(){
+
+								$('#pago-parcial').css({
+									display: 'none',
+									
+									
+								});
+
+
+							});
+
+							$('.parcial').click(function(){
+
+
+								$('#pago-parcial').css({
+									display: 'block',
+									
+									
+								});
+
+							});
+						});
+					</script>
+
 					<div class="modal-body">
-<!-- 						<div class="alert alert-success" role="alert" id="alerta" style="display:none">
-							Comisión actualizada. Si desea puede actualizar de nuevo.
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-   							 <span aria-hidden="true">&times;</span>
- 							 </button>
-						</div> -->
-
-
 							<style>
 								.acept-solicitud{
 									display: flex;
@@ -170,9 +188,36 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 										}
 									</style>
 
-									<div class="row">
+									<section class="row">
 										
-										<div class="recibopago col-lg-12 col-sm-12">
+										<div class="btn-toolbar" role="toolbar" aria-label="Botones de pagos">
+											<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Pagos">
+												<button type="button" class="total btn btn-secondary">Pago Total</button>
+												<button type="button" class="parcial btn btn-secondary">Pago Parcial</button>
+											</div>
+
+											<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Datos solicitante">
+											
+												<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datossolicitante" aria-expanded="false" aria-controls="datoshotel">Datos del solicitante.</button>
+												<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datoshotel" aria-expanded="false" aria-controls="datospago">Datos del hotel.</button>
+												
+												<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datospago" aria-expanded="false" aria-controls="datospago">Datos para el pago de comisión.</button>
+											</div>
+										</div>
+									
+									</section>
+
+									<div class="row" id="pagos">
+										<div class="col-lg-6 col-sm-6">
+											<div class="form-group" id="pago-parcial">
+												<label for="monto">Monto a pagar:<span class="required">*</span></label>
+												<div class="input-group">
+													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
+													<input class="montopagar form-control" type="number" id="montopagar" name="montopagar" value="" placeholder="Monto a pagar" required >
+												</div>
+											</div>
+										</div>
+										<div class="recibopago col-lg-6 col-sm-12">
 											<div class="custom-file" data-toggle="tooltip" title="Adjunte archivo de recibo de pago correspondiente">
 													<label class="custom-file-label" for="recibo">Recibo de pago:</label>
 													<input type="file" name="recibo" id="recibo" class="custom-file-input" placeholder='recibo de pago' required>
@@ -182,10 +227,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									</div>
 
 									<div class="botoneras btn-group" role="group" aria-label="example">
-										<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datossolicitante" aria-expanded="false" aria-controls="datoshotel">Datos del solicitante.</button>
-										<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datoshotel" aria-expanded="false" aria-controls="datospago">Datos del hotel.</button>
 									
-										<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#datospago" aria-expanded="false" aria-controls="datospago">Datos para el pago de comisión.</button>
 									</div>
 									
 									<section class="collapse" id="datoshotel">
@@ -366,7 +408,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						
 					<div class="modal-footer">
 						<input type="hidden" name="idsolicitud" id="nrosolicitud" >
-						<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="aprobar" class="actualizar btn btn-success">Aprobar</button>
+						<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="cancelar" class="cancelar btn btn-danger"><i class="fa fa-cancel"></i>Cancelar Retiro</button>
+						<button type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="aprobar" class="actualizar btn btn-success">Aprobar</button>
 						<button  type="button" class="cerrarmodal btn btn-secondary" >Cerrar</button>
 					</div>
 				</form>
@@ -389,6 +432,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				var perfil = $(this).attr('data-perfil');
 				var fecha = $(this).attr('data-fecha');
 				var monto = $(this).attr('data-monto');
+
+				$('#montopagar').attr('max',$(this).attr('data-pago'));
+				$('#montopagar').change();
 				
 				$.ajax({
 					url: path,
@@ -404,20 +450,73 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					var telefonomovil = response.solicitante[0].telefonomovil;
 					var mensaje = response.solicitante[0].mensaje;
 
-					var nombrehotel = response.hotel[0].nombrehotel;
-					var sitioweb    = response.hotel[0].sitio_web;
-					var direccion   = response.hotel[0].direccion;
-					var pais        = response.hotel[0].pais;
-					var estado      = response.hotel[0].estado;
-					var ciudad      = response.hotel[0].ciudad;
 
-					var banco         = response.pagocomision[0].banco;
-					var cuenta        = response.pagocomision[0].cuenta;
-					var clabe         = response.pagocomision[0].clabe;
-					var swift         = response.pagocomision[0].swift;
-					var bancotarjeta  = response.pagocomision[0].bancotarjeta;
-					var numerotarjeta = response.pagocomision[0].numerotarjeta;
-					var emailpaypal   = response.pagocomision[0].email_paypal;
+					if(response.hotel[0].nombrehotel !=null){
+						var nombrehotel = response.hotel[0].nombrehotel;
+					}
+
+
+					if(response.hotel[0].sitio_web !=null){
+						var sitioweb    = response.hotel[0].sitio_web;
+					}
+
+					if(response.hotel[0].direccion !=null){
+							var direccion   = response.hotel[0].direccion;
+					}
+
+					if(response.hotel[0].pais !=null){
+						var pais        = response.hotel[0].pais;
+					}
+
+					if(response.hotel[0].estado !=null){
+						var estado      = response.hotel[0].estado;
+					}
+				
+					
+					if(response.hotel[0].ciudad !=null){
+						var ciudad      = response.hotel[0].ciudad;
+					}
+				
+					
+					
+
+					if(response.hotel[0].banco !=null){
+						var banco         = response.pagocomision[0].banco;
+
+					}
+
+
+					if(response.hotel[0].cuenta !=null){
+						var cuenta        = response.pagocomision[0].cuenta;
+
+					}
+					
+					if(response.hotel[0].clabe !=null){
+							var clabe         = response.pagocomision[0].clabe;
+					}
+					
+
+					if(response.hotel[0].swift !=null){
+						var swift         = response.pagocomision[0].swift;
+					}
+
+
+					if(response.hotel[0].bancotarjeta !=null){
+						var bancotarjeta  = response.pagocomision[0].bancotarjeta;
+					}
+					
+					if(response.hotel[0].numerotarjeta !=null){
+						var numerotarjeta = response.pagocomision[0].numerotarjeta;
+					}
+
+					if(response.hotel[0].email_paypal !=null){
+						var emailpaypal   = response.pagocomision[0].email_paypal;
+					}
+
+
+					
+					
+					
 
 
 

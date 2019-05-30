@@ -1631,6 +1631,7 @@ $(document).ready(function() {
 
 	$('.quitaruserhotel').click(function(){
 		var usuario = $(this).attr('data-user');
+		var hotel = $(this).attr('data-hotel');
 
 
 		var result = confirm('Acepta quitar a este usuario?');
@@ -1640,7 +1641,7 @@ $(document).ready(function() {
 				url: '/admin/controller/ControllerRegistro.php',
 				type: 'POST',
 				dataType: 'JSON',
-				data: {solicitud: 'eliminar',perfil:'UserHotel',user:usuario}
+				data: {solicitud: 'eliminar',perfil:'UserHotel',user:usuario,idhotel:hotel}
 				})
 				.done(function(response) {
 				if(response.peticion){

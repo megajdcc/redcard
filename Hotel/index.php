@@ -621,7 +621,7 @@ if(isset($_POST['cambiar-hotel'])){
 													}
 											    },
 											    series: [ {
-											    	name: "Negocio",
+											    	name: "Usuarios",
             								colorByPoint: true,
 											    } ],
 								   				}; 
@@ -814,16 +814,16 @@ if(isset($_POST['cambiar-hotel'])){
 												        data: [],
 												        dataLabels: {
 												            enabled: true,
-												            rotation: -90,
+												            rotation: -0,
 												            color: '#FFFFFF',
-												            align: 'right',
+												            align: 'center',
 												            formatter:function(){
-											               	return Highcharts.numberFormat(this.y,2,'.',',')+' $ MXN';
+											               	return Highcharts.numberFormat(this.y,0,'.',',');
 											               }, // one decimal
 												            y: 10, // 10 pixels down from the top
 												            style: {
 												                fontSize: '13px',
-												                fontFamily: 'Verdana, sans-serif'
+												                fontFamily: 'Myriad'
 												            }
 												        },
 												        colorByPoint: true

@@ -32,7 +32,7 @@ class Comprobantes
 		'email-notificacion-retiro' =>null,
 	);
 
-	function __construct(connection $con){
+function __construct(connection $con){
 		$this->con = $con->con;
 		$this->hotel['id'] = $_SESSION['id_hotel'];
 		$this->franquiciatario['id'] = $_SESSION['id_franquiciatario'];
@@ -41,9 +41,9 @@ class Comprobantes
 		$this->cargarpreferencias();
 		return; 
 
-	}
+}
 
-	private function cargarpreferencias(){
+private function cargarpreferencias(){
 
 		$query = "select * from preferenciasistema";
 
@@ -57,10 +57,12 @@ class Comprobantes
 		}
 	}
 }
-	private function getNombreFranquiciatario(){
-		return $this->franquiciatario['nombre'];
-	}
-	private function cargardatosfranquiciatario(){
+
+private function getNombreFranquiciatario(){
+	return $this->franquiciatario['nombre'];
+}
+
+private function cargardatosfranquiciatario(){
 
 		$query = " select concat(u.nombre,' ',u.apellido) as nombre, u.username, h.nombre as hotel
  					from usuario as u 
@@ -82,9 +84,13 @@ class Comprobantes
 
 			$this->franquiciatario['hotel'] = $fila['hotel'];
 			
-	}
+}
 
-	public function procesarretiro(array $post){
+public function procesarretiro(array $post){
+
+			if($this->con->inTransaction()){
+				$this->con->rollBack();
+			}
 
 			$this->con->beginTransaction();
 			$query = "insert into retiro(mensaje,id_usuario_solicitud,monto,id_franquiciatario) values(:mensaje,:usuario,:monto,:franquiciatario)";
@@ -98,8 +104,10 @@ class Comprobantes
 									':franquiciatario'=>$this->franquiciatario['id']));
 					$last_id = $this->con->lastInsertId();
 
-			} catch (PDOException $e) {
-				
+			} catch (\PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
 			}
 
 			$query2 = "insert into retirocomisionfranquiciatario(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
@@ -109,15 +117,17 @@ class Comprobantes
 					$stm->bindParam(':idretiro',$last_id,PDO::PARAM_INT);
 					$stm->execute();
 					$last_id_retiro = $this->con->lastInsertId();
-			} catch (PDOException $e) {
-				
+			} catch (\PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+					return false;
 			}
 			
 			$query = "SELECT  bf.balance as balance
- 					from  balancefranquiciatario as bf 
- 				where bf.id = (select max(id) from balancefranquiciatario)";
+ 					from  balancefranquiciatario as bf
+ 				where bf.id_franquiciatario = :idfranquiciatario order by bf.id desc limit 1";
 				$stm = $this->con->prepare($query);
-				$stm->execute();
+					$stm->execute(array(':idfranquiciatario'=>$this->franquiciatario['id']));
 				$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 				$balance = $ultimobalance - $post['monto'];
 
@@ -129,8 +139,10 @@ class Comprobantes
 													':comision'=>'-'.$post['monto'],
 													':retiro'=>$last_id_retiro));
 						$this->con->commit();
-				} catch (PDOException $e) {
-						
+				} catch (\PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+					return false;
 				}
 
 				$body_alt ='Has recibido una nueva solicitud de retiro del franquiciatario '.$this->franquiciatario['nombre'];
@@ -140,14 +152,15 @@ class Comprobantes
 			$mail->CharSet = 'UTF-8';
 			// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 			$mail->isSMTP();
-			$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+			$mail->Host = 'single-5928.banahosting.com';
 			$mail->SMTPAuth = true;
 			$mail->SMTPSecure = 'ssl';
 			$mail->Port = 465;
 			// El correo que hará el envío
-			$mail->Username = 'notificacion@esmartclub.com';
-			$mail->Password = 'Alan@2017_pv';
-			$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+			$mail->Username = 'notification@travelpoints.com.mx';
+			$mail->Password = '20464273jd';
+			
+			$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail->addAddress($this->preferencias['email-notificacion-retiro']);
 			// Hacerlo formato HTML
@@ -163,10 +176,9 @@ class Comprobantes
 			header('location: '.HOST.'/Franquiciatario/comprobantes');
 			die();
 		
-	}
+}
 
-
-	private function cargarComprobantes(){
+private function cargarComprobantes(){
 		$query = "select  r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
 					r.id_franquiciatario,r.id_hotel,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.id_usuario_aprobacion
 				from retiro as r join franquiciatario as fr on r.id_franquiciatario = fr.id
@@ -177,7 +189,7 @@ class Comprobantes
 		$stm->execute();
 		return $this->comprobantes = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-	}
+}
 
 public function getComprobantes(){
 
@@ -185,7 +197,7 @@ public function getComprobantes(){
 		$creado = $this->setFecha($value['creado']);
 
 		$actualizado = $this->setFecha($value['actualizado']);
-		$monto = number_format((float)$value['monto'],2,',','.');
+		$monto = number_format((float)$value['monto'],2,'.',',');
 
 		$usuarioaprobador = $this->getUsuario($value['id_usuario_aprobacion']);
 		if($value['aprobado']){
@@ -212,7 +224,6 @@ public function getComprobantes(){
 			</tr>
 		<?php }
 }
-
 
 private function getUsuario(int $usuario= null){
 
@@ -244,8 +255,6 @@ private function setFecha($fecha){
 	
 }
 
-
-
 public function getNotificacion(){
 
 	}
@@ -257,125 +266,130 @@ public function TemplateEmail($mensaje = null,$monto = null){
   		}
 
   		$html = '
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Confirmaci&oacute;n de correo electr&oacute;nico</title>
-<style type="text/css">
-@media only screen and (max-width: 600px) {
- table[class="contenttable"] {
- width: 320px !important;
- border-width: 3px!important;
-}
- table[class="tablefull"] {
- width: 100% !important;
-}
- table[class="tablefull"] + table[class="tablefull"] td {
- padding-top: 0px !important;
-}
- table td[class="tablepadding"] {
- padding: 15px !important;
-}
-}
-</style>
-</head>
-<body style="margin:0; border: none; background:#f7f8f9">
-	<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-		<tr>
-			<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
-				<tr>
-					<td>
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
+				<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+				<head>
+				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Confirmaci&oacute;n de correo electr&oacute;nico</title>
+				<style type="text/css">
+				@media only screen and (max-width: 600px) {
+				 table[class="contenttable"] {
+				 width: 320px !important;
+				 border-width: 3px!important;
+				}
+				 table[class="tablefull"] {
+				 width: 100% !important;
+				}
+				 table[class="tablefull"] + table[class="tablefull"] td {
+				 padding-top: 0px !important;
+				}
+				 table td[class="tablepadding"] {
+				 padding: 15px !important;
+				}
+				}
+				</style>
+				</head>
+				<body style="margin:0; border: none; background:#f7f8f9">
+					<table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+						<tr>
+							<td align="center" valign="top"><table class="contenttable" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" style="border-width: 8px; border-style: solid; border-collapse: separate; border-color:#e9e9e9; margin-top:40px; font-family:Arial, Helvetica, sans-serif">
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-								<tr>
-									<td valign="top" align="center">
-										<a href="'.HOST.'" target="_blank">
-											<img alt="Travel Points" src="'.HOST.'/assets/img/logo.svg" style="padding-bottom: 0; display: inline !important; width:200px">
-										</a>
+									<td>
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+												<tr>
+													<td valign="top" align="center">
+														<a href="'.HOST.'" target="_blank">
+															<img alt="Travel Points" src="'.HOST.'/assets/img/LOGOV.png" style="padding-bottom: 0; display: inline !important; width:250px;height:auto">
+														</a>
+													</td>
+												</tr>
+												<tr>
+													<td width="100%" height="40">&nbsp;</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td width="100%" height="40">&nbsp;</td>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
-						<table border="0" cellpadding="0" cellspacing="0" width="100%">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										<strong>Solicitud de Retiro de comisión en Travel Points</strong>
+									<td class="tablepadding" style="color: #444; padding:20px; font-size:14px; line-height:20px; border-top-width:1px; border-top-style:solid; border-top-color:#ececec;">
+										<table border="0" cellpadding="0" cellspacing="0" width="100%">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														<strong>Solicitud de Retiro de comisión en Travel Points</strong>
+													</td>
+												</tr>
+												<tr>
+													<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
+														Por un monto de $'.$monto.' MXN. Paga el monto correspondiente, aprueba y adjunta recibo de pago en el <a href="'.HOST.'/admin/perfiles/comprobantes" target="_blank">Panel Administrativo</a><br>
+															'.$mensaje.'.<br>
+														Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
+															soporte@infochannel.si
+														</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</td>
 								</tr>
 								<tr>
-									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
-										Por un monto de $'.$monto.' MXN. Paga el monto correspondiente, aprueba y adjunta recibo de pago en el <a href="'.HOST.'/admin/perfiles/comprobantes" target="_blank">Panel Administrativo</a><br>
-											'.$mensaje.'.<br>
-										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@esmartclub.com">
-											soporte@esmartclub.com
-										</a>
+									<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
+										<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+											<tbody>
+												<tr>
+													<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
+														Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
+														Puerto Vallarta, México.<br>
+														01 800 400 INFO (4636), (322) 225 9635.<br>
+														<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<table align="center">
+											<tr>
+												<td style="padding-right:10px; padding-bottom:9px;">
+													<a href="https://www.facebook.com/TravelPointsMX" target="_blank" style="text-decoration:none; outline:none;">
+														<img src="'.HOST.'/assets/img/facebook.png" width="32" height="32" alt="Facebook">
+													</a>
+												</td>
+											</tr>
+										</table>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<td bgcolor="#fcfcfc" class="tablepadding" style="padding:20px 0; border-top-width:1px;border-top-style:solid;border-top-color:#ececec;border-collapse:collapse">
-						<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-							<tbody>
-								<tr>
-									<td align="center" class="tablepadding" style="line-height:20px; padding:20px;">
-										Marina Vallarta Business Center, Oficina 204, Plaza Marina.<br>
-										Puerto Vallarta, México.<br>
-										01 800 400 INFO (4636), (322) 225 9635.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:info@infochannel.si">info@infochannel.si</a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table align="center">
-							<tr>
-								<td style="padding-right:10px; padding-bottom:9px;">
-									<a href="https://www.facebook.com/eSmart-Club-130433773794677" target="_blank" style="text-decoration:none; outline:none;">
-										<img src="" width="32" height="32" alt="Facebook">
-									</a>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
-				<tbody>
-					<tr>
-						<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
-							&copy; Travel Points 2017 Todos los derechos reservados.
+							</table>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		</td>
-	</tr>
-</table>
-</body>
-</html>';
-return $html;
+					<tr>
+						<td>
+							<table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-size:13px;color:#999999; font-family:Arial, Helvetica, sans-serif">
+								<tbody>
+									<tr>
+										<td class="tablepadding" align="center" style="line-height:20px; padding:20px;">
+											&copy; Travel Points '.date('Y').' Todos los derechos reservados.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</table>
+				</body>
+				</html>';
+				return $html;
   	
-	}
+}
+
+private function error_log($method, $line, $error){
+		file_put_contents(ROOT.'/assets/error_logs/comprobanteretirofranquiciatario.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		return;
+}
 
 }
 

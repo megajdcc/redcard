@@ -120,15 +120,19 @@ class Includes {
 			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+
+		
 		while($row = $stmt->fetch()){
 			
-
+			
 			if($_SESSION['id_hotel'] == $row['idhoteles']){
 				$this->hoteles['nombrehotel'] = _safe($row['nombrehotel']);
 			}else{
 				$this->hoteles['otroshoteles'][$row['idhoteles']] = _safe($row['nombrehotel']);
 			}
 		}
+
+	
 
 		return;
 	}
@@ -479,26 +483,26 @@ class Includes {
 								<div class="header-content">
 									<div class="header-bottom">
 										<div class="header-button">
-											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta eSmart Club">
+											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel points">
 												<i class="fa fa-envelope"></i>
 											</a>
 										</div>
 										<div class="header-button">
-											<a href="http://www.facebook.com" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="eSmart Club Facebook">
+											<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel points Facebook">
 												<i class="fa fa-facebook"></i>
 											</a>
 										</div>
 										
 										<div class="header-button">
-											<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es eSmart Club?">
+											<a href="'.HOST.'/que-es-travel-points" class="header-button-inner green" data-toggle="tooltip" data-placement="bottom" title="¿Qu&eacute; es Travel points?">
 												<i class="fa fa-question"></i>
 											</a>
 										</div>
 										<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
-											<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es eSmart Club?</a></li>
+											<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es Travel points?</a></li>
 											
-											<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">eSmart Club Facebook</a></li>
-											<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta eSmart Club</a></li>
+											<li class="visible-xs"><a href="http://www.facebook.com/TravelPointsMX" target="_blank">Travel points Facebook</a></li>
+											<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel points</a></li>
 										</ul>
 										<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 											<span class="sr-only">Toggle navigation</span>

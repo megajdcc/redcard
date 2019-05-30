@@ -19,6 +19,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 }
 
+if(isset($_SESSION['id_hotel'])){
+	unset($_SESSION['id_hotel']);
+	unset($_SESSION['nombrehotel']);
+}
+
+if(isset($_SESSION['nombrehotel'])){
+	unset($_SESSION['nombrehotel']);
+}
+
 $includes = new assets\libs\includes($con);
 $properties['title'] = $profile->get_alias().' | Travel Points';
 $properties['description'] = '';

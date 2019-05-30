@@ -168,15 +168,13 @@ class Home {
 	}
 
 	public function getOperaciones(){
+
 		if($this->fechas['inicio'] and $this->fechas['fin']){
+			
 						$sql="SELECT COUNT(nven.venta)
-						FROM negocio as ne
-						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
-						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
-						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
-						JOIN huespedhotel as hh on hu.id = hh.id_huesped
-						JOIN hotel as h on hh.id_hotel = h.id
-						where h.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+						FROM negocio_venta as nven
+						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
+						where bh.id_hotel = :idhotel and nven.creado between :fecha1 and :fecha2";
 						$stmt = $this->con->prepare($sql);
 						$stmt->execute(array(':idhotel'=>$this->hotel['id'],
 											':fecha1'=>$this->fechas['inicio'],
@@ -186,13 +184,9 @@ class Home {
 						return $number_of_rows;
 			}else{
 						$sql="SELECT COUNT(nven.venta)
-						FROM negocio as ne
-						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
-						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
-						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
-						JOIN huespedhotel as hh on hu.id = hh.id_huesped
-						JOIN hotel as h on hh.id_hotel = h.id
-						where h.id = :idhotel";
+						FROM negocio_venta as nven
+						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
+						where bh.id_hotel = :idhotel";
 						$stmt = $this->con->prepare($sql);
 						
 						$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
@@ -755,8 +749,7 @@ class Home {
 	public function getComisiones(){
 		if($this->fechas['inicio'] and $this->fechas['fin']){
 			
-			$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
-								and bf.id = (select max(id) from balancefranquiciatario)) as balance
+			$query  = "SELECT nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 and bf.creado between :fecha3 and :fecha4 order by bf.id desc limit 1) as balance
 								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
 								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN :fecha1 and :fecha2";
 
@@ -764,7 +757,10 @@ class Home {
 				$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
 				                    ':fr2'=>$this->franquiciatario['id'],
 				                	':fecha1' =>$this->fechas['inicio'],
-				                	':fecha2' => $this->fechas['fin']));
+				                	':fecha2' => $this->fechas['fin'],
+				                	':fecha3' =>$this->fechas['inicio'],
+				                	':fecha4' => $this->fechas['fin'],
+				                ));
 
 				
 				$pref = null;
@@ -793,8 +789,7 @@ class Home {
 			return $html;
 
 		}else{
-			$query  = "select nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 
-								and bf.id = (select max(id) from balancefranquiciatario)) as balance
+			$query  = "SELECT nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 order by bf.id desc limit 1) as balance
 								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
 								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN bf.creado and now()";
 
@@ -833,9 +828,9 @@ class Home {
 	}
 
 	public function getBalance(){
-		$query  = "SELECT  max(bf.balance) as balance
+		$query  = "SELECT  bf.balance as balance
  					from  balancefranquiciatario as bf
- 				where bf.id_franquiciatario = :idfranquiciatario and bf.id = (select max(id) from balancefranquiciatario)";
+ 				where bf.id_franquiciatario = :idfranquiciatario order by bf.id desc limit 1";
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idfranquiciatario'=>$this->franquiciatario['id']));
 				return $stm->fetch(PDO::FETCH_ASSOC)['balance'];

@@ -250,7 +250,7 @@ class ReportesVentas{
 			 $fecha = $value['creado'];
 			 // settype($value['venta'],'double');
 
-			 $venta = number_format((float)$value['venta'],2,',','.');
+			 $venta = number_format((float)$value['venta'],2,'.',',');
 			  if($venta < 0){
 			  	$venta = '<strong class="negativo">$'.$venta.'</strong>';
 			  }else{
@@ -295,6 +295,9 @@ class ReportesVentas{
 
 		$fechainicial = $post['date_start'];
 		$fechafin = $post['date_end'];
+
+		$this->setFecha1($_POST['date_start']);
+		$this->setFecha2($_POST['date_end']);
 
 		$this->CargarData($fechainicial,$fechafin);
 

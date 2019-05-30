@@ -70,6 +70,8 @@ class Comprobantes
 
 			$monto = number_format((float)$value['monto'],2,',','.');
 
+			$pago =$value['monto'];
+
 			if(empty($value['nombre'])){
 				$nombre = $value["username"];
 			}else{
@@ -105,7 +107,7 @@ class Comprobantes
 					<td>
 						<?php 
 						if($aprobado == 'No aprobada'){	 ?>
-							<button type="button" class="btn btn-primary aprobar" data-path="<?php echo  _safe($_SERVER['REQUEST_URI']); ?>" data-id="<?php echo $value['solicitud']?>" data-perfil="<?php echo $perfil; ?>" data-fecha="<?php echo $fecha; ?>" data-monto="<?php echo '$ '.$monto.' MXN'; ?>"> <i class="fa fa-check"></i> Aprobar</button>
+							<button type="button" data-pago="<?php echo $pago; ?>" class="btn btn-primary aprobar" data-path="<?php echo  _safe($_SERVER['REQUEST_URI']); ?>" data-id="<?php echo $value['solicitud']?>" data-perfil="<?php echo $perfil; ?>" data-fecha="<?php echo $fecha; ?>" data-monto="<?php echo '$ '.$monto.' MXN'; ?>" data-toggle="tooltip" title="En mantenimiento" data-placement="left"  disabled> <i class="fa fa-check" ></i> Pagar</button>
 						<?php }else{?>
 								<button type="button" name='descargar' class="btn btn-warning " style="color:white !important;"><i class="fa fa-file-pdf-o"></i><a href="<?php echo $urlarchivo; ?>" target="_blank">Descargar</a></button>
 						<?php  } ?>						

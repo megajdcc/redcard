@@ -220,7 +220,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			            "orderable": true,
 			            "targets": 0
 			        } ],
-			        "order": [[ 0, 'asc' ]]
+			        "order": [[ 1, 'desc' ]]
 			    } );
 </script>
 </div>

@@ -28,7 +28,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'consumospromedioporcompra')
 				$response = array();
 				while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 					$promedio = number_format((float)$row['promedio'],2,'.','');
-
+ 
 
 					if($row['iso'] == 'EUR'){
 						$div = '€';

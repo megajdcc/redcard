@@ -16,9 +16,9 @@ if(!isset($_SESSION['perfil'])){
 	include(ROOT.'/errores/404.php');
 	die();
 	}
-
-$Dashboard = new Dashboard($con);
 $includes = new Includes($con);
+$Dashboard = new Dashboard($con);
+
 $reporte = new ReportesVentas($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){

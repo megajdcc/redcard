@@ -15,6 +15,9 @@ if(isset($_SESSION['id_hotel'])){
 	unset($_SESSION['nombrehotel']);
 }
 
+if(isset($_SESSION['nombrehotel'])){
+	unset($_SESSION['nombrehotel']);
+}
 
 
 $home = new socio\libs\user_home($con);

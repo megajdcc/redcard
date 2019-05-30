@@ -136,7 +136,7 @@ private function cargarData(){
 
 	if($this->fechas['inicio'] and $this->fechas['fin']){
 			//Total ventas negocios 
-	$query = "select sum(nv.venta) as total, nv.iso, count(nv.venta) as operaciones from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+	$query = "SELECT sum(nv.venta) as total, nv.iso, count(nv.venta) as operaciones from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
 
 	try {
 
@@ -180,7 +180,7 @@ private function cargarData(){
 
 	// Negocios deudores 
 	// 
-	$query  = "select count(*) as deudores from negocio_venta as nv 
+	$query  = "SELECT count(*) as deudores from negocio_venta as nv 
 				join negocio as n on nv.id_negocio = n.id_negocio
 					where n.saldo < 0 and nv.creado between :fecha1 and :fecha2";
 
@@ -193,7 +193,7 @@ private function cargarData(){
 
 	// Total Adeudos
 	// 
-		$query = "select sum(n.saldo) as adeudo from negocio_venta as nv 
+		$query = "SELECT sum(n.saldo) as adeudo from negocio_venta as nv 
 			join negocio as n on nv.id_negocio = n.id_negocio
 			where n.saldo < 0 and nv.creado between :fecha1 and :fecha2";
 		$stm = $this->conection->prepare($query);
@@ -206,9 +206,9 @@ private function cargarData(){
 
 	// Saldo Favor
 	// 
-	 $query = "select sum(nv.bono_esmarties) - (SELECT  sum(bh.comision) as balance
-  					from  balancehotel as bh) - (select sum(bf.comision) as balance from balancefranquiciatario as bf ) 
-					- (select sum(br.comision) as balance from balancereferidor as br ) as saldo
+	 $query = "SELECT sum(nv.bono_esmarties) - (SELECT  sum(bh.comision) as balance
+  					from  balancehotel as bh) - (SELECT sum(bf.comision) as balance from balancefranquiciatario as bf ) 
+					- (SELECT sum(br.comision) as balance from balancereferidor as br ) as saldo
     		 from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
 
     $stm = $this->conection->prepare($query);
@@ -221,7 +221,7 @@ private function cargarData(){
 
     // Comision total
     
-    $query = "select sum(nv.bono_esmarties) as comision from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+    $query = "SELECT sum(nv.bono_esmarties) as comision from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
 
     $stm = $this->conection->prepare($query);
 
@@ -234,7 +234,7 @@ private function cargarData(){
 
 
      //Comision Promedio
-     $query = "select avg(n.comision) as comision from negocio_venta as nv join negocio as n on nv.id_negocio = n.id_negocio where nv.creado between :fecha1 and :fecha2";
+     $query = "SELECT avg(n.comision) as comision from negocio_venta as nv join negocio as n on nv.id_negocio = n.id_negocio where nv.creado between :fecha1 and :fecha2";
 
      $stm = $this->conection->prepare($query);
      $stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -245,7 +245,7 @@ private function cargarData(){
 
      //Consumo Promedio
      
-    $query = "select avg(nv.venta) as consumopromedio from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+    $query = "SELECT avg(nv.venta) as consumopromedio from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
 
     $stm = $this->conection->prepare($query);
     $stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -260,7 +260,7 @@ private function cargarData(){
     //
     //
     
-   $query = "select sum(nv.bono_esmarties) as utilidad  from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+   $query = "SELECT sum(nv.bono_esmarties) as utilidad  from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
     $stm = $this->conection->prepare($query);
     $stm->bindParam(':fecha1',$this->fechas['inicio']);
  	$stm->bindParam(':fecha2',$this->fechas['fin']);
@@ -269,7 +269,7 @@ private function cargarData(){
     $utilidad = $stm->fetch(PDO::FETCH_ASSOC)['utilidad'];
 
 
-    $sql = "select max(bh.balance) as balance from balancehotel as bh where bh.creado between :fecha1 and :fecha2";
+    $sql = "SELECT max(bh.balance) as balance from balancehotel as bh where bh.creado between :fecha1 and :fecha2";
 
     $stm = $this->conection->prepare($sql);
     $stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -286,7 +286,7 @@ private function cargarData(){
 
 
 
-	$sql = "select max(bfr.balance) as balance from balancefranquiciatario as bfr where bfr.creado between :fecha1 and :fecha2";
+	$sql = "SELECT max(bfr.balance) as balance from balancefranquiciatario as bfr where bfr.creado between :fecha1 and :fecha2";
 	
 	$stmt = $this->conection->prepare($sql);
 	 $stmt->bindParam(':fecha1',$this->fechas['inicio']);
@@ -302,7 +302,7 @@ private function cargarData(){
     	$saldofranquiciatario = $utilidadfranquiciatario;
     }
 
-    $sql = "select max(brf.balance) as balance from balancereferidor as brf where brf.creado between :fecha1 and :fecha2";
+    $sql = "SELECT max(brf.balance) as balance from balancereferidor as brf where brf.creado between :fecha1 and :fecha2";
 	
 	$stmtt = $this->conection->prepare($sql);
 	$stmtt->bindParam(':fecha1',$this->fechas['inicio']);
@@ -325,7 +325,7 @@ private function cargarData(){
 
 	}else{
 			//Total ventas negocios 
-	$query = "select sum(nv.venta) as total, nv.iso, count(nv.venta) as operaciones from negocio_venta as nv ";
+	$query = "SELECT sum(nv.venta) as total, nv.iso, count(nv.venta) as operaciones from negocio_venta as nv ";
 
 	try {
 
@@ -364,7 +364,7 @@ private function cargarData(){
 
 	// Negocios deudores 
 	// 
-	$query  = "select count(*) as deudores from negocio as n
+	$query  = "SELECT count(*) as deudores from negocio as n
 					where n.saldo < 0";
 
 		$stm = $this->conection->prepare($query);
@@ -374,7 +374,7 @@ private function cargarData(){
 
 	// Total Adeudos
 	// 
-		$query = "select sum(n.saldo) as adeudo from negocio as n
+		$query = "SELECT sum(n.saldo) as adeudo from negocio as n
 			where n.saldo < 0";
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
@@ -384,14 +384,14 @@ private function cargarData(){
 
 	// Saldo Favor
 	// 
-	 // $query = "select sum(nv.bono_esmarties) - (SELECT  sum(bh.comision) as balance
-  // 					from  balancehotel as bh) - (select sum(bf.comision) as balance from balancefranquiciatario as bf ) 
-		// 			- (select sum(br.comision) as balance from balancereferidor as br ) as saldo
+	 // $query = "SELECT sum(nv.bono_esmarties) - (SELECT  sum(bh.comision) as balance
+  // 					from  balancehotel as bh) - (SELECT sum(bf.comision) as balance from balancefranquiciatario as bf ) 
+		// 			- (SELECT sum(br.comision) as balance from balancereferidor as br ) as saldo
   //   		 from negocio_venta as nv";
 
-  //   $query2 = "select max(balance) as balance from balancesistema";
+  //   $query2 = "SELECT max(balance) as balance from balancesistema";
 
-	$sql = "select sum(saldo)  as saldo from negocio";
+	$sql = "SELECT sum(saldo)  as saldo from negocio";
 
     
      $stmt = $this->conection->prepare($sql);
@@ -405,7 +405,7 @@ private function cargarData(){
 
     // Comision total
     
-    $query = "select sum(nv.bono_esmarties) as comision from negocio_venta as nv";
+    $query = "SELECT sum(nv.bono_esmarties) as comision from negocio_venta as nv";
 
     $stm = $this->conection->prepare($query);
     $stm->execute();
@@ -414,7 +414,7 @@ private function cargarData(){
 
 
      //Comision Promedio
-     $query = "select avg(n.comision) as comision from negocio_venta as nv join negocio as n on nv.id_negocio = n.id_negocio";
+     $query = "SELECT avg(n.comision) as comision from negocio_venta as nv join negocio as n on nv.id_negocio = n.id_negocio";
 
      $stm = $this->conection->prepare($query);
      $stm->execute();
@@ -423,7 +423,7 @@ private function cargarData(){
 
      //Consumo Promedio
      
-     $query = "select avg(nv.venta) as consumopromedio from negocio_venta as nv";
+     $query = "SELECT avg(nv.venta) as consumopromedio from negocio_venta as nv";
 
      $stm = $this->conection->prepare($query);
 
@@ -433,17 +433,17 @@ private function cargarData(){
 
 
     //Utilidad Bruta.
-    //
-    //
     
-    $query = "select sum(nv.bono_esmarties) as utilidad  from negocio_venta as nv";
+    
+    
+    $query = "SELECT sum(comision) as utilidad from balancesistema ";
     $stm = $this->conection->prepare($query);
     $stm->execute();
 
     $utilidad = $stm->fetch(PDO::FETCH_ASSOC)['utilidad'];
 
 
-    $sql = "select max(bh.balance) as balance from balancehotel as bh";
+    $sql = "SELECT sum(bh.comision) as balance from balancehotel as bh ";
 
     $stm = $this->conection->prepare($sql);
 
@@ -458,7 +458,7 @@ private function cargarData(){
 
 
 
-	$sql = "select max(bfr.balance) as balance from balancefranquiciatario as bfr";
+	$sql = "SELECT sum(bfr.comision) as balance from balancefranquiciatario as bfr";
 	
 	$stmt = $this->conection->prepare($sql);
 	
@@ -472,7 +472,7 @@ private function cargarData(){
     	$saldofranquiciatario = $utilidadfranquiciatario;
     }
 
-    $sql = "select max(brf.balance) as balance from balancereferidor as brf";
+    $sql = "SELECT sum(brf.comision) as balance from balancereferidor as brf ";
 	
 	$stmtt = $this->conection->prepare($sql);
 	
@@ -485,7 +485,9 @@ private function cargarData(){
 		$saldoreferidor = $utilidadreferidor;
 		}
 
-	$utilidadbruta = ($utilidad - $saldohotel - $saldofranquiciatario - $saldoreferidor);
+		$utilidadperil =  ($saldohotel + $saldofranquiciatario + $saldoreferidor);
+		 // echo $utilidadperil;
+	$utilidadbruta = ($utilidad - $utilidadperil);
 
 
 	$this->negocios['utilidad_bruta'] = number_format((float)$utilidadbruta,2,'.',',');
@@ -607,11 +609,11 @@ public function getVentasPromedioNegocios($fecha1 = null,$fecha2 = null){
 
 public function getNuevosPerfiles(){
 
-	$query ="(select 'Hotel' as perfil, count(*) as usuarios from hotel)
+	$query ="(SELECT 'Hotel' as perfil, count(*) as usuarios from hotel)
 					UNION
-				(select 'Franquiciatario' as perfil, (select count(*) as usuarios from solicitudfr) as usuarios from solicitudfr)
+				(SELECT 'Franquiciatario' as perfil, (SELECT count(*) as usuarios from solicitudfr) as usuarios from solicitudfr)
 					UNION
-				(select 'Referidor' as perfil, (select count(*) as usuarios from solicitudreferidor) as usuarios from solicitudreferidor)";
+				(SELECT 'Referidor' as perfil, (SELECT count(*) as usuarios from solicitudreferidor) as usuarios from solicitudreferidor)";
 					
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
@@ -707,9 +709,9 @@ public function getTotalUsuario(){
 public function getUsuariosParticipantes(){
 
 	if(!empty($this->fechas['inicio'])){
-		$sql="select (select count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8 and nv.creado between :fecha1 and :fecha2) as participantes,
-				((select count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8 and nv.creado between :fecha3 and :fecha4) * 100) / 
-							(select count(*) from usuario where id_rol = 8) as porcentaje";
+		$sql="SELECT (SELECT count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8 and nv.creado between :fecha1 and :fecha2) as participantes,
+				((SELECT count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8 and nv.creado between :fecha3 and :fecha4) * 100) / 
+							(SELECT count(*) from usuario where id_rol = 8) as porcentaje";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->bindParam(':fecha1',$this->fechas['inicio']);
 		$stmt->bindParam(':fecha2',$this->fechas['fin']);
@@ -726,9 +728,9 @@ public function getUsuariosParticipantes(){
 
 		return $html;
 	}else{
-		$sql="select (select count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8) as participantes,
-				((select count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8) * 100) / 
-							(select count(*) from usuario where id_rol = 8) as porcentaje";
+		$sql="SELECT (SELECT count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8) as participantes,
+				((SELECT count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8) * 100) / 
+							(SELECT count(*) from usuario where id_rol = 8) as porcentaje";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->execute(); 
 		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -748,12 +750,12 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 
 
 	if($fecha1){
-		$query = "select sum(bh.comision) as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 and bh.creado between :fecha1 and :fecha2
+		$query = "SELECT balance as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 and bh.creado between :fecha1 and :fecha2 order by bh.id desc limit 1
 			UNION
-			select sum(bfr.comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0 and bfr.creado between :fecha3 and :fecha4
+			SELECT  balance as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0 and bfr.creado between :fecha3 and :fecha4 order by bfr.id desc limit 1
 			UNION
-			select sum(brf.comision) as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0
-			and brf.creado between :fecha5 and :fecha6";
+			SELECT  balance as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0
+			and brf.creado between :fecha5 and :fecha6 order by brf.id desc limit 1";
 
 				$stm = $this->conection->prepare($query);
 				$stm->bindParam(':fecha1',$fecha1);
@@ -767,11 +769,11 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 				return $stm;
 	}else{
 
-		$query = "select sum(bh.comision) as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 
+		$query = "(SELECT sum(comision) as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 )
 			UNION
-			select sum(bfr.comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0
+			(SELECT sum(comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0 order by bfr.id desc limit 1)
 			UNION
-			select sum(brf.comision) as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0";
+			(SELECT sum(comision) as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0 order by brf.id desc limit 1)";
 
 			$stm = $this->conection->prepare($query);
 			$stm->execute();
@@ -787,7 +789,7 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 public function getConsumoUsuarioPromedio(){
 
 	if(!empty($this->fechas['inicio'])){
-		$query = "select avg(nv.venta) as total from negocio_venta as nv join usuario as u on nv.id_usuario = u.id_usuario where nv.creado between :fecha1 and :fecha2";
+		$query = "SELECT avg(nv.venta) as total from negocio_venta as nv join usuario as u on nv.id_usuario = u.id_usuario where nv.creado between :fecha1 and :fecha2";
 		
 		$stm = $this->conection->prepare($query);
 		$stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -798,7 +800,7 @@ public function getConsumoUsuarioPromedio(){
 		
 		return $total;
 	}else{
-			$query = "select avg(nv.venta) as total from negocio_venta as nv join usuario as u on nv.id_usuario = u.id_usuario";
+			$query = "SELECT avg(nv.venta) as total from negocio_venta as nv join usuario as u on nv.id_usuario = u.id_usuario";
 			
 			$stm = $this->conection->prepare($query);
 			$stm ->execute();
@@ -813,8 +815,8 @@ public function getConsumoUsuarioPromedio(){
 public function getRegistroPorUsuario(){
 
 	if(!empty($this->fechas['inicio'])){
-					$query = "select ((select count(*) from negocio_venta)  / 
-					(select count(*) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario where u.id_rol = 8 and nv.creado between :fecha1 and :fecha2)) as total";
+					$query = "SELECT ((SELECT count(*) from negocio_venta)  / 
+					(SELECT count(*) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario where u.id_rol = 8 and nv.creado between :fecha1 and :fecha2)) as total";
 					$stm = $this->conection->prepare($query);
 
 					$stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -825,8 +827,8 @@ public function getRegistroPorUsuario(){
 					
 					return $total;
 	}else{
-					$query = "select ((select count(*) from negocio_venta)  / 
-					(select count(*) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario where u.id_rol = 8)) as total";
+					$query = "SELECT ((SELECT count(*) from negocio_venta)  / 
+					(SELECT count(*) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario where u.id_rol = 8)) as total";
 					$stm = $this->conection->prepare($query);
 					$stm->execute();
 					
@@ -841,14 +843,14 @@ public function getRegistroPorUsuario(){
 public function getTotalPuntos(){
 
 	if(!empty($this->fechas['inicio'])){
-		$query = "select sum(nv.bono_esmarties) as puntos from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
+		$query = "SELECT sum(nv.bono_esmarties) as puntos from negocio_venta as nv where nv.creado between :fecha1 and :fecha2";
 		$stm = $this->conection->prepare($query);
 			$stm->bindParam(':fecha1',$this->fechas['inicio']);
 			$stm->bindParam(':fecha2',$this->fechas['fin']);
 		$stm->execute();
 		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,'.',',');
 	}else{
-		$query = "select sum(nv.bono_esmarties) as puntos from negocio_venta as nv";
+		$query = "SELECT sum(nv.bono_esmarties) as puntos from negocio_venta as nv";
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
 		return number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['puntos'],2,'.',',');
@@ -891,7 +893,7 @@ public function getPuntosCanjeados(){
 public function getValorRegalosEntregado(){
 
 	if(!empty($this->fechas['inicio'])){
-		$query = "select sum(vt.precio) as canjeados from venta_tienda as vt join usuario as u on vt.id_usuario = u.id_usuario where vt.creado between :fecha1 and :fecha2";
+		$query = "SELECT sum(vt.precio) as canjeados from venta_tienda as vt join usuario as u on vt.id_usuario = u.id_usuario where vt.creado between :fecha1 and :fecha2";
 		
 		$stm = $this->conection->prepare($query);
 		$stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -901,7 +903,7 @@ public function getValorRegalosEntregado(){
 		$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['canjeados'],2,'.',',');
 		return $total;
 	}else{
-		$query = "select sum(vt.precio) as canjeados from venta_tienda as vt join usuario as u on vt.id_usuario = u.id_usuario";
+		$query = "SELECT sum(vt.precio) as canjeados from venta_tienda as vt join usuario as u on vt.id_usuario = u.id_usuario";
 
 	$stm = $this->conection->prepare($query);
 	$stm->execute();
@@ -916,7 +918,7 @@ public function getCantidadRegalosEntregado(){
 
 
 	if(!empty($this->fechas['inicio'])){
-		$query = "select count(*) as cant from venta_tienda where entrega = 1 and creado between :fecha1 and :fecha2";
+		$query = "SELECT count(*) as cant from venta_tienda where entrega = 1 and creado between :fecha1 and :fecha2";
 		
 		$stm = $this->conection->prepare($query);
 		$stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -926,7 +928,7 @@ public function getCantidadRegalosEntregado(){
 
 	}else{
 		
-		$query = "select count(*) as cant from venta_tienda where entrega = 1";
+		$query = "SELECT count(*) as cant from venta_tienda where entrega = 1";
 		$stm = $this->conection->prepare($query);
 		$stm->execute();
 		return $stm->fetch(PDO::FETCH_ASSOC)['cant'];
@@ -937,7 +939,7 @@ public function getCantidadRegalosEntregado(){
 
 public function getValorRegaloPromedio(){
 	if(!empty($this->fechas['inicio'])){
-		$query="select avg(vt.precio) as promedio from venta_tienda as vt where vt.entrega =1 and vt.creado between :fecha1 and :fecha2";
+		$query="SELECT avg(vt.precio) as promedio from venta_tienda as vt where vt.entrega =1 and vt.creado between :fecha1 and :fecha2";
 		
 		$stm = $this->conection->prepare($query);
 		$stm->bindParam(':fecha1',$this->fechas['inicio']);
@@ -948,7 +950,7 @@ public function getValorRegaloPromedio(){
 		
 		return $total;
 	}else{
-		$query="select avg(vt.precio) as promedio from venta_tienda as vt where vt.entrega =1 ";
+		$query="SELECT avg(vt.precio) as promedio from venta_tienda as vt where vt.entrega =1 ";
 		
 		$stm = $this->conection->prepare($query);
 		$stm->execute();

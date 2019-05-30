@@ -138,14 +138,14 @@ class Home {
 	private function CargarHotel(int $idhotel = null){
 
 		if(!is_null($idhotel)){
-				$query = "select h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
+				$query = "SELECT h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
 				inner join referidor as rf on h.id = rf.id_hotel
 				inner join solicitudreferidor as srf on rf.id = srf.id_referidor
 				where h.id = :hotel";
 
 				$datos = array(':hotel' => $idhotel); 
 			}else{
-				$query = "select h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
+				$query = "SELECT h.id,h.nombre as nombrehotel, rf.id  as idreferidor from hotel as h 
 				inner join referidor as rf on h.id = rf.id_hotel
 				inner join solicitudreferidor as srf on rf.id = srf.id_referidor 
 				where srf.id_usuario = :id";
@@ -172,13 +172,9 @@ class Home {
 
 		if($this->fechas['inicio'] and $this->fechas['fin']){
 						$sql="SELECT COUNT(nven.venta)
-						FROM negocio as ne
-						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
-						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
-						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
-						JOIN huespedhotel as hh on hu.id = hh.id_huesped
-						JOIN hotel as h on hh.id_hotel = h.id
-						where h.id = :idhotel and nven.creado between :fecha1 and :fecha2";
+						FROM negocio_venta as nven 
+						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
+						where bh.id_hotel = :idhotel and nven.creado between :fecha1 and :fecha2";
 						$stmt = $this->con->prepare($sql);
 						$stmt->execute(array(':idhotel'=>$this->hotel['id'],
 											':fecha1'=>$this->fechas['inicio'],
@@ -188,13 +184,9 @@ class Home {
 						return $number_of_rows;
 			}else{
 						$sql="SELECT COUNT(nven.venta)
-						FROM negocio as ne
-						JOIN negocio_venta as nven on ne.id_negocio = nven.id_negocio
-						JOIN usuario as usu on nven.id_usuario = usu.id_usuario
-						JOIN huesped as hu on usu.id_usuario = hu.id_usuario
-						JOIN huespedhotel as hh on hu.id = hh.id_huesped
-						JOIN hotel as h on hh.id_hotel = h.id
-						where h.id = :idhotel";
+						FROM negocio_venta as nven 
+						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
+						where bh.id_hotel = :idhotel";
 						$stmt = $this->con->prepare($sql);
 						
 						$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
@@ -202,7 +194,7 @@ class Home {
 						$this->hotel['operations']=$number_of_rows;
 						return $number_of_rows;
 			}
-
+	
 	}
 
 	public function getOperacionesNegocios(){
@@ -385,7 +377,7 @@ class Home {
 	public function getPromedioConsumo(){
 		
 		if($this->fechas['inicio'] and $this->fechas['fin']){
-			$sql ="select AVG(nv.venta) as promedio, (select COUNT(venta) from negocio_venta) as nroventas 
+			$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
 				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
 				join hotel as h on bh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2";
 			$stmt = $this->con->prepare($sql);
@@ -399,7 +391,7 @@ class Home {
 			$result=number_format((float)$promedio, 2, ',', '.');
 			return $result;
 		}else{
-			$sql ="select AVG(nv.venta) as promedio, (select COUNT(venta) from negocio_venta) as nroventas 
+			$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
 				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
 				join hotel as h on bh.id_hotel = :hotel";
 			$stmt = $this->con->prepare($sql);
@@ -441,7 +433,7 @@ class Home {
 	public function getUsuarios(){
 		if($this->fechas['inicio']){
 
-			$sql="select COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
+			$sql="SELECT COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
 				join huespedhotel as hh on hu.id = hh.id_huesped 
 				join hotel as h on hh.id_hotel = h.id
 				where h.id =:hotel and u.creado between :fecha1 and :fecha2";
@@ -455,7 +447,7 @@ class Home {
 
 		}else{
 
-				$sql="select COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
+				$sql="SELECT COUNT(u.id_usuario) as usuarios from usuario as u join huesped as hu on u.id_usuario = hu.id_usuario
 				join huespedhotel as hh on hu.id = hh.id_huesped 
 				join hotel as h on hh.id_hotel = h.id
 				where h.id =:hotel";
@@ -470,7 +462,7 @@ class Home {
 
 	public function getUsuariosParticipantes(){
 		if($this->fechas['inicio']){
-			$sql="select COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+			$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
 				left join usuario as u on nv.id_usuario = u.id_usuario 
 				left join balancehotel as bh on nv.id_venta = bh.id_venta
 				left join hotel as h on bh.id_hotel = h.id
@@ -484,7 +476,7 @@ class Home {
 		$usuarios = $stmt->fetchAll();
 		return count($usuarios);
 	}else{
-		$sql="select COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+		$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
 				left join usuario as u on nv.id_usuario = u.id_usuario 
 				left join balancehotel as bh on nv.id_venta = bh.id_venta
 				left join hotel as h on bh.id_hotel = h.id
@@ -498,7 +490,7 @@ class Home {
 	}
 
 	public function getTotalConsumoHuesped(){
-			$sql=" select SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+			$sql=" SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
 	 					join usuario as u on nv.id_usuario = u.id_usuario 
 	 					join huesped as hu on u.id_usuario = hu.id_usuario 
 	 					join huespedhotel as hh on hu.id = hh.id_huesped
@@ -511,7 +503,7 @@ class Home {
 
 	public function getPuntosGenerados(){
 		if($this->fechas['inicio']){
-			$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
+			$sql="SELECT SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
 				join usuario as u on nv.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -526,7 +518,7 @@ class Home {
 			return number_format((float)$puntos, 2, '.',',');
 
 		}else{
-			$sql="select SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
+			$sql="SELECT SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
 				join usuario as u on nv.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -542,7 +534,7 @@ class Home {
 
 	public function getPuntosCanjeados(){
 			if($this->fechas['inicio']){
-			$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
+			$sql="SELECT SUM(vt.precio) as canjeados from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -556,7 +548,7 @@ class Home {
 			$puntos = $stmt->fetch(PDO::FETCH_ASSOC)['canjeados'];
 			return number_format((float)$puntos, 2, '.',',');
 		}else{
-			$sql="select SUM(vt.precio) as canjeados from venta_tienda as vt 
+			$sql="SELECT SUM(vt.precio) as canjeados from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -571,29 +563,42 @@ class Home {
 	}
 
 	public function getRegalosEntregados($idhotel = null){
+
 		if($this->fechas['inicio']){
-				$sql="select COUNT(vt.id_venta) as regalos from venta_tienda as vt 
+				$sql="SELECT COUNT(vt.id_venta) as regalos from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
 				join hotel as h on hh.id_hotel = h.id	
 				where h.id = :hotel and vt.entrega = 1 and vt.creado between :fecha1 and :fecha2";
 				$stmt = $this->con->prepare($sql);
-				$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+
+				if(!is_null($idhotel)){
+						$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+				}else{
+					$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+				}
+			
 				$stmt->bindParam(':fecha1',$this->fechas['inicio']);
 				$stmt->bindParam(':fecha2',$this->fechas['fin']);
 				$stmt->execute(); 
 				$regalos = $stmt->fetch(PDO::FETCH_ASSOC)['regalos'];
 				return $regalos;
 			}else{
-					$sql="select COUNT(vt.id_venta) as regalos from venta_tienda as vt 
+					$sql="SELECT COUNT(vt.id_venta) as regalos from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped 
 				join hotel as h on hh.id_hotel = h.id	
 				where h.id = :hotel and vt.entrega = 1";
 				$stmt = $this->con->prepare($sql);
-				$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+
+				if(!is_null($idhotel)){
+						$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
+				}else{
+					$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+				}
+			
 				$stmt->execute(); 
 				$regalos = $stmt->fetch(PDO::FETCH_ASSOC)['regalos'];
 				return $regalos;
@@ -601,7 +606,7 @@ class Home {
 	}
 
 	public function getTotalRegalosPorUsuarios($idhotel){
-		$sql="select COUNT(vt.id_venta) as regalos, CONCAT(u.nombre,' ',u.apellido) as nombre, u.username from venta_tienda as vt 
+		$sql="SELECT COUNT(vt.id_venta) as regalos, CONCAT(u.nombre,' ',u.apellido) as nombre, u.username from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario 
  				join huesped as hu on u.id_usuario = hu.id_usuario 
  				join huespedhotel as hh on hu.id = hh.id_huesped 
@@ -616,7 +621,7 @@ class Home {
 
 	public function getTotalValorRegalos(){
 		if($this->fechas['inicio']){
-				$sql="select sum(vt.precio) as valor from venta_tienda as vt 
+				$sql="SELECT sum(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -628,14 +633,20 @@ class Home {
 				$stmt->bindParam(':fecha2',$this->fechas['fin']);
 				$stmt->execute(); 
 
-				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
+				$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			
+				 $valor = number_format((float)$fila['valor'],2,'.',',');
+
+				if($valor > 0 ){
+					$result = $valor;
 				}else{
-					$valor = 0;
+					$result = 0;
 				}
-				return $valor;
+				return $result;
+				
 			}else{
-					$sql="select sum(vt.precio) as valor from venta_tienda as vt 
+					$sql="SELECT sum(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -645,19 +656,24 @@ class Home {
 				$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
 				$stmt->execute(); 
 
-				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
+				$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			
+				 $valor = number_format((float)$fila['valor'],2,'.',',');
+
+				if($valor > 0 ){
+					$result = $valor;
 				}else{
-					$valor = 0;
+					$result = 0;
 				}
-				return $valor;
+				return $result;
 			}
 	}
 
 	public function getValorRegaloPromedio(){
 		if($this->fechas['inicio']){
 
-		$sql="select AVG(vt.precio) as valor from venta_tienda as vt 
+		$sql="SELECT AVG(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -669,15 +685,20 @@ class Home {
 				$stmt->bindParam(':fecha2',$this->fechas['fin']);
 				$stmt->execute(); 
 
-				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
+				$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			
+				 $valor = number_format((float)$fila['valor'],2,'.',',');
+
+				if($valor > 0 ){
+					$result = $valor;
 				}else{
-					$valor = 0;
+					$result = 0;
 				}
-				return $valor;
+				return $result;
 		}else{
 
-		$sql="select AVG(vt.precio) as valor from venta_tienda as vt 
+		$sql="SELECT AVG(vt.precio) as valor from venta_tienda as vt 
 				join usuario as u on vt.id_usuario = u.id_usuario
 				join huesped as hu on u.id_usuario = hu.id_usuario 
 				join huespedhotel as hh on hu.id = hh.id_huesped
@@ -687,12 +708,17 @@ class Home {
 				$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
 				$stmt->execute(); 
 
-				if( $stmt->fetch(PDO::FETCH_ASSOC)['valor']  > 0 ){
-					$valor = number_format((float) $stmt->fetch(PDO::FETCH_ASSOC)['valor'],2,'.',',');
+				$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			
+				 $valor = number_format((float)$fila['valor'],2,'.',',');
+
+				if($valor > 0 ){
+					$result = $valor;
 				}else{
-					$valor = 0;
+					$result = 0;
 				}
-				return $valor;
+				return $result;
 
 		}
 	}
@@ -737,8 +763,8 @@ class Home {
 	public function getComisiones(){
 
 		if($this->fechas['inicio'] and $this->fechas['fin']){
-			$query  = "select nv.iso  as divisa, (select br.balance as balance from balancereferidor as br where br.id_referidor = :fr1 
-								and br.id = (select max(id) from balancereferidor)) as balance
+			$query  = "SELECT nv.iso  as divisa, (SELECT br.balance as balance from balancereferidor as br where br.id_referidor = :fr1 
+								and br.creado between :fecha3 and :fecha4 order by br.id desc limit 1 ) as balance
 								from negocio_venta as nv join balancereferidor as br on nv.id_venta = br.id_venta
 								where br.id_referidor = :fr2 and br.creado BETWEEN :fecha1 and :fecha2";
 
@@ -746,7 +772,9 @@ class Home {
 				$stm->execute(array(':fr1'=>$this->referidor['id'],
 				                    ':fr2'=>$this->referidor['id'],
 				                	':fecha1' =>$this->fechas['inicio'],
-				                	':fecha2' => $this->fechas['fin']));
+				                	':fecha2' => $this->fechas['fin'],
+				                	':fecha3' =>$this->fechas['inicio'],
+				                	':fecha4' => $this->fechas['fin']));
 
 				
 				$pref = null;
@@ -775,8 +803,8 @@ class Home {
 		return $html;
 
 		}else{
-			$query  = "select nv.iso  as divisa, (select br.balance as balance from balancereferidor as br where br.id_referidor = :fr1 
-								and br.id = (select max(id) from balancereferidor)) as balance
+			$query  = "SELECT nv.iso  as divisa, (SELECT br.balance as balance from balancereferidor as br where br.id_referidor = :fr1 
+						 order by br.id desc limit 1 ) as balance
 								from negocio_venta as nv join balancereferidor as br on nv.id_venta = br.id_venta
 								where br.id_referidor = :fr2 and br.creado BETWEEN br.creado and now()";
 
@@ -816,7 +844,7 @@ class Home {
 	public function getBalance(){
 		$query  = "SELECT  brf.balance as balance
  					from  balancereferidor as brf
- 				where brf.id_referidor = :idreferidor and brf.id = (select max(id) from balancereferidor)";
+ 				where brf.id_referidor = :idreferidor order by brf.id desc limit 1";
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idreferidor'=>$this->referidor['id']));
 				return $stm->fetch(PDO::FETCH_ASSOC)['balance'];
