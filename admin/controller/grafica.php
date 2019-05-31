@@ -50,7 +50,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios')
 		if($result){
 			$response = array();
 			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-				$promedio = number_format((float)$row['promedio'],2,'.',',');
+				$promedio = $row['promedio']; //number_format((float),2,'.',',');
 
 
 				if($row['iso'] == 'EUR'){
@@ -61,6 +61,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'ventaspromediopornegocios')
 				$negocio = $row['negocio'];
 				$prome = $promedio;
 				 settype($promedio,'float');
+				 // echo $promedio;
 				$response[] = array('name'=>$negocio,'y'=>$promedio);
 	
 			}

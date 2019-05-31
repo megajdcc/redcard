@@ -145,6 +145,36 @@ class Comprobantes
 	}
 
 
+
+	public function cambiarStatusMensaje(int $idmesaje){
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		$sql = "UPDATE retiro_mensajes set leido = :leido where id=:id";
+
+		try {
+			$stm = $this->con->prepare($sql);
+
+		
+
+			$stm->execute(array(':leido'=>1,':id'=>$idmesaje));
+
+			$this->con->commit();
+
+
+		} catch (\PDOExection $e) {
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollBack();
+			return false;
+		}
+
+		return true;
+
+	}
 	public function Aprobar(string $recibo,array $post){
 
 		if($this->con->inTransaction()){

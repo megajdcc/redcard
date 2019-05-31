@@ -62,7 +62,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							<th>Fecha de aprobación</th>
 							<th>Aprobada por</th>
 							<th>Aprobado</th>
-							<th>Monto a retirar</th>	
+							<th>Monto a retirar</th>
+							<th>Monto Recibido</th>	
 							<th></th>
 						</tr>
 					</thead>
@@ -74,6 +75,46 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				</table>
 					</section>
 				</div>
+				<script>
+					
+					$(document).ready(function() {
+						$('.mensaje').click(function(event) {
+							
+							var mensaje = $(this).attr('data-mesaje');
+
+							var idmensaje = $(this).attr('data-idmesage');
+
+
+							$.ajax({
+								url: '/admin/controller/ControllerRegistro.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data: {solicitud: 'mensajeleido',idm:idmensaje},
+							})
+							.done(function(response) {
+
+								if(response.peticion){
+									alert(mensaje);
+									location.reload();
+								}else{
+
+								}
+								
+							})
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+							
+
+						
+
+						});
+					});
+				</script>
+
 			
 				
 				<div class="row contenedor-solicitud">

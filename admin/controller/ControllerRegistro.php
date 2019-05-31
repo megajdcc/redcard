@@ -566,6 +566,26 @@ if(isset($_POST['solicitudcodigo'])){
 		echo json_encode($response);
 	}
 
+	if(isset($_POST['solicitud']) and $_POST['solicitud'] == 'mensajeleido'){
+
+		$response = array('peticion' =>false,
+						'mensaje'=>'No se pudo realizar la operación intente mas tarde.');
+
+
+			$comprobante = new Comprobantes($con);
+
+		$result = $comprobante->cambiarStatusMensaje($_POST['idm']);
+
+		if($result){
+				$response['peticion'] = true;
+				$response['mensaje'] = "Status Cambiado a leido";
+		}
+
+
+		echo json_encode($response);
+	
+	}
+
 
 
 }

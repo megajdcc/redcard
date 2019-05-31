@@ -130,12 +130,12 @@ private function DatosHotel(){
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, brf.balance,brf.creado
 						from retiro as r join retirocomisionreferidor as rr on r.id = rr.id_retiro join balancereferidor as brf on rr.id = brf.id_retiro
-						where brf.id_referidor = :fr2 and rr.condicion = 1 and brf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+						where brf.id_referidor = :fr2 and rr.condicion = 1 and brf.creado between :fecha3 and :fecha4)
 						UNION
 						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, bfr.balance,bfr.creado
 						from retirocomisionreferidor as rr left join retiro as r on rr.id_retiro = r.id left join balancereferidor as bfr on rr.id = bfr.id_retiro
-						where bfr.id_referidor = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 and bfr.between :fecha5 and :fecha6 )
+						where bfr.id_referidor = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 and bfr.creado between :fecha5 and :fecha6 )
 							order by creado";
 							$stm = $this->con->prepare($query);
 							$stm->execute(array(':fr1'=>$this->referidor['id'],

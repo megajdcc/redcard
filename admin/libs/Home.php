@@ -709,9 +709,9 @@ public function getTotalUsuario(){
 public function getUsuariosParticipantes(){
 
 	if(!empty($this->fechas['inicio'])){
-		$sql="SELECT (SELECT count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8 and nv.creado between :fecha1 and :fecha2) as participantes,
-				((SELECT count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8 and nv.creado between :fecha3 and :fecha4) * 100) / 
-							(SELECT count(*) from usuario where id_rol = 8) as porcentaje";
+		$sql="SELECT (SELECT count(distinct u.id_usuario) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where  nv.creado between :fecha1 and :fecha2) as participantes,
+				((SELECT count(distinct u.id_usuario) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where  nv.creado between :fecha3 and :fecha4) * 100) / 
+							(SELECT count(*) from usuario) as porcentaje";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->bindParam(':fecha1',$this->fechas['inicio']);
 		$stmt->bindParam(':fecha2',$this->fechas['fin']);
@@ -728,9 +728,9 @@ public function getUsuariosParticipantes(){
 
 		return $html;
 	}else{
-		$sql="SELECT (SELECT count(*) FROM negocio_venta nv INNER JOIN usuario u ON u.id_usuario=nv.id_usuario where id_rol=8) as participantes,
-				((SELECT count(*) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario where id_rol=8) * 100) / 
-							(SELECT count(*) from usuario where id_rol = 8) as porcentaje";
+		$sql="SELECT (SELECT count(distinct u.id_usuario) FROM negocio_venta nv JOIN usuario u ON u.id_usuario=nv.id_usuario) as participantes,
+ 				((SELECT count(distinct u.id_usuario) from negocio_venta as nv join usuario u on nv.id_usuario = u.id_usuario ) * 100) / 
+							(SELECT count(*) from usuario ) as porcentaje";
 		$stmt = $this->conection->prepare($sql);
 		$stmt->execute(); 
 		$fila = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -750,12 +750,12 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 
 
 	if($fecha1){
-		$query = "SELECT balance as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 and bh.creado between :fecha1 and :fecha2 order by bh.id desc limit 1
+		$query = "SELECT balance as total,'Hotel' as perfil from balancehotel as bh where bh.creado between :fecha1 and :fecha2 order by bh.id desc limit 1
 			UNION
-			SELECT  balance as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0 and bfr.creado between :fecha3 and :fecha4 order by bfr.id desc limit 1
+			SELECT  balance as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.creado between :fecha3 and :fecha4 order by bfr.id desc limit 1
 			UNION
-			SELECT  balance as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0
-			and brf.creado between :fecha5 and :fecha6 order by brf.id desc limit 1";
+			SELECT  balance as total,'Referidor' as perfil from balancereferidor as brf where
+			brf.creado between :fecha5 and :fecha6 order by brf.id desc limit 1";
 
 				$stm = $this->conection->prepare($query);
 				$stm->bindParam(':fecha1',$fecha1);
@@ -769,11 +769,11 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 				return $stm;
 	}else{
 
-		$query = "(SELECT sum(comision) as total,'Hotel' as perfil from balancehotel as bh where bh.id_venta != 0 )
+		$query = "(SELECT sum(comision) as total,'Hotel' as perfil from balancehotel as bh )
 			UNION
-			(SELECT sum(comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr where bfr.id_venta != 0 order by bfr.id desc limit 1)
+			(SELECT sum(comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr order by bfr.id desc limit 1)
 			UNION
-			(SELECT sum(comision) as total,'Referidor' as perfil from balancereferidor as brf where brf.id_venta != 0 order by brf.id desc limit 1)";
+			(SELECT sum(comision) as total,'Referidor' as perfil from balancereferidor as brf  order by brf.id desc limit 1)";
 
 			$stm = $this->conection->prepare($query);
 			$stm->execute();
@@ -823,16 +823,16 @@ public function getRegistroPorUsuario(){
 					$stm->bindParam(':fecha2',$this->fechas['fin']);
 					$stm->execute();
 					
-					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
+					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],0,'.',',');
 					
 					return $total;
 	}else{
 					$query = "SELECT ((SELECT count(*) from negocio_venta)  / 
-					(SELECT count(*) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario where u.id_rol = 8)) as total";
+					(SELECT count(distinct u.id_usuario) from usuario as u join negocio_venta as nv on u.id_usuario = nv.id_usuario)) as total";
 					$stm = $this->conection->prepare($query);
 					$stm->execute();
 					
-					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],2,'.',',');
+					$total = number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['total'],0,'.',',');
 					
 					return $total;
 	}

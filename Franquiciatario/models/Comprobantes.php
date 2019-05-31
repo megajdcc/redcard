@@ -179,7 +179,7 @@ public function procesarretiro(array $post){
 }
 
 private function cargarComprobantes(){
-		$query = "select  r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
+		$query = "select  r.pagado,r.tipo_pago,r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
 					r.id_franquiciatario,r.id_hotel,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.id_usuario_aprobacion
 				from retiro as r join franquiciatario as fr on r.id_franquiciatario = fr.id
 							join usuario as u on  r.id_usuario_solicitud = u.id_usuario
@@ -206,6 +206,23 @@ public function getComprobantes(){
 				$aprobado = "No";
 		}
 		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
+
+		$pagado = number_format((float)$value['pagado'],2,'.',',');
+
+
+			$sql = "SELECT * from retiro_mensajes where id_retiro = :retiro";
+
+			$stm = $this->con->prepare($sql);
+
+			$stm->bindParam(':retiro',$value['id']);
+			$stm->execute();
+
+			$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+			$mensaje = false;
+			if($stm->rowCount()){
+				$mensaje = $fila['mensaje'];
+			}
 		?>
 
 			
@@ -216,10 +233,23 @@ public function getComprobantes(){
 				<td><?php echo $usuarioaprobador; ?></td>
 				<td><?php echo $aprobado; ?></td>
 				<td><?php echo $monto; ?></td>
+				<td><?php echo $pagado;  ?></td>
 				<td><?php 
 						if($aprobado == 'Si'){?>
-						<button type="button" data-retiro="<?php echo $value['id']; ?>" class=" btn btn-warning archivo"><i class="fa fa-file-pdf-o"></i> 	<a href="<?php echo $urlrecibo; ?>" target="_blank">Descargar</a></button>
-				<?php  }?>
+								<style >
+									.btn-comp{
+										display: flex;
+									}
+								</style>
+								<div class="btn-comp d-flex">
+											<?php if($mensaje){ ?>
+											<button class="btn btn-info mensaje" data-idmesage="<?php echo $fila['id']; ?>" data-mesaje="<?php echo $mensaje;?>" data-toggle="tooltip" title="Mensaje" data-placement="left"><i class="<?php 
+											if($fila['leido'] == 0){ echo 'fa fa-envelope';}else{echo 'fa fa-envelope-open';}
+											?>"></i></button>
+											<?php } ?>
+											<button type="button" data-retiro="<?php echo $value['id']; ?>" class=" btn btn-warning archivo"><i class="fa fa-file-pdf-o"></i> 	<a href="<?php echo $urlrecibo; ?>" target="_blank">Descargar</a></button>
+								</div>
+						<?php  }?>
 				</td>
 			</tr>
 		<?php }

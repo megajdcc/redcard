@@ -93,15 +93,18 @@ class Comprobantes
 				}
 
 				$this->con->beginTransaction();
-				$query = "insert into retiro(mensaje,id_usuario_solicitud,monto,id_referidor) values(:mensaje,:usuario,:monto,:referidor)";
-				$monto = number_format((float)$post['monto'],2,',','.');
+
+				$query = "INSERT INTO retiro(mensaje,id_usuario_solicitud,monto,id_referidor) VALUES(:mensaje,:usuario,:monto,:referidor)";
+				$monto = number_format((float)$post['monto'],2,'.',',');
 				try {
 
 						$stm = $this->con->prepare($query);
-						$stm->execute(array(':mensaje'=>$post['mensaje'],
-										':usuario'=>$_SESSION['user']['id_usuario'],
-										':monto'=>$post['monto'],
-										':referidor'=>$this->referidor['id']));
+						$stm->execute(array(
+										':mensaje'   =>$post['mensaje'],
+										':usuario'   =>$_SESSION['user']['id_usuario'],
+										':monto'     =>$post['monto'],
+										':referidor' =>$this->referidor['id']
+									));
 						$last_id = $this->con->lastInsertId();
 
 				} catch (\PDOException $e) {
@@ -110,12 +113,13 @@ class Comprobantes
 						return false;
 				}
 
-				$query2 = "insert into retirocomisionreferidor(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
+				$query2 = "INSERT INTO retirocomisionreferidor(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
 
 				try {
 						$stm = $this->con->prepare($query2);
-						$stm->bindParam(':idretiro',$last_id,PDO::PARAM_INT);
-						$stm->execute();
+					
+						$stm->execute(array(':idretiro'=>$last_id));
+
 						$last_id_retiro = $this->con->lastInsertId();
 				} catch (\PDOException $e) {
 					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
@@ -124,7 +128,7 @@ class Comprobantes
 				}
 				
 				$query = "SELECT  brf.balance as balance
-				from  redcard.balancereferidor as brf 
+				from  balancereferidor as brf 
 	 				where brf.id_referidor =:referidor order by brf.id desc limit 1";
 					$stm = $this->con->prepare($query);
 					$stm->execute(array(':referidor'=>$this->referidor['id']));
@@ -179,7 +183,7 @@ class Comprobantes
 	}
 
 	private function cargarComprobantes(){
-			$query = "select  r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
+			$query = "select  r.pagado,r.tipo_pago,r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
 						r.id_referidor,r.id_hotel,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.id_usuario_aprobacion
 								from retiro as r join referidor as rf on r.id_referidor = rf.id
 								join usuario as u on  r.id_usuario_solicitud = u.id_usuario
@@ -205,6 +209,26 @@ class Comprobantes
 					$aprobado = "No";
 			}
 			$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
+
+			$pagado = number_format((float)$value['pagado'],2,'.',',');
+
+
+			$sql = "SELECT * from retiro_mensajes where id_retiro = :retiro";
+
+			$stm = $this->con->prepare($sql);
+
+			$stm->bindParam(':retiro',$value['id']);
+			$stm->execute();
+
+			$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+			$mensaje = false;
+			if($stm->rowCount()){
+				$mensaje = $fila['mensaje'];
+			}
+
+			// echo $mensaje;
+
 			?>
 
 				
@@ -215,9 +239,23 @@ class Comprobantes
 					<td><?php echo $usuarioaprobador; ?></td>
 					<td><?php echo $aprobado; ?></td>
 					<td><?php echo $monto; ?></td>
+					<td><?php echo $pagado;  ?></td>
 					<td><?php 
 							if($aprobado == 'Si'){?>
-								<a href="<?php echo $urlrecibo; ?>" class="btn btn-success" target="_blank"><i class="fa fa-file-pdf-o"> </i> Comprobante</a>
+								<style >
+									.btn-comp{
+										display: flex;
+									}
+								</style>
+								<div class="btn-comp d-flex">
+									<?php if($mensaje){ ?>
+											<button class="btn btn-info mensaje" data-idmesage="<?php echo $fila['id']; ?>" data-mesaje="<?php echo $mensaje;?>" data-toggle="tooltip" title="Mensaje" data-placement="left"><i class="<?php 
+											if($fila['leido'] == 0){ echo 'fa fa-envelope';}else{echo 'fa fa-envelope-open';}
+											?>"></i></button>
+									<?php } ?>
+										<a href="<?php echo $urlrecibo; ?>" class="btn btn-success" target="_blank"><i class="fa fa-file-pdf-o"> </i> Comprobante</a>
+								</div>
+							
 					<?php  }?>
 					</td>
 				</tr>

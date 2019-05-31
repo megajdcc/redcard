@@ -437,7 +437,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						
 					<div class="modal-footer">
 						<input type="hidden" name="idsolicitud" id="nrosolicitud" >
-						<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="cancelar" class="cancelar btn btn-danger"><i class="fa fa-cancel"></i>Cancelar Retiro</button>
+						<!-- <button style="margin-left: auto;" type="submit"  data-path="<?php //echo _safe($_SERVER['REQUEST_URI']); ?>" name="cancelar" class="cancelar btn btn-danger"><i class="fa fa-cancel"></i>Cancelar Retiro</button> -->
 						<button type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="aprobar" class="actualizar btn btn-success">Aprobar</button>
 						<button  type="button" class="cerrarmodal btn btn-secondary" >Cerrar</button>
 					</div>]
