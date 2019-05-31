@@ -10,7 +10,7 @@ use Hotel\models\AfiliarHotel;
 use Franquiciatario\models\AfiliarFranquiciatario;
 use Referidor\models\AfiliarReferidor;
 use admin\libs\DetallesSolicitud;
-
+use admin\libs\Comprobantes;
 
 $solicitud = new DetallesSolicitud($con);
 
@@ -520,6 +520,51 @@ if(isset($_POST['solicitudcodigo'])){
 	}
 
 
+
+	if(isset($_POST['solicitud']) and $_POST['solicitud'] == 'pagocomprobando'){
+		$comprobante = new Comprobantes($con);
+
+		$response = array('peticion' =>false,
+						'mensaje'=>'No se pudo realizar la operación intente mas tarde.');
+
+
+		$archivoo = null;
+		$nombrefile = 'recibo nro '.' - '.$_POST['idsolicitud'].' -';
+		if(!empty($_FILES['recibo']['name'])){
+		
+			$file             = $_FILES['recibo'];
+			$nombrefile       .= $file['name'];
+			$tipofile         = $file['type'];
+			$ruta_provisional = $file["tmp_name"];
+			$size             = $file["size"];
+
+			$carpeta = $_SERVER['DOCUMENT_ROOT'].'/assets/recibos/';
+
+			$archivoo = $nombrefile;
+
+			$src = $carpeta.$nombrefile;
+
+			
+
+			$resultado = false;
+
+				$resultado =$comprobante->Aprobar($nombrefile, $_POST);
+
+
+			
+
+			if($resultado){
+				$response['peticion'] = true;
+
+				$result = move_uploaded_file($ruta_provisional, $src);
+
+				$response['mensaje'] = "Operación realizada exitosamente.";
+				
+			}
+
+		}
+		echo json_encode($response);
+	}
 
 
 

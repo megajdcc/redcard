@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
 namespace assets\libs;
 use PDO;
 
@@ -45,14 +45,14 @@ class recover_account {
 				$mail->CharSet = 'UTF-8';
 				// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
 				// $mail->isSMTP();
-				$mail->Host = 'a2plcpnl0735.prod.iad2.secureserver.net';
+				$mail->Host = 'single-5928.banahosting.com';
 				$mail->SMTPAuth = true;
 				$mail->SMTPSecure = 'ssl';
 				$mail->Port = 465;
 				// El correo que hará el envío
-				$mail->Username = 'notificacion@esmartclub.com';
-				$mail->Password = 'Alan@2017_pv';
-				$mail->setFrom('notificacion@esmartclub.com', 'Travel Points');
+				$mail->Username = 'notification@travelpoints.com.mx';
+				$mail->Password = '20464273jd';
+				$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 				// El correo al que se enviará
 				$mail->addAddress($email);
 				// Hacerlo formato HTML

@@ -24,23 +24,23 @@ $search = filter_input(INPUT_GET, 'buscar');
 
 if(isset($_REQUEST['aprobar'])){
 
-		$archivoo = null;
-		$nombrefile = 'recibo nro '.' - '.$_POST['idsolicitud'].' -';
-		if(!empty($_FILES['recibo']['name'])){
+		// $archivoo = null;
+		// $nombrefile = 'recibo nro '.' - '.$_POST['idsolicitud'].' -';
+		// if(!empty($_FILES['recibo']['name'])){
 		
-			$file             = $_FILES['recibo'];
-			$nombrefile       .= $file['name'];
-			$tipofile         = $file['type'];
-			$ruta_provisional = $file["tmp_name"];
-			$size             = $file["size"];
-			$carpeta = $_SERVER['DOCUMENT_ROOT'].'/assets/recibos/';
-			$archivoo = $nombrefile;
-			$src = $carpeta.$nombrefile;
-			$result = move_uploaded_file($ruta_provisional, $src);
-			if($result){
-				 $comprobante->Aprobar($nombrefile, $_POST['idsolicitud']);
-			}
-		}
+		// 	$file             = $_FILES['recibo'];
+		// 	$nombrefile       .= $file['name'];
+		// 	$tipofile         = $file['type'];
+		// 	$ruta_provisional = $file["tmp_name"];
+		// 	$size             = $file["size"];
+		// 	$carpeta = $_SERVER['DOCUMENT_ROOT'].'/assets/recibos/';
+		// 	$archivoo = $nombrefile;
+		// 	$src = $carpeta.$nombrefile;
+		// 	$result = move_uploaded_file($ruta_provisional, $src);
+		// 	if($result){
+		// 		 $comprobante->Aprobar($nombrefile, $_POST['idsolicitud']);
+		// 	}
+		// }
 }
 
 $includes = new admin\libs\includes($con);
@@ -71,7 +71,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
             	<th></th>
             	<th>Solicitante</th>
                 <th>Perfil</th>
-                <th>Monto</th>
+                <th>Monto Solicitud</th>
+                <th>Mondo Pagado</th>
+                <th>Tipo Pago</th>
                 <th>Aprobada</th>
                 <th>Fecha solicitud</th>
                 <th></th>
@@ -130,7 +132,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<div class="modal fade " id="solicitud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="true">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
-					<form  action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+					<form id="formulario-pago" action="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">Pagar solicitud  de retiro #<span class="nrosolicitud"></span></h5>
 						<h5 class="modal-title">Monto solicitado: <span class="monto"></span></h5>
@@ -186,15 +188,31 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 										.recibopago{
 											margin-bottom: 2rem;
 										}
+										.pagos{
+											display: flex;
+										}
+										.pagos div:nth-child(1){
+											margin-right: 1rem;
+										}
 									</style>
 
 									<section class="row">
 										
-										<div class="btn-toolbar" role="toolbar" aria-label="Botones de pagos">
-											<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Pagos">
-												<button type="button" class="total btn btn-secondary">Pago Total</button>
-												<button type="button" class="parcial btn btn-secondary">Pago Parcial</button>
+										<div class="col-lg-4 pagos">
+											<div class="custom-control custom-radio custom-control-inline">
+											<input class="total custom-control-input" type="radio" name="tpago" id="inlineRadio1" value="total" checked>
+											<label class="custom-control-label" for="inlineRadio1">Total</label>
 											</div>
+											<div class="custom-control custom-radio custom-control-inline">
+											<input class="parcial custom-control-input" type="radio" name="tpago" id="inlineRadio2" value="parcial">
+											<label class="custom-control-label" for="inlineRadio2">Parcial</label>
+											</div>
+										</div>
+										
+										<div class="col-lg-8 btn-toolbar" role="toolbar" aria-label="Botones de pagos">
+											
+												
+											
 
 											<div class="btn-group btn-group-sm mr-2" role="group" aria-label="Datos solicitante">
 											
@@ -208,21 +226,32 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									</section>
 
 									<div class="row" id="pagos">
+										<style>
+											#pago-parcial{
+												display: none;
+											}
+										</style>
 										<div class="col-lg-6 col-sm-6">
 											<div class="form-group" id="pago-parcial">
-												<label for="monto">Monto a pagar:<span class="required">*</span></label>
+												<label for="monto">Monto a pagar:<span class="required"></span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-bank"></i></span>
-													<input class="montopagar form-control" type="number" id="montopagar" name="montopagar" value="" placeholder="Monto a pagar" required >
+													<input class="montopagar form-control" type="number" id="montopagar" min="0" name="montopagar" value="0" placeholder="Monto a pagar">
 												</div>
 											</div>
 										</div>
-										<div class="recibopago col-lg-6 col-sm-12">
-											<div class="custom-file" data-toggle="tooltip" title="Adjunte archivo de recibo de pago correspondiente">
+										
+									</div>
+
+									<div class="row">
+										<div class=" col-lg-6 custom-file" data-toggle="tooltip" title="Adjunte archivo de recibo de pago correspondiente">
 													<label class="custom-file-label" for="recibo">Recibo de pago:</label>
 													<input type="file" name="recibo" id="recibo" class="custom-file-input" placeholder='recibo de pago' required>
 
 											</div>
+										<div class="form-group col-lg-6">
+											<label class="" for="mensaje">Env&iacute;e un mensaje a su contraparte.</label>
+											<textarea class="form-control" name="mensajeregreso" id="mensaje" class="mensaje" placeholder="Mensaje a su contraparte."></textarea>
 										</div>
 									</div>
 
@@ -411,7 +440,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<button style="margin-left: auto;" type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="cancelar" class="cancelar btn btn-danger"><i class="fa fa-cancel"></i>Cancelar Retiro</button>
 						<button type="submit"  data-path="<?php echo _safe($_SERVER['REQUEST_URI']); ?>" name="aprobar" class="actualizar btn btn-success">Aprobar</button>
 						<button  type="button" class="cerrarmodal btn btn-secondary" >Cerrar</button>
-					</div>
+					</div>]
+
+					<input type="hidden" name="montototal">
 				</form>
 
 				</div>
@@ -424,6 +455,82 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		$(document).ready(function() {
 
 
+		$('#formulario-pago').bind('submit',function(e){
+
+			e.preventDefault();
+
+			$('.cancelar').attr('disableb','disabled');
+			$('.actualizar').attr('disableb','disabled');
+			$('.actualizar').text('Enviando por favor espere');
+
+			$('.cerrarmodal').attr('disableb','disabled');
+
+
+
+
+			var tpago = null;
+			tpago = $('input[name="tpago"]:checked').val();
+		
+
+			var pago  = 0;
+
+			if(tpago == 'parcial'){
+				pago = $('input[name="montopagar"]').val();
+
+				if(pago == 0){
+					alert('El monto debe ser mayor que cero.');
+					return false;
+				}
+			}else{
+				pago = $('#montopagar').attr('max');
+
+			}
+
+			var formData = new FormData(document.getElementById('formulario-pago'));
+
+			formData.append('f-pago',pago);
+			formData.append('f-tpago',tpago);
+			formData.append('f-montopedido',$('#montopagar').attr('max'));
+			formData.append('solicitud','pagocomprobando');
+
+			$.ajax({
+				url: '/admin/controller/ControllerRegistro.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: formData,
+				cache:false,
+				contentType:false,
+				processData:false
+			})
+			.done(function(response) {
+
+				alert(response.mensaje);
+
+
+				 location.reload();
+				
+			})
+			.fail(function() {
+				$('.cancelar').removeAttr('disabled');
+				$('.actualizar').removeAttr('disabled');
+				$('.actualizar').text('Enviando por favor espere');
+				$('.cerrarmodal').removeAttr('disabled');
+
+			})
+			.always(function() {
+				console.log("complete");
+			});
+			
+
+
+
+
+
+			return false;
+
+		});
+
+
 
 			$('.aprobar').click(function(){
 
@@ -432,6 +539,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				var perfil = $(this).attr('data-perfil');
 				var fecha = $(this).attr('data-fecha');
 				var monto = $(this).attr('data-monto');
+
+				$('#formulario-pago').append('<input type="hidden" name="perfil" value="'+perfil+'">');
 
 				$('#montopagar').attr('max',$(this).attr('data-pago'));
 				$('#montopagar').change();

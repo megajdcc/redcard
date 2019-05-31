@@ -130,16 +130,26 @@ class ReportesVentas{
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bf.balance,bf.creado
 						from retiro as r join retirocomisionfranquiciatario as rr on r.id = rr.id_retiro join balancefranquiciatario as bf on rr.id = bf.id_retiro
-						where bf.id_franquiciatario = :fr2 and bf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+						where bf.id_franquiciatario = :fr2  and rr.condicion = 2 and bf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+						UNION
+						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						CONCAT('+',r.monto - r.pagado) as comision, bfr.balance,bfr.creado
+						from retirocomisionfranquiciatario as rr left join retiro as r on rr.id_retiro = r.id left join balancefranquiciatario as bfr on rr.id = bfr.id_retiro
+						where bfr.id_franquiciatario = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 and bfr.creado between :fecha5 and :fecha6)
 
 							order by creado";
 							$stm = $this->con->prepare($query);
-							$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
-							                    ':fr2'=>$this->franquiciatario['id'],
+							$stm->execute(array(
+												':fr1'    => $this->franquiciatario['id'],
+												':fr2'    => $this->franquiciatario['id'],
+												':fr3'    => $this->franquiciatario['id'],
 												':fecha1' => $this->busqueda['fechainicio'],
 												':fecha2' => $this->busqueda['fechafin'],
 												':fecha3' => $this->busqueda['fechainicio'],
-												':fecha4' => $this->busqueda['fechafin']));
+												':fecha4' => $this->busqueda['fechafin'],
+												':fecha5' => $this->busqueda['fechainicio'],
+												':fecha6' => $this->busqueda['fechafin']
+											));
 
 							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else{
@@ -152,12 +162,19 @@ class ReportesVentas{
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bf.balance,bf.creado
 						from retiro as r join retirocomisionfranquiciatario as rr on r.id = rr.id_retiro join balancefranquiciatario as bf on rr.id = bf.id_retiro
-						where bf.id_franquiciatario = :fr2 ORDER BY creado ASC)
+						where bf.id_franquiciatario = :fr2 and rr.condicion =1)
+						UNION
+						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						CONCAT('+',r.monto - r.pagado) as comision, bfr.balance,bfr.creado
+						from retirocomisionfranquiciatario as rr left join retiro as r on rr.id_retiro = r.id left join balancefranquiciatario as bfr on rr.id = bfr.id_retiro
+						where bfr.id_franquiciatario = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 )
 						order by creado";
 
 			$stm = $this->con->prepare($query);
 			$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
-								':fr2'=>$this->franquiciatario['id']));
+								':fr2'=>$this->franquiciatario['id'],
+								':fr3'=>$this->franquiciatario['id']
+							));
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}
 	
