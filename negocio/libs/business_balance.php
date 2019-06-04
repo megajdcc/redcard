@@ -17,6 +17,74 @@ class business_balance {
 		return;
 	}
 
+
+
+
+
+	public function recargarsaldo(int $idnegocio, $monto){
+
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+
+		$sql = "update negocio set saldo =:saldo where id_negocio=:negocio";
+
+
+		try {
+			$newmonto = $this->getSaldo($idnegocio) + $monto;
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':saldo',$newmonto);
+			$stm->bindParam(':negocio',$idnegocio);
+			$stm->execute();
+			$this->con->commit();
+
+
+			
+		} catch (PDOException $e) {
+
+			$this->con->rolLBack();
+			return false;
+			
+		}
+
+		return true;
+		
+
+
+
+
+	}
+
+
+	private function getSaldo(int $idnegocio){
+		$sql = "SELECT saldo from negocio where id_negocio=:negocio";
+
+		$stm = $this->con->prepare($sql);
+
+		$stm->execute(array(':negocio'=>$idnegocio));
+
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+		return $fila['saldo'];
+	}
+	public function saldoactual(int $idnegocio){
+
+
+		$sql = "SELECT saldo from negocio where id_negocio=:negocio";
+
+		$stm = $this->con->prepare($sql);
+
+		$stm->execute(array(':negocio'=>$idnegocio));
+
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+		return '$ '.number_format((float)$fila['saldo'],2,'.',',').' MXN';
+	}
+
 	public function get_notification(){
 		$html = null;
 		if(isset($_SESSION['notification']['success'])){

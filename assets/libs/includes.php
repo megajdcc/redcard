@@ -405,7 +405,7 @@ class includes {
 	
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<meta http-equiv ="x-ua-compatible" content="ie=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
 	<meta name="robots" content="none" />
@@ -442,11 +442,14 @@ class includes {
 
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+	<script src="https://www.google.com/recaptcha/api.js?render=6LdeqKYUAAAAAJMjfm51tW7h8O8nx0ymBEBy_NgT"></script>
 
 	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
+
+
 
 	
 
@@ -478,6 +481,16 @@ class includes {
 				ga("send", "pageview");
 				
 				</script>
+
+				
+<!-- Payment method Pago... -->
+<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&currency=MXN"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&integration-date=2019-31-05"></script>
+
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&debug=false"></script>
+
 <div id="fb-root"></div>
 <div class="page-wrapper">
 	<header class="header">
@@ -663,8 +676,8 @@ class includes {
 					<div class="col-xs-6 col-sm-3">
 					
 						<h2>Gana con Travel Points</h2>
-						<p><a href="#" data-toggle="tooltip" title="En mantenimiento">Afilia tu Hotel</a></p>
-						<p><a href="#" data-toggle="tooltip" title="En mantenimiento">Afiliate como franquiciatario de Hotel</a></p>
+						<p><a href="'.HOST.'/afiliar-hotel"><i">Afilia tu Hotel</a></p>
+						
 					
 					</div><!-- /.col-* -->
 					<div class="col-xs-6 col-sm-2">

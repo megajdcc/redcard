@@ -31,6 +31,10 @@ class includes {
 		return;
 	}
 
+	public function getIdnegocio(){
+		return $this->business['id'];
+	}
+
 	private function load_data(){
 		// User Data
 		$query = "SELECT username, imagen, nombre, apellido, id_rol FROM usuario WHERE id_usuario = :id_usuario";
@@ -472,6 +476,7 @@ class includes {
 	<meta charset="utf-8" />
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
 	<meta name="robots" content="none" />
@@ -498,7 +503,8 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-
+	
+	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 		<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -520,6 +526,13 @@ class includes {
   ga("send", "pageview");
 
 </script>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&currency=MXN"></script>
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&integration-date=2019-31-05"></script>
+
+<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&debug=false"></script>
 <div class="page-wrapper">
 	<header class="header header-minimal">
 		<div class="header-wrapper">
@@ -675,10 +688,12 @@ class includes {
 		</div><!-- /.outer-admin -->
 	</div><!-- /.main -->
 </div><!-- /.page-wrapper -->
-<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+
 <script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
+
+
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
@@ -697,6 +712,7 @@ class includes {
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
+
 <script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>

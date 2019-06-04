@@ -11,7 +11,8 @@ use Franquiciatario\models\AfiliarFranquiciatario;
 use Referidor\models\AfiliarReferidor;
 use admin\libs\DetallesSolicitud;
 use admin\libs\Comprobantes;
-
+use negocio\libs\business_balance;
+use socio\libs\user_purchases;
 $solicitud = new DetallesSolicitud($con);
 
 $reg = new user_signup($con);
@@ -585,6 +586,57 @@ if(isset($_POST['solicitudcodigo'])){
 		echo json_encode($response);
 	
 	}
+
+
+		if(isset($_POST['solicitud']) and $_POST['solicitud'] == 'productopagado'){
+
+			$venta = new user_purchases($con);
+
+
+			$response = array('peticion' =>false,
+						'mensaje'=>'No se pudo realizar la operación intente mas tarde.');
+
+			$result = $venta->cambiarStatusPagado($_POST['id']);
+
+			if($result){
+				$response['peticion'] = true;
+				$response['mensaje'] = 'Precio del envio pagado.';
+
+				$_SESSION['notification']['success'] = "El precio del envio ha sido pagado satisfactoriamente...";
+			}
+
+
+			echo json_encode($response);
+
+		}
+
+
+		if(isset($_POST['solicitud']) and $_POST['solicitud'] == 'recargarnegocio'){
+
+				$response = array(
+							'peticion' =>false,
+							'mensaje'  =>'No se pudo realizar la operación intente mas tarde.',
+							'newsaldo' =>0
+					);
+
+
+				$balance = new business_balance($con);
+
+				$result = $balance->recargarsaldo($_POST['id'],$_POST['monto']);
+
+				if($result){
+					$response['peticion'] = true;
+
+						$response['mensaje'] = 'Saldo Recargado Satisfactoriamente...';
+						$response['newsaldo'] = $balance->saldoactual($_POST['id']);
+
+						$_SESSION['notification']['success'] = "El Saldo se ha recargado Exitosamente, Su nuevo saldo es: ".$balance->saldoactual($_POST['id']);
+				}
+
+				echo json_encode($response);
+
+		}
+
 
 
 

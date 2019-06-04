@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-
+        "paypal/rest-api-sdk-php": "*",
+        "google/recaptcha": "^1.2"
     },
     "autoload":{
         "psr-4":{

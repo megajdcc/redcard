@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
 namespace socio\libs;
 use assets\libs\connection;
 use PDO;
@@ -27,6 +27,37 @@ class user_purchases {
 		return;
 	}
 
+
+	public function cambiarStatusPagado(int $idventa){
+
+
+		if($this->con->inTransaction()){
+			$this->con->rollBack();
+		}
+
+		$this->con->beginTransaction();
+
+		$sql = "UPDATE venta_tienda set pagado = 1 where id_venta=:venta";
+
+		try {
+				$stm = $this->con->prepare($sql);
+				
+				$stm->bindParam(':venta',$idventa);
+				
+				$stm->execute();
+				
+				$this->con->commit();
+		} catch (PDOException $e) {
+
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+			$this->con->rollBack();
+			return false;
+			
+		}
+
+		return true;
+
+	}
 	public function load_data($page = null, $rpp = null){
 		$query = "SELECT COUNT(*) FROM venta_tienda WHERE id_usuario = :id_usuario";
 		try{
@@ -47,7 +78,7 @@ class user_purchases {
 			$pagination['page'] = $this->pagination['page'];
 			$pagination['total'] = $this->pagination['total'];
 			// Cargar los certificados
-			$query = "SELECT vt.id_venta, vt.id_producto, p.imagen, p.nombre, vt.precio, vt.entrega, vt.situacion, vt.creado
+			$query = "SELECT p.envio,vt.pagado, vt.id_venta, vt.id_producto, p.imagen, p.nombre, vt.precio, vt.entrega, vt.situacion, vt.creado
 				FROM venta_tienda vt
 				INNER JOIN producto p ON vt.id_producto = p.id_producto
 				WHERE vt.id_usuario = :id_usuario
@@ -66,12 +97,14 @@ class user_purchases {
 			while($row = $stmt->fetch()){
 				$this->user['purchases'][$row['id_venta']] = array(
 					'product_id' => $row['id_producto'],
-					'image' => $row['imagen'],
-					'name' => $row['nombre'],
-					'price' => $row['precio'],
-					'deliver' => $row['entrega'],
-					'status' => $row['situacion'],
-					'created_at' => $row['creado']
+					'image'      => $row['imagen'],
+					'name'       => $row['nombre'],
+					'price'      => $row['precio'],
+					'deliver'    => $row['entrega'],
+					'status'     => $row['situacion'],
+					'created_at' => $row['creado'],
+					'pagado'     =>$row['pagado'],
+					'penvio'     =>number_format((float)$row['envio'],2,'.','')
 				);
 			}
 			return $pagination;
@@ -89,16 +122,16 @@ class user_purchases {
 			}else{
 				$status = '<span class="label btn-xs label-danger pull-left mr20">No entregado</span>';
 				if($value['deliver'] == 2){
-					$msg = '<p class="text-danger">Su compra estar&aacute; en mostrador por los siguientes 7 d&iacute;as despu&eacute;s de la compra. Para recibirlo por env&iacute;o debe completar el pago.</p>';
-					$coupon = 
-					'<hr>
-					<p class="text-default">Completa el pago aqu&iacute; y cont&aacute;ctanos en <a href="mailto:pagos@travelpoints.com.mx" target="_blank">pagos@travelpoints.com.mx</a></p>
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-						<input type="hidden" name="cmd" value="_s-xclick">
-						<input type="hidden" name="hosted_button_id" value="WVB554YQ6FLH8">
-						<input type="image" src="https://www.paypalobjects.com/es_XC/MX/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal, la forma más segura y rápida de pagar en línea.">
-						<img alt="" border="0" src="https://www.paypalobjects.com/es_XC/i/scr/pixel.gif" width="1" height="1">
-						</form>';
+
+					if($value['pagado'] == 1 ){
+						$msg = '<p class="text-danger">Su compra esta en proceso de envio.</p>';
+						$coupon='';
+						?>
+					<?php }else{
+							$msg = '<p class="text-danger">Su compra estar&aacute; en mostrador por los siguientes 7 d&iacute;as despu&eacute;s de la compra. Para recibirlo por env&iacute;o debe completar el pago.</p>';
+							$coupon ="<button class='btn-pagar' data-precioenvio='".$value['penvio']."' data-idventa='".$key."'><i class='fa fa-pay'></i>Pagar Ahora</button>";
+					}
+				
 				}else{
 					$coupon = '';
 					$msg = '<p class="text-danger">Su compra estar&aacute; en mostrador por los siguientes 7 d&iacute;as despu&eacute;s de la compra.</p>';

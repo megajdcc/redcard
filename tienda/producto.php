@@ -18,6 +18,7 @@ if(!$product->load_data($id)){
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
 	if(isset($_POST['buy'])){
 		$product->buy_item($_POST);
 	}
@@ -73,7 +74,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					      </div>
 					      <div class="modal-body">
 
-							<div class="alert alert-icon alert-info" role="alert">
+							<div class="alert alert-icon alert-info pagopendiente" role="alert">
 							El costo del envio es de: <?php echo $product->getPrecioEnvio();?>. Si deseas puedes pagarlo de una vez utilizando PayPal o Retiralo personalmente en nuestra tienda.
 							</div>
 					      </div>
@@ -82,18 +83,72 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									
 									<!-- <button type="button" class="pagopaypal btn btn-success" name="pagopaypal"><i class="fa fa-cc-paypal"></i>Pagar Ahora</button>  -->
 									
-												<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
-												<script>paypal.Buttons().render('#btn-paypal')</script>
+											
 									<div class="row">
+											
+											<script>paypal.Buttons({
+
+												createOrder:function(data, actions){
+													
+													return actions.order.create({
+														purchase_units:[{
+															amount:{
+																value: '<?php echo $product->getPrecioEnvioP(); ?>'
+
+															}
+														}]
+												});
+												},
+											onApprove: function(data, actions){
+
+												var idventa = '<?php echo $product->getIdventa()?>';
+
+												$.ajax({
+													url: '/admin/controller/ControllerRegistro.php',
+													type: 'POST',
+													dataType: 'JSON',
+													data: {solicitud: 'productopagado',id:idventa},
+												})
+												.done(function(response) {
+
+													if(response.peticion){
+														$('.recoger-tienda').remove();
+														$('.pagar-despues').remove();
+														$('#btn-paypal').remove();
+														$('.pagopendiente').remove();
+
+														$('.cerrar-venta-modal').css({
+															display: 'flex'
+														});
+
+														$('.modal-body').append('<div class="alert alert-icon alert-success" role="alert">El costo del envio ha sido pagado exitosamente...</div>');
+
+
+													}else{
+														alert('Tu pago ha sido procesado exitosamente, pero no se pudo guardar en nuestra, si es tan amable notficalo a nuestro correo: soporte@infochannel.si');
+													}
+													
+												})
+												.fail(function() {
+													
+												})
+												.always(function() {
+													console.log("complete");
+												});
 												
+
+
+												$('.pagopendiente').remove();
+
+												$('.modal-body').append('<div class="alert alert-icon alert-info pagopendiente" role="alert">El costo del envio ha sido pagado satisfactoriamente.</div>');
+
+
+												
+											}
+											}).render('#btn-paypal');
+										</script>
 											<section class="col-lg-3" id="btn-paypal">
-									<!-- 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-												<input type="hidden" name="cmd" value="_s-xclick">
-												<input type="hidden" name="hosted_button_id" value="4JYJNMUKMTT8W">
-												<input type="image" src="https://www.paypalobjects.com/en_US/MX/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-												<img alt="" border="0" src="https://www.paypalobjects.com/es_XC/i/scr/pixel.gif" width="1" height="1">
-												</form>
- -->
+
 											</section>
 												
 											<section class="col-lg-9" style="display:flex; justify-content: center;">
@@ -101,7 +156,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
 												<form method ="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" >
 												<button type ="submit" class="recoger-tienda btn btn-secondary" name="recoger" ><i class="fa fa-handshake-o"></i>Retirar Personalmente</button> 
 												</form>
-												<button class="btn btn-secondary" data-dismiss="modal">Pagar Despues</button>
+												<button class="btn btn-secondary pagar-despues" data-dismiss="modal">Pagar Despues</button>
+
+												<button type="button" class="btn btn-secondary cerrar-venta-modal" data-dismiss="modal" style="display: none"><i class="fa fa-close"></i> Cerrar</button>
 												
 											</section>
 									</div>

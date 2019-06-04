@@ -453,6 +453,7 @@ class includes {
 	<meta charset="utf-8" />
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<meta name="robots" content="none" />
@@ -561,8 +562,14 @@ class includes {
 
   ga("create", "UA-57870544-2", "auto");
   ga("send", "pageview");
+	
+
+
+
 
 </script>
+
+	<script src="https://www.paypal.com/sdk/js?client-id=AQbkx9FrI9LADfmA-SGNPa3CmkORFFVx87kixFLBqXtZXk-F4mpM4r9GwD5O80zIDI7_P3HkngJjnMUY"></script>
 
 <div class="page-wrapper">
 	<header class="header header-minimal">

@@ -198,6 +198,7 @@ class product_detail {
 	}
 
 	public function buy_item(array $post){
+		
 		if(!$this->user['id'] || $post['buy'] != $this->product['id']){
 			$this->error['error'] = 'No se ha podido completar la compra debido a un error.';
 			return false;
@@ -209,6 +210,7 @@ class product_detail {
 		}
 
 		if($post['type'] == 1 || $post['type'] == 2 || $post['type'] == 3){
+			
 			$id = $post['buy'];
 			$type = $post['type'];
 			if($type == 3){
@@ -292,6 +294,7 @@ class product_detail {
 			$mail2->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 			// El correo al que se enviará
 			$mail2->addAddress('soporte@infochannel.si');
+			// $mail2->addAddress('megajdcc2009@gmail.com');
 			// Hacerlo formato HTML
 			$mail2->isHTML(true);
 			// Formato del correo
@@ -485,6 +488,16 @@ class product_detail {
 		}
 		return $precio;
 	}
+
+	public function getPrecioEnvioP(){
+		return number_format((float)$this->product['envio'],2,'.',',');
+	}
+
+	public function getIdventaP(){
+		return $this->idventa;
+	}
+
+
 
 	public function get_buy_button(){
 		if($this->user['id']){

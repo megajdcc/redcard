@@ -11,6 +11,14 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         array (
             'sirfei\\' => 7,
         ),
+        'R' => 
+        array (
+            'ReCaptcha\\' => 10,
+        ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+        ),
         'F' => 
         array (
             'FontLib\\' => 8,
@@ -25,6 +33,14 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         'sirfei\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Model',
+        ),
+        'ReCaptcha\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'FontLib\\' => 
         array (
@@ -46,6 +62,13 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
             'Sabberworm\\CSS' => 
             array (
                 0 => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib',
+            ),
+        ),
+        'P' => 
+        array (
+            'PayPal' => 
+            array (
+                0 => __DIR__ . '/..' . '/paypal/rest-api-sdk-php/lib',
             ),
         ),
     );

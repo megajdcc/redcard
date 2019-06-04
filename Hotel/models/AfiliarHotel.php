@@ -1,12 +1,16 @@
 <?php
+
+
 /**
  * @author Crespo jhonatan 
  * @since 04/05/2019
  */
 
 namespace Hotel\models;
+require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 use PDO;
 use \assets\libraries\bulletproof\bulletproof;
+use \ReCaptcha\ReCaptcha;
 
 class AfiliarHotel {
 	private $con;
@@ -135,12 +139,17 @@ class AfiliarHotel {
 
 
 	private $solicitante = 0;
-	private $registropago = false;
+	private $registropago = false; 
+
+	private $recapcha = null;
 
 
 	public function __construct($con){
 		$this->con = $con->con;
 		$this->register['user_id'] = $_SESSION['user']['id_usuario'];
+
+		$this->recapcha = new ReCaptcha('6LdeqKYUAAAAAKs_m1B6vwUCQsib2LbMgp1kTn-V');
+
 		return;
 	}
 
@@ -159,6 +168,111 @@ class AfiliarHotel {
 
 	}
 
+
+
+	public function enviarsolicitud(array $post){
+
+		$hotel =  $post['hotel'];
+		if(empty($post['iata'])){
+			$iata = 'No adjudicado';
+		}else{
+			$iata = $post['iata'];
+		}
+
+		$captcha =$post['token'];
+
+		$respuesta = $this->recapcha->setExpectedAction('solicituddehotel')->setScoreThreshold(0.5)->verify($captcha,$_SERVER['REMOTE_ADDR']);
+
+		header('Content-type: application/json');
+
+
+
+		$sql = "SELECT * from usuario where id_usuario = :usuario";
+
+		$stm = $this->con->prepare($sql);
+
+		$stm->bindParam(':usuario',$this->register['user_id']);
+
+		$stm->execute();
+
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+
+		$nombre = $fila['username'];
+		if(!empty($fila['nombre'])){
+			$nombre = $fila['nombre'].' '. $fila['apellido'];
+		}
+
+		$telefono = $fila['telefono'];
+		$email = $fila['email'];
+
+		$sql = "SELECT * from iata where id = :iata";
+
+		$stm = $this->con->prepare($sql);
+
+		$stm->bindParam(':iata',$iata);
+
+		$stm->execute();
+
+		$fila1 = $stm->fetch(PDO::FETCH_ASSOC);
+
+
+		$iata = $fila1['codigo'];
+
+
+
+		if($respuesta->toArray()['score'] > 0.5){
+		 		
+		 	$content = 'Se ha recibido una nueva solicitud para afiliar un hotel, del usuario '.$nombre.', con el nombre de hotel <strong>'.$hotel.'</strong>. email del usuario '.$email.' Teléfono:'.$telefono.' Codigo Iata mas cercano '.$iata;
+						$body_alt =
+							'Se ha recibido una nueva solicitud para afiliar un hotel del usuario '.$nombre;
+						require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
+						$mail = new \PHPMailer;
+						$mail->CharSet = 'UTF-8';
+						// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+						$mail->isSMTP();
+						$mail->Host = 'single-5928.banahosting.com';
+						$mail->SMTPAuth = true;
+						$mail->SMTPSecure = 'ssl';
+						$mail->Port = 465;
+						// El correo que hará el envío
+						$mail->Username = 'notification@travelpoints.com.mx';
+						$mail->Password = '20464273jd';
+						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+						// El correo al que se enviará
+						$mail->addAddress('corporativo@infochannel.si');
+						 // $mail->addAddress('megajdcc2009@gmail.com');
+						// Hacerlo formato HTML
+						$mail->isHTML(true);
+						// Formato del correo
+						$mail->Subject = 'Nueva solicitud de hotel';
+						$mail->Body    = $this->email_template($content);
+						$mail->AltBody = $body_alt;
+
+						if($mail->send()){
+							$_SESSION['notification']['success'] = "Se ha enviado tu solicitud exitosamente";
+
+							header('location: '.HOST.'/afiliar-hotel.php');
+							die();
+						}else{
+							$_SESSION['notification']['info'] = " No se ha podido enviar tu solicitud, por favor intentalo mas tarde.";
+							header('location: '.HOST.'/afiliar-hotel.php');
+							die();
+						}
+
+		}else{
+			$_SESSION['notification']['info'] = " parece que no eres Humano. Bye bye...";
+			header('location: '.HOST.'/afiliar-hotel.php');
+			die();
+		}
+
+		return;
+
+		
+		
+
+		// echo var_dump($post);
+	}
 
 	public function cargarDatos(array $post){
 
@@ -730,8 +844,8 @@ class AfiliarHotel {
 						$mail->Password = '20464273jd';
 						$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
 						// El correo al que se enviará
-						 $mail->addAddress('corporativo@infochannel.si');
-						// $mail->addAddress('megajdcc2009@gmail.com');
+						//$mail->addAddress('corporativo@infochannel.si');
+						 $mail->addAddress('megajdcc2009@gmail.com');
 						// Hacerlo formato HTML
 						$mail->isHTML(true);
 						// Formato del correo
@@ -835,10 +949,7 @@ class AfiliarHotel {
 								<tr>
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										'.$content.'<br>
-										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
-										<a style="outline:none; color:#0082b7; text-decoration:none;" href="mailto:soporte@infochannel.si">
-											soporte@infochannel.si
-										</a>
+										
 									</td>
 								</tr>
 							</tbody>
