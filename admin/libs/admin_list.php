@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
 namespace admin\libs;
 use assets\libs\connection;
 use PDO;
@@ -20,11 +20,7 @@ class admin_list {
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
-		$this->load_data();
-		$a = (1 << 0);
-$b = (1 << 1);
-		echo "5.0" == "5";
-	
+		$this->load_data();	
 		return;
 	}
 
