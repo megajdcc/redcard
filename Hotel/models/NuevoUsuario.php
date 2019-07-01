@@ -10,29 +10,55 @@ class NuevoUsuario {
 	private $username = null;
 	private $email = null;
 	private $password = null;
-
+	private $nombre = null;
+	private $apellido = null;
+	private $telefono = null;
 	private $hotel = null;
 	private $referral = array ('id' => null, 'username' => null);
 	private $errors = array('method' => null, 'username' => null, 'email' => null,'referral' => null);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
+
+		$this->hotel = $_SESSION['id_hotel'];
 	}
 
-	public function setData(array $post){
+	public function setData(array $post,bool $reserva = false){
 
-		$this->setUsername($post['username']);
-		$this->setEmail($post['email']);
-		// $this->setPassword($post['password'], $post['password-retype']);
-		$this->setHotel($post['hotel_invitador']);
-		$this->setReferral($post['referral']);
+		if($reserva){
+
+			$username = str_replace(' ', '',$post['nombre'].$post['apellido']);
+
+			$this->setUsername($username);
+			$this->setEmail($post['email']);
+			$this->referral['id'] = 1;
+			
+			$this->nombre = $post['nombre'];
+			$this->apellido = $post['apellido'];
+			$this->telefono = $post['telefono'];
+			if($this->username && $this->email){
+				$this->register(true);
+				return true;
+			}
+			return false;
 
 
-		if($this->username && $this->email && !array_filter($this->errors)){
-			$this->register();
-			return true;
+		}else{
+			$this->setUsername($post['username']);
+			$this->setEmail($post['email']);
+				// $this->setPassword($post['password'], $post['password-retype']);
+			$this->setHotel($post['hotel_invitador']);
+			$this->setReferral($post['referral']);
+				
+				
+			if($this->username && $this->email && !array_filter($this->errors)){
+				$this->register();
+				return true;
+			}
+			return false;
 		}
-		return false;
+
+	
 	}
 
 
@@ -63,12 +89,17 @@ class NuevoUsuario {
 
 				$nombrehotel = $stm->fetch(PDO::FETCH_ASSOC)['nombrehotel'];
 
+			}else{
+
 			}
 
 			return $nombrehotel;
 	}
 
-	private function register(){
+	private function register( bool $reserva = false){
+
+
+
 
 
 		if($this->con->inTransaction()){
@@ -76,6 +107,40 @@ class NuevoUsuario {
 		}
 
 		$this->con->beginTransaction();
+
+		
+		if($reserva){
+
+			$sql = "INSERT INTO usuario(username,email,nombre,apellido,telefono,id_rol,hash_activacion,reg_hotel)
+								values(:username,:email,:nombre,:apellido,:telefono,:rol,:hash,1)";
+
+			
+			try {
+
+				$stm = $this->con->prepare($sql);
+				$hash = md5(rand(0,1000));
+			    $stm->execute(array(':username' => $this->username,
+								':email'    => $this->email,
+								':nombre'   => $this->nombre,
+								':apellido' => $this->apellido,
+								':telefono' => $this->telefono,
+								':hash'     => $hash,
+								':rol'      => 8,
+								 ));
+
+			    	$lastId = $this->con->lastInsertId();
+				
+			} catch (PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+				$this->con->rollBack();
+				return false;
+			}
+			
+
+
+
+
+		}else{
 
 		$query = "INSERT INTO usuario(
 			username, 
@@ -105,6 +170,8 @@ class NuevoUsuario {
 			$this->con->rollBack();
 			return false;
 		}
+
+	}
 
 		// Registramos al usuario como Huesped..
 		// 
@@ -193,7 +260,7 @@ class NuevoUsuario {
 
 			}
 
-		// } 
+		 // } 
 		
 
 
@@ -213,7 +280,7 @@ class NuevoUsuario {
 		}
 
 		$body_alt =
-			'Bienvenido a Travel Points '.$this->username.'. El registro de esta cuenta no necesita verificacion.';
+			'Bienvenido a Travel Points '.$this->username.'. El registro de esta cuenta no necesita verificación.';
 		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 		$mail = new \PHPMailer;
 		$mail->CharSet = 'UTF-8';
@@ -241,10 +308,17 @@ class NuevoUsuario {
 			$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
 		}
 
-		$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
-		$_SESSION['register_email'] = $this->email;
-		header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
-		die();
+		
+		if(!$reserva){
+			$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
+			$_SESSION['register_email'] = $this->email;
+			header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
+			die();
+		}else{
+			$_SESSION['notification']['success'] = '¡Felicidades! El usuario ha sido registrado exitosamente, notificale que se le ha enviado un correo a la siguiente dirección:  '.$this->email.'. Es necesario que verifique su cuenta desde el correo enviado, para poder iniciar sesión, Es necesario que el mismo este verificado para poder gozar de los beneficios del programa de referidos.';
+			return true;
+		}
+		
 	}
 
 	private function email_template($email, $hash){

@@ -256,6 +256,44 @@ class Includes {
 						';
 		
 				break;
+
+				case 'reservaciones':
+
+
+					$this->crumbs[0] = 'Reservaciones';
+
+					switch (basename($_SERVER['SCRIPT_NAME'])) {
+						case 'index.php':
+							$this->crumbs[1] = 'reservar';
+							break;
+					 	case 'reservaciones.php':
+					 		$this->crumbs[1] = 'Historico'; 
+					 		break;
+					 	
+					 	default:
+					 		$this->crumbs[1] = '';
+					 		break;
+					 }
+
+
+				$this->sidebar = 
+						'<li'.$this->set_active_sidebar_tab('index.php').'>
+								<a href="'.HOST.'/Hotel/reservaciones/">
+								<span class="icon"><i class="fa fa-calendar-plus-o"></i></span>
+								<span class="title">Reservar</span>
+								<span class="subtitle">nueva reservaci&oacute;n</span>
+								</a>
+								</li>
+								
+						<li'.$this->set_active_sidebar_tab('reservaciones.php').'>
+								<a href="'.HOST.'/Hotel/reservaciones/reservaciones">
+								<span class="icon"><i class="fa fa-list"></i></span>
+								<span class="title">Ver reservas</span>
+								<span class="subtitle">Historico de reservaciones</span>
+								</a>
+								</li>'; 
+
+				break;
 				default:
 					$this->crumbs[0] = '';
 					$this->crumbs[1] = '';
@@ -324,7 +362,6 @@ class Includes {
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
-
 				<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 				<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 				<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
@@ -566,7 +603,10 @@ class Includes {
 
 			$html .=	'<li'.$this->set_active_tab('Hotel').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Hotel/"><i class="fa fa-home"></i></a></li>
 						
-						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/Hotel/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>';
+						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/Hotel/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
+
+						<li'.$this->set_active_tab('reservaciones').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/Hotel/reservaciones/"><i class="fa fa-calendar-check-o"></i></a></li>
+						';
 				}
 
 			$html .=	'
@@ -576,7 +616,7 @@ class Includes {
 					<ul>
 						'.$this->sidebar.'
 					</ul>
-				</div><!-- /.sidebar-secondary-admin -->
+				</div>
 				<div class="content-admin contenido-home">
 					<div class="content-admin-wrapper">
 						<div class="content-admin-main">

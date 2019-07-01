@@ -276,6 +276,11 @@ $(document).ready(function() {
 	$('.delete-product').on('click', function(){
 		return confirm('¿Realmente desea eliminar este producto permanentemente?');
 	});
+
+
+	$('.reservar').on('click',function(){
+		return confirm('¿Esta seguro de publicar esta reservación ?');
+	});
 	$('.buy-product').on('click', function(){
 		var name = $('#product-name').text();
 		var price = $('#product-price').text();
@@ -366,17 +371,280 @@ $('#user-search-hotel .typeahead').typeahead({
 	});
 
 
-	$('#user-search .typeahead').typeahead({
+	$('#user-search-reservacion .typeahead').typeahead({
 			hint: false,
 			highlight: true,
-			minLength: 3,
+			minLength: 2,
 			autoselect: true,
 		},
 		{
 		limit: 15,
 		name: 'users',
 		display: 'username',
+		source: users,
+		templates: {
+			empty: [
+				'<div class="tt-empty-message">',
+					'El usuario no esta afiliado hagalo ahora <button type="button" class="btn btn-warning afiliarnew" data-toggle="modal" data-target="#modal-afiliar-new-usuario-reservacion">Afiliar</button>',
+				'</div>'
+			].join('\n'),
+			suggestion: function(data){
+				return '<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong></div>';
+			}
+		}
+	}).on('typeahead:selected', function(object, data) {
 
+		if($('#user-search-placeholder').length){
+			 $('#user-search-placeholder').empty();
+			 $('#user-search-placeholder').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>');
+		}
+	});
+
+
+
+
+	// Buscador de restaurantes...
+	// 
+	
+	var restaurant = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/ajax.php?restaurantes=%QUERY',
+			wildcard: '%QUERY'
+		}
+	});
+		
+	$('#user-search-reservacion-negocios .complete').typeahead(
+
+
+// Opciones de configuracion...
+		{
+			hint: false,
+			highlight: true,
+			minLength: 2,
+			autoselect: true,
+		},
+// conjunto de datos... 
+		{
+		limit: 15,
+		name: 'datos',
+		display: 'nombre',
+		source: restaurant,
+		templates: {
+			empty: [
+				'<div class="tt-empty-message">',
+					'Sin registro, sea mas especifico',
+				'</div>'
+			].join('\n'),
+			suggestion: function(data){
+				return '<div><img src="/assets/img/business/header/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.nombre + '</div>';
+			}
+		}
+	}).on('typeahead:selected', function(object, data) {
+		
+
+
+		if($('.horas').length){
+			$('.horas').remove();
+		}
+
+		if($('#fechadelareserva').length){
+			$('#fechadelareserva').attr('title','Seleccione la fecha solicitada, si el campo no se puede seleccionar es debido a que el negocio no tiene horas disponibles para ese dia de la semana en particular.');
+			
+		}
+
+
+		if($('#user-search-placeholder-reservacion').length){
+
+					
+
+
+
+					$('.reservar').attr('disabled','disabled');
+						$('#cantidad').attr('disabled', 'disabled');
+									
+
+										var negocio = $('input[name="restaurantes"]').val();
+										$.ajax({
+											url: '/negocio/Controller/peticiones.php',
+											type: 'POST',
+											dataType: 'JSON',
+											data: {peticion: 'diasdisponibles',restaurant:negocio},
+											cache:false,
+										})
+										.done(function(response) {
+											if(response.peticion){
+												$('#fechareservacion').data("DateTimePicker").destroy();
+													$('#fechareservacion').datetimepicker({
+													format:'LL',
+													locale:'es',
+													minDate:new Date()-1,
+													useCurrent:false,
+													 daysOfWeekDisabled:response.data,
+													});
+											
+
+											$('#fechareservacion').data("DateTimePicker").enable();
+
+
+												// $('#fechareservacion').data("DateTimePicker").options({
+												// 		daysOfWeekDisabled:response.data
+												// 	});
+
+												var dia = response.data;
+												var existe = false;
+												var tamano = 0;
+												for(var clave in dia){
+													tamano++;
+												}
+												if($('.sinexistencia').length){
+														$('.sinexistencia').remove();
+													}
+
+												// alert(tamano);
+												if(tamano == 7){
+													$('.horas-reserva').append('<div class="alert sinexistencia alert-danger"><h3>Sin disponibilidad</h3></div>');
+													$('input[name="fecha"]').attr('disabled','disabled');
+												}else{
+													$('input[name="fecha"]').removeAttr('disabled');
+												}
+												// return response.data;
+											}else{
+												alert('Este restaurant, no tiene ningún dia disponible.');
+												// return [];
+											}
+										})
+										.fail(function() {
+											console.log("error");
+										})
+										.always(function() {
+											console.log("complete");
+										});
+
+					$('#fechareservacion').on("dp.change",function(e){
+
+						var fecha = $('#fechareservacion').data("DateTimePicker").date();
+
+						var dia = fecha.format("d");
+						var fechareserva = fecha.format('YYYY-M-D');
+						
+						if(dia == 0){
+							dia = 7;
+						}else if(dia == 1){
+							dia == 1; 
+						}else if(dia == 2){
+							dia == 2; 
+						}else if(dia == 3){
+							dia == 3; 
+						}else if(dia == 4){
+							dia == 4; 
+						}else if(dia == 5){
+							dia == 5; 
+						}else if(dia == 6){
+							dia == 6; 
+						}
+
+						// alert(dia);s
+						
+						var negocio = $('input[name="restaurantes"]').val();
+						
+						$.ajax({
+							url: '/negocio/Controller/peticiones.php',
+							type: 'POST',
+							dataType: 'JSON',
+							data: {peticion: 'horasdisponibles',negocio:negocio,diareserva:dia,fecha:fechareserva},
+						})
+						.done(function(response) {
+							if(response.peticion){
+								if($('.horas-reserva').length){
+									var hora = response.data.hora;
+									// if($('.horas').length){
+									// 	$('.horas').remove();
+									// }
+									
+									if($('.contenedorbotones').length){
+										$('.contenedorbotones').remove();
+									}
+
+									$('.horas-reserva').append('<div class="btn-group btn-group-toggle contenedorbotones" data-toggle="buttons"></div>');
+									for (var clave in hora) {
+										if(response.data.mesas[clave] > 0 ){
+											$('.contenedorbotones').append('<label class="btn btn-danger horas" id="'+response.data.idhora[clave]+'" data-hora="'+response.data.hora[clave]+'" data-lugar="'+response.data.mesas[clave]+'" data-toggle="tooltip" title="'+response.data.mesas[clave]+' lugares disponibles" data-placement="bottom"><input type="checkbox"  name="hora"  id="'+response.data.hora[clave]+'"  autocomplete="off"/>'+response.data.hora[clave]+'</label>');
+											 // $("#"+response.data.idhora[clave]).tooltip('enabled');
+										}										
+									}
+									$('#cantidad').attr('disabled', 'disabled');
+
+									
+
+									$('.contenedorbotones .btn').click(function(event) {
+
+
+										$('.btn').removeClass('active');
+										/* Act on the event */
+
+										$(this).addClass('active');
+										var cantidad = $(this).attr('data-lugar');
+
+										$('#cantidad').removeAttr('disabled');
+										$('#cantidad').val('1');
+										$('#cantidad').attr('max',cantidad);	
+										$('#cantidad').change();
+
+
+										$('input[name="fechaseleccionada"]').val(fechareserva);
+										$('input[name="horaseleccionada"]').val($(this).attr('data-hora'));
+
+										$('.reservar').removeAttr('disabled');
+
+									});
+
+									$('.horas').on('mouseover',function(){
+										$(this).tooltip('show');
+									});
+
+
+
+								
+									 
+								}
+							}
+								
+						})
+						.fail(function() {
+							console.log("error");
+						})
+						.always(function() {
+							console.log("complete");
+						});
+						
+
+						
+					})
+					;
+																
+								
+
+			 $('#user-search-placeholder-reservacion').empty();
+			 $('#user-search-placeholder-reservacion').append('<div><img class="img-reservacion-selected" src="/assets/img/business/header/' + data.imagen + '" class="meta-img img-rounded" alt=""></div>');
+			$('input[name="negocio"]').val(data.id_negocio);
+
+		}
+	
+	});
+
+
+	$('#user-search .typeahead').typeahead({
+			hint: false,
+			highlight: true,
+			minLength: 2,
+			autoselect: true,
+		},
+		{
+		limit: 15,
+		name: 'users',
+		display: 'username',
 		source: users,
 		templates: {
 			empty: [
@@ -390,8 +658,8 @@ $('#user-search-hotel .typeahead').typeahead({
 		}
 	}).on('typeahead:selected', function(object, data) {
 		if($('#user-search-placeholder').length){
-			$('#user-search-placeholder').empty();
-			$('#user-search-placeholder').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>');
+			 $('#user-search-placeholder').empty();
+			 $('#user-search-placeholder').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>');
 		}
 		if($('#certificate-load').length){
 			load_user_certs();
@@ -403,10 +671,12 @@ $('#user-search-hotel .typeahead').typeahead({
 	$("#user-search-input").on("input", function() {
 		$("#user-search-placeholder").replaceWith(placeholder_clone.clone());
 		$("#certificate-load").replaceWith(certificate_clone.clone());
+
 	});
 
-	if($('#user-search-input').val() != '' && $('#user-search-placeholder').length){
+	if($('#user-search-input').length > 1 && $('#user-search-placeholder').length){
 		var username = $('#user-search-input').val();
+	
 		$.ajax({
 			type: "POST",
 			url: "/ajax.php",
@@ -414,18 +684,17 @@ $('#user-search-hotel .typeahead').typeahead({
 				load_username: username
 			},
 			success: function(data){
+				
 				$('#user-search-placeholder').empty();
 
-				$('#user-search-placeholder').append( data );
+				$('#user-search-placeholder').append(data);
 			}
 		});
 	}
 
 
 
-
-
-
+	
 	$('#user-search-input-referidor').typeahead({
 			hint: false,
 			highlight: true,
@@ -867,6 +1136,9 @@ $('#user-search-hotel .typeahead').typeahead({
 	$('.cancel-redeem').on('click', function(){
 		return confirm('¿Realmente quieres cancelar el apartado de este certificado? Una vez hecho, no se puede deshacer.');
 	});
+
+
+
 
 	// DataTimePicker: Fechas de evento
 	$(function(){

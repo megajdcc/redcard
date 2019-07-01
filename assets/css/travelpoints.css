@@ -194,3 +194,394 @@ width: 100%;
 .modal-footer{
 	display: flex;
 }
+
+.img-reservacion-selected{
+	width: 100%;
+	height: 140px;
+	background-repeat: no-repeat;
+	background-position: left center ;
+	background-attachment: fixed;
+	display: flex;
+
+}
+.img-reservacion-default{
+	height: auto;
+	width: 50%;
+	display: flex;
+	background-repeat: no-repeat;
+	background-position: center center;
+	text-align: center;
+	background-attachment: fixed;
+	justify-content: center;
+}
+.reserva-content-img{
+	display: flex;
+	justify-content: center !important;
+}
+#user-search-placeholder-reservacion{
+	padding: 2px !important;
+	/*overflow: hidden;*/
+	height: 150px;
+}
+
+.caja-new-disponibilidad header section
+{
+	display: flex;
+	justify-content: center;
+} 
+.caja-new-disponibilidad button{
+	width: 100%;
+}
+.caja-new-disponibilidad input[type="checkbox"]{
+	text-decoration: none !important;
+	display: flex !important;
+	width:20px !important;
+	margin: 0 auto;
+	padding: 0px;
+	cursor: pointer;
+	justify-content: center;
+}
+.caja-new-disponibilidad input[type="number"]{
+	width: 100px;
+	margin: 0px auto;
+	border: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+
+
+.caja-new-disponibilidad table{
+	width: 100%;
+	border:0.5px solid rgba(0,0,0,0.2);
+
+}
+
+.caja-new-disponibilidad thead th{
+	text-align: center;
+	padding: 1rem;
+}
+.caja-new-disponibilidad table td{
+	text-align: center;
+	text-align: center;
+}
+.caja-new-disponibilidad table tr td{
+	text-align: center;
+	padding: 1rem;
+}
+.botones-registro{
+	margin-top: 1rem;
+	display: flex;
+}
+
+/*caja dinamica dias en disponibilidad*/
+
+.disponibilidad .lunes,
+.disponibilidad .martes,
+.disponibilidad .miercoles,
+.disponibilidad .jueves,
+.disponibilidad .viernes,
+.disponibilidad .sabado,
+.disponibilidad .domingo{
+	margin: 1rem 0px 0px 0px;
+	padding: 7px 1.5rem;
+	border: 1px solid rgba(0,0,0,0.2);
+	font-weight: 400;
+
+}
+
+.dis-linea-lunes,
+.dis-linea-martes,
+.dis-linea-miercoles,
+.dis-linea-jueves,
+.dis-linea-viernes,
+.dis-linea-sabado,
+.dis-linea-domingo
+{
+
+	display: flex;
+	justify-content:flex-start; 
+	flex-wrap: wrap;
+	
+	/*margin-bottom: 1rem;*/
+	/*background:blue;*/
+	margin-left: 2px; 
+}
+.dis-linea-lunes button,
+.dis-linea-martes button,
+.dis-linea-miercoles button,
+.dis-linea-jueves button,
+.dis-linea-viernes button,
+.dis-linea-sabado button,
+.dis-linea-domingo button{
+	flex:0 0 30px;
+	border-radius:100%;
+	padding: 0px;
+	margin: 2px 1rem;
+	display: flex !important;
+	justify-content: center;
+	background-color:#d9534f;
+	border:0px;
+
+}
+
+.dis-linea-lunes button>i,
+.dis-linea-martes button>i,
+.dis-linea-miercoles button>i,
+.dis-linea-jueves button>i,
+.dis-linea-viernes button>i,
+.dis-linea-sabado button>i,
+.dis-linea-domingo button>i
+{
+	margin: 0px;
+	color: white;
+}
+
+.dis-linea-lunes strong,
+.dis-linea-martes strong,
+.dis-linea-miercoles strong,
+.dis-linea-jueves strong,
+.dis-linea-viernes strong,
+.dis-linea-sabado strong,
+.dis-linea-domingo strong{
+	background-color: #d9534f;
+	padding         : .2rem 1rem !important;
+	color           : white;
+	display         : flex !important;
+	justify-content : center;
+	margin          : 2px 0px !important;
+	align-items: center;
+}
+.dis-linea-lunes input[type     ="number"],
+.dis-linea-martes input[type    ="number"],
+.dis-linea-miercoles input[type ="number"],
+.dis-linea-jueves input[type    ="number"],
+.dis-linea-viernes input[type   ="number"],
+.dis-linea-sabado input[type    ="number"],
+.dis-linea-domingo input[type   ="number"]
+{
+	flex:0 1 20px !important;
+	margin: 2px 0px!important;
+	width: 30px !important;
+	height: 30px;
+	border: .2px solid rgba(0,0,0,0.2);
+	text-decoration: none !important;
+
+}
+.title-dia{
+	font-weight: bold;
+	margin-right: 4rem;
+}
+
+
+
+/*horas de resrvacion*/
+.horas{
+	width: 100px;
+	margin-right: 1rem;
+	margin-bottom: 2px;
+}
+
+.horas-reserva .alert{
+	padding: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.horas-reserva .alert h3{
+	color:white;
+	font-size: 30pt;
+	margin: 0px;
+	padding: 0px; 
+}
+
+.horas-reserva .active{
+	background: #5cb85c;
+}
+.horas-reserva .active:hover{
+	background: #5cb85c !important;
+}
+
+/*catalogo de lista de reservaciones hotel*/
+
+#listareservaciones tr{
+	/*padding: 3px;*/
+	/*height: 30px;*/
+}
+#listareservaciones strong,
+.table-mis-reservaciones strong{
+	padding: 0.2rem;
+	margin: 0px 0px;
+	background: grey;
+	color: white;
+	border-radius: 5px;
+	display: flex;
+	/*min-width: 60px !important;*/
+	width: 110px;
+	justify-content: center;
+	z-index: 100 !important;
+}
+#listareservaciones .cancelar{
+	padding: 5px;
+	margin: 0px;
+}
+#listareservaciones .cancelar>i{
+	margin: 0px;
+}
+.sinconfirmar{
+	background: grey !important;
+}
+
+.consumada{
+	background: #3EC0DD !important;
+}
+
+.confirmada{
+	background: #3D8905 !important;
+}
+
+.cancelada{
+	background: #C32020 !important;
+}
+
+
+/*Negocio catalogo de reservaciones*/
+
+
+.observaciones{
+	cursor: pointer;
+	background: #403838 !important;
+	color: white !important;
+}
+
+.btn-agendada{
+	border: 0px;
+	padding: 0px;
+	cursor: pointer;
+}
+
+.row-reserva{
+	/*cursor: pointer;*/
+}
+
+.row-reserva:hover>td{
+	/*font-size: 12pt;*/
+}
+
+
+/*Pagina del view restaurant - reservacion*/
+
+
+.modal-reservacion .modal-sm{
+	width: 400px;
+	/*padding: 0px 3rem !important;*/
+}
+.modal-header section{
+	display: flex;
+	flex-direction: column;
+	
+}
+
+.modal-header section .modal-title{
+	font-family: 'Myriad';
+	font-size: 14pt;
+
+}
+
+.modal-header>button{
+	background: grey;
+	padding: 1px 10px !important;
+	margin: 0px;
+	height: 30px;
+	color: white;
+	border-radius: 100%;
+}
+
+.btn-modal-reserva{
+	background: #8dc63f;
+	color: white;
+	font-family: 'Myriad Bold';
+	font-size: 14pt;
+	padding: 1rem 4rem;
+	opacity: 0.8;
+	flex:1 1 auto;
+}
+
+.btn-modal-reserva:hover{
+	opacity: 1;
+	color: white;
+}
+
+.content-modal-reserva{
+	padding: 1rem 5rem;
+	/*background: red;*/
+
+}
+.num-person>div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.num-person>div .cant-personas{
+	margin: 0px 0px !important;
+	flex:1 1 auto;
+	display: flex;
+	align-items: stretch;
+	padding: 0px;
+}
+.footer-modal-reserva{
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;	
+	flex-direction: column;
+}
+.btn-reservar{
+	flex:1 1 auto !important;
+	align-self: stretch;
+	margin-bottom: 1rem;
+}
+.form-reserva{
+	display: flex;
+
+}
+
+.content-modal-reserva .horas-reserva{
+	display: flex;
+}
+
+.content-modal-reserva .contenedorbotones{
+	flex: 1 1 auto;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.clear-reset{
+	display: flex;
+}
+
+
+/*CATALOGO DE MIS RESERVACIONES PERFIL DE SOCIO*/
+.content-modal-reserva .horas{
+	margin: 2px 3px;
+	padding: 0px !important;
+}
+
+.bus-misreserva{
+	display: flex;
+}
+
+
+
+.bus-misreserva button:hover>i{
+	color: white;
+}
+
+.localizacion{
+	width: 200px;
+}
+.hora-reserva{
+
+	background: red !important;
+	padding: 5px;
+}

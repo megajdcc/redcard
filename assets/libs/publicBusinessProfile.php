@@ -57,6 +57,8 @@ class publicBusinessProfile {
 		)
 	);
 
+	private $reserva = array('forreserva' =>false,'id_negocio' => 0);
+
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		return;
@@ -66,20 +68,46 @@ class publicBusinessProfile {
 		if(!$this->set_url($url)){
 			return false;
 		}
+
 		$query = "SELECT n.id_negocio, n.nombre, n.descripcion, n.breve, n.id_categoria, nc.categoria, n.comision, n.url, n.sitio_web, n.direccion, n.codigo_postal, c.ciudad, e.estado, p.pais, n.latitud, n.longitud, n.vistas, n.creado, n.situacion FROM negocio n 
 			LEFT JOIN ciudad c ON n.id_ciudad = c.id_ciudad 
 			LEFT JOIN estado e ON c.id_estado = e.id_estado 
 			LEFT JOIN pais p ON e.id_pais = p.id_pais 
 			LEFT JOIN negocio_categoria nc ON n.id_categoria = nc.id_categoria 
 			WHERE n.url = :url AND situacion != 0";
+		
 		try{
+
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':url', $this->business['url'], PDO::PARAM_STR);
 			$stmt->execute();
+		
 		}catch(\PDOException $ex){
 			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+
+
+		$sql = "SELECT n.id_negocio from negocio as n where n.id_categoria = 1 and n.url = :url and situacion != 0";
+			try {
+
+				$stm = $this->con->prepare($sql);
+				$stm->bindParam(':url',$this->business['url'],PDO::PARAM_STR);
+				$stm->execute();
+			
+			} catch (\PDOException $e) {
+				$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
+				
+			}
+
+			if($row = $stm->fetch()){
+
+				if($row['id_negocio'] > 0){
+					$this->reserva['id_negocio'] = $row['id_negocio']; 
+					$this->reserva['forreserva'] = true;
+				}
+			}
+
 		if($row = $stmt->fetch()){
 			$this->business['id'] = $row['id_negocio'];
 			$this->business['name'] = $row['nombre'];
@@ -255,9 +283,11 @@ class publicBusinessProfile {
 	private function set_url($string = null){
 		if($string){
 			$string = strtolower(trim($string));
+			
 			if(!preg_match('/^[a-z0-9-]+$/ui',$string)){
 				return false;
 			}
+			
 			$query = "SELECT 1 FROM negocio WHERE url = :url";
 			try{
 				$stmt = $this->con->prepare($query);
@@ -432,9 +462,11 @@ class publicBusinessProfile {
 
 	public function get_claims(){
 		$string = null;
+
 		if($tag = $this->get_status()){
 			return '<div class="detail-tag mt30">'.$tag.'</div>';
 		}
+
 		if($this->user['id']){
 			if($this->user['bookmark']){
 				$string .= '<div class="detail-banner-btn bookmark marked" id="bookmark" data-id="'.$this->business['id'].'" data-function="del"><i class="fa fa-bookmark-o"></i> <span data-toggle="Seguir">Siguiendo</span></div><!-- /.detail-claim -->';
@@ -449,13 +481,33 @@ class publicBusinessProfile {
 				$string .= '<div class="detail-banner-btn heart" id="recommend" data-id="'.$this->business['id'].'" data-function="add">
 				<i class="fa fa-heart-o"></i> <span data-toggle="Recomendado">Lo recomiendo</span></div><!-- /.detail-claim -->';
 			}
+
+
 		}else{
-			$string .= '<a href="'.HOST.'/login" class="detail-banner-btn"><i class="fa fa-bookmark-o"></i>Seguir</a><!-- /.detail-claim -->
-			<a href="'.HOST.'/login" class="detail-banner-btn"><i class="fa fa-heart-o"></i>Lo recomiendo</a><!-- /.detail-claim -->';
+			$string .= '<a href="'.HOST.'/login" class="detail-banner-btn"><i class="fa fa-bookmark-o"></i>Seguir</a>
+			<a href="'.HOST.'/login" class="detail-banner-btn"><i class="fa fa-heart-o"></i>Lo recomiendo</a>';
 		}
 		return $string;
 	}
 
+	public function get_btnreservacion(){
+
+		return $this->reserva['forreserva'];
+	
+	}
+
+	public function getIdnegocio(){
+		return $this->reserva['id_negocio'];
+	}
+
+	public function isUser(){
+		if(isset($_SESSION['user']['id_usuario']) and $_SESSION['user']['id_usuario'] > 0 ){
+			return true;
+		}else{
+			return 'not';
+		}
+
+	}
 	public function get_certificates(){
 		$string = null;
 		$now = date('Y/m/d H:i:s', time());
@@ -901,7 +953,7 @@ class publicBusinessProfile {
 	}
 
 	public function get_schedule(){
-		$query = "SELECT dia, hora_apertura, hora_cierre FROM negocio_horario WHERE id_negocio = :id_negocio";
+		$query = "SELECT dia, hora_apertura, hora_cierre FROM negocio_horario WHERE id_negocio = :id_negocio and forreserva != 1";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':id_negocio', $this->business['id'], PDO::PARAM_INT);

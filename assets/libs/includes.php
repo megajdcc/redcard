@@ -134,6 +134,7 @@ class includes {
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
 				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
+				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt"></i> Reservaciones</a></li>
 
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
@@ -155,6 +156,19 @@ class includes {
 				<li'.$this->set_active_sidebar_tab('desactivar-cuenta.php').'><a href="'.HOST.'/socio/perfil/desactivar-cuenta"><i class="fa fa-times-circle"></i> Desactivar cuenta</a></li>
 			</ul>
 		</div>';
+			break;
+
+			case 'reservaciones':
+				$html .=
+						'<div class="widget">
+							<ul class="menu-advanced">
+								
+								<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-money"></i> Mis Reservaciones</a></li>
+								
+								
+
+							</ul>
+						</div>';
 			break;
 			case 'negocios':
 					if($this->user['solicitud_pendiente_hotel'] > 0){
@@ -253,7 +267,7 @@ class includes {
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
 				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
-
+				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt"></i> Reservaciones</a></li>
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
 				<li'.$this->set_active_tab('compras').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras</a></li>
@@ -407,21 +421,6 @@ class includes {
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-
-	<meta name="robots" content="none" />
-	<meta name="robots" content="none, nindex, nfollow" />
-	<meta name="robots" content="noindex, nofollow" />
-	<meta name="googlebot" content="none" />
-	<meta name="googlebot" content="none, noindex, nofollow" />
-	<meta name="googlebot" content="noindex, nofollow" />
-	<meta content="none" name="yahoo-slurp" />
-	<meta name="yahoo-slurp" content="none, noindex, nofollow" />
-	<meta name="yahoo-slurp" content="noindex, nofollow" />
-	<meta name="msnbot" content="noindex, nofollow" />
-	<meta name="ia_archiver" content="none" />
-	<meta name="googlebot-image" content="none" />
-	<meta name="robots" content="none" />
-
 		
 
 	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
@@ -435,10 +434,12 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
+	
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
+
 
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>

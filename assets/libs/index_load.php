@@ -1,4 +1,4 @@
-<?php # Desarrollado por Mario Sacramento. info@infochannel.si
+<?php
 namespace assets\libs;
 use PDO;
 
@@ -108,6 +108,7 @@ class index_load {
 			$class = $this->categories[$value['id_categoria']];
 			$score = $this->get_average_score($id);
 			$stars = $this->get_rating_stars($score);
+			
 			if($this->user){
 				if(array_key_exists($id,$_SESSION['user']['follow_business'])){
 					$buttons = '<div class="fa fa-bookmark-o marked following-btn" data-id="'.$id.'" data-function="del"></div>';

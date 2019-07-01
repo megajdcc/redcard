@@ -9,6 +9,53 @@ class jsonSearch {
 		$this->con = $con->con;
 	}
 
+
+
+
+
+	public function getRestaurantes($busquedad  = null){
+
+
+			$sql = "SELECT n.id_negocio, n.nombre, np.preferencia as imagen,n.breve from negocio as n 
+				left JOIN preferencia p ON p.llave = 'business_header'
+				left JOIN negocio_preferencia np ON n.id_negocio = np.id_negocio AND np.id_preferencia = p.id_preferencia
+				 right JOIN negocio_categoria as nc on n.id_categoria = 1
+				where n.situacion = 1  && n.nombre LIKE :nombre || n.breve LIKE :breve group by n.nombre";
+
+
+
+			try {
+				
+				$stm = $this->con->prepare($sql);
+				$stm->execute(array(':nombre'=>'%'.$busquedad.'%', ':breve'=>'%'.$busquedad.'%'));
+			} catch (PDOException $e) {
+				return false;
+			}
+
+			$datos = array();
+			while($row = $stm->fetch()){
+
+				if(!$row['nombre']){
+					$row['display'] = '';
+				}else{
+					$row['display'] = htmlentities($row['nombre']);
+				}
+
+				if(!$row['imagen']){
+					$row['imagen'] = 'restaurant.png';
+				}
+
+				$row['id_restaurant'] = $row['id_negocio'];
+
+				$datos[] = $row;
+
+			}
+
+			return json_encode($datos);
+
+	}
+
+
 	public function getHotel($busqueda =null){
 
 		$sql = "SELECT h.imagen as imghotel, h.nombre as nombrehotel,u.username,u.nombre,u.apellido,u.imagen from hotel as h join solicitudhotel as sh on h.id = sh.id_hotel 

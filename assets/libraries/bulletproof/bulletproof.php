@@ -2,7 +2,7 @@
 /**
  * BulletProof
  *
- * A single class PHP-library for secure image uploading.
+ * Una biblioteca PHP de una sola clase para la carga segura de imágenes.
  *
  * PHP support 5.3+
  *

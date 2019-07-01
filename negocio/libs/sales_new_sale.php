@@ -109,12 +109,32 @@ class sales_new_sale {
 		return;
 	}
 
+
+	private function isReserva(){
+
+		$fecha = new DateTime();
+		$fechaactual = $fecha->format('Y-m-d h:i A');
+
+
+		$sql  = "SELECT r.id, concat(r.fecha,' ',r.hora) as fecha, u.id_usuario, u.username from reservacion as r 
+		join usuario as u on r.usuario_solicitante
+        where r.status = 0 and u.id_usuario = 1 and r.id_restaurant = 45
+        "
+
+
+	}
+
 	public function submit_sale(array $post){
+
+
 		$this->set_user($post['username']);
 		$this->set_total($post['total']);
 		$this->set_currency($post['currency']);
 		$this->set_eSmarties();
 		$this->set_certificate($post['certificate']);
+
+		$this->isReserva();
+
 		if(isset($post['use_cert'])){
 			$this->set_certificates($post['use_cert']);
 		}

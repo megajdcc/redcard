@@ -19,6 +19,7 @@ class includes {
 		'name' => null
 	);
 	private $sidebar = null;
+	private $restaurant = false;
 	private $crumbs = array();
 
 	public function __construct(connection $con){
@@ -26,13 +27,32 @@ class includes {
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		$this->business['id'] = $_SESSION['business']['id_negocio'];
 		$this->load_data();
-	
+		$this->restaurant=$this->isRestaurant();
 		$this->load_sidebar();
+
 		return;
 	}
 
 	public function getIdnegocio(){
 		return $this->business['id'];
+	}
+
+
+
+	private function isRestaurant(){
+		$return = false;
+
+		$sql = "SELECT count(*) from negocio where id_negocio = :negocio and id_categoria=1";
+		$stm = $stm = $this->con->prepare($sql);
+		$stm->execute(array(':negocio'=>$this->business['id']));
+
+		if($stm->fetch(PDO::FETCH_ASSOC)['count(*)']> 0){
+
+			$return = true;
+		
+		}
+
+		return $return;
 	}
 
 	private function load_data(){
@@ -178,6 +198,43 @@ class includes {
 							</a>
 						</li>';
 				}
+				break;
+			case 'reservacion':
+				$this->crumbs[0] = 'Reservaciones';
+
+					switch (basename($_SERVER['SCRIPT_NAME'])) {
+					case 'index.php':
+						$this->crumbs[1] = 'Ver Reservas';
+
+						break;
+					case 'disponibilidad.php':
+						$this->crumbs[1] = 'Disponibilidad';
+						break;
+					default:
+						$this->crumbs[1] = '';
+						break;
+				}
+
+				$this->sidebar = '<li'.$this->set_active_sidebar_tab('index.php').'>
+							<a href="'.HOST.'/negocio/reservacion/">
+								<span class="icon"><i class="fa fa-align-justify"></i></span>
+								<span class="title">Reservaciones</span>
+								<span class="subtitle">Ver Reservas</span>
+							</a>
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('disponibilidad.php').'>
+							<a href="'.HOST.'/negocio/reservacion/disponibilidad">
+								<span class="icon"><i class="fa fa-calendar-plus-o"></i></span>
+								<span class="title">Disponibilidad</span>
+								<span class="subtitle">Ajuste disponibilidad</span>
+							</a>
+						</li>
+						';
+
+
+
+
 				break;
 			case 'certificados':
 				$this->crumbs[0] = 'Certificados de regalo';
@@ -493,7 +550,6 @@ class includes {
 	<meta name="googlebot-image" content="none" />
 	<meta name="robots" content="none" />
 
-	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
@@ -503,8 +559,13 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-	
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+	
 		<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<title>'.$title.'</title>
 	<meta name="description" content="'.$description.'" />
@@ -637,8 +698,16 @@ class includes {
 				<div class="sidebar-admin">
 					<ul>
 						<li'.$this->set_active_tab('negocio').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/negocio/"><i class="fa fa-home"></i></a></li>
-						<li'.$this->set_active_tab('ventas').' data-toggle="tooltip" data-placement="right" title="Ventas"><a href="'.HOST.'/negocio/ventas/"><i class="fa fa-money"></i></a></li>
-						<li'.$this->set_active_tab('certificados').' data-toggle="tooltip" data-placement="right" title="Certificados de regalo"><a href="'.HOST.'/negocio/certificados/reservar"><i class="fa fa-gift"></i></a></li>';
+						
+						<li'.$this->set_active_tab('ventas').' data-toggle="tooltip" data-placement="right" title="Ventas"><a href="'.HOST.'/negocio/ventas/"><i class="fa fa-money"></i></a></li>';
+
+					if($this->restaurant){
+						$html .= '<li'.$this->set_active_tab('reservacion').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/negocio/reservacion/"><i class="fa fa-calendar-check-o"></i></a></li>';
+					}
+
+
+
+					$html .='<li'.$this->set_active_tab('certificados').' data-toggle="tooltip" data-placement="right" title="Certificados de regalo"><a href="'.HOST.'/negocio/certificados/reservar"><i class="fa fa-gift"></i></a></li>';
 		if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5){
 			$html .= 	'<li'.$this->set_active_tab('contenidos').' data-toggle="tooltip" data-placement="right" title="Publicaciones y contenidos"><a href="'.HOST.'/negocio/contenidos/galeria"><i class="fa fa-globe"></i></a></li>';
 		}
@@ -718,7 +787,7 @@ class includes {
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
 
-</body>
+</body>	
 </html>';
 		return $html;
 	}

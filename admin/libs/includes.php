@@ -453,7 +453,7 @@ class includes {
 	<meta charset="utf-8" />
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta https-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<meta name="robots" content="none" />
@@ -472,7 +472,7 @@ class includes {
 
 	
 
-	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
@@ -597,7 +597,7 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
+								<a href="https://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 									<i class="fa fa-facebook"></i>
 								</a>
 							</div>
@@ -614,7 +614,7 @@ class includes {
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 								<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es Travel Points?</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/tienda/">Tienda de Regalos</a></li>
-								<li class="visible-xs"><a href="http://www.facebook.com/TravelPointsMX" target="_blank">Travel Points Facebook</a></li>
+								<li class="visible-xs"><a href="https://www.facebook.com/TravelPointsMX" target="_blank">Travel Points Facebook</a></li>
 								<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel Points</a></li>
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
@@ -755,7 +755,7 @@ class includes {
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>

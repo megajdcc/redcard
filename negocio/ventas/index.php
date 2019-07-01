@@ -37,14 +37,26 @@ echo $navbar = $includes->get_navbar(); ?>
 					<input type="hidden" id="balance" value="<?php echo $sale->get_clean_balance();?>">
 					<p id="after">Saldo despu&eacute;s de venta: </p>
 				</div>
-				<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de Travel Points. Verifique su coincidencia cuidadosamente.">
-					<label for="user-search-input">Socio de Travel Points <i class="fa fa-question-circle text-secondary"></i></label>
-					<div class="search-placeholder" id="user-search-placeholder">
+				<div class="row">
+
+					<div class="col-lg-12">
+						<div class="form-group" id="user-search" data-toggle="tooltip" title="Ingrese el nombre propio, nombre de usuario o correo electr&oacute;nico del socio de Travel Points. Verifique su coincidencia cuidadosamente.">
+						<label for="user-search-input">Socio de Travel Points <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="search-placeholder" id="user-search-placeholder">
 						<img src="<?php echo HOST;?>/assets/img/user_profile/default.jpg" class="meta-img img-rounded">
+						</div>
+						<input class="form-control typeahead" type="text" id="user-search-input" name="username" value="<?php echo $sale->get_username();?>" placeholder="Nombre de usuario del cliente" required>
+						<?php echo $sale->get_username_error(); ?>
+						</div>
 					</div>
-					<input class="form-control typeahead" type="text" id="user-search-input" name="username" value="<?php echo $sale->get_username();?>" placeholder="Nombre de usuario del cliente" required>
-					<?php echo $sale->get_username_error(); ?>
+
+					<div class="isreserva">
+						
+					</div>
+						
 				</div>
+			
+
 				<div class="row">
 					<div class="col-sm-4 col-lg-2">
 						<div class="form-group">

@@ -356,7 +356,8 @@ input {
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
-  padding: 0; }
+  padding: 0; 
+}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -1309,7 +1310,8 @@ img {
   height: auto; }
 
 .img-rounded {
-  border-radius: 6px; }
+  border-radius: 6px; 
+}
 
 .img-thumbnail {
   padding: 4px;
@@ -2260,7 +2262,7 @@ th {
   .table > tfoot > tr > td {
     padding: 8px;
     line-height: 1.42857;
-    vertical-align: top;
+    vertical-align: center;
     border-top: 1px solid #ddd; }
   .table > thead > tr > th {
     vertical-align: bottom;
@@ -2651,7 +2653,8 @@ input[type="search"] {
   position: relative;
   display: block;
   margin-top: 10px;
-  margin-bottom: 10px; }
+  margin-bottom: 10px; 
+}
   .radio label,
   .checkbox label {
     min-height: 20px;
@@ -3151,6 +3154,8 @@ fieldset[disabled] a.owl-prev {
   color: #fff;
   background-color: #337ab7;
   border-color: #2e6da4; }
+
+
   .btn-primary:focus, .fileinput-upload-button:focus, .detail-gallery .owl-next:focus, .detail-gallery .owl-prev:focus, .btn-primary.focus, .focus.fileinput-upload-button, .detail-gallery .focus.owl-next, .detail-gallery .focus.owl-prev {
     color: #fff;
     background-color: #286090;
@@ -9587,11 +9592,41 @@ h2.widgettitle {
     margin-right: 20px;
     padding: 9px 15px;
     cursor: pointer;
-    transition: all linear .15s; }
+    transition: all linear .15s;
+     }
+
+     .btn-reserva{
+      background: transparent;
+      margin: 0px;
+      width: 100px;
+      flex: 0 1 250px;
+
+     }
+      .content-btn-reserva{
+        display: flex;
+        justify-content: flex-start;
+      
+
+      }
+
+    .content-btn-reserva .detail-banner-btn {
+      text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      border: 1px solid #fff;
+      color: #fff;
+      display: inline-block;
+      margin-top: 20px;
+      margin-right: 20px;
+      padding: 9px 15px;
+      cursor: pointer;
+      transition: all linear .15s;
+    }
+
     .detail-banner .detail-banner-btn i {
       font-size: 16px;
       margin-right: 5px; }
-    .detail-banner .detail-banner-btn:hover {
+    .detail-banner .detail-banner-btn:hover,
+  .content-btn-reserva .detail-banner-btn:hover
+     {
       background-color: #fff;
       color: #363636;
       text-shadow: none; }
@@ -10899,6 +10934,7 @@ div.tt-dataset .tt-suggestion:last-child {
   width: 100%;
   border: 2px solid #e9e9e9;
   border-radius: 4px;
+  /*min-height: 50px;*/
   margin-bottom: 2px;
   overflow-y: auto;
   padding: 6px 12px;
@@ -10933,6 +10969,7 @@ div.tt-dataset .tt-suggestion:last-child {
 .meta-img {
   width: 50px;
   height: 50px;
+  min-height: 50px !important;
   margin-right: 8px;
   object-fit: cover;
   overflow: hidden;

@@ -1,4 +1,4 @@
-<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; 
 $con = new assets\libs\connection();
 
 if( !@$_SERVER["HTTP_X_REQUESTED_WITH"] ){
@@ -10,6 +10,8 @@ if( !@$_SERVER["HTTP_X_REQUESTED_WITH"] ){
 $json = new assets\libs\jsonSearch($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+
 	if(filter_input(INPUT_POST, 'id_pais', FILTER_VALIDATE_INT)){
 		echo $json->getStates($_POST['id_pais']);
 	}
@@ -58,6 +60,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 
 	if(filter_input(INPUT_GET, 'hotel')){
 		echo $json->getHotel($_GET['hotel']);
+	}
+
+	if(filter_input(INPUT_GET, 'restaurantes')){
+		echo $json->getRestaurantes($_GET['restaurantes']);
 	}
 	// if(filter_input(INPUT_GET, 'certificate')){
 	// 	echo $json->get_certificates('%'.$_GET['certificate'].'%');
