@@ -72,6 +72,15 @@ class Restaurant {
 
 	}
 
+	public function desfaseReserv(){
+
+		$sql = "UPDATE reservacion set status = 4 where id_restaurant = :negocio and fecha > ADDDATE(fecha,INTERVAL 5 day)";
+
+		$stm = $this->con->prepare($sql);
+		$stm->bindParam(':negocio', $this->restaurant['id'],PDO::PARAM_INT);
+		$stm->execute();
+	}
+
 	public function cargar(){
 
 		if(!empty($this->busqueda['datestart']) && !empty($this->busqueda['dateend'])){
@@ -589,6 +598,10 @@ class Restaurant {
 						$status = 'Cancelada';
 						$clas = 'cancelada';
 					break;
+				case 4:
+						$status = 'Desfasada';
+						$clas = 'cancelada';
+					break;
 				
 				default:
 					# code...
@@ -607,7 +620,26 @@ class Restaurant {
 			?>
 
 			<tr id="<?php echo $valores['id']?>" class="row-reserva" data-status="<?php echo $status;?>">
+				<td>
+					<?php if ($valores['status'] == 0): ?>
+								<div class="btn-group dropright ">
+								<button type="button" id="maria" class="update dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i></button>
+									
+								<div class="dropdown-menu menu-reserva" aria-labelledby="maria">
+									<?php 
+								if($valores['status'] == 0){	?>
+									<button type="button" class="cancelar-reserva btn btn-seconday dropdown-item" data-idcancel="<?php echo $valores['id']?>"><i class="fa fa-remove"></i>Cancelar</button>
+								<?php }?>
+								
+								
+								</div>
+									
+									</div>
+					<?php endif ?>
 				
+					
+
+				</td>
 				<td><?php echo $fecha ?></td>
 				<td>
 					<?php echo $hotel ?>

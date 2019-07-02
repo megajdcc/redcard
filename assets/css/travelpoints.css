@@ -468,6 +468,24 @@ width: 100%;
 	/*font-size: 12pt;*/
 }
 
+#listareservaciones .update{
+	background: transparent;
+	border: 0px;
+	outline: none;
+	padding: 0px 1rem;	
+}
+.update>i{
+	margin:0px;
+}
+.menu-reserva{
+	padding: 1rem !important;
+}
+.menu-reserva>button{
+	display: block;
+	width: 100%;
+	margin-bottom: 1rem;
+
+}
 
 /*Pagina del view restaurant - reservacion*/
 

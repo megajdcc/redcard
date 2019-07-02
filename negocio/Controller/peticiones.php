@@ -192,6 +192,18 @@ else if(isset($_POST['peticion']) && $_POST['peticion'] == 'numeromesas'){
 			$response['peticion'] = true;
 		}
 	echo json_encode($response);
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cancelarreserva'){
+	
+	$response = array(
+						'peticion' => false
+						 );
+
+		$resultado  = $reservacion->cancelar($_POST['idreserva']);
+		if($resultado){
+			$response['peticion'] = true;
+		}
+	echo json_encode($response);
+
 }
 
 

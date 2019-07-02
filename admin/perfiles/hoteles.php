@@ -114,7 +114,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
          "language": {
                         "lengthMenu": "Mostar _MENU_ "+" "+"Registros por pagina",
                         "info": "",
-                        "infoEmpty": "No se encontro ningún perfil de usuario",
+                        "infoEmpty": "No se encontro ningún hotel registrado",
                         "infoFiltered": "(filtrada de _MAX_ registros)",
                         "search": "Buscar:",
                         "paginate": {

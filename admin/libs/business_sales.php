@@ -139,7 +139,7 @@ class business_sales {
 					<td>'.$total.'</td>
 					<td>'.$iso.'</td>
 					<td>'.$commission.'%</td>
-					<td>'.$esmarties.'</td>
+					<td>Tp. '.$esmarties.'</td>
 					<td>'.$referral.'</td>
 					<td>'.$employee.'</td>
 					<td>'.$date.'</td>
@@ -156,7 +156,7 @@ class business_sales {
 							<th>Total</th>
 							<th>Divisa</th>
 							<th>Comisi&oacute;n</th>
-							<th>Bono eSmartties</th>
+							<th>Bono TravelPoints</th>
 							<th>Bono Referente</th>
 							<th>Registrante</th>
 							<th>Fecha y Hora</th>

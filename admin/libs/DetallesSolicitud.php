@@ -1805,18 +1805,16 @@ class DetallesSolicitud {
 
 			$this->con->beginTransaction();
 
-
-			
-			$query1 = "delete from hotel where id = :hotel";
+			$query1 = "DELETE FROM hotel where id = :hotel";
 			
 		try{
 			$st = $this->con->prepare($query1);
 			
 			if($solicitud > 0){
-				$st->bindValue(':hotel',$solicitud, PDO::PARAM_INT);
+				$st->bindParam(':hotel',$solicitud, PDO::PARAM_INT);
 				
 			}else{
-				$st->bindValue(':solicitud', $this->solicitudhotel['id'], PDO::PARAM_INT);
+				$st->bindParam(':hotel', $this->solicitudhotel['id'], PDO::PARAM_INT);
 				
 			}
 			$result = $st->execute();
@@ -1824,6 +1822,7 @@ class DetallesSolicitud {
 			$this->con->commit();
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+			$this->con->rollBack();
 			return false;
 		}
 
@@ -2699,7 +2698,7 @@ class DetallesSolicitud {
 	}
 
 	private function error_log($method, $line, $error){
-		echo "jhonatan";
+		
 		file_put_contents(ROOT.'\assets\error_logs\solicitudperfilerror.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
 		return;

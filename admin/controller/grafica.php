@@ -5,6 +5,10 @@ $con = new assets\libs\connection();
 
 use admin\libs\Home;
 use admin\libs\Iata;
+use admin\libs\Reservacion;
+
+
+$reservacion = new Reservacion($con);
 
 $home = new Home($con);
 
@@ -202,5 +206,62 @@ if(isset($_POST['newiata']) && $_POST['newiata']){
 		$iata->registrocliente($post);
 
 	}
+
+
+if(isset($_POST['grafica']) && $_POST['grafica'] == 'reservasporconcierge'){
+
+		$result = $reservacion->getReservaConcierge();
+
+		if($result){
+			$response = array();
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+					
+				settype($row['reservas'], 'integer');
+				$reservas = $row['reservas'];
+
+				if(empty($row['nombrecompleto'])){
+					$user = $row['username'];
+				}else{
+					$user = $row['nombrecompleto'];
+				}
+
+				$response[] = array('name'=>$user,'y'=>$reservas);
+	
+				}
+	
+				
+			}
+		
+			echo json_encode($response);
+
+		}
+
+
+if(isset($_POST['grafica']) && $_POST['grafica'] == 'reservaspornegocio'){
+
+		$result = $reservacion->getReservaNegocio();
+
+		if($result){
+			$response = array();
+			while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+					
+				settype($row['reservas'], 'integer');
+				$reservas = $row['reservas'];
+
+				$negocio = $row['negocio'];
+				$response[] = array('name'=>$negocio,'y'=>$reservas);
+				}
+				
+	
+			}
+		
+			echo json_encode($response);
+
+		}
+
+
+
+
+
 
  ?>

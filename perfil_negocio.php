@@ -186,6 +186,9 @@ echo $navbar = $includes->get_main_navbar();
 																			
 														$('form[name="reservar-user-preview"]').bind('submit',function(e){
 
+																	$('.btn-reservar').attr('disabled','disabled');
+																	$('.btn-reservar').html('Reservando por favor espere...');
+
 																	
 
 																	if($('input[name="fechaseleccionada"]').val() == ''){
@@ -214,6 +217,7 @@ echo $navbar = $includes->get_main_navbar();
 																			$('input[name="totalperson"]').val('1');
 																			$('input[name="fecha"]').val('');
 																			$('.btn-reservar').attr('disabled','disabled');
+																			$('.btn-reservar').html('RESERVAR | BOOK');
 																			$('#modal-reserva').modal('hide');
 
 																		}else{
@@ -221,7 +225,8 @@ echo $navbar = $includes->get_main_navbar();
 																		}
 																	})
 																	.fail(function() {
-																		console.log("error");
+																		
+																		
 																	})
 																	.always(function() {
 																		console.log("complete");
@@ -302,7 +307,7 @@ echo $navbar = $includes->get_main_navbar();
 			</div>
 
 
-			<div class="modal fade modal-reservacion" id="modal-reserva" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal fade modal-reservacion" id="modal-reserva" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 			<div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
 			<div class="modal-header">

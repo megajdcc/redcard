@@ -26,7 +26,7 @@ class Reservacion {
 
 
 	public function cargar(String $busqueda = null){
-			echo $busqueeda;
+		
 		if(empty($busquedad)){
 			$sql = "SELECT np.preferencia as logo,n.url, r.id,n.nombre as negocio,r.fecha,r.hora,r.status,concat(n.direccion,' ',c.ciudad,' ',e.estado,' tel - ',nt.telefono) as localizacion from reservacion as r 
 			join negocio as n on r.id_restaurant = n.id_negocio
@@ -112,6 +112,10 @@ class Reservacion {
 					break;
 				case 3:
 						$status = 'Cancelada';
+						$clas = 'cancelada';
+					break;
+				case 4:
+						$status = 'Desfasada';
 						$clas = 'cancelada';
 					break;
 				

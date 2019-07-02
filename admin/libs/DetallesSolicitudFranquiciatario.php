@@ -670,10 +670,6 @@ class DetallesSolicitudFranquiciatario{
 }
 	public function EliminarSolicitud($proviene =null){
 
-
-
-
-
 		if($this->con->inTransaction()){
 			$this->con->rollBack();
 		}

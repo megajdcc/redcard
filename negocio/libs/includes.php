@@ -565,6 +565,8 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+
+	<link src="'.HOST.'/assets/libraries/bootstrap/css/bootstrap.css"/>
 	
 		<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
 	<title>'.$title.'</title>
@@ -781,7 +783,7 @@ class includes {
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
-
+	
 <script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>

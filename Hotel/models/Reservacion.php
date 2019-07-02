@@ -254,6 +254,10 @@ class Reservacion
 						$status = 'Cancelada';
 						$clas = 'cancelada';
 					break;
+				case 4:
+						$status = 'Desfasada';
+						$clas = 'cancelada';
+					break;
 				
 				default:
 					# code...
@@ -307,7 +311,7 @@ class Reservacion
 	public function cancelar(int $idreserva){
 
 
-		$sql = "DELETE FROM reservacion where id = :reserva";
+		$sql = "UPDATE reservacion  set status = 3 where id = :reserva";
 
 		$this->conec->beginTransaction();
 

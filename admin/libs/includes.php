@@ -139,6 +139,30 @@ class includes {
 					}
 				break;
 
+				case 'reservacion':
+				$this->crumbs[0] = 'Reservaciones';
+
+					switch (basename($_SERVER['SCRIPT_NAME'])) {
+						case 'index.php':
+							$this->crumbs[1] = 'Ver Reservas';
+							break;
+						default:
+							$this->crumbs[1] = '';
+							break;
+
+				}
+
+				$this->sidebar = '<li'.$this->set_active_sidebar_tab('index.php').'>
+							<a href="'.HOST.'/admin/reservacion/">
+								<span class="icon"><i class="fa fa-align-justify"></i></span>
+								<span class="title">Reservaciones</span>
+								<span class="subtitle">Ver Reservas</span>
+							</a>
+						</li>
+
+						';
+				break;
+
 				
 			case 'tienda':
 				$this->crumbs[0] = 'Tienda';
@@ -563,10 +587,6 @@ class includes {
   ga("create", "UA-57870544-2", "auto");
   ga("send", "pageview");
 	
-
-
-
-
 </script>
 
 	<script src="https://www.paypal.com/sdk/js?client-id=AQbkx9FrI9LADfmA-SGNPa3CmkORFFVx87kixFLBqXtZXk-F4mpM4r9GwD5O80zIDI7_P3HkngJjnMUY"></script>
@@ -689,7 +709,10 @@ class includes {
 						
 						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/admin/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
 
-								<li'.$this->set_active_tab('perfiles').' data-toggle="tooltip" data-placement="right" title="Perfiles"><a href="'.HOST.'/admin/perfiles/"><i class="fa fa-users"></i></a></li>';
+								<li'.$this->set_active_tab('perfiles').' data-toggle="tooltip" data-placement="right" title="Perfiles"><a href="'.HOST.'/admin/perfiles/"><i class="fa fa-users"></i></a></li>
+		
+								';
+				$html .= '<li'.$this->set_active_tab('reservacion').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/admin/reservacion/"><i class="fa fa-calendar-check-o"></i></a></li>';
 				}
 					if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2 || $_SESSION['user']['id_rol'] == 3){
 

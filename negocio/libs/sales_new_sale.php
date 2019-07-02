@@ -1,8 +1,12 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php 
+
+
+
 namespace negocio\libs;
 use assets\libs\connection;
 use PDO;
-
+use DateTime;
+use DateInterval;
 class sales_new_sale {
 	private $con;
 	private $user = array(
@@ -35,6 +39,11 @@ class sales_new_sale {
 		'warning' => null,
 		'error' => null
 	);
+
+	private $reserva = array(
+		'id_reserva' =>null,
+		'fecha' => null
+		);
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
@@ -113,15 +122,42 @@ class sales_new_sale {
 	private function isReserva(){
 
 		$fecha = new DateTime();
-		$fechaactual = $fecha->format('Y-m-d h:i A');
-
+		$fechaactual = $fecha->format('Y-m-d');
+		$result = false;
 
 		$sql  = "SELECT r.id, concat(r.fecha,' ',r.hora) as fecha, u.id_usuario, u.username from reservacion as r 
-		join usuario as u on r.usuario_solicitante
-        where r.status = 0 and u.id_usuario = 1 and r.id_restaurant = 45
-        "
+					left join usuario as u on r.usuario_solicitante = u.id_usuario
+			        where r.status = 0 and u.id_usuario = :usersolicitante and r.id_restaurant = :negocio";
 
+        try {
+        	$stm = $this->con->prepare($sql);
+        	$stm->execute(array(':usersolicitante'=> $this->sale['id'], ':negocio' => $this->business['id']));
+        } catch (\PDOException $e) {
+        	$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+        	$result = false;	        	
+        }
 
+  		
+
+        if($stm->rowCount() > 0 ){
+        	while($row  =$stm->fetch(PDO::FETCH_ASSOC)){
+        		$fechar2 = new DateTime($row['fecha']);
+        		$fecha3 = new DateTime($row['fecha']);
+
+        		$fecha2 = $fechar2->format('Y-m-d');
+
+        		$fecha3->add(new DateInterval('P5D'));
+        		echo $row['id_usuario'] .' - '. $this->sale['id'];
+
+				if($fecha2 <= $fecha3->format('Y-m-d')){
+
+					$result = true;
+					$this->reserva['id_reserva'] = $row['id'];
+					$this->reserva['fecha'] = $fechar2->format('Y-m-d');
+				} 
+        	} 
+        }
+        return $result;
 	}
 
 	public function submit_sale(array $post){
@@ -133,7 +169,21 @@ class sales_new_sale {
 		$this->set_eSmarties();
 		$this->set_certificate($post['certificate']);
 
-		$this->isReserva();
+		if($this->isReserva()){
+
+			$sql = "UPDATE reservacion set status = 1 where id=:reservacion";
+			$this->con->beginTransaction();
+			try {
+				$stm = $this->con->prepare($sql);
+				$stm->execute(array(':reservacion' => $this->reserva['id_reserva']));
+				$this->con->commit();
+
+			} catch (\PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+				$this->con->rollBack();
+				return false;
+			}
+		}
 
 		if(isset($post['use_cert'])){
 			$this->set_certificates($post['use_cert']);

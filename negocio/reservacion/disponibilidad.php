@@ -354,10 +354,11 @@ echo $navbar = $includes->get_navbar();
 										var cantidad =0;
 
 										$('input[name="dias"]').click(function(event) {
-											// $('input[name="dias"]:checked').each(function(){
+											 
+											 // $('input[name="dias"]:checked').each(function(){
 													cantidad = $('input[name="dias"]:checked').length;
-											// }
-											// 
+											 // }
+											
 											
 											if(cantidad > 0){
 												$('.new-horario').removeAttr('disabled');
@@ -369,15 +370,15 @@ echo $navbar = $includes->get_navbar();
 
 										$('.new-horario').click(function(event) {
 											/* Act on the event */
+
 											var espacios = $('input[name="espacios"]').val();
+
+
 
 											if(espacios > 0 ){
 												$('#time-horario').modal('show');	
 
-												$('input[name="horario"]').focus(function(event) {
-													/* Act on the event */
-												// $('#datetimepicker3').data('DateTimePicker').toggle();
-												});
+											
 
 											}else{
 												alert('Asigne los espacios que va a permitir en reserva.');

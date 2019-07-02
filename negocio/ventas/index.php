@@ -28,7 +28,10 @@ echo $navbar = $includes->get_navbar(); ?>
 <?php echo $con->get_notify();?>
 <div class="row">
 	<div class="col-sm-12">
-		<?php echo $sale->get_notification();?>
+		<?php echo $sale->get_notification();
+		
+
+		?>
 		<form method="post" action="<?php echo _safe(HOST.'/negocio/ventas/');?>">
 			<div class="background-white p30 mb50">
 				<div class="page-title">

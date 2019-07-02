@@ -167,15 +167,50 @@ echo $navbar = $includes->get_navbar(); ?>
 
 				</div>
 				<table  id="listareservaciones" class="display" cellspacing="0" width="100%">
+					<script>
+						
+						$(document).ready(function() {
+							$('.cancelar-reserva').on('click',function(e){
+								var idcancel = $(this).attr('data-idcancel');
 
+							
+
+								var result = confirm('Esta seguro de cancelar la reserva?');
+								if(result){
+
+									$.ajax({
+										url: '/negocio/Controller/peticiones.php',
+										type: 'POST',
+										dataType: 'JSON',
+										data: {peticion: 'cancelarreserva',idreserva:idcancel},
+										})
+									.done(function(response) {
+										if(response.peticion){
+										location.reload();
+										}
+										})
+									.fail(function() {
+										console.log("error");
+										})
+									.always(function() {
+										console.log("complete");
+										});
+
+								}
+								
+								
+							});
+						});
+
+					</script>
 					<thead>
 						<tr>
+							<th></th>
 							<th>Fecha</th>
 							<th>Hotel</th>
 							<th>Solicita</th>
 							<th>Personas</th>
 							<th>Status</th>
-							
 							<th>Observaciones</th>
 						</tr>
 					</thead>
@@ -196,6 +231,8 @@ echo $navbar = $includes->get_navbar(); ?>
 					"paging"        :         false,
 					"scrollY"       :        "400px",
 					"scrollCollapse": true,
+					"ordering": true,
+					"lengthChange":false,
 			         "language": {
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
 			                        "info": "",

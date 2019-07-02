@@ -3126,7 +3126,8 @@ fieldset[disabled] a.owl-prev {
   .open > .btn-default.dropdown-toggle {
     color: #333;
     background-color: #e6e6e6;
-    border-color: #adadad; }
+    border-color: #adadad; 
+  }
     .btn-default:active:hover, .btn-default:active:focus, .btn-default:active.focus, .btn-default.active:hover, .btn-default.active:focus, .btn-default.active.focus,
     .open > .btn-default.dropdown-toggle:hover,
     .open > .btn-default.dropdown-toggle:focus,

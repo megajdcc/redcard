@@ -123,6 +123,9 @@ echo $navbar = $includes->get_main_navbar(); ?>
 							}else if(datos[clave]['status'] == 3){
 								var status = 'Cancelada';
 								var clas = 'cancelada';
+							}else if(datos[clave]['status'] == 4){
+								var status = 'Desfasada';
+								var clas = 'cancelada';
 							}
 							
 
