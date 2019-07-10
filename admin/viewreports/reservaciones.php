@@ -17,7 +17,17 @@
 	}
 
 	if(is_null($fecha1)){
-		$fechas = 'Todo el listado';
+
+		if($this->filtro == 0){
+			$fechas = 'Todo el dia de hoy';
+		}else if($this->filtro == 1){
+			$fechas = 'Todo el dia de ayer';
+		}else if($this->filtro == 2){
+			$fechas = 'Todo el mes';
+		}else if($this->filtro == 3){
+			$fechas = 'El mes anterior';
+		}
+		
 	}else{
 		$fechas  = $fecha1.' al '.$fecha2;
 	}
@@ -45,13 +55,29 @@
 		<thead>
 			<tr>
 			
-				<th >Rango</th>
+				<th>Rango</th>
+				<td>Restaurantes</td>
+				<td>Hotel</td>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 
 				<td style="text-align: center"><?php echo $fechas; ?></td>
+				<td>
+					<?php if(!empty($this->restaurant)){
+						echo $this->restaurant;
+ 					}else{
+ 						echo "Todo los restaurantes";
+ 					} ?>
+				</td>
+				<td>
+					<?php if(!empty($this->hotel)){
+						echo $this->hotel;
+ 					}else{
+ 						echo "Todo los hoteles";
+ 					} ?>
+				</td>
 				
 			</tr>
 		</tbody>
@@ -73,8 +99,7 @@
 			<tbody>	
 
 			<?php 
-				$sql1 = "SELECT u.username,concat(u.nombre, ' ',u.apellido) as nombrecompleto, r.id from usuario as u join reservacion as r on u.id_usuario = r.usuario_registrante 
-					where r.usuario_registrante = :user";
+
 
 		foreach($this->catalogo as $key => $valores) {
 			
@@ -85,53 +110,10 @@
 			if(empty($valores['nombrecompleto'])){
 				$usuario = $valores['username'];
 			}
-
 		
-			$registrant = $valores['usuario_registrante'];
-			$status   = _safe($valores['status']);
+			$registrante = $valores['usuario_registrante'];
+			$status   = $valores['status'];
 			$fecha    = _safe($valores['fecha']);	
-
-
-
-
-			switch ($status) {
-				case 0:
-						$status = 'Agendada';
-						$clas = 'sinconfirmar';
-					break;
-				case 1:
-						$status = 'Consumada';
-						$clas = 'consumada';
-					break;
-				case 2:
-						$status = 'Confirmada';
-						$clas = 'confirmada';
-					break;
-				case 3:
-						$status = 'Cancelada';
-						$clas = 'cancelada';
-					break;
-				
-				default:
-					# code...
-					break;
-			}
-
-			$stm = $this->conec->prepare($sql1);
-			$stm->bindParam(':user',$registrant,PDO::PARAM_INT);
-			$stm->execute();
-
-			$registrante = 'directo (sin hotel)'; 
-			if($row = $stm->fetch(PDO::FETCH_ASSOC)){
-
-				
-					$registrante = $row['nombrecompleto'];
-					
-					if(empty($registrante)){
-						$registrante = $row['username'];
-					}
-				
-			}
 
 			?>
 
@@ -141,7 +123,7 @@
 				<td><?php echo $negocio ?></td>
 				<td><?php echo $usuario; ?></td>
 				<td><?php echo $registrante; ?></td>
-				<td><strong class="<?php echo $clas ?>"><?php echo $status;?></strong></td>
+				<td><?php echo $status; ?></td>
             </tr>
 
             	

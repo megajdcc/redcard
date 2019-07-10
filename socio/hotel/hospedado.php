@@ -18,16 +18,18 @@ $Huesped = new Huesped($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
+	echo var_dump($_POST);
 
-	
-	if(isset($_POST['send']) && !empty($_POST['send'])){
-		$Huesped->procesar($_POST);
-			unset($_POST['send']);
-	}
+	// if(isset($_POST['send'])){
+	// 	// echo 'jhonatan';
+	// 	// $result  =  $Huesped->procesar($_POST);
+		
+	// 		// header('location: /login');
+	// }
 
-	if(isset($_POST['quitar'])  && !empty($_POST['quitar'])){
-		$Huesped->quitar($_POST);
-	}
+	// if(isset($_POST['quitar'])  && !empty($_POST['quitar'])){
+	// 	// $Huesped->quitar($_POST);
+	// }
 
 }
 
@@ -69,7 +71,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
 
 
-								<form id="huespedform" action="<?php echo _safe(HOST.'/socio/perfil/huesped');?>" method="post"  enctype="multipart/form-data" >
+								<form id="huespedform" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" method="post"  enctype="multipart/form-data" >
 									<div class="background-white p30 mb50">
 									  <h3 class="page-title">Informaci&oacute;n del Hotel</h3>
 									  
@@ -79,13 +81,11 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									  		<div class="form-group flex" data-toggle="tooltip"  title="Ingrese el nombre del hotel o busque en nuestro catalógo los hoteles registrados en el sistema">
 								            <label for="business-name">Nombre del Hotel donde te hospedas:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 								            <div class="input-hotel">
-								            <div class="input-group d-flex">
 
-								            <span class="input-group-addon"><i class="fa fa-building"></i></span>
-
-								            <input class ="form-control" type="text" id="nombre_hotel" name="hotel"  value="<?php echo $Huesped->getNombreHotel(); ?>" placeholder="Nombre del hotel" aria-describedby="hotel" required/>
-														<button type ="button"  data-toggle="modal" data-target="#modalhotel"  data-placement="top" name="buscarhotel" class=" buscar form-control"><i class="fa fa-search"></i>Buscar</button>
-								            </div>
+								            	<select class="form-control" name="hotel" data-live-search="true">
+								            		<option value="0" selected>Seleccione su hotel</option>
+								            		<?php $Huesped->getHoteles(); ?>
+								            	</select>
 								             
 													
 								            </div>
@@ -93,46 +93,24 @@ echo $navbar = $includes->get_main_navbar(); ?>
 								            
 								           </div><!-- /.form-group -->
 									  	</div>
+								         
 
-									  	<div class="col-xs-12 d-flex">
-											
-											<div class="row" style="display:flex !important; align-items:center !important;">
 
-										
-											
-											</div>
-									  	</div>
+									  </div>
+
+									  <div class="row">
+									  	<section class="col-ld-4">
+											<?php if(!empty($Huesped->getNombreHotel())){?>
+													<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo _safe(HOST.'/socio/perfil/huesped'); ?>" type="button" value="grabar" name="send"><i class="fa fa-remove"></i>Borrar Hotel</button>
+													<?php }else{?>
+											<button  class="enviar btn btn-outline-success btn-xl" type="submit" value="grabar" name="send"><i class="fa fa-save"></i>Grabar</button>
+											<?php 	}  ?>
+									  	</section>
 									  </div>
 
 
 									</div>
 									 
-									 	<div class="background-white p30 mb50">
-									 		<div class="row">
-
-									 		<div class="alert alert-warning">
-									 			<label>Para asociarte a otro hotel, primero debes eliminar el actual, buscas el hotel al que quieres vincularte "Grabar" y listo</label>
-									 		</div>
-								         <div class="col-xs-6">
-								         	 <p>Los campos marcados son obligatorios <span class="required">*</span></p>
-								         </div>
-								         <div class="col-xs-6 right">
-								         	<input type="hidden" name="idhotel" value="0" class="hotel">
-
-								         	<div class="">
-								         		<input type="hidden" name="send" value="registro">
-								         	</div>
-
-
-								         	<?php if(!empty($Huesped->getNombreHotel())){?>
-	 										<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo _safe(HOST.'/socio/perfil/huesped'); ?>" type="button" value="grabar" name="send"><i class="fa fa-remove"></i>Borrar Hotel</button>
-								         	<?php }else{?>
- 											<button  class="enviar btn btn-outline-success btn-xl" type="submit" value="grabar" name="send"><i class="fa fa-save"></i>Grabar</button>
-								         <?php 	}  ?>
-								         
-								         </div>
-								     </div>
-							        </div>
 								</form>
 						</div><!-- /.content -->
 					</div><!-- /.col-* -->
@@ -140,52 +118,6 @@ echo $navbar = $includes->get_main_navbar(); ?>
 			</div><!-- /.container -->
 		</div><!-- /.main-inner -->
 	</div><!-- /.main -->
-
-
-	<div class="modal fade " id="modalhotel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-				<div class="modal-content">
-					
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Hoteles Afiliados</h5>
-						
-					</div>
-
-					<div class="modal-body">
-						<section class="table">
-						<table  id="hoteles" class="display" cellspacing="0" width="auto">
-							<thead>
-					            <tr>
-					                <th>Nombre</th>
-					                <th>Dirección</th>
-					                <th>Ubicación</th>
-					         
-					            </tr> 
-					        </thead>
-
-					        <tbody>
-					   			<?php 
-					   				echo  $Huesped->ListarHoteles();
-					   			 ?>
-					        </tbody>
-							</table>
-							<div class="alert alert-info">
-								<label>Seleccione el hotel al que quieres vincularte, con solo dar clics o pulsar encima de la linea...</label>
-							</div>
-						</section>
-					
-					</div>
-						
-					<div class="modal-footer">
-						
-						
-						<button  type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-
 <script>  
 
 
@@ -217,65 +149,12 @@ echo $navbar = $includes->get_main_navbar(); ?>
 		
 				var save = $('.enviar');
 
-					$.ajax({
-				 	type:$(this).attr("method"),
-					url: $(this).attr("action"),
-					data: $(this).serialize(),
-					beforeSend: function(){
-						save.text("Procesando por favor Espere...");
-						save.attr("disabled","disabled");
-					},
-					complete:function(data){
-						save.html("<i class='fa fa-remove'></i>Retirarme.");
-						
-						save.attr('data-retirar', 1);
-						save.removeAttr('disabled');
-					},
-					success:function(data){
-						location.reload();
-						$('.registro').css({
-							display: 'flex',
-							padding: '10px 10px'
- 							
-						});
+				save.text("Procesando por favor Espere...");
+				save.attr("disabled","disabled");
 
-						$('.eliminacion').css({
-							display: 'none'
-						});
-					},
-					error:function(data){
-						alert("No se pudo aceptar la solicitud, por favor intente mas tarde... ");
-					}
-
-				});	
-				
-
-				return false;
+				return true;
 
 		});
-
-  $('#hoteles').DataTable( {
-      "paging":         false,
-      "scrollY":        "150px",
-        "scrollCollapse": true,
-         "language": {
-                        "lengthMenu": "Mostar _MENU_ registros por pagina",
-                        "info": "",
-                        "infoEmpty": "No se encontro nigún hotel",
-                        "infoFiltered": "(filtrada de _MAX_ registros)",
-                        "search": "Buscar:",
-                        "paginate": {
-                            "next":       "Siguiente",
-                            "previous":   "Anterior"
-                        },
-                    },
-        "columnDefs": [ {
-            "searchable": true,
-            "orderable": true,
-            "targets": 0
-        } ],
-        "order": [[ 0, 'asc' ]]
-    } );
 });
 
 </script>

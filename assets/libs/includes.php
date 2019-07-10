@@ -13,17 +13,22 @@ class includes {
 		'pending_review'                               => 0,
 		'pending_request'                              => 0,
 		'solicitud_pendiente_hotel'                    => 0,
-		'solicitud_pendiente_hotel_revision'           =>	0,
+		'solicitud_pendiente_hotel_revision'           => 0,
 		'solicitud_pendiente_franquiciatario'          => 0,
-		'solicitud_pendiente_franquiciatario_revision' =>	0,
+		'solicitud_pendiente_franquiciatario_revision' => 0,
 		'solicitud_pendiente_referidor'                => 0,
-		'solicitud_pendiente_referidor_revision'       =>	0,
+		'solicitud_pendiente_referidor_revision'       => 0,
 
 	);
 	private $admin = array(
 		'pending_request' => 0
 	);
 
+
+	private $reserva = array(
+			'numero' => 0,
+
+	);
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		if(isset($_SESSION['user']['id_usuario'])){
@@ -115,6 +120,30 @@ class includes {
 				$this->admin['pending_request'] = $row['COUNT(*)'];
 			}
 		}
+
+		// verificacion de reservaciones.
+		
+		$sql = "select count(*) as numreserva from reservacion where usuario_solicitante = :user and status = 0";
+
+		try {
+				$stm = $this->con->prepare($sql);
+				$stm->bindParam(':user',$this->user['id'],PDO::PARAM_INT);
+				$stm->execute();
+
+		} catch (\PDOException $e) {
+			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
+			return false;
+			
+		}
+
+		if($stm->rowCount() > 0){
+			
+			if($row = $stm->fetch(PDO::FETCH_ASSOC)){
+				$this->reserva['numero'] = $row['numreserva'];
+			}
+
+		}
+		
 		return;
 	}
 
@@ -123,6 +152,13 @@ class includes {
 
 
 		if(isset($_SESSION['perfil'])){
+			
+			if($this->reserva['numero'] > 0){
+					$notif = '<span class="notification">'.$this->reserva['numero'].'</span>';
+				}else{
+					$notif = '';
+				}
+
 			$html = '<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_tab('perfil').'>
@@ -134,7 +170,7 @@ class includes {
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
 				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
-				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt"></i> Reservaciones</a></li>
+				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt "></i> Reservaciones '.$notif.'</a></li>
 
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
@@ -159,11 +195,18 @@ class includes {
 			break;
 
 			case 'reservaciones':
+
+				if($this->reserva['numero'] > 0){
+					$notif = '<span class="notification">'.$this->reserva['numero'].'</span>';
+				}else{
+					$notif = '';
+				}
+
 				$html .=
 						'<div class="widget">
 							<ul class="menu-advanced">
 								
-								<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-money"></i> Mis Reservaciones</a></li>
+								<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-money"></i>Mis Reservaciones '.$notif.'</a></li>
 								
 								
 
@@ -256,6 +299,12 @@ class includes {
 		}
 
 		}else{
+
+			if($this->reserva['numero'] > 0){
+				$nofifica = '<div class="notification"></div>';
+			}else{
+				$notifica = '';
+			}
 			$html = '<div class="widget">
 			<ul class="menu-advanced">
 				<li'.$this->set_active_tab('perfil').'>
@@ -267,7 +316,7 @@ class includes {
 				<li'.$this->set_active_tab('socio').'><a href="'.HOST.'/socio/"><i class="fa fa-home"></i> Inicio</a></li>
 				<li'.$this->set_active_tab('negocios').'><a href="'.HOST.'/socio/negocios/"><i class="fa fa-briefcase"></i> Negocios</a></li>
 				<li'.$this->set_active_tab('hotel').'><a href="'.HOST.'/socio/hotel/hospedado/"><i class="fa fa-hotel"></i> Mi Hotel</a></li>
-				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt"></i> Reservaciones</a></li>
+				<li'.$this->set_active_tab('reservaciones').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-credit-card-alt"></i> Reservaciones '.$notifica.'</a></li>
 				<li'.$this->set_active_tab('consumos').'><a href="'.HOST.'/socio/consumos/"><i class="fa fa-credit-card"></i> Consumos</a></li>
 				<li'.$this->set_active_tab('certificados').'><a href="'.HOST.'/socio/certificados/"><i class="fa fa-gift"></i> Certificados</a></li>
 				<li'.$this->set_active_tab('compras').'><a href="'.HOST.'/socio/compras/"><i class="fa fa-shopping-bag"></i> Compras</a></li>
@@ -290,6 +339,24 @@ class includes {
 			</ul>
 		</div>';
 			break;
+
+			case 'reservaciones':
+
+				if($this->reserva['numero'] > 0){
+					$notif = '<span class="notification">'.$this->reserva['numero'].'</span>';
+				}else{
+					$notif = '';
+				}
+
+				$html .=
+						'<div class="widget">
+							<ul class="menu-advanced">
+								
+								<li'.$this->set_active_sidebar_tab('index.php').'><a href="'.HOST.'/socio/reservaciones/"><i class="fa fa-money"></i>Mis Reservaciones '.$notif.'</a></li>
+							</ul>
+						</div>';
+			break;
+
 			case 'negocios':
 			if($this->user['pending_request'] > 0){
 				$noti = '<span class="notification">'.$this->user['pending_request'].'</span>';
@@ -485,12 +552,7 @@ class includes {
 
 				
 <!-- Payment method Pago... -->
-<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&currency=MXN"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&integration-date=2019-31-05"></script>
-
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&debug=false"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture&currency=MXN&integration-date=2019-31-05&debug=false"></script>
 
 <div id="fb-root"></div>
 <div class="page-wrapper">
@@ -550,9 +612,10 @@ class includes {
 											<img src="<?php echo HOST.'/assets/img/user_profile/'.$this->user['image']; ?>">
 											<?php  
 
-							if($this->user['pending_review'] > 0 || $this->user['pending_request'] > 0 || $this->admin['pending_request'] > 0){?>
+							if($this->user['pending_review'] > 0 || $this->user['pending_request'] > 0 || $this->admin['pending_request'] > 0 || $this->reserva['numero'] > 0){?>
 								<div class="notification"></div>
 							<?php  }
+
 
 							if($this->user['pending_review'] > 0){
 
@@ -589,8 +652,6 @@ class includes {
 											$perfil .= '<li><a href="'.HOST.'/Referidor/">Panel Referidor</a></li>';
 										}
 								}
-
-								
 							}
 
 							 ?>
@@ -607,11 +668,17 @@ class includes {
 									<li><a href="<?php echo HOST.'/admin/'; ?>">Panel Travel Points</a><li>
 									
 									<?php  if($this->admin['pending_request'] > 0){?>
-										<li><a href="<?php echo HOST.'/admin/negocios/solicitudes'; ?>">Solicitudes pendientes<div class="dropdown-notification"></div></a></li>
+										
 
 							
 								<?php }
 							} 
+
+							if($this->reserva['numero'] > 0 ){
+								echo '<li><a href="'.HOST.'/socio/reservaciones/">Reservas agendada<div class="dropdown-notification"></div></a></li>';
+							}
+
+
 								
 								
 								if($_SESSION['user']['id_rol'] == 9 and !isset($_SESSION['perfil'])){
@@ -631,7 +698,7 @@ class includes {
 								</div><!-- /.dropdown -->
 							</div><!-- /.header-nav-user -->
 							
-		
+			
 								<?php }else{?>
 
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">

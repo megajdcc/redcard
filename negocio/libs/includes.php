@@ -22,13 +22,19 @@ class includes {
 	private $restaurant = false;
 	private $crumbs = array();
 
+	private $reservas = array(
+		'numero' => 0,
+	);
 	public function __construct(connection $con){
 		$this->con = $con->con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		$this->business['id'] = $_SESSION['business']['id_negocio'];
 		$this->load_data();
 		$this->restaurant=$this->isRestaurant();
+			$this->load_reservas();
 		$this->load_sidebar();
+
+	
 
 		return;
 	}
@@ -53,6 +59,25 @@ class includes {
 		}
 
 		return $return;
+	}
+
+
+	private function load_reservas(){
+
+		$sql = "SELECT count(*) numreservas from reservacion where id_restaurant = :negocio and status = 0";
+
+		try {
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':negocio',$this->business['id'],PDO::FETCH_ASSOC);
+			$stm->execute();
+		} catch (\PDOException $e) {
+		}
+
+		if($stm->rowCount() >0 ){
+			if($row = $stm->fetch(PDO::FETCH_ASSOC)){
+				$this->reservas['numero'] = $row['numreservas'];
+			}
+		}
 	}
 
 	private function load_data(){
@@ -214,12 +239,17 @@ class includes {
 						$this->crumbs[1] = '';
 						break;
 				}
-
+				if($this->reservas['numero'] > 0){
+					$notifa= '<span class="notification">'.$this->reservas['numero'].'</span>';
+				}else{
+					$notifa = '';
+				}
 				$this->sidebar = '<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/negocio/reservacion/">
 								<span class="icon"><i class="fa fa-align-justify"></i></span>
-								<span class="title">Reservaciones</span>
+								<span class="title">Reservaciones '.$notifa.'</span>
 								<span class="subtitle">Ver Reservas</span>
+
 							</a>
 						</li>
 
@@ -577,6 +607,14 @@ class includes {
 	}
 
 	public function get_navbar(){
+
+		if($this->reservas['numero']> 0){
+			$notific = '<div class="notification"></div>';
+			$class = '<div class="dropdown-notification"></div>';
+		}else{
+			$notific = '';
+			$class = '';
+		}
 		$html =
 '<body class="">
  <script>
@@ -590,12 +628,8 @@ class includes {
 
 </script>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&currency=MXN"></script>
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&integration-date=2019-31-05"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&intent=capture&currency=MXN&integration-date=2019-31-05&debug=false"></script>
 
-<script type="https://www.paypal.com/sdk/js?client-id=AcYKncEXBz2IOKpUfUM_ChomIT4V9AJ97BAha55Y7X_O-OR8lyoSfbObOEkvELFV_5Kw4aiiNpWdytQY&debug=false"></script>
 <div class="page-wrapper">
 	<header class="header header-minimal">
 		<div class="header-wrapper">
@@ -654,6 +688,7 @@ class includes {
 									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 										<div class="user-image">
 											<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">
+											'.$notific.'
 										</div><!-- /.user-image -->
 										<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
 									</button>
@@ -665,6 +700,13 @@ class includes {
 									$html .= 
 									'<li><a href="'.HOST.'/admin/">Panel Travel Points</a></li>';
 								}
+
+								if($this->reservas['numero']){
+									$html .= 
+									'<li><a href="'.HOST.'/negocio/reservacion">Reservaciones pendientes'.$class.'</a></li>';
+								}
+
+
 								$html .= 
 										'<li><a href="'.HOST.'/logout">Cerrar sesi&oacute;n</a></li>
 									</ul>
@@ -703,25 +745,29 @@ class includes {
 						
 						<li'.$this->set_active_tab('ventas').' data-toggle="tooltip" data-placement="right" title="Ventas"><a href="'.HOST.'/negocio/ventas/"><i class="fa fa-money"></i></a></li>';
 
+
+					
+
 					if($this->restaurant){
+						
 						$html .= '<li'.$this->set_active_tab('reservacion').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/negocio/reservacion/"><i class="fa fa-calendar-check-o"></i></a></li>';
 					}
 
 
 
-					$html .='<li'.$this->set_active_tab('certificados').' data-toggle="tooltip" data-placement="right" title="Certificados de regalo"><a href="'.HOST.'/negocio/certificados/reservar"><i class="fa fa-gift"></i></a></li>';
-		if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5){
-			$html .= 	'<li'.$this->set_active_tab('contenidos').' data-toggle="tooltip" data-placement="right" title="Publicaciones y contenidos"><a href="'.HOST.'/negocio/contenidos/galeria"><i class="fa fa-globe"></i></a></li>';
-		}
-		if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5 || $_SESSION['business']['id_rol'] == 6){
-			if($_SESSION['business']['id_rol'] == 4){
-				$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/"><i class="fa fa-user-circle-o"></i></a></li>
+							$html .='<li'.$this->set_active_tab('certificados').' data-toggle="tooltip" data-placement="right" title="Certificados de regalo"><a href="'.HOST.'/negocio/certificados/reservar"><i class="fa fa-gift"></i></a></li>';
+							if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5){
+							$html .= 	'<li'.$this->set_active_tab('contenidos').' data-toggle="tooltip" data-placement="right" title="Publicaciones y contenidos"><a href="'.HOST.'/negocio/contenidos/galeria"><i class="fa fa-globe"></i></a></li>';
+							}
+							if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5 || $_SESSION['business']['id_rol'] == 6){
+							if($_SESSION['business']['id_rol'] == 4){
+							$html .= 	'<li'.$this->set_active_tab('personal').' data-toggle="tooltip" data-placement="right" title="Personal"><a href="'.HOST.'/negocio/personal/"><i class="fa fa-user-circle-o"></i></a></li>
 							<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias de negocio"><a href="'.HOST.'/negocio/preferencias/informacion"><i class="fa fa-cog"></i></a></li>';
-				
-			}else{
-				
-			}
-		}
+							
+							}else{
+							
+							}
+							}
 		if($_SESSION['business']['id_rol'] == 4 || $_SESSION['business']['id_rol'] == 5){
 			$html .= 	'<li'.$this->set_active_tab('reportes').' data-toggle="tooltip" data-placement="right" title="Reportes"><a href="'.HOST.'/negocio/reportes/"><i class="fa fa-line-chart"></i></a></li>';
 		}

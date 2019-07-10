@@ -43,6 +43,9 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	<form method="post" action="<?php echo _safe(HOST.'/Hotel/usuarios/nuevousuario');?>" autocomplete="off">
 						
 					<div class="row">
+						<div class="col-lg-12">
+							<?php echo $reg->getNotificacion();?>
+						</div>
 					
 						<?php echo $reg->getMethodError(); ?>
 						<div class="col-lg-6 ">

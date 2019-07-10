@@ -1,3 +1,0 @@
-[09-May-2017 22:35:50 America/Mexico_City] PHP Notice:  getimagesize(): Read error! in /home/mariosacramento/public_html/esmartclub.com/assets/libraries/bulletproof/bulletproof.php on line 326
-[09-May-2017 22:35:50 America/Mexico_City] PHP Notice:  getimagesize(): Read error! in /home/mariosacramento/public_html/esmartclub.com/assets/libraries/bulletproof/bulletproof.php on line 311
-[09-May-2017 22:35:50 America/Mexico_City] PHP Notice:  exif_imagetype(): Read error! in /home/mariosacramento/public_html/esmartclub.com/assets/libraries/bulletproof/bulletproof.php on line 127

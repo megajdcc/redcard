@@ -70,7 +70,7 @@
 
 			switch ($status) {
 				case 0:
-						$status = 'Sin confirmar';
+						$status = 'Agendada';
 						$clas = 'sinconfirmar';
 					break;
 				case 1:
@@ -89,6 +89,10 @@
 				default:
 					# code...
 					break;
+			}
+
+			if(empty($hotel)){
+				$hotel = 'directo (sin hotel)';
 			}
 
 	

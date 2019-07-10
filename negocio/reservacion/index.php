@@ -35,7 +35,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 							// echo var_dump(getdate())
 							
+// $fecha = new DateTime();
+// $fechaactual = $fecha->format('Y-m-d g:m A');
 
+// echo $fechaactual;
 $includes = new Includes($con);
 
 $properties['title'] = 'Reservaciones | Travel Points';
@@ -205,13 +208,14 @@ echo $navbar = $includes->get_navbar(); ?>
 					</script>
 					<thead>
 						<tr>
-							<th></th>
+							<th>#</th>
 							<th>Fecha</th>
 							<th>Hotel</th>
 							<th>Solicita</th>
 							<th>Personas</th>
 							<th>Status</th>
 							<th>Observaciones</th>
+							<th></th>
 						</tr>
 					</thead>
 					
@@ -249,7 +253,7 @@ echo $navbar = $includes->get_navbar(); ?>
 			            "orderable": true,
 			            "targets": 0
 			        } ],
-			        "order": [[ 0, 'asc' ]]
+			        "order": [[ 0, 'desc' ]]
 			    } );
 
 	$(document).ready(function() {

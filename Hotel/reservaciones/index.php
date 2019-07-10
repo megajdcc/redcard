@@ -36,10 +36,6 @@
 
 	$home = new Home($con);
 
-	if($_SERVER["REQUEST_METHOD"] == "POST"){
-		
-	}
-
 	$includes = new Includes($con);
 
 	$properties['title'] = 'Hotel | Travel Points | Reservaciones';
@@ -66,6 +62,15 @@
 
 				<form id="reservacion" action="<?php echo _safe(HOST.'/Hotel/reservaciones/');?>" method="POST">
 					
+					<script >
+						
+						$(document).ready(function() {
+							$('#user-search-reservacion').bind('submit',function(e){
+								$('.reservar').attr('disabled', 'disabled');
+								return true;
+							});
+						});
+					</script>
 
 
 				
@@ -80,15 +85,15 @@
 												
 								<input type="text" class="form-control typeahead" name="referral"  value="" placeholder="Nombre de usuario del cliente" autocomplete="off">
 							</div>
-							<div class="form-group" id="user-search-reservacion-negocios" data-toggle="tooltip" title="Encuentra el restaurante (negocio) pedido por el usuario">
-										<label for="restaurantes">Negocios de Travel Points   | <i class="fa fa-question-circle text-secondary"></i></label>
-										<div class="search-placeholder reserva-content-img" id="user-search-placeholder-reservacion" style="flex:1 1 auto;">
+							<div class="form-group" id="user-search-reservacion-negocios" data-toggle="tooltip" title="Busca y selecciona el restaurantes deseado.">
+									<label for="restaurantes">Negocios de Travel Points   | <i class="fa fa-question-circle text-secondary"></i></label>
+											<div class="search-placeholder reserva-content-img" id="user-search-placeholder-reservacion" style="flex:1 1 auto;">
 											<img class="img-reservacion-default" src="<?php echo HOST;?>/assets/img/business/restaurant.png" class="meta-img img-rounded">
-										</div>
+											</div>
 											
-										<input type="text" class="form-control complete" name="restaurantes" id="restaurantes" value="" placeholder="Nombre del Restaurante (negocio)" >
-								</div>
-						</div>
+											<input type="text" class="form-control complete" name="restaurantes" id="restaurantes" value="" placeholder="Nombre del Restaurante (negocio)" >
+							</div>
+							</div>
 
 						<div class="col-lg-6">
 
@@ -144,16 +149,68 @@
 						<section class=" col-lg-6 botoneras-footer-reservacion">
 							<button class="reservar btn btn-success" type="submit" name="reservar" disabled><i class="fa fa-save"></i>Reservar</button>
 						</section>
+						
 					</div>
+
+					
 
 					<input type="hidden" name="fechaseleccionada">
 					<input type="hidden" name="negocio">
 					
 					<input type="hidden" name="horaseleccionada">
 					</form>
+					
 			</div>
 		</div>
 	</div>
+
+
+<div class="modal" id="modal-datos-restaurant" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa fa-cutlery"></i> | Datos del restaurant</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+
+      	<form name="new-user-form" action="<?php echo HOST.'/Hotel/reservaciones/'; ?>" method="POST">
+		      <div class="modal-body">
+		       <div class="form-group">
+					<label for="email">Nombre </label>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-glass"></i></span>
+						<input  type="text" id="restaurant" name="restaurant" class="form-control" placeholder="Email del usuario" autocomplete="off" readonly>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="phone">Tel&eacute;fono</label>
+					<div class="input-group phone">
+						<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+						<input  type="tel" id="phone" name="telefonorestaurant" class="form-control" placeholder="Tel&eacute;fono del restaurant" autocomplete="off" readonly>
+					</div>
+				</div>
+
+					<div class="form-group">
+					<label for="direccion">Direcci&oacute;n</label>
+					<div class="input-group direccion">
+						<span class="input-group-addon"><i class="fa fa-map-o"></i></span>
+						<textarea name="direccion" class="form-control" readonly></textarea>
+					</div>
+				</div>
+
+
+		      </div>
+		     
+  		</form>
+    
+    </div>
+  </div>
+</div>
+
 
 <div class="modal" id="modal-afiliar-new-usuario-reservacion" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -221,6 +278,8 @@
 
 		$('form[name="new-user-form"]').bind('submit', function(event) {
 				event.preventDefault();
+
+
 				var email    = $('input[name="email"]').val();
 				var nombre   = $('input[name="nombre"]').val();
 				var apellido = $('input[name="apellido"]').val();

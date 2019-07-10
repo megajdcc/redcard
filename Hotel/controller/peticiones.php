@@ -47,6 +47,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		}
 		echo json_encode($response);
 
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'datosrestaurant'){
+
+		$response = array(
+			'peticion' =>false ,
+			'mensaje'  =>'',
+			'data'     =>null
+			 );
+
+
+		$resultado = $reservacion->getRestaurant($_POST['negocio']);
+
+		if($resultado){
+			$response['peticion'] = true;
+			$response['data'] = $resultado->fetchAll(PDO::FETCH_ASSOC);
+		}
+		echo json_encode($response);
+
 	}
 
 }

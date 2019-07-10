@@ -35,4 +35,33 @@ if(isset($_POST['peticion']) && $_POST['peticion'] == 'buscarreserva'){
 
 	echo json_encode($response);
 
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cancelarreservacion'){
+
+	$response = array(
+					'peticion' => false,
+				);
+	$result =  $reservacion->CancelarReserva($_POST['idreserva']);
+
+	if($result){
+		$response['peticion'] = true;
+		
+	}
+
+	echo json_encode($response);
+
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'listarreservacionesusuario'){
+
+	$response = array(
+					'peticion' => false,
+					'datos' => null,
+				);
+	$result =  $reservacion->getDatos();
+
+	if(count($result) > 0 ){
+		$response['peticion'] = true;
+		$response['datos'] = $result;
+	}
+
+	echo json_encode($response);
+
 }

@@ -20,6 +20,13 @@ class Huesped
 	
 	private $hotel = null, $telefono = null, $whatsapp = 0,$id = 0;
 
+	private $error = array(
+		'error'=>null,
+	);
+
+	private $idhotel = null;
+
+
 	function __construct($con = null){		
 
 		$this->con = $con->con;	
@@ -31,11 +38,9 @@ class Huesped
 
 	public function procesar(array $post){
 
-		$this->setNombreHotel($post['hotel']);
-		
-		
 
-		if($post['idhotel'] > 0){
+		$this->idhotel = $post['hotel'];
+
 
 			// es un hotel registrado en el sistema ... 
 			 if($this->con->inTransaction()){$this->con->rollBack();};
@@ -49,8 +54,8 @@ class Huesped
 
 				$stm->execute(array(':usuario' => $this->user['id_usuario']));
 
-			} catch (PDOException $e) {
-				
+			} catch (\PDOException $e) {
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
 				$this->con->rollBack();
 
 				return false;
@@ -63,36 +68,18 @@ class Huesped
 
 			try {
 				$stm2 = $this->con->prepare($query1);
-				$stm2->execute(array(':hotel' =>$post['idhotel'],
+				$stm2->execute(array(':hotel' =>$this->idhotel,
 								':huesped'=>$last_id));
 
 				$this->con->commit();
-			} catch (PDOException $ex) {
+			} catch (\PDOException $ex) {
+				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				$this->con->rollBack();
 				return false;
 			}
 
 			return true;
-		}else{
-
-			if($this->con->inTransaction()){$this->con->rollBack();};
-
-			$this->con->beginTransaction();
-
-			$query = "insert into huesped(hotel,id_usuario) values(:hotel,:usuario)";
 			
-			try {
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':hotel'=>$this->getNombreHotel(),
-								':usuario' => $this->user['id_usuario']));
-				$this->con->commit();
-				} catch (PDOException $e) {
-					$this->con->rollBack();
-					return false;}
-			
-
-			return true;
-		}
 	}
 
 
@@ -188,6 +175,25 @@ class Huesped
 	
 	}
 
+	public function getHoteles(){
+
+		$sql = "SELECT h.id, h.nombre as hotel from hotel as h order by h.nombre";
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute();
+
+			$opciones = '';
+			if(!empty($this->getNombreHotel())){
+				$opciones .='<option value="" selected>'.$this->getNombreHotel().'<opction>';
+			}
+
+
+		while($row = $stm->fetch(PDO::FETCH_ASSOC)){
+			$opciones .= '<option value="'.$row['id'].'">'.$row['hotel'].'<opction>';
+			echo $opciones;
+		}
+
+	}
 
 	public function ListarHoteles(){
 
@@ -233,6 +239,14 @@ class Huesped
 			</tr>
 		<?php  }
 
+	}
+
+
+
+	private function error_log($method, $line, $error){
+		file_put_contents(ROOT.'\assets\error_logs\hotelhuesped.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
+		return;
 	}
 
 

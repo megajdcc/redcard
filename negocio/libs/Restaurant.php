@@ -111,7 +111,7 @@ class Restaurant {
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
                     left join hotel as h on r.id_hotel = h.id 
-                    where r.id_restaurant = :negocio";
+                    where r.id_restaurant = :negocio order by r.id desc";
 					
 				$stmt = $this->con->prepare($sql);
 				$stmt->bindParam(':negocio',$this->restaurant['id'],PDO::PARAM_INT);
@@ -621,21 +621,11 @@ class Restaurant {
 
 			<tr id="<?php echo $valores['id']?>" class="row-reserva" data-status="<?php echo $status;?>">
 				<td>
-					<?php if ($valores['status'] == 0): ?>
-								<div class="btn-group dropright ">
-								<button type="button" id="maria" class="update dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cog"></i></button>
-									
-								<div class="dropdown-menu menu-reserva" aria-labelledby="maria">
-									<?php 
-								if($valores['status'] == 0){	?>
-									<button type="button" class="cancelar-reserva btn btn-seconday dropdown-item" data-idcancel="<?php echo $valores['id']?>"><i class="fa fa-remove"></i>Cancelar</button>
-								<?php }?>
-								
-								
-								</div>
-									
-									</div>
-					<?php endif ?>
+
+
+					<?php 
+					echo $valores['id'];?>
+				
 				
 					
 
@@ -659,6 +649,13 @@ class Restaurant {
 					<?php 	} ?>
 					</td>
 				<td><?php echo $observacion; ?></td>
+				<td>
+			<?php if ($valores['status'] == 0 ): ?>
+				<button type="button" class="cancelar-reserva" data-toggle="tooltip" data-placement="left" title="Cancelar reservaci&oacute;n" data-idcancel="<?php echo $valores['id']?>"><i class="fa fa-remove"></i></button>
+			<?php endif ?>
+
+				
+				</td>
 
 					
 				
@@ -673,8 +670,6 @@ class Restaurant {
 
 	public function getHoraDisponibles($negocio,$fecha,$dia,bool $viewnegocio = false){
 
-
-
 		if($viewnegocio){
 				$sql = "SELECT rs.mesas,rs.hora, rs.id FROM restaurant_reservacion as rs join negocio_horario as h on rs.id_horario = h.id_horario 
 					where rs.id_restaurant = :negocio and h.dia = :dia and rs.condicion = 1
@@ -682,7 +677,7 @@ class Restaurant {
 					
 					
 					
-				$sql1 = "SELECT r.numeropersona, r.hora from reservacion r where r.id_restaurant = :negocio AND r.fecha = :fecha GROUP BY hora";
+				$sql1 = "SELECT sum(r.numeropersona) as numeropersona, r.hora from reservacion r where r.id_restaurant = :negocio AND r.fecha = :fecha and r.status  = 0 group by r.hora";
 
 
 				$stmt = $this->con->prepare($sql1);
@@ -697,8 +692,7 @@ class Restaurant {
 					order by rs.hora asc";
 					
 					
-					
-				$sql1 = "SELECT r.numeropersona, r.hora from reservacion r where r.id_restaurant = (SELECT id_negocio FROM negocio where nombre like :negocio ) AND r.fecha = :fecha GROUP BY hora";
+				$sql1 = "SELECT sum(r.numeropersona) as numeropersona, r.hora from reservacion r where r.id_restaurant = (SELECT id_negocio FROM negocio where nombre like :negocio ) AND r.fecha = :fecha and r.status = 0 GROUP BY r.hora";
 					
 					
 					

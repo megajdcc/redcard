@@ -267,7 +267,7 @@ echo $navbar = $includes->get_navbar();
 
 													  		for (var i = 0; i < horas.length; i++) {
 													  			
-													  			$('.dis-linea-'+dia).append('<button type="button" data-toggle="tooltip" title="Elimine esta hora si desea." class="remove-hora" data-idhorario="'+dias[clave].horas.id[i]+'"><i class="fa fa-trash"></i></button><strong class="hora">'+horas[i]+'</strong><input type="number" data-idhora="'+dias[clave].horas.id[i]+'" name="espacios-dis" class="form-control numeromesas" value="'+dias[clave].horas.mesas[i]+'" min="0">');
+													  			$('.dis-linea-'+dia).append('<div class="content-hora"><button type="button" data-toggle="tooltip" title="Elimine esta hora si desea." class="remove-hora" data-idhorario="'+dias[clave].horas.id[i]+'"><i class="fa fa-trash"></i></button><strong class="hora">'+horas[i]+'</strong><input type="number" data-idhora="'+dias[clave].horas.id[i]+'" name="espacios-dis" class="form-control numeromesas" value="'+dias[clave].horas.mesas[i]+'" min="0"></div>');
 													  			mesas = mesas + dias[clave].horas.mesas[i];
 													  		}
 													  		$('.remove-hora').change();

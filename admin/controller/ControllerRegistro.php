@@ -242,7 +242,7 @@ if(isset($_POST['solicitudcodigo'])){
 					$response['peticion'] = true;
 					$response['hotel_registrado'] = true;
 					$response['pago_registrado'] = true;
-					$response['mensaje'] = "Hotel registrado con exito, Si Desea Genere el Codigo de hotel y adjudique su comision de una vez...";
+					$response['mensaje'] = "Hotel registrado con exito,si desea genere el codigo de hotel y adjudique su comisión de una vez...";
 					$datos = $hotel->capturarultimo();
 				
 					$response['nombrehotel']  = $datos[0]['nombrehotel'];

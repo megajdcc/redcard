@@ -627,7 +627,37 @@ $('#user-search-hotel .typeahead').typeahead({
 								
 
 			 $('#user-search-placeholder-reservacion').empty();
-			 $('#user-search-placeholder-reservacion').append('<div><img class="img-reservacion-selected" src="/assets/img/business/header/' + data.imagen + '" class="meta-img img-rounded" alt=""></div>');
+			 $('#user-search-placeholder-reservacion').append('<div><img class="img-reservacion-selected rest"  data-idrestaurant="'+data.id_negocio+'" src="/assets/img/business/header/' + data.imagen + '" class="meta-img img-rounded" alt=""></div>');
+				$('.rest').change();
+				$('.rest').css('cursor', 'pointer');
+				$('.rest').click(function(e){
+					var idrest  = $(this).attr('data-idrestaurant');
+
+					$.ajax({
+						url: '/Hotel/controller/peticiones.php',
+						type: 'POST',
+						dataType: 'JSON',
+						data: {peticion: 'datosrestaurant',negocio:idrest},
+					})
+					.done(function(response) {
+						if(response.peticion){
+
+							$('#modal-datos-restaurant input[name="restaurant"]').val(response.data[0].negocio);
+							$('#modal-datos-restaurant input[name="telefonorestaurant"]').val(response.data[0].telefono);
+							$('#modal-datos-restaurant textarea[name="direccion"]').val(response.data[0].direccion);
+							$('#modal-datos-restaurant').modal('show');
+						}
+					})
+					.fail(function() {
+						console.log("error");
+					})
+					.always(function() {
+						console.log("complete");
+					});
+					
+					
+				});
+			
 			$('input[name="negocio"]').val(data.id_negocio);
 
 		}

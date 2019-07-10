@@ -16,7 +16,10 @@ class NuevoUsuario {
 	private $hotel = null;
 	private $referral = array ('id' => null, 'username' => null);
 	private $errors = array('method' => null, 'username' => null, 'email' => null,'referral' => null);
-
+	private $error = array(
+			'warning' =>null,
+			'error'   =>null
+		);
 	public function __construct(connection $con){
 		$this->con = $con->con;
 
@@ -98,10 +101,6 @@ class NuevoUsuario {
 
 	private function register( bool $reserva = false){
 
-
-
-
-
 		if($this->con->inTransaction()){
 			$this->rollBack();
 		}
@@ -130,15 +129,11 @@ class NuevoUsuario {
 
 			    	$lastId = $this->con->lastInsertId();
 				
-			} catch (PDOException $e) {
+			} catch (\PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				$this->con->rollBack();
 				return false;
 			}
-			
-
-
-
 
 		}else{
 
@@ -165,7 +160,7 @@ class NuevoUsuario {
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($query_params);
 			$lastId = $this->con->lastInsertId();
-		}catch(PDOException $ex){
+		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			$this->con->rollBack();
 			return false;
@@ -236,7 +231,7 @@ class NuevoUsuario {
 
 					$ultimohuesped = $this->con->lastInsertId();
 
-			} catch (PDOException $e) {
+			} catch (\PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
 				$this->con->rollBack();
 				return false;
@@ -252,7 +247,7 @@ class NuevoUsuario {
 				$stm->execute();
 				$this->con->commit();
 				
-			}catch (PDOException $e) {
+			}catch (\PDOException $e) {
 
 				$this->error_log(__METHOD__,__LINE__,$e->getMessage);
 				$this->con->rollBack();
@@ -271,10 +266,8 @@ class NuevoUsuario {
 			try{
 				$stmt = $this->con->prepare($query);
 				$stmt->execute($query_params);
-				
 			}catch(\PDOException $ex){
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
-				$this->con->rollBack();
 				return false;
 			}
 		}
@@ -301,7 +294,7 @@ class NuevoUsuario {
 		$mail->isHTML(true);
 		// Formato del correo
 		$mail->Subject = 'Confirmación de correo electrónico.';
-		$mail->Body    = $this->email_template($this->email, $hash);
+		$mail->Body    = $this->email_template($this->email, $hash,$this->username);
 		$mail->AltBody = $body_alt;
 
 		if(!$mail->send()){
@@ -310,7 +303,7 @@ class NuevoUsuario {
 
 		
 		if(!$reserva){
-			$_SESSION['notification']['success'] = '¡Felicidades! Ya eres socio de Travel Points. Hemos enviado un correo de verificación a tu cuenta de correo electrónico: '.$this->email.'. Es necesario que verifiques tu cuenta para poder iniciar sesión.';
+			$_SESSION['notification']['success'] = '¡Registro exitoso! Ya el usuario es socio de Travel Points. Hemos enviado un correo de verificación a su cuenta de correo electrónico: '.$this->email.'. Es necesario que verifique su cuenta para poder iniciar sesión cuando lo desee.';
 			$_SESSION['register_email'] = $this->email;
 			header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
 			die();
@@ -321,7 +314,7 @@ class NuevoUsuario {
 		
 	}
 
-	private function email_template($email, $hash){
+	private function email_template($email, $hash,$username){
 		$html = 
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -382,6 +375,10 @@ class NuevoUsuario {
 									</td>
 								</tr>
 								<tr>
+									<td align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">Su nombre de usuario es :'.$username.'</td>
+								</tr>
+								<tr>
+
 									<td class="tablepadding" align="center" style="color: #444; padding:10px; font-size:14px; line-height:20px;">
 										Para completar tu registro debes confirmar tu correo electrónico haciendo clic <a style="outline:none; color:#0082b7; text-decoration:none;" href="'.HOST.'/login?email='.$email.'&codigo='.$hash.'">aquí</a>.
 										Para cualquier aclaraci&oacute;n contacta a nuestro equipo de soporte.<br>
@@ -628,6 +625,50 @@ class NuevoUsuario {
 			$error = '<p class="text-danger">'._safe($this->errors['referral']).'</p>';
 			return $error;
 		}
+	}
+
+
+	public function getNotificacion(){
+		$html = null;
+		if(isset($_SESSION['notification']['success'])){
+			$html .= 
+			'<div class="alert alert-icon alert-dismissible alert-success" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notification']['success']).'
+			</div>';
+			unset($_SESSION['notification']['success']);
+		}
+		if(isset($_SESSION['notification']['info'])){
+			$html .= 
+			'<div class="alert alert-icon alert-dismissible alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notification']['info']).'
+			</div>';
+			unset($_SESSION['notification']['info']);
+		}
+		if($this->error['warning']){
+			$html .= 
+			'<div class="alert alert-icon alert-dismissible alert-warning" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($this->error['warning']).'
+			</div>';
+		}
+		if($this->error['error']){
+			$html .= 
+			'<div class="alert alert-icon alert-dismissible alert-danger" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($this->error['error']).'
+			</div>';
+		}
+		return $html;
 	}
 
 	private function error_log($method, $line, $error){

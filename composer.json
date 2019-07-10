@@ -1,21 +1,24 @@
 {
-    "name":"Travel Points",
+    "name"       :"TravelPoints",
     "description": "Proyecto en php para El manejo de comisiones de Travel Points",
-    "type": "project",
-    "license": "MIT",
+    "type"       : "project",
+    "license"    : "MIT",
+    "time"       : "2019-02-03",
     "authors": [
         {
-            "name": "Jhonatan Crespo",
-            "email": "jhonatancrespo@megajdcc.com.ve"
+            "name"    : "Jhonatan Crespo",
+            "email"   : "jhonatancrespo@megajdcc.com.ve",
+            "role"    : "Developer",
+            "homepage":"http://ven-services.com.ve"
         }
     ],
     "require": {
         "paypal/rest-api-sdk-php": "*",
-        "google/recaptcha": "^1.2"
+        "google/recaptcha"       : "^1.2"
     },
     "autoload":{
         "psr-4":{
-            "sirfei\\": "Model/"
+           
         }
     },
     "require-dev": {

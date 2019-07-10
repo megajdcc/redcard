@@ -136,6 +136,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							<th>Registrante</th>
 							<th>Status</th>
 							<th>Fecha reserva</th>
+							<th>Personas</th>
+							<th>Observaciones</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -160,6 +162,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					"paging"        :         false,
 					"scrollY"       :        "400px",
 					"scrollCollapse": true,
+					
 			         "language": {
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
 			                        "info": "",
@@ -182,6 +185,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
     $(document).ready(function() {
     	
+    	if($('.observaciones').length){
+    		$('.observaciones').click(function(e){
+
+    			alert($(this).attr('data-observacion'));
+    		})
+    	}
 
     	$('.cancelar').on('click',function(e){
 

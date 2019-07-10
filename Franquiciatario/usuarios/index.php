@@ -43,7 +43,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<?php echo $usuarios->getNotificacion();?>
 		<div class="background-white p20 mb50">
 			<div class="page-title">
-				<h1>Socios de Travel Points</h1>
+				<h1>Usuarios Huespedes del hotel</h1>
 			</div>
 				<table  id="hotelusuarios" class="display" cellspacing="0" width="100%">
 					<thead>

@@ -122,10 +122,10 @@ class sales_new_sale {
 	private function isReserva(){
 
 		$fecha = new DateTime();
-		$fechaactual = $fecha->format('Y-m-d');
+		$fechaactual = $fecha->getTimestamp();
 		$result = false;
 
-		$sql  = "SELECT r.id, concat(r.fecha,' ',r.hora) as fecha, u.id_usuario, u.username from reservacion as r 
+		$sql  = "SELECT r.id, concat(r.fecha,' ',r.hora) as fecha, r.hora, u.id_usuario, u.username from reservacion as r 
 					left join usuario as u on r.usuario_solicitante = u.id_usuario
 			        where r.status = 0 and u.id_usuario = :usersolicitante and r.id_restaurant = :negocio";
 
@@ -140,17 +140,22 @@ class sales_new_sale {
   		
 
         if($stm->rowCount() > 0 ){
+
         	while($row  =$stm->fetch(PDO::FETCH_ASSOC)){
+        		
+
         		$fechar2 = new DateTime($row['fecha']);
         		$fecha3 = new DateTime($row['fecha']);
 
-        		$fecha2 = $fechar2->format('Y-m-d');
+        		// $fecha2 = $fechar2->format('Y-m-d g:i A');
+
+        		 // echo $fechar2->getTimestamp()."<br>";
 
         		$fecha3->add(new DateInterval('P5D'));
-        		echo $row['id_usuario'] .' - '. $this->sale['id'];
+        		// echo $fecha3->getTimestamp();
 
-				if($fecha2 <= $fecha3->format('Y-m-d')){
 
+				if(($fechar2->getTimestamp() <= $fecha3->getTimestamp()) and ($fechaactual >= $fechar2->getTimestamp())){
 					$result = true;
 					$this->reserva['id_reserva'] = $row['id'];
 					$this->reserva['fecha'] = $fechar2->format('Y-m-d');

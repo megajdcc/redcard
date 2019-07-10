@@ -85,8 +85,8 @@ class Reservacion
 
 		if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin'])){
 
-				$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as usuario,
-					r.status,concat(r.fecha,' ',r.hora) as fecha from reservacion as r 
+				$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
 					where r.id_hotel = :hotel and r.creado between :fecha1 and :fecha2";
@@ -108,8 +108,8 @@ class Reservacion
 
 
 		}else{
-				$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as usuario,
-					r.status,concat(r.fecha,' ',r.hora) as fecha from reservacion as r 
+				$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as usuario,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
 					where r.id_hotel = :hotel";
@@ -155,6 +155,10 @@ class Reservacion
 		
 
 		// echo var_dump($datos);
+		// 
+		if($this->conec->inTransaction()){
+			$this->conec->rollBack();
+		}
 		
 		if(isset($datos['peticion']) && $datos['peticion'] == 'reservar'){
 
@@ -220,6 +224,23 @@ class Reservacion
 	}
 
 
+	public function getRestaurant($negocio){
+		$sql = "SELECT n.nombre as negocio, concat(n.direccion,' ',c.ciudad,' ',e.estado,' ',p.pais) as direccion, nt.telefono  from negocio as n join negocio_telefono as nt
+						on n.id_negocio = nt.id_negocio 
+						join ciudad as c on n.id_ciudad = c.id_ciudad
+						join estado as e on c.id_estado = e.id_estado
+						join pais as p on e.id_pais = p.id_pais
+
+
+						where n.id_negocio = :id";
+
+		$stm = $this->conec->prepare($sql);
+		$stm->bindParam(':id',$negocio,PDO::FETCH_ASSOC);
+
+		$stm->execute();
+		return $stm;
+	}
+
 	public function getReserva(){
 		
 		$sql1 = "SELECT u.username,r.id from usuario as u join reservacion as r on u.id_usuario = r.usuario_registrante 
@@ -232,14 +253,15 @@ class Reservacion
 			$usuario  = _safe($valores['usuario']);
 			$solicita = _safe($valores['usuario']);
 			$status   = _safe($valores['status']);
-			$fecha    = _safe($valores['fecha']);	
+			$fecha    = _safe($valores['fecha']);
+			$personas = $valores['numeropersona'];	
 
 
 
 
 			switch ($status) {
 				case 0:
-						$status = 'Sin confirmar';
+						$status = 'Agendada';
 						$clas = 'sinconfirmar';
 					break;
 				case 1:
@@ -270,7 +292,11 @@ class Reservacion
 
 			$registrante = $stm->fetch(PDO::FETCH_ASSOC)['username'];	
 
-
+			if(empty($observacion)){
+				$observacion = 'Sin Observaciones';
+			}else{
+				$observacion = '<strong class="observaciones" data-observacion="'._safe($valores['observacion']).'">Observaciones</strong>';
+			}
 
 
 
@@ -291,12 +317,16 @@ class Reservacion
 				</strong>
 					</td>
 				<td><?php echo $fecha ?></td>
+					<td><?php echo $personas ?></td>
+				<td><?php echo $observacion ?></td>
 				<td>
 
-					<?php if($status == 'Sin confirmar' || $status == 'Confirmada'){?>
+					<?php if($status == 'Agendada' || $status == 'Confirmada'){?>
 						<button type="button" class="btn btn-danger cancelar" data-toggle="tooltip" title="Cancelar reservación" data-id="<?php echo $valores['id'] ?>" data-placement="left"><i class="fa fa-close"></i></button>
 					 <?php  }?>
 				</td>
+
+
 					
 				
             </tr>

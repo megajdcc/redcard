@@ -17,9 +17,6 @@ if(!$business->load_data($url)){
 	die();
 }
 
-
-
-
 $business->increase_views();
 
 $includes = new assets\libs\includes($con);
@@ -66,10 +63,8 @@ echo $navbar = $includes->get_main_navbar();
 						<script>
 							$(document).ready(function() {
 
-
 								var fechareserva = moment().format('YYYY-MM-DD');
 								var diahoy = moment().day();
-
 								var idnegocio  = "<?php echo $business->getIdnegocio() ?>";
 								
 								if(diahoy == 0){
@@ -101,7 +96,6 @@ echo $navbar = $includes->get_main_navbar();
 										dia == 6; 
 										}
 
-
 									cargar(fechareserva,dia);
 								});
 
@@ -116,8 +110,9 @@ echo $navbar = $includes->get_main_navbar();
 
 									$('.btn-reservar').attr('disabled','disabled');
 
-									cargar();
-
+									var fechareserva = moment().format('YYYY-MM-DD');
+									var diahoy = moment().day();
+									cargar(fechareserva,diahoy);
 								});
 
 
@@ -128,8 +123,6 @@ echo $navbar = $includes->get_main_navbar();
 										fechareserva = fechareserva;
 										diahoy = dia;
 									}
-									
-									
 
 									$.ajax({
 										url: '/negocio/Controller/peticiones.php',
@@ -143,24 +136,26 @@ echo $navbar = $includes->get_main_navbar();
 											var hora = response.data.hora;
 											$('.contenedorbotones').remove();
 											$('.horas-reserva').append('<div class="btn-group btn-group-toggle contenedorbotones" data-toggle="buttons"></div>');
+											
 											for (var clave in hora) {
+
 												if(response.data.mesas[clave] > 0 ){
+
 													$('.contenedorbotones').append('<label class="btn btn-danger horas" id="'+response.data.idhora[clave]+'" data-hora="'+response.data.hora[clave]+'" data-lugar="'+response.data.mesas[clave]+'" data-toggle="tooltip" title="'+response.data.mesas[clave]+' lugares disponibles" data-placement="bottom"><input type="checkbox"  name="hora"  id="'+response.data.hora[clave]+'"  autocomplete="off"/>'+response.data.hora[clave]+'</label>');
 																	 // $("#"+response.data.idhora[clave]).tooltip('enabled');
 												}
 											
-											$('.horas').on('mouseover',function(){
-													$(this).tooltip('show');
-												});
-											}
+												$('.horas').on('mouseover',function(){
+														$(this).tooltip('show');
+													});
+												}
 										
 										$('.contenedorbotones .horas').click(function(event) {
 												event.preventDefault();
 												$('.btn-reservar').attr('disabled', 'disabled');
 															
 												var cantidad = $(this).attr('data-lugar');
-												var numperson  =parseInt($('input[name="totalperson"]').val());
-
+												var numperson  = parseInt($('input[name="totalperson"]').val());
 												
 														if(cantidad >= numperson){
 															$('input[name="totalperson"]').attr('disabled', 'disabled');
@@ -185,16 +180,13 @@ echo $navbar = $includes->get_main_navbar();
 														$('.reservar').removeAttr('disabled');
 																			
 														$('form[name="reservar-user-preview"]').bind('submit',function(e){
-
+																	
 																	$('.btn-reservar').attr('disabled','disabled');
 																	$('.btn-reservar').html('Reservando por favor espere...');
-
-																	
 
 																	if($('input[name="fechaseleccionada"]').val() == ''){
 
 																		$('input[name="fechaseleccionada"]').val(moment().format('YYYY-MM-DD'));
-
 																	}
 
 																	var formdata  = new FormData(document.getElementById('formulario-reserva'));
@@ -275,9 +267,8 @@ echo $navbar = $includes->get_main_navbar();
 												if(iduser == 'not'){
 													location.href = "<?php echo HOST.'/login' ?>";
 												}else if(iduser == true){
-													cargar();
+													cargar(fechareserva,diahoy);
 												}
-
 
 											}else{
 												alert('Este restaurant no tiene horas disponible activas, intentelo mas tarde');

@@ -1,4 +1,4 @@
-<?php # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
+<?php
 namespace admin\libs;
 use assets\libs\connection;
 use PDO;

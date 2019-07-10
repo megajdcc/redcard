@@ -27,7 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 $includes = new Includes($con);
 
-$properties['title'] = 'Socios | Travel Points';
+$properties['title'] = 'Huespedes de hotel | Travel Points';
 $properties['description'] = '';
 
 
@@ -42,7 +42,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<?php echo $usuarios->getNotificacion();?>
 		<div class="background-white p20 mb50">
 			<div class="page-title">
-				<h1>Socios de Travel Points</h1>
+				<h1>Huespedes del Hotel</h1>
 			</div>
 				<table  id="hotelusuarios" class="display" cellspacing="0" width="100%">
 					<thead>
@@ -51,9 +51,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<th>#</th>
 						<th>Foto</th>
 						<th>Username</th>
-						<!-- <th>Correo electr&oacute;nico</th> -->
 						<th>Travel Points</th>
-						
 						<th>Nombre</th>
 						<th>Apellido</th>
 						

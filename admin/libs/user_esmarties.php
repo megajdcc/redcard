@@ -210,7 +210,7 @@ class user_esmarties {
 						<thead>
 						<tr>
 							<th>Tipo</th>
-							<th>eSmartties</th>
+							<th>TravelPoints</th>
 							<th>Fecha y hora</th>
 						</tr>
 						</thead>

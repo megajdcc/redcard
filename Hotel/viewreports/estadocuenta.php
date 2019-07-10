@@ -26,7 +26,7 @@
 <header id="header" class="cabezera-pdf">
 	<table width="100">
 		<tr>
-			<td><img src="../assets/img/logo.png" alt="logotipo" class="logo"></td>
+			<td><img src="../assets/img/LOGOV.png" alt="logotipo" class="logo" style="height: 250px, width:auto"></td>
 		</tr>
 	</table>
 </header>
