@@ -18,18 +18,13 @@ $Huesped = new Huesped($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	echo var_dump($_POST);
+	if(isset($_POST['idhotel'])){
+		$Huesped->procesar($_POST);
+	}
 
-	// if(isset($_POST['send'])){
-	// 	// echo 'jhonatan';
-	// 	// $result  =  $Huesped->procesar($_POST);
-		
-	// 		// header('location: /login');
-	// }
-
-	// if(isset($_POST['quitar'])  && !empty($_POST['quitar'])){
-	// 	// $Huesped->quitar($_POST);
-	// }
+	if(isset($_POST['quitar'])  && !empty($_POST['quitar'])){
+		 $Huesped->quitar($_POST);
+	}
 
 }
 
@@ -54,21 +49,8 @@ echo $navbar = $includes->get_main_navbar(); ?>
 					</div><!-- /.col-* -->
 					<div class="col-sm-8 col-lg-9">
 						<div class="content">
-
-							<style>
-								.registro, .eliminacion{
-									display: none;
-								} 
-
-							</style>
-							<div class="registro alert-success" role="alert">
-								<strong>Ya esta!!!</strong> has agregegado correctamente al hotel en la que cual te estas hospedando...
-							</div>
-							
-							<div class="eliminacion alert-danger" role="alert">
-								<strong>Ok Hecho!!!</strong> Te esperamos pronto en nuestro Hotel. <STRONG>No dudes en venir nuevamente. !!!</STRONG>
-							</div>
-
+	
+							<?php echo $Huesped->getNotification(); ?>
 
 
 								<form id="huespedform" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" method="post"  enctype="multipart/form-data" >
@@ -78,20 +60,19 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
 									  <div class="row">
 									  	<div class="col-12 d-flex">
-									  		<div class="form-group flex" data-toggle="tooltip"  title="Ingrese el nombre del hotel o busque en nuestro catalógo los hoteles registrados en el sistema">
-								            <label for="business-name">Nombre del Hotel donde te hospedas:<span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-								            <div class="input-hotel">
+									  	<div class="form-group" id="busquedad-hotel-hospedado" data-toggle="tooltip" title="Busca y selecciona tu hotel donde te hospedas, si no se encuentra escribe el nombre del hotel igual.">
+									<label for="hotel">Hotel where you stay? (Hotel) | ¿Hotel donde te hospedas;? (Hotel) <i class="fa fa-question-circle text-secondary"></i></label>
 
-								            	<select class="form-control" name="hotel" data-live-search="true">
-								            		<option value="0" selected>Seleccione su hotel</option>
-								            		<?php $Huesped->getHoteles(); ?>
-								            	</select>
-								             
-													
-								            </div>
-								            <small id="hotel" class="form-text text-muted">El sistema te ayudara a detectar si existe o no el hotel en nuestro directorio. Si no existe no te preocupes. </small>
-								            
-								           </div><!-- /.form-group -->
+									
+										<div class="search-placeholder" id="hotel-search-placeholder" style="flex:1 1 auto;">
+										<img src="<?php //echo HOST;?>/assets/img/hoteles/defaulthotel.jpg" class="meta-img img-rounded">
+										</div>
+										
+
+									<input type="text" class="form-control hospedado" name="hotel" value="<?php echo $Huesped->getNombreHotel(); ?>" placeholder="Nombre del hotel donde te hospedas?" autocomplete="false"/>
+									
+									<input type="hidden" name="idhotel" value="">
+								</div>
 									  	</div>
 								         
 
@@ -101,12 +82,15 @@ echo $navbar = $includes->get_main_navbar(); ?>
 									  <div class="row">
 									  	<section class="col-ld-4">
 											<?php if(!empty($Huesped->getNombreHotel())){?>
-													<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo _safe(HOST.'/socio/perfil/huesped'); ?>" type="button" value="grabar" name="send"><i class="fa fa-remove"></i>Borrar Hotel</button>
+													<button  class="retirar btn btn-outline-success btn-xl" data-path="<?php echo $_SERVER['REQUEST_URI']?>" type="button" value="quitar" name="quitar"><i class="fa fa-remove"></i>Borrar Hotel</button>
 													<?php }else{?>
 											<button  class="enviar btn btn-outline-success btn-xl" type="submit" value="grabar" name="send"><i class="fa fa-save"></i>Grabar</button>
 											<?php 	}  ?>
 									  	</section>
 									  </div>
+
+
+
 
 
 									</div>
@@ -128,16 +112,15 @@ echo $navbar = $includes->get_main_navbar(); ?>
 
 
  		$('.retirar').click(function(event) {
- 			
+ 		
  			var path  = $(this).attr('data-path');
-
  			$.ajax({
  				url: path,
  				type: 'POST',
  				data: {quitar: 'retirar'},
  			})
  			.done(function() {
- 				 location.reload();
+ 				location.reload();
  			})
  			.fail(function() {
  				console.log("error");

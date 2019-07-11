@@ -9,33 +9,27 @@ if(!isset($_SESSION['user'])){
 }
 
 if(!isset($_SESSION['perfil'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
-	}
+		http_response_code(404);
+		include(ROOT.'/errores/404.php');
+		die();
+}
 
 use admin\libs\includes;
 use admin\libs\Reservacion;
-
 
 $reservacion = new Reservacion($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
  	if(isset($_POST['pdf'])){
- 		// echo var_dump($_POST);
+ 	
  		$reservacion->report($_POST,'Lista de reservaciones');
  		
  	}else if(isset($_POST['date_start'])){
 
 		$reservacion->Buscar($_POST);
-
 	} 
- 	
 }
-
-							// echo var_dump(getdate())
-							
 
 $includes = new Includes($con);
 
@@ -246,11 +240,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				</div>
 				<div class="row">
 						<table  id="listareservaciones" class=" col-lg-12 display" cellspacing="0" width="100%">
-						<script>
-							
-						
-
-						</script>
 						<thead>
 							<tr>
 								<th></th>
@@ -266,7 +255,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						</thead>
 						
 						<tbody>
-							 <!-- <?php //echo $reservacion->getReservaciones();?> -->
+							
 						</tbody>
 		
 					</table>

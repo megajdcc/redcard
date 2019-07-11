@@ -370,6 +370,59 @@ $('#user-search-hotel .typeahead').typeahead({
 		
 	});
 
+// BUSQUEDA DE HOTEL DE HOSPEDAJE USUARIO SOCIO>
+// 
+	var hoteleshospedados = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('hotel'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		remote: {
+			url: '/ajax.php?hoteleshospedados=%QUERY',
+			wildcard: '%QUERY'
+		}
+	});
+	var busquedahotel = $('#busquedad-hotel-hospedado .hospedado').typeahead({
+			hint: false,
+			highlight: true,
+			minLength: 2,
+			autoselect: true,
+		},
+		{
+		limit:20,
+		name: 'hotel',
+		display: 'nombrehotel',
+		source: hoteleshospedados,
+		templates: {
+			empty: [
+				'<div class="tt-empty-message">',
+					'Sé más específico, con su busqueda, si no consigue su hotel escribala igual.',
+				'</div>'
+			].join('\n'),
+			suggestion: function(data){
+				return '<div><img src="/assets/img/hoteles/' + data.imghotel + '" class="meta-img img-rounded"><strong>' + data.displayhotel + '</strong></div>';
+			}
+		}
+	}).on('typeahead:select', function(object, data) {
+
+		if($('#hotel-search-placeholder').length){
+			$('#hotel-search-placeholder').empty();
+			$('#hotel-search-placeholder').append('<div><img src="/assets/img/hoteles/' + data.imghotel + '" class="meta-img img-rounded" alt=""><strong>' + data.displayhotel + '</strong></div>');
+			$('input[name="hotel"]').val(data.displayhotel);
+			$('input[name="idhotel"]').val(data.id);
+		}
+				
+	});
+
+
+	busquedahotel.on('typeahead:idle',function(ev,data){
+		
+	});
+
+
+	if($('#hotel-search-placeholder').length){
+
+
+
+	}
 
 	$('#user-search-reservacion .typeahead').typeahead({
 			hint: false,
@@ -457,23 +510,18 @@ $('#user-search-hotel .typeahead').typeahead({
 
 		if($('#user-search-placeholder-reservacion').length){
 
-					
-
-
-
 					$('.reservar').attr('disabled','disabled');
 						$('#cantidad').attr('disabled', 'disabled');
-									
 
-										var negocio = $('input[name="restaurantes"]').val();
-										$.ajax({
-											url: '/negocio/Controller/peticiones.php',
-											type: 'POST',
-											dataType: 'JSON',
-											data: {peticion: 'diasdisponibles',restaurant:negocio},
-											cache:false,
-										})
-										.done(function(response) {
+							var negocio = $('input[name="restaurantes"]').val();
+							$.ajax({
+									url: '/negocio/Controller/peticiones.php',
+									type: 'POST',
+									dataType: 'JSON',
+									data: {peticion: 'diasdisponibles',restaurant:negocio},
+									cache:false,
+									})
+									.done(function(response) {
 											if(response.peticion){
 												$('#fechareservacion').data("DateTimePicker").destroy();
 													$('#fechareservacion').datetimepicker({
@@ -641,7 +689,6 @@ $('#user-search-hotel .typeahead').typeahead({
 					})
 					.done(function(response) {
 						if(response.peticion){
-
 							$('#modal-datos-restaurant input[name="restaurant"]').val(response.data[0].negocio);
 							$('#modal-datos-restaurant input[name="telefonorestaurant"]').val(response.data[0].telefono);
 							$('#modal-datos-restaurant textarea[name="direccion"]').val(response.data[0].direccion);
@@ -701,7 +748,6 @@ $('#user-search-hotel .typeahead').typeahead({
 	$("#user-search-input").on("input", function() {
 		$("#user-search-placeholder").replaceWith(placeholder_clone.clone());
 		$("#certificate-load").replaceWith(certificate_clone.clone());
-
 	});
 
 	if($('#user-search-input').length > 1 && $('#user-search-placeholder').length){

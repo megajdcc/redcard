@@ -68,8 +68,62 @@ class Restaurant {
 			$this->cargarDatos();
 			$this->cargar();
 		}
-		
+	}
 
+	public function getDatos(array $datos){
+
+		$this->cargar(0,$datos);
+
+		for ($i=0; $i < count($this->catalogo); $i++) { 
+
+			if(empty($this->catalogo[$i]['hotel'])){
+				$this->catalogo[$i]['hotel'] = 'directo (Sin hotel)';
+			}
+
+			if(!empty($valores['nombre'])){
+				$this->catalogo[$i]['username']  =  $this->catalogo[$i]['nombre'];
+			}
+			
+			$this->catalogo[$i]['btncancelar'] = '';
+			if($this->catalogo[$i]['status'] == 0){
+				$this->catalogo[$i]['btncancelar'] = '<button type="button" class="cancelar-reserva" data-toggle="tooltip" data-placement="left" title="Cancelar reservaci&oacute;n" data-idcancel="'.$this->catalogo[$i]['id'].'"><i class="fa fa-remove"></i></button>';
+			}
+
+			switch ($this->catalogo[$i]['status']) {
+			
+				case 0:
+					$this->catalogo[$i]['status'] = "<strong class='sinconfirmar'>Agendada</strong>";
+				break;
+				
+				case 1:
+					$this->catalogo[$i]['status'] = "<strong class='consumada'>Consumada</strong>";
+				break;
+						
+				case 2:
+					$this->catalogo[$i]['status'] = "<strong class='confirmada'>Confirmada</strong>";
+				break;
+						
+				case 3:
+					$this->catalogo[$i]['status'] = "<strong class='cancelada'>Cancelada</strong>";
+				break;
+						
+				case 4:
+					$this->catalogo[$i]['status'] = "<strong class='cancelada'>Desfasada</strong>";
+				break;
+			}
+
+			if(empty($this->catalogo[$i]['observacion'])){
+				$this->catalogo[$i]['observacion'] = 'Sin Observaciones';
+			}else{
+				$this->catalogo[$i]['observacion'] = '<strong class="observaciones" data-observacion="'._safe($this->catalogo[$i]['observacion']).'">Observaciones</strong>';
+			}
+
+
+			
+
+		}
+
+		return $this->catalogo;
 	}
 
 	public function desfaseReserv(){
@@ -81,11 +135,11 @@ class Restaurant {
 		$stm->execute();
 	}
 
-	public function cargar(){
+	public function cargar(int $filtro = 0,array $datos = null){
 
 		if(!empty($this->busqueda['datestart']) && !empty($this->busqueda['dateend'])){
 
-				$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+				$sql = "SELECT  concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
 			r.id,r.numeropersona,r.status,r.observacion
 					from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
@@ -564,108 +618,7 @@ class Restaurant {
 	}
 
 
-	public function getReserva(){
-		
-		foreach($this->catalogo as $key => $valores) {
-			
-			$fecha         = _safe($valores['fecha']);
-			$hotel         = _safe($valores['hotel']);
-			$username      = _safe($valores['username']);
-			$id            = _safe($valores['id']);
-			$numeropersona = _safe($valores['numeropersona']);
-			$status        = _safe($valores['status']);	
-			$observacion   = _safe($valores['observacion']);	
 
-
-
-			if(!empty($valores['nombre'])){
-				$username = $valores['nombre'];
-			}
-			switch ($status) {
-				case 0:
-						$status = 'Agendada';
-						$clas = 'sinconfirmar';
-					break;
-				case 1:
-						$status = 'Consumada';
-						$clas = 'consumada';
-					break;
-				case 2:
-						$status = 'Confirmada';
-						$clas = 'confirmada';
-					break;
-				case 3:
-						$status = 'Cancelada';
-						$clas = 'cancelada';
-					break;
-				case 4:
-						$status = 'Desfasada';
-						$clas = 'cancelada';
-					break;
-				
-				default:
-					# code...
-					break;
-			}
-
-
-			if(empty($valores['hotel'])){
-				$hotel = 'directo (sin hotel)';
-			}
-			if(empty($observacion)){
-				$observacion = 'Sin Observaciones';
-			}else{
-				$observacion = '<strong class="observaciones" data-observacion="'._safe($valores['observacion']).'">Observaciones</strong>';
-			}
-			?>
-
-			<tr id="<?php echo $valores['id']?>" class="row-reserva" data-status="<?php echo $status;?>">
-				<td>
-
-
-					<?php 
-					echo $valores['id'];?>
-				
-				
-					
-
-				</td>
-				<td><?php echo $fecha ?></td>
-				<td>
-					<?php echo $hotel ?>
-				</td>
-				<td><?php echo $username; ?></td>
-				<!-- <td><?php// echo $email; ?></td> -->
-				<td><?php echo $numeropersona; ?></td>
-				
-				<td >
-
-					<?php  if($status == 'Agendada'){?>
-							<button class="btn-agendada"><strong class="<?php echo $clas ?>">Agendada</strong></button>
-					<?php  }else{?>
-							<strong  class="<?php echo $clas ?>">
-									<?php echo $status;?>
-							</strong>
-					<?php 	} ?>
-					</td>
-				<td><?php echo $observacion; ?></td>
-				<td>
-			<?php if ($valores['status'] == 0 ): ?>
-				<button type="button" class="cancelar-reserva" data-toggle="tooltip" data-placement="left" title="Cancelar reservaci&oacute;n" data-idcancel="<?php echo $valores['id']?>"><i class="fa fa-remove"></i></button>
-			<?php endif ?>
-
-				
-				</td>
-
-					
-				
-            </tr>
-
-            	
-			<?php
-		}
-
-	}
 
 
 	public function getHoraDisponibles($negocio,$fecha,$dia,bool $viewnegocio = false){

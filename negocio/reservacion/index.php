@@ -134,6 +134,7 @@ echo $navbar = $includes->get_navbar(); ?>
 					</div>
 					
 					<div class="col-sm-2">
+
 						<form class="pull-right" method="post" name="imprimir" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
 					
 							<label>Descargar</label>
@@ -166,46 +167,28 @@ echo $navbar = $includes->get_navbar(); ?>
 							</script>
 						</form>
 					</div>
-						
+						<audio id="soundnotification" src="<?php echo HOST.'/assets/sound_notification/Duet.ogg'?>" type="audio/ogg" preload="auto" controls>
+							<style>
+								#soundnotification{
+									display: none;
+								}
+							</style>
 
 				</div>
+				<div class="row">
+					<div class=" col-lg-12 form-group" data-toggle="tooltip" title="Haga su busqueda inteligente, si desea ser especifico encierre su busqueda entre comillas dobles." >
+										<label for="busqueda">Buscar Reservaci&oacute;n | </span><i class="fa fa-question-circle text-secondary"></i></label>
+										<div class="input-group">
+											<strong class="input-group-addon"><i class="fa fa-search"></i></strong>
+											<input type="text" class="form-control busqueda" name="buscar" autocomplete="false" placeholder="Busqueda inteligente...">
+											
+										</div>
+									
+										
+										
+									</div>
+				</div>
 				<table  id="listareservaciones" class="display" cellspacing="0" width="100%">
-					<script>
-						
-						$(document).ready(function() {
-							$('.cancelar-reserva').on('click',function(e){
-								var idcancel = $(this).attr('data-idcancel');
-
-							
-
-								var result = confirm('Esta seguro de cancelar la reserva?');
-								if(result){
-
-									$.ajax({
-										url: '/negocio/Controller/peticiones.php',
-										type: 'POST',
-										dataType: 'JSON',
-										data: {peticion: 'cancelarreserva',idreserva:idcancel},
-										})
-									.done(function(response) {
-										if(response.peticion){
-										location.reload();
-										}
-										})
-									.fail(function() {
-										console.log("error");
-										})
-									.always(function() {
-										console.log("complete");
-										});
-
-								}
-								
-								
-							});
-						});
-
-					</script>
 					<thead>
 						<tr>
 							<th>#</th>
@@ -220,7 +203,7 @@ echo $navbar = $includes->get_navbar(); ?>
 					</thead>
 					
 					<tbody>
-						<?php echo $restaurant->getReserva();?>
+						
 					</tbody>
 	
 				</table>
@@ -231,13 +214,47 @@ echo $navbar = $includes->get_navbar(); ?>
 
 <script>
 
-				 var t = $('#listareservaciones').DataTable( {
-					"paging"        :         false,
-					"scrollY"       :        "400px",
-					"scrollCollapse": true,
-					"ordering": true,
-					"lengthChange":false,
-			         "language": {
+
+	$(document).ready(function() {
+
+		var cantidad = 0;
+		var count = 0 ;
+
+		// tabla dinamica de reservaciones Negocios...
+		// 
+		 var reservaciones = $('#listareservaciones').DataTable( {
+					paging        	:true,
+					lengthChange	:false,
+					scrollY      	:400,
+					scrollCollapse	:true,
+					ordering		:true,
+					dom:'lrtip',
+					ajax:{
+						url:'/negocio/Controller/peticiones.php',
+						type:'POST',
+						dataType:'JSON',
+						data:function(d){
+							d.peticion   ='cargarreservaciones';
+							d.filtro     ='';
+							d.rango      = '';
+							d.rango1     = '';
+							d.rango2     =''; 
+							d.restaurant = '';
+							d.hotel      = '';
+						}
+					},
+					columns:[
+						 		{data:'id'},
+						 		{data:'fecha'},
+						 		{data:'hotel'},
+						 		{data:'username'},
+						 		{data:'numeropersona'},
+						 		{data:'status'},
+						 		{data:'observacion'},
+						 		{data:'btncancelar'}
+
+					 		],
+			        language: {
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
 			                        "info": "",
 			                        "infoEmpty": "No se encontro Ninguna reservación",
@@ -248,19 +265,97 @@ echo $navbar = $includes->get_navbar(); ?>
 			                            "previous":   "Anterior"
 			                        },
 			                    },
-			        "columnDefs": [ {
-			            "searchable": true,
-			            "orderable": true,
-			            "targets": 0
-			        } ],
-			        "order": [[ 0, 'desc' ]]
-			    } );
+					initComplete:function(setm,json){
+						count = json.lenght;
+					},
+			         columnsDefs:[{
+								"orderable":true,
+								"targets":0,
+								"visible":false,
+								"searchable":false
+					        },
+					        {
+					        	orderable:false,targets:1,
+					        	width:700
+					        },
+					        {
+					        	orderable:false,targets:2
+					        },
+					        {
+					        	orderable:false,targets:3
+					        },
+					        {
+					        	orderable:false,targets:4
+					        },
+					        {
+					        	orderable:false,targets:5
+					        },
+					        {
+					        	orderable:false,
+					        	targets:6,
+					        	width:'50px'
+					        },
+					        {
+					        	orderable:false,
+					        	targets:7,
 
-	$(document).ready(function() {
-		$('.observaciones').click(function(){
-			alert($(this).attr('data-observacion'));
-		});		 	
+
+					        }],
+			       	 	order:[[0,'desc']]
+			    });
+		
+
+
+		 setInterval(function(){
+
+								reservaciones.ajax.reload(null,true);
+								if( cantidad > count){
+									$('#soundnotification')[0].play();
+								}
+							},10000);
+		 reservaciones.on('draw',function(e,obj){
+
+		
+
+		 		$('.cancelar-reserva').on('click',function(e){
+					var idcancel = $(this).attr('data-idcancel');
+					var result = confirm('Esta seguro de cancelar la reserva?');
+								if(result){
+
+									$.ajax({
+										url: '/negocio/Controller/peticiones.php',
+										type: 'POST',
+										dataType: 'JSON',
+										data: {peticion: 'cancelarreserva',idreserva:idcancel},
+										})
+									.done(function(response) {
+										if(response.peticion){
+											reservaciones.ajax.reload();
+										}
+										})
+									.fail(function() {
+										console.log("error");
+										})
+									.always(function() {
+										console.log("complete");
+										});
+
+								}
+							});
+
+		 	$('.observaciones').click(function(){
+				alert($(this).attr('data-observacion'));
+			});		
+
+		 });
+
+		   $('input[name="buscar"]').on('keyup',function(e){
+
+					reservaciones.search(this.value).draw();
+			   });
 	});
+
+		
 
     </script>
 <?php echo $footer = $includes->get_footer(); ?>

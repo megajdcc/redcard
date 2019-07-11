@@ -39,46 +39,79 @@ class Huesped
 	public function procesar(array $post){
 
 
-		$this->idhotel = $post['hotel'];
-
-
-			// es un hotel registrado en el sistema ... 
-			 if($this->con->inTransaction()){$this->con->rollBack();};
-
-			 $this->con->beginTransaction();
-			$query = "insert into huesped(id_usuario) value(:usuario)";
-
-
-			try {
-				$stm = $this->con->prepare($query);
-
-				$stm->execute(array(':usuario' => $this->user['id_usuario']));
-
-			} catch (\PDOException $e) {
-				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
-				$this->con->rollBack();
-
-				return false;
+			if(isset($post['idhotel'])){
+				$this->idhotel = $post['idhotel'];
+			}else{
+				$this->idhotel = $post['hotel'];
 			}
 			
-			$last_id = $this->con->lastInsertId();
+
+			if(!empty($this->idhotel)){
+				// es un hotel registrado en el sistema ... 
+				 if($this->con->inTransaction()){$this->con->rollBack();};
+
+				 $this->con->beginTransaction();
+				$query = "insert into huesped(id_usuario) value(:usuario)";
+
+				try {
+					$stm = $this->con->prepare($query);
+
+					$stm->execute(array(':usuario' => $this->user['id_usuario']));
+
+				} catch (\PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+
+					return false;
+				}
+				
+				$last_id = $this->con->lastInsertId();
 
 
-			$query1 = "insert into huespedhotel(id_hotel,id_huesped) values(:hotel,:huesped)";
+				$query1 = "INSERT into huespedhotel(id_hotel,id_huesped) values(:hotel,:huesped)";
 
-			try {
-				$stm2 = $this->con->prepare($query1);
-				$stm2->execute(array(':hotel' =>$this->idhotel,
-								':huesped'=>$last_id));
+				try {
+					$stm2 = $this->con->prepare($query1);
+					$stm2->execute(array(':hotel' =>$this->idhotel,
+									':huesped'=>$last_id));
 
-				$this->con->commit();
-			} catch (\PDOException $ex) {
-				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
-				$this->con->rollBack();
-				return false;
+					$this->con->commit();
+				} catch (\PDOException $ex) {
+					$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
+					$this->con->rollBack();
+					return false;
+				}
+
+				$_SESSION['notificacion']['success'] = "Te has asociado al hotel exitosamente, puedes quitar el hotel cuando lo desees.";
+
+				header('location: /socio/hotel/hospedado.php');
+				die();
+				 return true;
+			}else{
+
+
+				$sql = "INSERT INTO huesped(hotel,id_usuario)values(:hotel,:usuario)";
+
+				try {
+					$stm = $this->con->prepare($sql);
+					$stm->bindParam(':usuario',$this->user['id_usuario'],PDO::PARAM_INT);
+					$stm->bindParam(':hotel',$post['hotel']);
+					$stm->execute();
+
+				} catch (\PDOException $e) {
+					$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+					$this->con->rollBack();
+					
+					$_SESSION['notificacion']['info'] = 'No se pudo registrar el hotel, intentelo de nuevo mas tarde.';
+					header('location: /socio/hotel/hospedado.php');
+					die();
+				}
+
+				$_SESSION['notificacion']['success'] = 'Te has asociado al hotel exitosamente, puedes quitar el hotel cuando lo desees.';
+					header('location: /socio/hotel/hospedado.php');
+					die();
 			}
-
-			return true;
+			
 			
 	}
 
@@ -93,9 +126,17 @@ class Huesped
 				$this->con->commit();
 				return true;
 			} catch (PDOException $e) {
+
+				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
 				$this->con->rollBack();
 				return false;
 			}
+
+			$_SESSION['notificacion']['success'] = 'Ya no te hospedas en ning&uacute;n hotel, te espero ver pronto.';
+
+			// header('location: /socio/hotel/hospedado.php');
+			// die();
+			return true;
 
 	}
 	private function cargarDatos(){
@@ -242,6 +283,33 @@ class Huesped
 	}
 
 
+
+	public function getNotification(){
+			$notificacion = null;
+		if(isset($_SESSION['notificacion']['success'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-success" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['success']).'
+			</div>';
+			unset($_SESSION['notificacion']['success']);
+		}
+		if(isset($_SESSION['notificacion']['info'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['info']).'
+			</div>';
+			unset($_SESSION['notificacion']['info']);
+		}
+		
+		return $notificacion;
+
+	}
 
 	private function error_log($method, $line, $error){
 		file_put_contents(ROOT.'\assets\error_logs\hotelhuesped.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);

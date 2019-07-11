@@ -62,6 +62,10 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 		echo $json->getHotel($_GET['hotel']);
 	}
 
+	if(filter_input(INPUT_GET, 'hoteleshospedados')){
+		echo $json->getHoteles($_GET['hoteleshospedados']);
+	}
+
 	if(filter_input(INPUT_GET, 'restaurantes')){
 		echo $json->getRestaurantes($_GET['restaurantes']);
 	}

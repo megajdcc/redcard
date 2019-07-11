@@ -10,9 +10,6 @@ class jsonSearch {
 	}
 
 
-
-
-
 	public function getRestaurantes($busquedad  = null){
 
 
@@ -55,6 +52,43 @@ class jsonSearch {
 
 	}
 
+
+	/**
+	 * SE OBTIENE  LOS RESULTADOS DE LA BUSQUDAS CONICIDENTES DE LOS HOTELS REGISTRADOS EN EL SISTEMA
+	 * @param  string $search [ES LA CADENA DESCRITA POR EL CLIENTE PARA SU BUSQUEDA]
+	 * @return JSON  [RETORNA UN JSON PLANO CON LOS DATOS DE LA BUSQUEDA RESULTANTE]
+	 */
+	public function getHoteles(string $search){
+
+		$sql = "SELECT h.id, h.imagen as imghotel, h.nombre as nombrehotel from hotel as h 
+							where h.nombre like :busquedad order by h.nombre";
+
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':busquedad'=>'%'.$search.'%'));
+
+		$hotel = array();
+
+		while($row = $stm->fetch(PDO::FETCH_ASSOC)){
+				if(!$row['imghotel']){
+					$row['imghotel'] = 'defaulthotel.jpg';
+				}
+
+				if(!$row['nombrehotel']){
+					$row['displayhotel'] = '';
+				}else{
+					$row['displayhotel'] = htmlentities($row['nombrehotel']);
+				}
+
+
+				$row['nombrehotel'] = htmlentities($row['nombrehotel']);
+
+
+				$hotel[] = $row;
+			}
+
+			return json_encode($hotel);
+	}
 
 	public function getHotel($busqueda =null){
 
