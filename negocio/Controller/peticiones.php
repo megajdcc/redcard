@@ -204,7 +204,7 @@ else if(isset($_POST['peticion']) && $_POST['peticion'] == 'numeromesas'){
 		}
 	echo json_encode($response);
 
-}if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarreservaciones'){
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarreservaciones'){
 
 		$response = array('data' =>'');
 
@@ -217,6 +217,18 @@ else if(isset($_POST['peticion']) && $_POST['peticion'] == 'numeromesas'){
 
 		echo json_encode($response);
 
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'capturarcantidadreservaciones'){
+
+		$response = array('peticion' =>false,
+							'cantidad' => 0);
+
+		$resultado = $restaurant->getCantidadReservaciones();
+
+		if($resultado > 0){
+			$response['peticion'] = true;
+			$response['cantidad'] = $resultado;
+		}
+		echo json_encode($response);
 }
 
 

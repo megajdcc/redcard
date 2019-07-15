@@ -117,7 +117,6 @@ echo $navbar = $includes->get_main_navbar();
 
 
 								function cargar(fechareserva = null,dia = null){
-
 									
 									if(fechareserva != null && dia !=null){
 										fechareserva = fechareserva;
@@ -157,15 +156,14 @@ echo $navbar = $includes->get_main_navbar();
 												var cantidad = $(this).attr('data-lugar');
 												var numperson  = parseInt($('input[name="totalperson"]').val());
 												
-														if(cantidad >= numperson){
+												if(cantidad >= numperson){
 															$('input[name="totalperson"]').attr('disabled', 'disabled');
 																		
-														$('.btn').removeClass('active');
-															/* Act on the event */
-																			
-														$(this).addClass('active');
+															$('.btn').removeClass('active');
+																				
+															$(this).addClass('active');
 
-														$('.btn-reservar').removeAttr('disabled');
+															$('.btn-reservar').removeAttr('disabled');
 																
 																			
 																			// $('#cantidad').removeAttr('disabled');
@@ -178,8 +176,32 @@ echo $navbar = $includes->get_main_navbar();
 														$('input[name="horaseleccionada"]').val($(this).attr('data-hora'));
 																			
 														$('.reservar').removeAttr('disabled');
-																			
-														$('form[name="reservar-user-preview"]').bind('submit',function(e){
+
+
+														
+
+												}else{
+													$('.btn-reservar').attr('disabled', 'disabled');
+														alert('No es posible seleccionar esta hora ya que el número de personas es mayor al disponible. Intente con otra hora si desea!');
+													}
+													});
+													}
+														
+													})
+												.fail(function() {
+														console.log("error");
+												})
+												.always(function() {
+													console.log("complete");
+												});
+													
+												$('#modal-reserva').modal('show');
+								}
+
+
+								
+
+									$('form[name="reservar-user-preview"]').bind('submit',function(e){
 																	
 																	$('.btn-reservar').attr('disabled','disabled');
 																	$('.btn-reservar').html('Reservando por favor espere...');
@@ -190,6 +212,7 @@ echo $navbar = $includes->get_main_navbar();
 																	}
 
 																	var formdata  = new FormData(document.getElementById('formulario-reserva'));
+
 																	formdata.append('peticion','reservar');
 																	formdata.append('totalperson', $('input[name="totalperson"]').val());
 																	formdata.append('negocio',idnegocio);
@@ -228,25 +251,9 @@ echo $navbar = $includes->get_main_navbar();
 
 
 														});
+								
 
-												}else{
-													$('.btn-reservar').attr('disabled', 'disabled');
-														alert('No es posible seleccionar esta hora ya que el número de personas es mayor al disponible. Intente con otra hora si desea!');
-													}
-													});
-													}
 														
-													})
-												.fail(function() {
-														console.log("error");
-												})
-												.always(function() {
-													console.log("complete");
-												});
-													
-												$('#modal-reserva').modal('show');
-								}
-
 								$('.btn-reserva').on('click',function(){
 									
 									var negocio = $(this).attr('data-negocio');

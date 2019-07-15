@@ -653,6 +653,7 @@ width: 100%;
 	flex-direction: column;
 	justify-content: center;
 	align-items: flex-start;
+	flex-wrap: nowrap;
 }
 .filtros h3{
 	/*padding: 0px;*/
@@ -705,4 +706,9 @@ width: 100%;
 	
 	min-width: 200px;
 	width: 200px !important;
+}
+
+/*Reservaciones catalogo negocio*/
+#soundnotification{
+	display:none;
 }

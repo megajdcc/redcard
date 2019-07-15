@@ -16,29 +16,19 @@ if(!isset($_SESSION['perfil'])){
 
 use negocio\libs\includes;
 use negocio\libs\Restaurant;
-
+use admin\libs\Reservacion;
 
 $restaurant = new Restaurant($con);
+$reservacion = new Reservacion($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
  	if(isset($_POST['pdf'])){
- 		$restaurant->report($_POST);
- 		
- 	}else if(isset($_POST['date_start'])){
-		$restaurant->Buscar($_POST);
-	} 
- 	
+ 		$restaurant->report($_POST,'Lista de reservaciones');
+ 	}
+
 }
 
-	
-
-							// echo var_dump(getdate())
-							
-// $fecha = new DateTime();
-// $fechaactual = $fecha->format('Y-m-d g:m A');
-
-// echo $fechaactual;
 $includes = new Includes($con);
 
 $properties['title'] = 'Reservaciones | Travel Points';
@@ -59,15 +49,71 @@ echo $navbar = $includes->get_navbar(); ?>
 				<h1>Lista de Reservaciones</h1>
 			</div>
 			<div class="row">
-					<div class=" col-sm-10">
+					<div class="col-sm-12 filtros">
+					<h3 class="form form-control">Filtre por</h3>
 
-						<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>">
+					<script>
+						
+
+						$(document).ready(function() {
+							$('.btn-selec').on('click',function(e){
+
+								$('#collapseDos').collapse('hide');
+							
+
+							
+								var exp = $(this).attr('aria-controls');
+								$('#'+exp).collapse('toggle');
+
+								$('.btn-selec').removeClass('active');
+								$(this).addClass('active');
+
+							});
+						});
+					</script>
+							<div class="btn-group btn-group-toggle filtro" data-toggle="buttons"  aria-label="decision filtro">
+								
+								<select class="btn-group form-control d-inline-flex" id="del" name="del">
+									<option value="0" selected>Dia</option>
+									<option value="1">Dia Anterior</option>
+									<option value="2">Mes</option>
+									<option value="3">Mes Anterior</option>
+									<option value="4">Por Rango</option>
+								</select>
+								<select class="btn-group form-control d-inline-flex" id="sel-hotel" name="hoteles" data-live-search="true">
+									<option value="0" selected>Todos los hoteles</option>
+										<?php echo $reservacion->getHoteles();?>
+								</select>
+								
+						
+								<form class="col-lg-6" method="post" name="imprimir" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
+							
+							<div class="form-group">				
+								<input type="hidden" name="rango1" value="">
+								<input type="hidden" name="rango2" value="">
+								<input type="hidden" name="filtro" value="">
+								<input type="hidden" name="rango" value="">
+								<input type="hidden" name="hotel" value="">
+								
+								<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
+								<a href="<?php echo _safe(HOST.'/negocio/reservacion/');?>" class="btn btn-info">Limpiar</a>
+							</div>
+						</form>
+
+							</div>
+				</div>
+				<div class=" col-lg-12">
+
+
+					<section class="collapse lapso-fecha" id="collapseUno" >
+						<div class="row">
+							<form class="col-lg-10" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>">
 							
 							<div class="col-sm-4">
 								<div class="form-group">
 									<label for="start">Fecha de inicio</label>
 									<div class="input-group date" id="fechastart">
-										<input class="form-control" type="text" id="star" name="date_start" value="<?php echo $restaurant->getFecha1(); ?>" placeholder="Fecha inicial" />
+										<input class="form-control" type="text" id="star" name="date_start" value="" placeholder="Fecha inicial" />
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 									</div>
 								</div>
@@ -78,7 +124,7 @@ echo $navbar = $includes->get_navbar(); ?>
 									<label for="end">Fecha de fin</label>
 									<div class="input-group date" id="fechaend">
 
-										<input class="form-control" type="text" id="en" name="date_end" value="<?php echo $restaurant->getFecha2(); ?>" placeholder="Fecha final" />
+										<input class="form-control" type="text" id="en" name="date_end" value="" placeholder="Fecha final" />
 										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 									</div>
 									
@@ -118,61 +164,18 @@ echo $navbar = $includes->get_navbar(); ?>
 											$('#fechaend').on('dp.change',function(e){
 												$('#fechastart').data("DateTimePicker").maxDate(e.date);
 											});
-
-
 									});
 								</script>
 							<div class="col-sm-4">
 									<label>Buscar</label>
 									<div class="form-group">
-											<button class="btn btn-success buscar" type="submit"><i class="fa fa-search"></i></button>
-											<a href="<?php echo _safe(HOST.'/negocio/reservacion/');?>" class="btn btn-info">Limpiar</a>
+										<button type="button" class="btn btn-success buscar" type="submit"><i class="fa fa-search"></i></button>
 									</div>			
 							</div>
-
 						</form>
-					</div>
-					
-					<div class="col-sm-2">
-
-						<form class="pull-right" method="post" name="imprimir" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
-					
-							<label>Descargar</label>
-
-							
-							<div class="form-group">				
-								<input type="hidden" name="start" value="">
-								<input type="hidden" name="end" value="">
-								
-								<button class="btn btn-default text-danger" type="submit" name="pdf"><i class="fa fa-file-pdf-o"></i>PDF</button>
-							</div>
-							<script>
-								
-								$(document).ready(function() {
-									
-									$('form[name="imprimir"]').bind('submit',function(e){
-
-										var start  = $('input[name="date_start"]').val();
-										var end = $('input[name="date_end"]').val();
-
-										$('input[name="start"]').val(start);
-										$('input[name="end"]').val(end);
-
-										return true;
-
-									});
-
-
-								});
-							</script>
-						</form>
-					</div>
-						<audio id="soundnotification" src="<?php echo HOST.'/assets/sound_notification/Duet.ogg'?>" type="audio/ogg" preload="auto" controls>
-							<style>
-								#soundnotification{
-									display: none;
-								}
-							</style>
+						</div>
+					</section>
+				</div>
 
 				</div>
 				<div class="row">
@@ -181,11 +184,7 @@ echo $navbar = $includes->get_navbar(); ?>
 										<div class="input-group">
 											<strong class="input-group-addon"><i class="fa fa-search"></i></strong>
 											<input type="text" class="form-control busqueda" name="buscar" autocomplete="false" placeholder="Busqueda inteligente...">
-											
 										</div>
-									
-										
-										
 									</div>
 				</div>
 				<table  id="listareservaciones" class="display" cellspacing="0" width="100%">
@@ -216,12 +215,64 @@ echo $navbar = $includes->get_navbar(); ?>
 
 
 	$(document).ready(function() {
+			var cantidad = 0;
 
-		var cantidad = 0;
+		cargarCantidad();
+		
 		var count = 0 ;
+		var filtro = $('select[name="del"]').val();
+		var boolrango = false;
+		var hotel = $('select[name="hoteles"]').val();
+
+		$('select[name="del"]').on('change',function(){
+					filtro = $(this).val();
+
+					if(filtro == 4){
+						$('.btn-selec').removeAttr('disabled');
+						$('#collapseUno').collapse('show');
+						boolrango = true;
+					}else{
+						boolrango = false;
+						$('.btn-selec').attr('disabled', 'disabled');
+						$('#collapseUno').collapse('hide');
+						reservaciones.ajax.reload();
+
+
+					
+					}
+		});
+
+		$('form[name="imprimir"]').on('submit',function(){
+			$('input[name="rango1"]').val(getRango1());
+			$('input[name="rango2"]').val(getRango2());
+			$('input[name="filtro"]').val(getFiltro());
+			$('input[name="hotel"]').val(getHotel());
+			$('input[name="rango"]').val(isRango());
+			return true;
+		});
+
+		function getFiltro(){
+				return $('select[name="del"]').val();
+		}
+
+		function isRango(){
+			return boolrango;
+		}
+
+		function getRango1(){
+			return $('input[name="date_start"]').val();
+		}
+		function getRango2(){
+			return $('input[name="date_end"]').val();
+		}
+		function getHotel(){
+			return hotel;
+		}
+
+	
+
 
 		// tabla dinamica de reservaciones Negocios...
-		// 
 		 var reservaciones = $('#listareservaciones').DataTable( {
 					paging        	:true,
 					lengthChange	:false,
@@ -235,12 +286,11 @@ echo $navbar = $includes->get_navbar(); ?>
 						dataType:'JSON',
 						data:function(d){
 							d.peticion   ='cargarreservaciones';
-							d.filtro     ='';
-							d.rango      = '';
-							d.rango1     = '';
-							d.rango2     =''; 
-							d.restaurant = '';
-							d.hotel      = '';
+							d.filtro     =getFiltro();
+							d.rango      =isRango();
+							d.rango1     =getRango1();
+							d.rango2     =getRango2(); 
+							d.hotel      =getHotel();
 						}
 					},
 					columns:[
@@ -304,20 +354,50 @@ echo $navbar = $includes->get_navbar(); ?>
 			       	 	order:[[0,'desc']]
 			    });
 		
+		 	setInterval(function(){
 
-
-		 setInterval(function(){
+		 				var soundnotificatio = '<audio id="soundnotification" src="<?php echo HOST.'/assets/sound_notification/Popcorn.ogg'?>" type="audio/ogg" preload="auto" controls>';
+		 						if($('#soundnotification').length){
+		 							$('#soundnotification').remove();
+		 						}
 
 								reservaciones.ajax.reload(null,true);
-								if( cantidad > count){
+								
+								if(cantidad < reservaciones.data().count()){
+									$(soundnotificatio).appendTo('body');
 									$('#soundnotification')[0].play();
+									cantidad = reservaciones.data().count();
 								}
-							},10000);
+			},5000);
+	
+
+			function cargarCantidad(){
+
+				$.ajax({
+					url: '/negocio/Controller/peticiones.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {peticion: 'capturarcantidadreservaciones'},
+				})
+				.done(function(response) {
+					if(response.peticion){
+						cantidad = response.cantidad;
+						return cantidad;
+					}
+				})
+				.fail(function() {
+					return cantidad;
+				})
+				.always(function() {
+					return cantidad;
+				});
+				
+			}
 		 reservaciones.on('draw',function(e,obj){
 
-		
 
-		 		$('.cancelar-reserva').on('click',function(e){
+
+			 		$('.cancelar-reserva').on('click',function(e){
 					var idcancel = $(this).attr('data-idcancel');
 					var result = confirm('Esta seguro de cancelar la reserva?');
 								if(result){
@@ -353,6 +433,21 @@ echo $navbar = $includes->get_navbar(); ?>
 
 					reservaciones.search(this.value).draw();
 			   });
+
+
+		   	$('select[name="hoteles"]').change(function(){
+				hotel = $(this).val();
+				reservaciones.ajax.reload();
+		});
+
+		$('.buscar').on('click',function(){
+			reservaciones.ajax.reload(null,true);
+		});
+
+
+
+
+
 	});
 
 		

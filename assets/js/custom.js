@@ -427,11 +427,11 @@ $('#user-search-hotel .typeahead').typeahead({
 	$('#user-search-reservacion .typeahead').typeahead({
 			hint: false,
 			highlight: true,
-			minLength: 2,
+			minLength: 1,
 			autoselect: true,
 		},
 		{
-		limit: 15,
+		limit: 20,
 		name: 'users',
 		display: 'username',
 		source: users,

@@ -182,7 +182,7 @@ class Reservacion {
 			$this->conexion->rollBack();
 		}
 
-		$sql = "UPDATE reservacion set status = 2  where id = :reserva";
+		$sql = "UPDATE reservacion set status = 3  where id = :reserva";
 		$this->conexion->beginTransaction();
 		try {
 			$stm = $this->conexion->prepare($sql);

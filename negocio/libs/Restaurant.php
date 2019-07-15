@@ -56,6 +56,8 @@ class Restaurant {
 							'datestart'   => null,
 							'dateend'     => null
 							);
+	public $filtro = 0;
+	public $hotel = null;
 
 	private $error = array('notificacion' => null, 'fechainicio' => null, 'fechafin' => null);
 
@@ -72,7 +74,7 @@ class Restaurant {
 
 	public function getDatos(array $datos){
 
-		$this->cargar(0,$datos);
+		$this->cargar($datos['filtro'],$datos);
 
 		for ($i=0; $i < count($this->catalogo); $i++) { 
 
@@ -135,44 +137,239 @@ class Restaurant {
 		$stm->execute();
 	}
 
+
+
+	public function getCantidadReservaciones(){
+
+		$sql = "SELECT count(*) as cantidad from reservacion where id_restaurant = :negocio and fecha = :fecha";
+
+		$stm = $this->con->prepare($sql);
+		$stm->execute(array(':negocio'=>$this->restaurant['id'],
+								':fecha'=>date('Y-m-d')));
+
+		return $stm->fetch(PDO::FETCH_ASSOC)['cantidad'];
+
+	}
 	public function cargar(int $filtro = 0,array $datos = null){
 
-		if(!empty($this->busqueda['datestart']) && !empty($this->busqueda['dateend'])){
+		$this->filtro = $filtro;
 
-				$sql = "SELECT  concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
-			r.id,r.numeropersona,r.status,r.observacion
+		$sql2 = "SELECT h.nombre from hotel as h where h.id = :hotel";
+
+		$stm  = $this->con->prepare($sql2);
+		$stm->bindParam(':hotel',$datos['hotel']);
+		$stm->execute();
+		$this->hotel = $stm->fetch(PDO::FETCH_ASSOC)['nombre'];
+
+
+
+		switch ($filtro) {
+			case 0:
+				if($datos['hotel'] != 0){
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
 					from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
-                    left join hotel as h on r.id_hotel = h.id 
-                    where r.id_restaurant = :negocio and r.fecha between :fecha1 and :fecha2";
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and h.id = :hotel and  r.fecha = :fecha order by r.id desc";
+
+					$datos = array(	':fecha' => date('Y-m-d'),
+									':negocio' => $this->restaurant['id'],
+									':hotel'   => $datos['hotel']
+									);
 					
-					try {
-						$stmt = $this->con->prepare($sql);
-						$stmt->bindParam(':negocio',$this->restaurant['id'],PDO::PARAM_INT);
-						$stmt->bindParam(':fecha1',$this->busqueda['datestart']);
-						$stmt->bindParam(':fecha2',$this->busqueda['dateend']);
-						$stmt->execute();
-					} catch (PDOException $e) {
-						echo $e->getMessage();
+				}else{
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and r.fecha = :fecha order by r.id desc";
+
+					$datos = array(	':fecha' => date('Y-m-d'),
+									':negocio' => $this->restaurant['id'],
+									
+									);
+				}
+
+				try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+					// echo $e->getMessage();
 					}
-				$this->catalogo = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-		}else{
-				$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
-			r.id,r.numeropersona,r.status,r.observacion
+				break;
+
+			case 1:
+
+				if($datos['hotel'] != 0){
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
 					from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
-                    left join hotel as h on r.id_hotel = h.id 
-                    where r.id_restaurant = :negocio order by r.id desc";
-					
-				$stmt = $this->con->prepare($sql);
-				$stmt->bindParam(':negocio',$this->restaurant['id'],PDO::PARAM_INT);
-				$stmt->execute();
-					
-				$this->catalogo = $stmt->fetchAll(PDO::FETCH_ASSOC);
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and h.id = :hotel and  day(r.fecha) = :diaanterior order by r.id desc";
+
+					$datos = array(	':diaanterior' => date('d') -1,
+									':negocio' => $this->restaurant['id'],
+									':hotel'   => $datos['hotel']
+									);
+				}else{
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and  day(r.fecha) = :diaanterior order by r.id desc";
+
+					$datos = array(	':diaanterior' => date('d') -1,
+									':negocio' => $this->restaurant['id']
+									
+									);
+				}
+
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+					// echo $e->getMessage();
+					}
+
+
+
+				break;
+			
+			case 2:
+
+				if($datos['hotel'] != 0){
+
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and h.id = :hotel and  month(r.fecha) = :mes order by r.id desc";
+
+					$datos = array(	':mes' => date('m'),
+									':negocio' => $this->restaurant['id'],
+									':hotel'   => $datos['hotel']
+									);
+				}else{
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and  month(r.fecha) = :mes order by r.id desc";
+
+					$datos = array(	':mes' => date('m'),
+									':negocio' => $this->restaurant['id'],
+									
+									);
+				}
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+						// echo $e->getMessage();
+					}
+				break;
+
+			case 3:
+
+				if($datos['hotel'] != 0){
+
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and h.id = :hotel and  month(r.fecha) = :mes order by r.id desc";
+
+					$datos = array(	':mes' => date('m') -1,
+									':negocio' => $this->restaurant['id'],
+									':hotel'   => $datos['hotel']
+									);
+				}else{
+					$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and  month(r.fecha) = :mes order by r.id desc";
+
+					$datos = array(	':mes' => date('m') -1,
+									':negocio' => $this->restaurant['id']
+									);
+				}
+
+				try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+						// echo $e->getMessage();
+					}
+
+				break;
+
+			case 4:
+				$this->busqueda['fechainicio'] = $datos['rango1'];
+				$this->busqueda['fechafin'] = $datos['rango2'];
+
+					if($datos['hotel'] != 0){
+
+						$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and h.id = :hotel and  (r.fecha between :fecha1 and :fecha2) order by r.id desc";
+
+					$datos = array(	':fecha1' => $this->busqueda['fechainicio'], 
+									':fecha2' => $this->busqueda['fechafin'],
+
+									':negocio' => $this->restaurant['id'],
+									':hotel'   => $datos['hotel']
+									);
+
+					}else{
+						$sql = "SELECT concat(r.fecha,' ',r.hora) as fecha, h.nombre as hotel, u.username,concat(u.nombre,' ',u.apellido) as nombre,
+					r.id,r.numeropersona,r.status,r.observacion
+					from reservacion as r 
+					join negocio as n on r.id_restaurant = n.id_negocio
+					join usuario as u on r.usuario_solicitante = u.id_usuario
+					left join hotel as h on r.id_hotel = h.id 
+					where r.id_restaurant = :negocio and  r.fecha between :fecha1 and :fecha2 order by r.id desc";
+
+					$datos = array(	':fecha1' => $this->busqueda['fechainicio'], 
+									':fecha2' => $this->busqueda['fechafin'],
+									':negocio' => $this->restaurant['id'],
+									);
+
+					}
+					try {
+						$stm = $this->con->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+						// echo $e->getMessage();
+					}
+
+				break;
+		
 		}
+					
+				$this->catalogo = $stm->fetchAll(PDO::FETCH_ASSOC);
+		
 	}
 
 	private function cargarDatos(){
@@ -699,41 +896,7 @@ class Restaurant {
 
 	}
 
-	// private function setFechainicio($datetime = null){
 
-	// 	if($datetime){
-	// 		$datetime = str_replace('/', '-', $datetime);
-	// 		$datetime = strtotime($datetime);
-	// 		if(!$datetime){
-	// 			$this->error['fechainicio'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
-	// 			return false;
-	// 		}
-	// 		$datetime = date("Y-m-d", $datetime);
-	// 		$this->busqueda['fechainicio'] = $datetime;
-	// 		return true;
-	// 	}
-	// 	$this->error['fechainicio'] = 'Este campo es obligatorio.';
-	// 	return false;
-	// }
-
-	// private function setFechafin($datetime = null){
-		
-	// 	if($datetime){
-	// 		$datetime = str_replace('/', '-', $datetime);
-		
-	// 		$datetime = strtotime($datetime);
-	// 		if(!$datetime){
-	// 			$this->error['fechafin'] = 'Formato de fecha y hora incorrecto. Utiliza la herramienta.';
-	// 			return false;
-	// 		}
-	// 		$datetime = date("Y-m-d", $datetime);
-				
-	// 		$this->busqueda['fechafin'] = $datetime;
-	// 		return true;
-	// 	}
-	// 	$this->error['fechafin'] = 'Este campo es obligatorio.';
-	// 	return false;
-	// }
 
 	public function Buscar($post){
 
@@ -764,17 +927,12 @@ class Restaurant {
 		return $this->busqueda['dateend'];
 	}
 
-	public function report(array $post){
-
-		// $this->setFechainicio($post['start']);
-		// $this->setFechafin($post['end']);
-		$this->setFecha1($post['start']);
-		$this->setFecha2($post['end']);
-
-		$this->cargar();
+	public function report(array $datos = null,String $title =''){
+		
+		$this->getDatos($datos);
 		ob_start();
 
-		require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/listreservaciones.php');
+		require_once($_SERVER['DOCUMENT_ROOT'].'/negocio/viewreports/reservaciones.php');
 
 		$context = stream_context_create([
 				'ssl'=>[
@@ -803,10 +961,6 @@ class Restaurant {
 		$dompdf->stream($titulo.'.pdf',$dato);
 
 	}
-
-
-
-
 }
 
  ?>

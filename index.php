@@ -28,7 +28,7 @@ echo $navbar = $includes->get_main_navbar();
 								<p>Discover Vallarta's Top & gain Free Gifts</p>
 								<form method="get" action="<?php echo htmlspecialchars(HOST.'/listados');?>">
 									<div class="input-group">
-										<input type="text" class="form-control" name="buscar" placeholder="Find what you want | Encuentra lo que quieres &hellip; ">
+										<input type="search" class="form-control" name="buscar" placeholder="Find what you want | Encuentra lo que quieres &hellip; ">
 										<span class="input-group-btn">
 											<button class="btn btn-primary" type="submit">Find | Encuentra</button>
 										</span>

@@ -142,7 +142,7 @@ class jsonSearch {
 	}
 
 	public function getUsers($search = null){
-		$query = "SELECT username, imagen, nombre, apellido 
+		$query = "SELECT username, imagen, concat(nombre,' ',apellido) as nombrecompleto
 			FROM usuario WHERE activo = 1 
 			AND (CONCAT(nombre,' ',apellido) LIKE ? OR username LIKE ? OR email LIKE ?)";
 		try{
@@ -157,11 +157,13 @@ class jsonSearch {
 		}
 		$users = array();
 		while($row = $stmt->fetch()){
-			if(!$row['nombre'] || !$row['apellido']){
-				$row['display'] = '';
+
+			if(empty($row['nombrecompleto'])){
+				$row['display'] = htmlentities($row['username']);
 			}else{
-				$row['display'] = htmlentities($row['nombre'].' '.$row['apellido']);
+				$row['display'] = htmlentities($row['nombrecompleto']);
 			}
+			
 			if(!$row['imagen']){
 				$row['imagen'] = 'default.jpg';
 			}
