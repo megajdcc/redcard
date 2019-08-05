@@ -1,5 +1,5 @@
 {
-    "name"       :"TravelPoints",
+    "name"       :"megajdcc/travelpoints",
     "description": "Proyecto en php para El manejo de comisiones de Travel Points",
     "type"       : "project",
     "license"    : "MIT",
@@ -14,7 +14,9 @@
     ],
     "require": {
         "paypal/rest-api-sdk-php": "*",
-        "google/recaptcha"       : "^1.2"
+        "google/recaptcha"       : "^1.2",
+        "printnode/printnode-php": "dev-master"
+       
     },
     "autoload":{
         "psr-4":{
@@ -24,6 +26,7 @@
     "require-dev": {
     
         "dompdf/dompdf": "^0.8.0"
+       
 
     }
 }

@@ -629,7 +629,129 @@ class Reservacion extends Reports
 		return false;
 	}
 
+	public function getDataReservacacionAnualMensual(){
 
+		$sql = "SELECT count(r.id) as reservaciones,r.status,month(r.fecha) as mes 
+					from reservacion r
+					where year(r.fecha) = year(now())
+						group by r.status, monthname(r.fecha) order by month(r.fecha)";
+
+		$stm = $this->conec->prepare($sql);
+		$stm->execute();
+		$cancelados = array('name'=>'Cancelados','data'=>array());
+		$consumados = array('name'=>'Consumados','data'=>array());
+		$agendados = array('name'=>'Agendados','data'=>array());
+
+		$canceladosd = array();
+		$consumadosd = array();
+		$agendadosd = array();
+		$meses = array();
+		$datos = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+
+				foreach ($datos as $key => $value) {
+					
+						switch ($value['status']) {
+							case 0:
+
+							for ($i=1; $i <=12 ; $i++) { 
+								if($value['mes'] == $i){
+
+									$reservaciones = $value['reservaciones'];
+									settype($reservaciones,'integer');
+
+									$agendadosd[$i] = $reservaciones;
+							}
+							}
+								
+							break;
+
+							case 1:
+								for ($i=1; $i <=12 ; $i++) { 
+								if($value['mes'] == $i){
+										$reservaciones = $value['reservaciones'];
+										settype($reservaciones,'integer');
+									$consumadosd[$i] = $reservaciones;
+								}
+							}
+							break;
+
+							case 3:
+								for ($i=1; $i <=12 ; $i++) { 
+								if($value['mes'] == $i){
+										$reservaciones = $value['reservaciones'];
+										settype($reservaciones,'integer');
+										$canceladosd[$i] = $reservaciones;
+								}
+								}
+							
+							break;
+							
+							
+						}
+					}
+
+						for ($i=1; $i <= 12 ; $i++) { 
+							foreach ($canceladosd as $key => $value) {
+								if($key == $i){
+									$canc = $canceladosd[$i];
+
+									settype($canc,'integer');
+
+									$cancelados['data'][$i] = $canc;
+								}else{
+
+									if(!array_key_exists($i, $canceladosd)){
+										$cancelados['data'][$i] = 0;
+									}
+
+								
+									
+								}
+							}
+
+							foreach ($consumadosd as $key => $value) {
+								if($key == $i){
+									$consu = $consumadosd[$i];
+									settype($consu,'integer');
+									$consumados['data'][$i] = $consu;
+								}else{
+
+									if(!array_key_exists($i, $consumadosd)){
+										$consumados['data'][$i] = 0;
+									}
+
+								
+									
+								}
+							}
+
+							foreach ($agendadosd as $key => $value) {
+								if($key == $i){
+									$agend = $agendadosd[$i];
+
+									settype($agend,'integer');
+
+									$agendados['data'][$i] = $agend;
+								}else{
+
+									if(!array_key_exists($i, $agendadosd)){
+										$agendados['data'][$i] = 0;
+									}
+								}
+							}
+									
+						}
+
+						// echo var_dump($cancelados);
+							$cancelados['data'] = array_values($cancelados['data']);
+							$consumados['data'] = array_values($consumados['data']);
+							$agendados['data'] = array_values($agendados['data']);
+
+		array_push($meses, $agendados,$consumados,$cancelados);
+
+		return $meses;
+	}
 
 	public function report(array $datos =null,String $title =''){
 

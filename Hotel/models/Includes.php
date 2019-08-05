@@ -1,15 +1,16 @@
 <?php 
 namespace Hotel\models;
 use assets\libs\connection;
+use assets\libs\FuncionesAcademia;
 
 use PDO;
 
 /**
  * @author Crespo jhonatan
  */ 
-class Includes {
+class Includes extends FuncionesAcademia{
 	
-	private $con;
+	private $con,$conection;
 	private $user = array(
 		'id' => null,
 		'username' => null,
@@ -35,6 +36,10 @@ class Includes {
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
+		$this->conection = $con;
+
+		parent::__construct($this->conection,'Hotel');
+
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
 		$this->load_data();
@@ -349,30 +354,31 @@ class Includes {
 
 				<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-slider/css/bootstrap-slider.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css"/>
+					<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.css"/>
 
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-slider/css/bootstrap-slider.min.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
-
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
-				<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
-				<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
-				<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
-				<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
-				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
-				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
 				
 
 
+				<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+				<script src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
+				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
+				<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+				
 
-<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png" >
+				<link rel="icon" type="image/png" href="'.HOST.'/assets/img/favicon.png">
 
 				<title>'.$title.'</title>
 				<meta name="description" content="'.$description.'" />
@@ -419,8 +425,11 @@ class Includes {
 										</a> 
 									</div><!-- /.header-logo -->
 									<div class="header-content">
-										<div class="header-bottom">
-											<div class="header-button">
+										<div class="header-bottom">';
+
+									
+											
+									$html .='<div class="header-button">
 												<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
 													<i class="fa fa-envelope"></i>
 												</a>
@@ -519,13 +528,29 @@ class Includes {
 									</a> 
 								</div><!-- /.header-logo -->
 								<div class="header-content">
-									<div class="header-bottom">
-										<div class="header-button">
+									<div class="header-bottom">';
+									
+										if($this->is_videos()){
+
+												$html .= '<div class="header-button ">
+													<button class="btn-academia header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Aprende de Travel Points"><i class="fa fa-graduation-cap"></i></button>
+												</div>';
+
+													$html.=	'<div class="header-button">
+											<a href="'.HOST.'/contacto" class="header-button-inner " data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
+												<i class="fa fa-envelope"></i>
+											</a>
+										</div>';
+											}else{
+												$html.=	'<div class="header-button">
 											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
 												<i class="fa fa-envelope"></i>
 											</a>
-										</div>
-										<div class="header-button">
+										</div>';
+											}
+
+								
+										$html .='<div class="header-button">
 											<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 												<i class="fa fa-facebook"></i>
 											</a>
@@ -617,6 +642,12 @@ class Includes {
 						'.$this->sidebar.'
 					</ul>
 				</div>
+							<section class="content-academia p-socio p-hotel">
+														
+														'.$this->getVideos().'
+														
+							</section>
+							'.$this->getModal().'
 				<div class="content-admin contenido-home">
 					<div class="content-admin-wrapper">
 						<div class="content-admin-main">
@@ -626,11 +657,23 @@ class Includes {
 		return $html;
 	}
 
+
+	protected function getVideos(){
+
+		$result  = $this->capturarvideos($this->conection,'Hotel');
+
+		return $result;
+	}
+
 	public function get_admin_footer(){
 		$ano = date('Y');
 		$html ='</div><!-- /.container-fluid -->
+
 													</div><!-- /.content-admin-main-inner -->
+
 													</div><!-- /.content-admin-main -->
+													
+
 													<div class="content-admin-footer">
 													<div class="container-fluid">
 													<div class="content-admin-footer-inner">
@@ -644,7 +687,7 @@ class Includes {
 													</div><!-- /.outer-admin -->
 													</div><!-- /.main -->
 													</div><!-- /.page-wrapper -->
-													<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+													
 													<script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
@@ -661,7 +704,7 @@ class Includes {
 													<script src="'.HOST.'/assets/libraries/bootstrap-slider/js/bootstrap-slider.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-													<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBqoSi7c3UV5ya81-3fNa5itqfUDl2axmE&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+													<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
@@ -669,6 +712,8 @@ class Includes {
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/font-awesome/js/fontawesome.min.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.js"></script>
+
 													<script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 													<script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>

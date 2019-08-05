@@ -19,6 +19,11 @@
 
 		if(isset($_POST['reservar'])){
 			$reservacion->reservar($_POST);
+
+		}
+
+		if(isset($_POST['imprimir'])){
+			$reservacion->imprimir();
 		}
 	}
 
@@ -57,10 +62,10 @@
 				});
 			</script>
 			<div class="background-white p20 mb30">
-				
-				<?php echo $reservacion->get_notification(); ?>
-
-				<form id="reservacion" action="<?php echo _safe(HOST.'/Hotel/reservaciones/');?>" method="POST">
+				<form  action="<?php echo _safe(HOST.'/Hotel/reservaciones/');?>" method="POST" target="_blank">
+					<?php echo $reservacion->get_notification(); ?>
+				</form>
+				<form name="new-reservacion" id="reservacion" action="<?php echo _safe(HOST.'/Hotel/reservaciones/');?>" method="POST">
 					
 					<script >
 						
@@ -91,7 +96,7 @@
 											<img class="img-reservacion-default" src="<?php echo HOST;?>/assets/img/business/restaurant.png" class="meta-img img-rounded">
 											</div>
 											
-											<input type="text" class="form-control complete" name="restaurantes" id="restaurantes" value="" placeholder="Nombre del Restaurante (negocio)" >
+											<input type="text" class="form-control complete" name="restaurantes" id="restaurantes" value="" placeholder="Nombre del Restaurante (negocio)" disabled>
 							</div>
 							</div>
 
@@ -261,7 +266,7 @@
 
 		      </div>
 		      <div class="modal-footer">
-		        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Guardar</button>
+		        <button type="submit" class="btn btn-primary guardar-users"><i class="fa fa-save"></i>Guardar</button>
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-close"></i>Cerrar</button>
 		      </div>
   		</form>
@@ -275,11 +280,11 @@
 	
 	$(document).ready(function() {
 
-
 		$('form[name="new-user-form"]').bind('submit', function(event) {
 				event.preventDefault();
 
-
+				$('.guardar-users').attr('disabled', 'disabled');
+				$('.guardar-users').text('Guardando por favor espere...');
 				var email    = $('input[name="email"]').val();
 				var nombre   = $('input[name="nombre"]').val();
 				var apellido = $('input[name="apellido"]').val();
@@ -308,19 +313,24 @@
 			})
 			.done(function(response) {
 				if(response.peticion){
-					alert('Usuario registrado exitosamente');
+					$('.guardar-users').removeAttr('disabled');
+					$('.guardar-users').text('');
+					$('.guardar-users').append('<i class="fa fa-save"></i>Guardar');
+
+					
+					$('input[name="email"]').val('');
+					$('input[name="nombre"]').val('');
+					$('input[name="apellido"]').val('');
+					$('input[name="telefono"]').val('');
+
+					$.alert('Usuario registrado exitosamente');
 					$('#modal-afiliar-new-usuario-reservacion').modal('hide');
-					$('input[name="referral"]').val(nombre+' '+apellido);
+					$('input[name="referral"]').val(nombre+apellido);
 				}else{
 					
 				}
-			})
-			.fail(function() {
-				console.log("error");
-			})
-			.always(function() {
-				console.log("complete");
 			});
+			
 			
 			
 		});

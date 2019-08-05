@@ -12,6 +12,7 @@ $reservacion = new Reservacion($con,true);
 
 
 $restaurant = new Restaurant($con);
+
 /**
  * 	Controladores para peticiones ajax xde negocios
  * 
@@ -116,6 +117,7 @@ else if(isset($_POST['peticion']) && $_POST['peticion'] == 'numeromesas'){
 	echo json_encode($response);
 
 }else if(isset($_POST['peticion']) && $_POST['peticion'] == 'consultarpublicacion'){
+
 		$response = array(
 						'peticion' => false,
 						'mensajes' => null,
@@ -123,7 +125,9 @@ else if(isset($_POST['peticion']) && $_POST['peticion'] == 'numeromesas'){
 						 );
 
 		if(isset($_POST['negocio'])){
+
 			$resultado = $restaurant->getPublicacionStatus($_POST['negocio']);
+			
 		}else{
 				$resultado = $restaurant->getPublicacionStatus();
 		}

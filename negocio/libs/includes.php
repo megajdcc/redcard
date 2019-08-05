@@ -4,7 +4,9 @@ namespace negocio\libs;
 use assets\libs\connection;
 use PDO;
 
-class includes {
+use assets\libs\FuncionesAcademia;
+
+class includes extends FuncionesAcademia{
 	private $con;
 	private $user = array(
 		'id' => null,
@@ -25,8 +27,11 @@ class includes {
 	private $reservas = array(
 		'numero' => 0,
 	);
+
+	private $conection = null;
 	public function __construct(connection $con){
 		$this->con = $con->con;
+		$this->conection = $con;
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		$this->business['id'] = $_SESSION['business']['id_negocio'];
 		$this->load_data();
@@ -553,6 +558,14 @@ class includes {
 		return $class;
 	}
 
+
+	protected function getVideos(){
+
+		$result  = $this->capturarvideos($this->conection,'Negocios');
+
+		return $result;
+	}
+
 	public function get_no_indexing_header(array $properties){
 		$title = _safe($properties['title']);
 		$description = _safe($properties['description']);
@@ -720,6 +733,7 @@ class includes {
 		</div><!-- /.header-wrapper -->
 		<div class="header-statusbar">
 			<div class="header-statusbar-inner">
+
 				<div class="header-statusbar-left">
 					<h1 class="logo-esmart">
 						
@@ -733,8 +747,16 @@ class includes {
 						<li>'._safe($this->crumbs[1]).'</li>
 					</ul>
 				</div><!-- /.header-statusbar-right -->
+
+				<article class="header-ayuda" style="margin-left:10rem;">
+					<button class="btn-academia">Academia  |  <i class="fa fa-graduation-cap"></i><span class="fa fa-bars"></span></button>
+				</article>
+
 			</div><!-- /.header-statusbar-inner -->
 		</div><!-- /.header-statusbar -->
+		
+	
+
 	</header><!-- /.header -->
 	<div class="main">
 		<div class="outer-admin">
@@ -787,6 +809,7 @@ class includes {
 		return $html;
 	}
 
+
 	public function get_footer(){
 		$html = 
 '								</div><!-- /.container-fluid -->
@@ -801,6 +824,10 @@ class includes {
 						</div><!-- /.content-admin-footer  -->
 					</div><!-- /.content-admin-wrapper -->
 				</div><!-- /.content-admin -->
+				<section class="content-academia">
+				'.$this->getVideos().'
+				'.$this->getModal().'
+				</section>
 			</div><!-- /.wrapper-admin -->
 		</div><!-- /.outer-admin -->
 	</div><!-- /.main -->

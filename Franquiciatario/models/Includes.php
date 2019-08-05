@@ -2,13 +2,13 @@
 namespace Franquiciatario\models;
 use assets\libs\connection;
 use PDO;
-
+use assets\libs\FuncionesAcademia;
 /**
  * @author Crespo jhonatan
  */ 
-class Includes {
+class Includes extends FuncionesAcademia{
 	
-	private $con;
+	private $con,$conection;
 	private $user = array(
 		'id' => null,
 		'username' => null,
@@ -31,6 +31,10 @@ class Includes {
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
+		$this->conection = $con;
+
+		parent::__construct($this->conection,'Franquiciatario');
+
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
 		$this->load_data();
@@ -376,7 +380,7 @@ class Includes {
 									</div><!-- /.header-logo -->
 									<div class="header-content">
 										<div class="header-bottom">
-											<div class="header-button">
+										<div class="header-button">
 												<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
 													<i class="fa fa-envelope"></i>
 												</a>
@@ -475,13 +479,30 @@ class Includes {
 									</a> 
 								</div><!-- /.header-logo -->
 								<div class="header-content">
-									<div class="header-bottom">
+									<div class="header-bottom">';
+											if($this->is_videos()){
+
+												$html .= '<div class="header-button ">
+													<button class="btn-academia header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Aprende de Travel Points"><i class="fa fa-graduation-cap"></i></button>
+												</div>';
+
+												$html .='
+										<div class="header-button">
+											<a href="'.HOST.'/contacto" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel points">
+												<i class="fa fa-envelope"></i>
+											</a>
+										</div>';
+											}else{
+													$html .='
 										<div class="header-button">
 											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel points">
 												<i class="fa fa-envelope"></i>
 											</a>
-										</div>
-										<div class="header-button">
+										</div>';
+											}
+
+									
+										$html .='<div class="header-button">
 											<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel points Facebook">
 												<i class="fa fa-facebook"></i>
 											</a>
@@ -570,6 +591,12 @@ class Includes {
 						'.$this->sidebar.'
 					</ul>
 				</div><!-- /.sidebar-secondary-admin -->
+				<section class="content-academia p-socio p-hotel">
+														
+														'.$this->getVideos().'
+														
+							</section>
+							'.$this->getModal().'
 				<div class="content-admin contenido-home">
 					<div class="content-admin-wrapper">
 						<div class="content-admin-main">
@@ -577,6 +604,13 @@ class Includes {
 								<div class="container-fluid">
 		';
 		return $html;
+	}
+
+
+	protected function getVideos(){
+		$result  = $this->capturarvideos($this->conection,'Franquiciatario');
+
+		return $result;
 	}
 
 	public function get_admin_footer(){

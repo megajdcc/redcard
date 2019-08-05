@@ -2,13 +2,16 @@
 namespace Referidor\models;
 use assets\libs\connection;
 use PDO;
+use assets\libs\FuncionesAcademia;
+
 
 /**
  * @author Crespo jhonatan
  */ 
-class Includes {
+class Includes extends FuncionesAcademia{
 	
-	private $con;
+	private $con,$conection;
+
 	private $user = array(
 		'id' => null,
 		'username' => null,
@@ -31,6 +34,10 @@ class Includes {
 
 	public function __construct(connection $con){
 		$this->con = $con->con;
+		$this->conection = $con;
+
+		parent::__construct($this->conection,'Referidor');
+
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
 		$this->load_data();
@@ -481,12 +488,30 @@ class Includes {
 									</a> 
 								</div><!-- /.header-logo -->
 								<div class="header-content">
-									<div class="header-bottom">
-										<div class="header-button">
-											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel points">
+									<div class="header-bottom">';
+
+
+
+										if($this->is_videos()){
+
+												$html .= '<div class="header-button ">
+													<button class="btn-academia header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Aprende de Travel Points"><i class="fa fa-graduation-cap"></i></button>
+												</div>';
+
+													$html.=	'<div class="header-button">
+											<a href="'.HOST.'/contacto" class="header-button-inner " data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
 												<i class="fa fa-envelope"></i>
 											</a>
-										</div>
+										</div>';
+											}else{
+												$html.=	'<div class="header-button">
+											<a href="'.HOST.'/contacto" class="header-button-inner mr20" data-toggle="tooltip" data-placement="bottom" title="Contacta Travel Points">
+												<i class="fa fa-envelope"></i>
+											</a>
+										</div>';
+											}
+
+										$html.='
 										<div class="header-button">
 											<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel points Facebook">
 												<i class="fa fa-facebook"></i>
@@ -576,6 +601,12 @@ class Includes {
 						'.$this->sidebar.'
 					</ul>
 				</div><!-- /.sidebar-secondary-admin -->
+					<section class="content-academia p-socio p-hotel">
+														
+														'.$this->getVideos().'
+														
+							</section>
+							'.$this->getModal().'
 				<div class="content-admin contenido-home">
 					<div class="content-admin-wrapper">
 						<div class="content-admin-main">
@@ -583,6 +614,13 @@ class Includes {
 								<div class="container-fluid">
 		';
 		return $html;
+	}
+
+
+	protected function getVideos(){
+		$result  = $this->capturarvideos($this->conection,'Referidor');
+
+		return $result;
 	}
 
 	public function get_admin_footer(){
@@ -620,7 +658,7 @@ class Includes {
 													<script src="'.HOST.'/assets/libraries/bootstrap-slider/js/bootstrap-slider.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-													<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBqoSi7c3UV5ya81-3fNa5itqfUDl2axmE&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+													<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
 													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>

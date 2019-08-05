@@ -441,6 +441,43 @@ class includes {
 						</li>';
 					}
 				break;
+
+				case 'academia':
+				$this->crumbs[0] = 'Academia';
+
+				switch (basename($_SERVER['SCRIPT_NAME'])) {
+					case 'videos':
+						$this->crumbs[1] = 'Aprendiendo de Travel';
+						break;
+					case 'new':
+						$this->crumbs[1] = 'del sistema';
+						break;
+
+					default:
+						$this->crumbs[1] = '';
+						break;
+					
+				}
+
+				if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
+				$this->sidebar =
+						'<li'.$this->set_active_sidebar_tab('index.php').'>
+							<a href="'.HOST.'/admin/academia/">
+								<span class="icon"><i class="fa fa-video-camera"></i></span>
+								<span class="title">Videos</span>
+								<span class="subtitle">Aprendiendo de TravelPoints</span>
+							</a>
+						</li>
+
+						<li'.$this->set_active_sidebar_tab('new-clases.php').'>
+							<a href="'.HOST.'/admin/academia/new-clases">
+								<span class="icon"><i class="fa fa-edit"></i></span>
+								<span class="title">New Class </span>
+								<span class="subtitle">Nuevo video-tutorial</span>
+							</a>
+						</li>';
+					}
+				break;
 			default:
 				$this->crumbs[0] = '';
 				$this->crumbs[1] = '';
@@ -494,10 +531,6 @@ class includes {
 	<meta name="googlebot-image" content="none" />
 	<meta name="robots" content="none" />
 
-	
-
-	<link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
-
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/colorbox/example1/colorbox.css" />
@@ -509,13 +542,18 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
+	<link rel="stylesheet" href="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.css" />
+	
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
+<script src="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+	
 
 	<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
+
 				
 	
 
@@ -722,8 +760,11 @@ class includes {
 			if($_SESSION['user']['id_rol'] == 1 || $_SESSION['user']['id_rol'] == 2){
 
 				
-			$html .='<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias"><a href="'.HOST.'/admin/preferencias/codigo-seguridad"><i class="fa fa-cog"></i></a></li>
-						<li'.$this->set_active_tab('administracion').' data-toggle="tooltip" data-placement="right" title="Administrativo"><a href="'.HOST.'/admin/adminstracion/Iata"><i class="fa fa-coogs"></i></a></li>';
+			$html .='<li'.$this->set_active_tab('preferencias').' data-toggle="tooltip" data-placement="right" title="Preferencias"><a href="'.HOST.'/admin/preferencias/codigo-seguridad"><i class="fa fa-cog"></i></a></li>';
+
+			$html .='<li'.$this->set_active_tab('academia').' data-toggle="tooltip" data-placement="right" title="Academia"><a href="'.HOST.'/admin/academia/"><i class="fa fa-graduation-cap"></i></a></li>';
+
+
 
 					}
 			$html .='</ul>
@@ -778,6 +819,7 @@ class includes {
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
@@ -794,6 +836,7 @@ class includes {
 </body>
 </html>';
 		return $html;
+
 
 		// AIzaSyAfGXqiorl8HZHXRQaGKpj95C8W8TU80co&amp
 	}

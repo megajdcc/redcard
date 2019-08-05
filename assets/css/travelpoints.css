@@ -44,6 +44,7 @@ font-weight: normal;
 src:url('../../assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('OTF');
 }
 
+
 .g1{
 	display: flex;
 	justify-content: center;
@@ -443,10 +444,16 @@ width: 100%;
 	background: transparent;
 	border: none;
 }
-#listareservaciones .cancelar{
+#listareservaciones .cancelar,
+#listareservaciones .impresion{
 	padding: 5px;
 	margin: 0px;
 }
+#listareservaciones .cancelar i,
+#listareservaciones .impresion i{
+	margin: 0px;
+}
+
 #listareservacionesusuario strong{
 	padding: 0px 1px !important;
 	margin: 0px 0px;
@@ -711,4 +718,224 @@ width: 100%;
 /*Reservaciones catalogo negocio*/
 #soundnotification{
 	display:none;
+}
+
+
+/*********************************************/
+/*Contenido de panel de ayuda de la academia.
+/*********************************************/
+
+body{
+	overflow-x: hidden !important; 
+}
+.content-academia{
+	position: fixed !important;
+	display: flex;
+	width: 0px;
+	z-index: 900;
+	height: 90vh !important;
+	background-color: #363636;
+	right: 0px;
+	border-radius: 0px 0px 0px 20px;
+	
+	z-index: 100;
+	transition: all 300ms;
+	padding-top: 2rem !important;
+}
+.p-socio{
+	margin-top: 60px;
+
+}
+.p-hotel{
+	margin-top: 0px !important;
+}
+
+.content-academia-show{
+	width: 300px !important;
+	transition: all 500ms;
+	display: flex;
+	flex-wrap: wrap;
+	overflow-y: auto;
+	box-shadow: rgba(0,0,0,0.7) -5px 0px 50px 10px; 
+
+}
+
+.header-ayuda{
+	margin-left: 0px;
+
+}
+.header-ayuda button{
+	background-color: transparent;
+	outline: none;
+	border: none;
+	font-size: 14pt;
+	margin: 0px;
+	padding: 0px !important;
+}
+
+.btn-academia{
+	border: none;
+	outline: none;
+}
+.btn-academia .fa{
+	margin: 0px !important;
+}
+.academia {
+	background: red;
+}
+
+/*********************************************/
+/*Panel de video blog academia
+/*********************************************/
+
+.campo-busqueda-video{
+	display: flex;
+	padding: 0px;
+}
+.campo-busqueda-video button{
+	height: 100% !important;
+	width: 100px;
+}
+
+.contenedor-video
+.reproducir,
+.contenedor-video
+.editar,
+.contenedor-video
+.eliminar{
+	background: transparent;
+	border: none;
+	padding: 5px !important;
+	height: 100%;
+	width: auto !important;
+	outline: none;
+}
+.reproducir:hover,
+.editar:hover,
+.eliminar:hover{
+	transform: scale(1.2);
+}
+.contenedor-video .fa{
+	/*color: #D63232;*/
+	font-size: 24pt;
+	margin: 0px !important;
+	padding: 4px 6px !important;
+	width: auto !important;
+	height: auto !important;
+	border: 0px;
+
+}
+.contenedor-video .fa:hover{
+	background: transparent;
+	color: white;
+	transform: scale(1.4);
+}
+
+.contenedor-video .card-simple-actions{
+	
+}
+
+.lista-clases{
+
+}
+
+input[name="busqueda"]{
+	border-radius: 50px !important;
+}
+
+.fondo-busqueda{
+	background: rgba(255,255,255,0.9);
+	height: 100% !important;
+	position: absolute !important;
+	width: 95% !important;
+	z-index: 1000!important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.loading-v{
+	background-image: url('/assets/img/academia/loading.gif');
+	background-size: 441px 291px !important;
+	width: 100% !important;
+	height: 100% !important;
+	background-position: center top;
+	display: flex;
+	justify-content: center;
+	background-repeat: no-repeat;
+}
+.modal-video{
+	border: 0px !important;
+	/*box-shadow: none !important;*/
+	background: transparent !important; 
+}
+.modal-video .close{
+	/*position: absolute !important;*/
+	/*z-index: 1000 !important;*/
+	/*right: 0px !important;*/
+	margin-left: auto;
+	border-bottom: none !important;
+	color: white !important;
+	opacity: 1 !important;
+}
+.modal-video .close span{
+	color: white !important;
+	opacity: 1 !important;
+}
+
+.header-video{
+	background: rgba(0,0,0,0.5);
+	border: none !important;
+}
+
+/*********************************************/
+/*Panel de ingreso de nueva class academia
+/*********************************************/
+
+form[name="nueva-clase"]{
+	font-family: 'Myriad pro';
+}
+form[name="nueva-clase"] .input-group{
+	display: flex;
+	flex-wrap: nowrap;
+}
+form[name="nueva-clase"] .input-group-addon{
+	width: auto !important;
+}
+form[name="nueva-clase"] span{
+	padding: 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+form[name="nueva-clase"] .fa,
+form[name="nueva-clase"] .i{
+	font-size: 17pt;
+	padding: 0px 1rem;
+	margin: 0px !important;
+}
+
+form[name="nueva-clase"] .new-categories{
+	padding: 0px .5rem!important;
+	display: flex;
+	outline: none;
+	opacity: .8;
+	align-items: center;
+}
+form[name="nueva-clase"] button:hover{
+	opacity: 1;
+}
+
+form[name="nueva-clase"] label{
+	font-size: 12pt !important;
+	font-family: 'Nexa book' !important;
+}
+
+form[name="new-categories-form"] .eliminar{
+	padding: 0px;
+	background: transparent;
+	border: 0px;
+	width: 100px;
+	outline: none;
 }

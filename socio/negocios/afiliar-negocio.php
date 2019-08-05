@@ -107,7 +107,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 											</div><!-- /.form-group -->
 										</div><!-- /.col-* -->
 										<div class="col-lg-6">
-											<div class="form-group">
+											<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="Preferiblemente que sea un número de celular, sin espacios ni guiones ni caracteres espeaciales.">
 												<label for="phone">N&uacute;mero telef&oacute;nico del negocio <span class="required">*</span></label>
 												<div class="input-group">
 													<span class="input-group-addon"><i class="fa fa-phone"></i></span>

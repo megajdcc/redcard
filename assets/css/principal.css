@@ -1,0 +1,28 @@
+/*********************************************/
+/*            Bloque cabecera                */
+/*********************************************/
+.fondo-menu .header-wrapper{
+  min-height: 50px !important;
+  height: auto !important;
+  transition: height 2s ease !important;
+}
+
+@media (min-width: 370px){
+  .fondo-menu .header-wrapper{
+    min-height: 50px !important;
+    height: 50px !important;
+    transition: height 2s ease !important;
+  }
+}
+
+/*------------------------------------------------------------------
+[ 6. Header ]
+*/
+.header {
+  display: table-row;
+  height: 62px;  
+   z-index: 500;
+   position: fixed;
+  width: 100%;
+  transition: height 2s ease !important;
+}

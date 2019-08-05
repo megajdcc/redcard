@@ -14,6 +14,7 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'PrintNode\\' => 10,
         ),
         'F' => 
         array (
@@ -33,6 +34,10 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'PrintNode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/printnode/printnode-php/src/PrintNode',
         ),
         'FontLib\\' => 
         array (

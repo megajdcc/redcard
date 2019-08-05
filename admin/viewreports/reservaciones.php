@@ -91,9 +91,6 @@
 				<th>Solicitante</th>
 				<th>Registrante</th>
 				<th>Status</th>
-				
-				
-				
 			</tr>
 		</thead>
 			<tbody>	
@@ -106,13 +103,26 @@
 			$creado   = _safe($valores['creado']);
 			$negocio  = _safe($valores['negocio']);
 
-			$usuario  = $valores['nombrecompleto'];
+			$usuario  =	$valores['nombrecompleto'];
 			if(empty($valores['nombrecompleto'])){
 				$usuario = $valores['username'];
 			}
 		
 			$registrante = $valores['usuario_registrante'];
-			$status   = $valores['status'];
+
+			switch ($valores['status']) {
+				case 0:
+					$status   ='Agendada';
+					break;
+				
+				case 1:
+					$status   ='Consumada';
+					break;
+				case 3:
+					$status   ='Cancelada';
+					break;
+			}
+			
 			$fecha    = _safe($valores['fecha']);	
 
 			?>

@@ -1,4 +1,5 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
+
 $con = new assets\libs\connection();
 
 if(!$url = filter_input(INPUT_GET, 'url')){
@@ -24,6 +25,7 @@ $properties['title'] = $business->get_name_unsafe().' | Negocio en Travel Points
 $properties['description'] = '';
 echo $header = $includes->get_no_indexing_header($properties);
 echo $navbar = $includes->get_main_navbar(); 
+
 ?>
 <div class="main">
 	<div class="main-inner">
@@ -201,56 +203,135 @@ echo $navbar = $includes->get_main_navbar();
 
 								
 
-									$('form[name="reservar-user-preview"]').bind('submit',function(e){
+$('form[name="reservar-user-preview"]').bind('submit',function(e){
 																	
-																	$('.btn-reservar').attr('disabled','disabled');
-																	$('.btn-reservar').html('Reservando por favor espere...');
+		$('.btn-reservar').attr('disabled','disabled');
+		$('.btn-reservar').html('Reservando por favor espere...');
 
-																	if($('input[name="fechaseleccionada"]').val() == ''){
+		if($('input[name="fechaseleccionada"]').val() == ''){
 
-																		$('input[name="fechaseleccionada"]').val(moment().format('YYYY-MM-DD'));
-																	}
+			$('input[name="fechaseleccionada"]').val(moment().format('YYYY-MM-DD'));
+		
+		}
 
-																	var formdata  = new FormData(document.getElementById('formulario-reserva'));
+		var formdata  = new FormData(document.getElementById('formulario-reserva'));
 
-																	formdata.append('peticion','reservar');
-																	formdata.append('totalperson', $('input[name="totalperson"]').val());
-																	formdata.append('negocio',idnegocio);
+		formdata.append('peticion','reservar');
+		formdata.append('totalperson', $('input[name="totalperson"]').val());
+		formdata.append('negocio',idnegocio);
 																	
-																	$.ajax({
-																		url: '/negocio/Controller/peticiones.php',
-																		type: 'POST',
-																		dataType: 'JSON',
-																		data:formdata,
-																		processData:false,
-																		contentType:false
-																	})
-																	.done(function(response) {
-																		if(response.peticion){
-																			alert(response.mensajes);
-																			$('input[name="totalperson"]').removeAttr('disabled');
-																			$('input[name="totalperson"]').val('1');
-																			$('input[name="fecha"]').val('');
-																			$('.btn-reservar').attr('disabled','disabled');
-																			$('.btn-reservar').html('RESERVAR | BOOK');
-																			$('#modal-reserva').modal('hide');
+			$.ajax({
+					url: '/negocio/Controller/peticiones.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data:formdata,
 
-																		}else{
-																			alert('No pudimos registrar tu reserva. te pedimos disculpa, pero lo puedes intentar mas tarde.');
-																		}
-																	})
-																	.fail(function() {
-																		
-																		
-																	})
-																	.always(function() {
-																		console.log("complete");
-																	});
-																	return false;
+					processData:false,
+					contentType:false
+					})
+					.done(function(response) {
+					if(response.peticion){
+
+						enviarmensaje();
+						alert(response.mensajes);
+						$('input[name="totalperson"]').removeAttr('disabled');
+						$('input[name="totalperson"]').val('1');
+						$('input[name="fecha"]').val('');
+						$('.btn-reservar').attr('disabled','disabled');
+						$('.btn-reservar').html('RESERVAR | BOOK');
+						$('#modal-reserva').modal('hide');
+
+					}else{
+						alert('No pudimos registrar tu reserva. te pedimos disculpa, pero lo puedes intentar mas tarde.');
+					}
+
+					});
+
+				return false;
 																	
 
 
-														});
+		});
+
+function enviarmensaje(){
+
+	$.ajax({
+		url: '/socio/controller/peticiones.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {peticion: 'enviarmensaje'},
+	})
+	.done(function(response) {
+		if(response.peticion){
+			return true;
+		}else{
+			return false;
+		}
+	})
+	.fail(function() {
+		return false;
+	})
+	.always(function() {
+		console.log("complete");
+	});
+	
+	// var data = {"apiKey": "407",
+	// 		"country":"MX",
+	// 		"dial":"26262",
+	// 		"message":"PruebadereservacionesSMS",
+	// 		"msisdns":['523221071814'],
+	// 		"tag":'Quedescanses'
+	// 	};
+
+	// var header	= new Headers({
+	// 		'Access-Control-Allow-Headers':'Origin,X-Requested-With,Content-Type,Accept',
+	// 		'Access-Control-Allow-Origin':'https://api.broadcastermobile.com/brdcstr-endpoint-web/services/messaging/',
+	// 		'Access-Control-Allow-Methods':'POST,OPTIONS,GET',
+	// 		'Accept':'application/json',
+	// 		"Content-Type":'application/json',
+	// 		"Authorization":'CjqJxRd+vMYzPvcPuIK4c+3lTyo=',
+			
+	// 	});
+	// // console.log(header.get('Content-Type'));
+	// fetch("https://api.broadcastermobile.com/brdcstr-endpoint-web/services/messaging/",{
+	// 	method:'POST',
+	// 	headers:header,
+	// 	body:JSON.stringify(data),
+	// 	mode:'cors'
+	// }).then(res => res.json())
+	// .catch(error => console.log('error:',error))
+	// .then(response => console.log('Success:',response));
+
+
+
+	// $.ajax({
+	// 	url: 'https://api.broadcastermobile.com/brdcstr-endpoint-web/services/messaging/',
+	// 	method:'POST',
+	// 	body: {apiKey: 407,
+	// 		country:"MX",
+	// 		dial:"26262",
+	// 		message:"Prueba de reservaciones SMS",
+	// 		msisdns:['523221071814'],
+	// 		tag:'Prueba Travel Points',
+	// 	},
+	// 	headers:{
+	// 		"Content-Type":'application/json',
+	// 		"Authorization":'CjqJxRd+vMYzPvcPuIK4c+3lTyo='
+	// 	},
+	// 	cache:false,
+	// 	// contentType:'text/plain',
+	// 	processData:false
+	// })
+	// .done(function() {
+	// 	console.log("success");
+	// })
+	// .fail(function() {
+	// 	console.log("error");
+	// })
+	// .always(function() {
+	// 	console.log("complete");
+	// });
+}
 								
 
 														

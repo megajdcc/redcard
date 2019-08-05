@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'ReCaptcha\\' => array($vendorDir . '/google/recaptcha/src/ReCaptcha'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'PrintNode\\' => array($vendorDir . '/printnode/printnode-php/src/PrintNode'),
     'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src/FontLib'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
 );

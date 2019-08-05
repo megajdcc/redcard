@@ -1,8 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	
-	<?php 
+		<?php 
 
 	if(empty($this->busqueda['fechainicio'])){
 		$fecha1 = null;
@@ -17,7 +16,17 @@
 	}
 
 	if(is_null($fecha1)){
-		$fechas = 'Todo el listado';
+
+		if($this->filtro == 0){
+			$fechas = 'Todo el dia de hoy';
+		}else if($this->filtro == 1){
+			$fechas = 'Todo el dia de ayer';
+		}else if($this->filtro == 2){
+			$fechas = 'Todo el mes';
+		}else if($this->filtro == 3){
+			$fechas = 'El mes anterior';
+		}
+		
 	}else{
 		$fechas  = $fecha1.' al '.$fecha2;
 	}
@@ -45,13 +54,22 @@
 		<thead>
 			<tr>
 			
-				<th >Rango</th>
+				<th>Rango</th>
+				<th>Negocio</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 
 				<td style="text-align: center"><?php echo $fechas; ?></td>
+
+				<td>
+					<?php if(!empty($this->restaurant)){
+						echo $this->restaurant;
+ 					}else{
+ 						echo "Todo los restaurantes";
+ 					} ?>
+				</td>
 				
 			</tr>
 		</tbody>

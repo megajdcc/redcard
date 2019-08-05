@@ -64,7 +64,49 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		}
 		echo json_encode($response);
 
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarreservaciones'){
+
+		$response = array(
+			'data'     =>''
+			 );
+
+		$resultado = $reservacion->getDatos($_POST);
+
+		if(count($resultado) > 0){
+		
+			$response['data'] = $resultado;
+		}
+
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'grafica-reservaciones-mensuales'){
+
+		$resultado = $reservacion->getDataReservacacionAnualMensual();
+		// $resultado = array('name'=>'Agendados','data'=> array(['Julio',2,],['Agosto',5])); EXAmple
+		
+		echo json_encode($resultado);
+
 	}
+	
+	// else if(isset($_POST['peticion']) && $_POST['peticion'] == 'reservar1'){
+
+	// 	$response = array(
+	// 		'peticion' =>false,
+	// 		'ticket'   =>null
+	// 		 );
+
+
+	// 	$resultado = $reservacion->reservar($_POST);
+
+	// 	if($resultado){
+	// 		$response['peticion'] = true;
+	// 		$response['ticket'] = $resultado;
+	// 	}
+	// 	echo json_encode($response);
+
+	// }
 
 }
 

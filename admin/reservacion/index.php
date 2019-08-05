@@ -239,7 +239,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									</div>
 				</div>
 				<div class="row">
-						<table  id="listareservaciones" class=" col-lg-12 display" cellspacing="0" width="100%">
+						<table  id="listareservacionesd" class=" col-lg-12 display" cellspacing="0" width="100%">
 						<thead>
 							<tr>
 								<th></th>
@@ -416,6 +416,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					</script>
 				</section>
 			</div>
+			<div class="row">
+				<div class="col-lg-12" id="grafica-reservaciones">
+					
+				</div>
+			</div>
 	</div>
 </div>
 
@@ -425,6 +430,77 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				
 
 	$(document).ready(function() {
+
+		var grafica = null;
+		cargarGrafica();
+
+		var options  = {
+							title: {
+								text: 'Reservaciones mensuales de este año'
+							},
+
+							yAxis: { // left y axis
+								title: {
+								text: 'Número de reservaciones'
+								}
+							},
+							xAxis:{
+								categories:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Optubre','Noviembre','Diciembre']
+							},
+							legend:{
+								layout:'horizontal',
+								align:'center',
+								verticalAlign:'bottom'
+							},
+							plotOptions:{
+								series:{
+									label:{
+										connectorAlowed:false
+									},
+								},
+								line:{
+									dataLabels:{
+										enabled:false
+									}
+								},
+								enableMouseTracking:false
+							},	
+							series:[],
+							credits:{
+								enabled:false
+							},
+							responsive:{
+								rules:[{
+									condition:{
+										maxWidth:500
+									},
+									charOptions:{
+										legend:{
+											layout:'horizontal',
+											align:'center',
+											verticalAlign:'bottom'
+										}
+									}
+								}]
+							}};
+
+		function cargarGrafica(){
+				$.ajax({
+				url: '/admin/controller/peticiones.php',
+			 	type: 'POST',
+			 	dataType: 'JSON',
+			 	data: {peticion: 'grafica-reservaciones-mensuales'},
+
+			})
+			.done(function(response) {
+					options.series = response;
+				grafica = 	Highcharts.chart('grafica-reservaciones',options
+					);
+				
+			});
+
+		}
+
 
 		var datosTabla = null;
 		// CargarDatos();		
@@ -537,7 +613,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		});
 		
 
-		 var t = $('#listareservaciones').DataTable( {
+		 var t = $('#listareservacionesd').DataTable( {
 					paging        	:true,
 					lengthChange	:false,
 					scrollY      	:400,

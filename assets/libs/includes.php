@@ -2,8 +2,9 @@
 namespace assets\libs;
 use PDO;
 
-class includes {
-	private $con;
+class includes extends FuncionesAcademia{
+	private $con,$conection;
+
 	private $user = array(
 		'id'                                           => null,
 		'username'                                     => null,
@@ -31,6 +32,10 @@ class includes {
 	);
 	public function __construct(connection $con){
 		$this->con = $con->con;
+		$this->conection = $con;
+
+		parent::__construct($con,'General');
+
 		if(isset($_SESSION['user']['id_usuario'])){
 			$this->user['id'] = $_SESSION['user']['id_usuario'];
 			$this->load_data();
@@ -482,15 +487,15 @@ class includes {
 
 '<!DOCTYPE html>
 <html lang="es_mx">
-<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+<head>
 	
 	<meta name="language" content="english" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta https-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 		
 
-	<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css" />
@@ -501,8 +506,11 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
-		<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
-		<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/animate.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/principal.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.css" />
 
 	
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
@@ -520,7 +528,7 @@ class includes {
 
 
 	
-
+<script src="//code.jivosite.com/widget.js" data-jv-id="3eCpHzk3og" async></script>
 </head>
 ';
 
@@ -556,13 +564,13 @@ class includes {
 
 <div id="fb-root"></div>
 <div class="page-wrapper">
-	<header class="header">
+	<header data-scroll class="cabecera header" id="cabecera">
 		<div class="header-wrapper">
 			<div class="container">
 				<div class="header-inner">
 					<div class="header-logo">
 						<a href="<?php echo HOST.'/';?>">
-							<div class="logo">
+							<div class="logo wow bounceInRight">
 										<style>
 											.logo{
 												background-image: url("<?php echo HOST.'/assets/img/logo.svg';?>");									
@@ -574,6 +582,14 @@ class includes {
 					</div><!-- /.header-logo -->
 					<div class="header-content">
 						<div class="header-bottom">
+	
+							<?php if ($this->is_videos('General')): ?>
+								<div class="header-button ">
+									<button class="btn-academia header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Aprende de Travel Points"><i class="fa fa-graduation-cap"></i></button>
+								</div>
+							<?php endif ?>
+							
+
 							<div class="header-button">
 								<a href="<?php echo HOST.'/contacto'; ?>" class="header-button-inner" data-toggle="tooltip" data-placement="bottom" title="Contact | Contacto">
 									<i class="fa fa-envelope"></i>
@@ -590,6 +606,7 @@ class includes {
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
+
 							<?php  if(isset($_SESSION['user']['id_usuario'])){?>
 								 
 							<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
@@ -598,6 +615,7 @@ class includes {
 								<li class="visible-xs"><a href="<?php echo HOST.'/tienda/' ?>">Gift Store | Tienda de Regalos</a></li>
 								
 								<li class="visible-xs"><a href="<?php echo HOST.'/contacto'; ?>">Contact | Contacto</a></li>
+
 							</ul>
 							<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
 								<span class="sr-only">Toggle navigation</span>
@@ -721,10 +739,28 @@ class includes {
 					</div><!-- /.header-content -->
 				</div><!-- /.header-inner -->
 			</div><!-- /.container -->
+
 		</div><!-- /.header-wrapper -->
+
 	</header><!-- /.header -->
 
+	<section class="content-academia p-socio">
+			<?php 
+				echo $this->getVideos();
+			?>
+	</section>
+
+
+
 	<?php 
+	}
+
+
+
+	protected function getVideos(){
+		$result  = $this->capturarvideos($this->conection,'General');
+
+		return $result;
 	}
 
 	public function get_main_footer($query = null){
@@ -784,6 +820,8 @@ class includes {
 			</div><!-- /.container -->
 		</div>
 	</footer><!-- /.footer -->
+	'.$this->getModal().'
+	<a data-scroll class="ir-arriba" href="#cabecera" title="top"><i class="fa  fa-arrow-circle-up" aria-hidden="true"></i> </a>
 </div><!-- /.page-wrapper -->
 
 <script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
@@ -792,6 +830,8 @@ class includes {
 
 
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
+<script src="'.HOST.'/assets/js/wow.min.js" type="text/javascript"></script>
+<script src="'.HOST.'/assets/js/smooth-scroll.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
@@ -803,17 +843,18 @@ class includes {
 <script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
-
+<script src="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
 <script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
 <script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
+<script src="'.HOST.'/assets/js/jd.js" type="text/javascript"></script>
 '.$query.'
 </body>
 </html>';

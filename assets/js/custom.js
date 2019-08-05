@@ -279,8 +279,11 @@ $(document).ready(function() {
 
 
 	$('.reservar').on('click',function(){
+		
 		return confirm('¿Esta seguro de publicar esta reservación ?');
+		 
 	});
+	
 	$('.buy-product').on('click', function(){
 		var name = $('#product-name').text();
 		var price = $('#product-price').text();
@@ -451,6 +454,9 @@ $('#user-search-hotel .typeahead').typeahead({
 			 $('#user-search-placeholder').empty();
 			 $('#user-search-placeholder').append('<div><img src="/assets/img/user_profile/' + data.imagen + '" class="meta-img img-rounded" alt=""><strong>' + data.display + '</strong> @' + data.username + '</div>');
 		}
+		$('#restaurantes').removeAttr('disabled');
+
+		
 	});
 
 
@@ -1623,6 +1629,32 @@ if($('#solicitudes').length){
 
 				
 		});
+
+
+		if($('.btn-academia').length){
+
+				var mostrar = false; 
+
+
+
+				$('.btn-academia').on('click',function(e){
+					
+					if(mostrar == false ){
+						$('.content-academia').addClass('content-academia-show');
+						mostrar = true;
+					}else{
+						$('.content-academia').removeClass('content-academia-show');
+						
+						mostrar = false;
+					}
+
+					
+
+				});
+
+
+		}
+		
 		    
           
 });
@@ -1664,3 +1696,10 @@ if($('#solicitudes').length){
 // });
 // 
 // 
+// 
+// 
+// 
+// 
+
+
+

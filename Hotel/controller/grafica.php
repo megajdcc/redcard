@@ -231,6 +231,7 @@ if(isset($_POST['grafica']) && $_POST['grafica'] == 'consumospromediopornegocio'
 			echo json_encode($response);
 
 		}
+		
 		}else{
 				$idhotel = $_POST['hotel'];
 

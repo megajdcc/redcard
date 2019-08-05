@@ -249,6 +249,50 @@
         "homepage": "https://github.com/PhenX/php-svg-lib"
     },
     {
+        "name": "printnode/printnode-php",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/PrintNode/PrintNode-PHP.git",
+            "reference": "960acabca3c0d976bbd92bf0d6490a1fe5df7496"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/PrintNode/PrintNode-PHP/zipball/960acabca3c0d976bbd92bf0d6490a1fe5df7496",
+            "reference": "960acabca3c0d976bbd92bf0d6490a1fe5df7496",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "php": ">=5.3.2"
+        },
+        "time": "2017-05-17T21:26:48+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "PrintNode\\": "src/PrintNode"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Contributors",
+                "email": "support@printnode.com",
+                "homepage": "https://www.printnode.com"
+            }
+        ],
+        "description": "Connect any printer to your application with PrintNode Client and easy to use JSON API",
+        "homepage": "https://github.com/PrintNode/PrintNode-PHP",
+        "keywords": [
+            "PrintNode",
+            "api",
+            "php",
+            "printing"
+        ]
+    },
+    {
         "name": "psr/log",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
