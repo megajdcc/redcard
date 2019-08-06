@@ -15,9 +15,9 @@ if($_SESSION['business']['id_rol'] != 4 && $_SESSION['business']['id_rol'] != 5 
 
 $home = new negocio\libs\manage_home($con);
  
- use negocio\libs\Restaurant;
+use negocio\libs\Restaurant;
 
- $restaurant = new Restaurant($con);
+$restaurant = new Restaurant($con);
 
 $restaurant->desfaseReserv();
 

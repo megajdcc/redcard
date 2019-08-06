@@ -9,8 +9,8 @@ RewriteEngine On
 #FORZAR WWW EN EL SITIO
 #RewriteCond %{HTTP_HOST} !^$
 #RewriteCond %{HTTP_HOST} !^www\. [NC]
-#RewriteCond %{HTTPS}s ^on(s)|
-#RewriteRule ^ http%1://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+#RewriteCond %{HTTPS} ^on(s)|
+#RewriteRule ^ http%1://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 # QUITAR SLASH FINAL Y REDIRECCIONAR 301
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -54,7 +54,6 @@ RewriteRule ^socio/negocios/solicitud/([0-9]+)$ socio/negocios/solicitud.php?id=
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^socio/hotel/solicitud/([0-9]+)$ socio/hotel/solicitud.php?id=$1 [NC,L]
-
 
 
 

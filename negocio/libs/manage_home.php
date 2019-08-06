@@ -106,7 +106,7 @@ class manage_home {
 		$start_month = date('Y-m').'-01 00:00:00';
 		$end_month = date('Y-m', strtotime('+1 month')).'-01 00:00:00';
 		$query = "SELECT bono_esmarties FROM negocio_venta WHERE id_negocio = :id_negocio
-			AND creado BETWEEN '$start_month' AND '$end_month'";
+			";
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':id_negocio', $this->business['id'], PDO::PARAM_INT);

@@ -79,4 +79,13 @@ if(isset($_POST['peticion']) && $_POST['peticion'] == 'buscarreserva'){
 
 	echo json_encode($response);
 
+}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarreservaciones'){
+
+	$response = array(
+		'data' => null
+	);
+	
+	$response['data']  = $result =  $reservacion->cargarreservaciones();
+	echo json_encode($response);
+
 }

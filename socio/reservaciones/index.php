@@ -80,7 +80,7 @@ echo $navbar = $includes->get_main_navbar(); ?>
 										</thead>
 										<tbody class="parent-content-table">
 
-											<?php echo $reservaciones->listreservas();?>
+											<!-- <?php //echo $reservaciones->listreservas();?> -->
 										
 										</tbody>
 									</table>
@@ -104,169 +104,188 @@ echo $navbar = $includes->get_main_navbar(); ?>
 		
 
 		$(document).ready(function() {
-
-
-
-			var datos = null;
-
-			$.ajax({
-				url: '/socio/controller/peticiones.php',
-				type: 'POST',
-				dataType: 'JSON',
-				data: {peticion: 'listarreservacionesusuario'},
-			})
-			.done(function(response) {
-				if(response.peticion){
-					datos = response.datos;
-				}
-			})
-			.fail(function() {
-				console.log("error");
-			})
-			.always(function() {
-				console.log("complete");
-			});
 			
-			$('.cancelar').on('click',function(){
-					var reserva = $(this).attr('data-reserva');
-					var result = confirm('Esta seguro de cancelar la reservación?');
-
-					if(result){
-						$.ajax({
-							url: '/socio/controller/peticiones.php',
-							type: 'POST',
-							dataType: 'JSON',
-							data: {peticion: 'cancelarreservacion',idreserva:reserva},
-						})
-						.done(function(response) {
-							if(response.peticion){
-								alert('Reserva cancelada exitosamente.');
-
-								$('#'+reserva).hide('slow', function() {
-									
-								});
-
-							
-							}
-						})
-						.fail(function() {
-							console.log("error");
-						})
-						.always(function() {
-							console.log("complete");
-						});
-						
-					}
-			});
-
-				var formData = new FormData();
-
-				formData.append('peticion','listarreservacionesusuario');
-
-				var t = $('#listareservacionesusuario').DataTable( {
-					paging        : true,
-					lengthChange:false,
-					scrollY       : 400,
-					scrollCollapse: true,
-					ordering:false,
-					dom:'lrtip',
-			        language:{
-							lengthMenu: "Mostar _MENU_ registros por pagina",
-							info: "",
-							infoEmpty: "No se encontr&oacute; ninguna reservación",
-							infoFiltered: " de _MAX_ registros",
-							emptyTable:"No hay reservaciones",
-							zeroRecords:" No se encontr&oacute; lo que buscabas",
-			               	paginate: {
-			                        "next":       "Siguiente",
-			                        "previous":   "Anterior"
-			                        },
-		                    },
-		               
-		                "columnDefs": [ 
-			                {
-			                width:"300px",
-				            "searchable": true,
-				            "orderable": true,
-				            "targets": 0
-				        	},
-				        	{
-			                width:"200px",
-				            searchable: true,
-				            orderable: true,
-				            targets: 1
-				        	},
-				        	{
-			                width:"auto",
-				            searchable: true,
-				            orderable: true,
-				            targets: 2
-				        	},
-				        	{
-			                width:"auto",
-				            searchable: true,
-				            orderable: true,
-				            targets: 3
-				        	},
-				        	{
-			                width:"200px",
-				            searchable: true,
-				            orderable: true,
-				            targets: 4
-				        	}
-				        	,{
-			                width:"30px",
-				            searchable: true,
-				            orderable: true,
-				            targets: 5
-				        	}
-				        	,{
-			                width:"30px",
-				            searchable: true,
-				            orderable: true,
-				            targets: 6
-				        	}
-				        	,{
-			                width:"30px",
-				            searchable: true,
-				            orderable: true,
-				            targets: 7
-				        	}
-
-			        ],
-			       
-			    });
-			   $('input[name="buscar"]').on('keyup',function(e){
-
-					t.search(this.value).draw();
-			   });
-			
-
-
-			$('.content-row').click(function(event) {
-				
-
-
-			});
-			if($('.observacion').length){
-				$('.observacion').click(function(e){
-					alert($(this).attr('data-observacion'));
-				})
-			}
-
-			if($('.location').length){
-				$('.location').click(function(e){
-					alert($(this).attr('data-location'));
-				})
-			}
-
-
-			if($('.localizacion').length){
-				$('.localizacion').click(function(e){
-					alert($(this).attr('data-localizacion'));
-				})
-			}
 		
+				 var t = $('#listareservacionesusuario').DataTable({
+					paging        	:false,
+					lengthChange	:false,
+					scrollY      	:300,
+					scrollCollapse	:true,
+					ordering		:false,
+					
+					dom:'lrtip',
+					ajax:{
+						url:'/socio/controller/peticiones.php',
+						type:'POST',
+						dataType:'JSON',
+						data:function(d){
+							d.peticion ='cargarreservaciones';
+						}
+					},
+					rowId:'data.id',
+					columns:[
+						 		{data:'negocio',
+						 		width:'140px',
+						 		searchable:true},
+						 		{data:'fecha',
+						 		width:'120px'
+						 			},
+						 		{data:'numeropersona',width:'auto'},
+						 		{data:'hora'},
+						 		{data:'status'},
+						 		{data:'localizacion'},
+						 		{data:'observacion'},
+						 		{data:'cancelar',width:'10px'}
+					 		],
+			         language:{
+			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
+			                        "info": "",
+			                        "infoEmpty": "No se encontro ninguna reservación",
+			                        "infoFiltered": "(filtrada de _MAX_ registros)",
+			                        "search": "Buscar: ",
+			                        "paginate": {
+			                            "next":       "Siguiente",
+			                            "previous":   "Anterior"
+			                        },
+			                    }
+			    });
+
+
+			$('input[name="buscar"]').on('keyup',function(e){
+
+					t.search(this.value).draw(false);
+			});
+
+		// 	t.on('init',function(e,obj){
+
+
+		// 		if($('.observacion').length){
+
+		// 			$('.observacion').tooltip('enable');
+					
+		// 			$('.observacion').click(function(e){
+		// 				$.alert({
+		// 					title:'Observación',
+		// 					content:$(this).attr('data-observacion')
+		// 				});
+		// 			});
+		// 		}
+					
+		// 		if($('.location').length){
+		// 				$('.location').tooltip('enable');
+		// 			$('.location').click(function(e){
+		// 				$.alert({
+		// 					title:'Dirección',
+		// 					content:$(this).attr('data-location')
+		// 					});
+		// 			});
+		// 		};
+
+
+		// 		$('.cancelar').tooltip('enable');
+		// 		$('.cancelar').on('click',function(){
+		// 			var reserva = $(this).attr('data-reserva');
+
+
+		// 			$.confirm({
+		// 				title:'Confirmar!',
+		// 				content:'Esta seguro de cancelar la reservación?',
+		// 				buttons:{
+		// 					Si:function(){
+		// 							$.ajax({
+		// 							url: '/socio/controller/peticiones.php',
+		// 							type: 'POST',
+		// 							dataType: 'JSON',
+		// 							data: {peticion: 'cancelarreservacion',idreserva:reserva},
+		// 							})
+		// 							.done(function(response) {
+		// 								if(response.peticion){
+		// 									$.alert('Reserva cancelada exitosamente.');
+										
+		// 									t.ajax.reload(null,false);
+										
+										
+		// 								}
+		// 							})
+		// 					},
+		// 					No:function(){
+		// 						$.alert('Has decidido no cancelar!');
+		// 					}
+		// 				}
+		// 			});
+		// 	});
+			
+
+
+
+		// });
+
+			t.on('draw',function(e,obj){
+
+
+				if($('.observacion').length){
+
+					$('.observacion').tooltip('enable');
+					
+					$('.observacion').click(function(e){
+						$.alert({
+							title:'Observación',
+							content:$(this).attr('data-observacion')
+						});
+					});
+				}
+					
+				if($('.location').length){
+						$('.location').tooltip('enable');
+					$('.location').click(function(e){
+						$.alert({
+							title:'Dirección',
+							content:$(this).attr('data-location')
+							});
+					});
+				};
+
+
+				$('.cancelar').tooltip('enable');
+				$('.cancelar').on('click',function(){
+					var reserva = $(this).attr('data-reserva');
+
+
+					$.confirm({
+						title:'Confirmar!',
+						content:'Esta seguro de cancelar la reservación?',
+						buttons:{
+							Si:function(){
+									$.ajax({
+									url: '/socio/controller/peticiones.php',
+									type: 'POST',
+									dataType: 'JSON',
+									data: {peticion: 'cancelarreservacion',idreserva:reserva},
+									})
+									.done(function(response) {
+										if(response.peticion){
+											$.alert('Reserva cancelada exitosamente.');
+										
+											t.ajax.reload(null,false);
+										
+										
+										}
+									})
+							},
+							No:function(){
+								$.alert('Has decidido no cancelar!');
+							}
+						}
+					});
+			});
+			
+
+
+
 		});
+	});
+
+			
+
 	</script>
 <?php echo $footer = $includes->get_main_footer(); ?>

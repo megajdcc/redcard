@@ -92,9 +92,9 @@ class Reservacion {
 				}
 	}
 
-	public function cargar(String $busqueda = null){
+	public function cargar(){
 		
-		if(empty($busquedad)){
+
 			$sql = "SELECT np.preferencia as logo,n.url, r.id,n.nombre as negocio,r.fecha,r.hora,r.status,concat(n.direccion,' ',c.ciudad,' ',e.estado,' tel - ',nt.telefono) as localizacion,r.numeropersona,r.observacion,r.id from reservacion as r 
 			join negocio as n on r.id_restaurant = n.id_negocio
             join ciudad as c on n.id_ciudad = c.id_ciudad
@@ -102,7 +102,7 @@ class Reservacion {
             left join negocio_telefono as nt on n.id_negocio = nt.id_negocio
             join negocio_preferencia as np on n.id_negocio = np.id_negocio
             join preferencia as p on np.id_preferencia = p.id_preferencia
-            where r.usuario_solicitante = :user and p.id_preferencia = 3 order by r.status asc";
+            where r.usuario_solicitante = :user and p.id_preferencia = 3 group by r.id order by r.id desc";
 
             try {
 
@@ -115,40 +115,6 @@ class Reservacion {
             }
 
             $this->catalogo = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-		}else{
-
-			$sql = "SELECT np.preferencia as logo,n.url, r.id,n.nombre as negocio,r.fecha,r.hora,r.status,concat(n.direccion,' ',c.ciudad,' ',e.estado,' tel - ',nt.telefono) as localizacion, r.numeropersona,r.observacion,r.id from reservacion as r 
-			join negocio as n on r.id_restaurant = n.id_negocio
-            join ciudad as c on n.id_ciudad = c.id_ciudad
-            join estado as e on c.id_estado = e.id_estado
-            left join negocio_telefono as nt on n.id_negocio = nt.id_negocio
-            left join negocio_preferencia as np on n.id_negocio = np.id_negocio
-            left join preferencia as p on np.id_preferencia = p.id_preferencia
-            where r.usuario_solicitante = :user and p.id_preferencia = 3 and (n.nombre like :busqueda1 || r.fecha like :busqueda2 || r.status like :busqueda3 || concat(n.direccion,' ',c.ciudad,' ',e.estado,' tel - ',nt.telefono) like :busqueda4 || r.hora like :busqueda5) order by r.status asc";
-
-            try {
-            	$stm = $this->conexion->prepare($sql);
-            	$datos = array(':user' => $this->idsocio,
-            					':busqueda1' => '%'.$busqueda.'%',
-            					':busqueda2' => '%'.$busqueda.'%',
-            					':busqueda3' => '%'.$busqueda.'%',
-            					':busqueda4' => '%'.$busqueda.'%',
-            					':busqueda5' => '%'.$busqueda.'%'
-            					 );
-          
-            	$stm->execute($datos);
-            } catch (\PDOException $e) {
-            	
-            }
-
-            $this->catalogo = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-		}
-
-		
-
-
 	}
 
 
@@ -330,6 +296,75 @@ class Reservacion {
 
 		return true;
 	}
+
+
+
+
+
+	public function cargarreservaciones(){
+		
+
+
+		for($i = 0 ; $i < count($this->catalogo); $i++) {
+
+			$urlimg =  HOST.'/assets/img/business/logo/';
+				$urlbusinees = HOST.'/'.$this->catalogo[$i]['url'];
+				$status = $this->catalogo[$i]['status'];
+					switch ($status) {
+				case 0:
+						$status = 'Agendada';
+						$clas = 'sinconfirmar';
+					break;
+				case 1:
+						$status = 'Consumada';
+						$clas = 'consumada';
+					break;
+				case 2:
+						$status = 'Confirmada';
+						$clas = 'confirmada';
+					break;
+				case 3:
+						$status = 'Cancelada';
+						$clas = 'cancelada';
+					break;
+				case 4:
+						$status = 'Desfasada';
+						$clas = 'cancelada';
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+
+			if(empty($this->catalogo[$i]['observacion'])){
+				$this->catalogo[$i]['observacion'] = 'Sin Observaciones';
+			}else{
+				$this->catalogo[$i]['observacion'] = '<button class="observacion" data-observacion="'.$this->catalogo[$i]['observacion'].'" data-toggle="tooltip" title="Observaci&oacute;n" data-placement="left"><i class="fa fa-list-alt"></i></button>';
+			}
+
+			$this->catalogo[$i]['hora'] = '<strong class="hora-reserva">'.$this->catalogo[$i]['hora'].'</strong>';
+
+			if($this->catalogo[$i]['status'] == 0){
+
+				$this->catalogo[$i]['cancelar'] = '<button data-toggle="tooltip" title="Cancelar reservaci&oacute;n" data-placement="left" type="button" class="cancelar" data-reserva="'.$this->catalogo[$i]['id'].'"><i class="fa fa-remove"></i></button>';
+			}else{
+				$this->catalogo[$i]['cancelar'] = '';
+				}
+
+			$this->catalogo[$i]['status'] = '<strong class="'.$clas.'">'.$status.'</strong>';
+
+			$this->catalogo[$i]['localizacion'] = '<button class="location" data-location="'.$this->catalogo[$i]['localizacion'].'" data-toggle="tooltip" title="Direcci&oacute;n" data-placement="left"><i class="fa fa-map"></i></button>';
+	
+
+
+
+		}
+
+		return $this->catalogo;
+
+	}
+
 
 	
 }
