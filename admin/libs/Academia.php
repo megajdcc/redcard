@@ -258,7 +258,7 @@ class Academia
 			$dato[$i]['id'] = '<button type="button" class="eliminar" data-id="'.$dato[$i]['id'].'"><i class="fa fa-close"></i></button>';
 		}
 
-	
+		
 		return $dato;
 
 	}

@@ -14,6 +14,11 @@ class DatoPagoComision
 	
 	private $conection = null;
 	
+
+	private $datos = array(
+		'banco' => null,
+		
+	);
 	function __construct(connection $conec )
 	{
 		$this->conection = $conec->con;

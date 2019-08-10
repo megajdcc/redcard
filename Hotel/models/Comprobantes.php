@@ -250,7 +250,7 @@ public function getComprobantes(){
 											if($fila['leido'] == 0){ echo 'fa fa-envelope';}else{echo 'fa fa-envelope-open';}
 											?>"></i></button>
 											<?php } ?>
-											<button type="button" data-retiro="<?php echo $value['id']; ?>" class=" btn btn-warning archivo"><i class="fa fa-file-pdf-o"></i> 	<a href="<?php echo $urlrecibo; ?>" target="_blank">Descargar</a></button>
+												<a class=" btn btn-warning archivo" href="<?php echo $urlrecibo; ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Descargar</a>
 									</div>
 				<?php  }?>
 				</td>

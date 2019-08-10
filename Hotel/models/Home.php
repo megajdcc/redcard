@@ -67,7 +67,6 @@ class Home {
 	}
 	private function CargarHotel(int $idhotel =null){
 
-
 		if(!is_null($idhotel)){
 			$query = "SELECT h.id,h.nombre as nombrehotel,h.codigo from hotel as h where id =:hotel";
 
@@ -90,6 +89,7 @@ class Home {
 		$_SESSION['nombrehotel'] = $fila['nombrehotel'];
 		$_SESSION['codigohotel'] = $fila['codigo'];
 		$_SESSION['id_hotel']    = $this->hotel['id'];
+
 	}
 
 	public function busqueda(array $post){

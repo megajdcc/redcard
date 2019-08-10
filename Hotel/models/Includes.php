@@ -189,7 +189,7 @@ class Includes extends FuncionesAcademia{
 			break;
 		
 			case 'usuarios':
-				$this->crumbs[0] = 'Usuarios';
+				$this->crumbs[0] = 'Huespedes';
 				switch (basename($_SERVER['SCRIPT_NAME'])) {
 					case 'index.php':
 						$this->crumbs[1] = 'Listado';
@@ -205,14 +205,14 @@ class Includes extends FuncionesAcademia{
 						'<li'.$this->set_active_sidebar_tab('index.php').'>
 							<a href="'.HOST.'/Hotel/usuarios/">
 								<span class="icon"><i class="fa fa-list"></i></span>
-								<span class="title">Usuarios</span>
+								<span class="title">Huespedes</span>
 								<span class="subtitle">Todos los usuarios</span>
 							</a>
 						</li>
 						<li'.$this->set_active_sidebar_tab('nuevousuario.php').'>
 							<a href="'.HOST.'/Hotel/usuarios/nuevousuario">
 								<span class="icon"><i class="fa fa-user-plus"></i></span>
-								<span class="title">Nuevo Usuario</span>
+								<span class="title">Nuevo Huesped</span>
 								<span class="subtitle">Agregar</span>
 							</a>
 						</li>
@@ -299,6 +299,42 @@ class Includes extends FuncionesAcademia{
 								</li>'; 
 
 				break;
+
+				case 'promotores':
+
+				$this->crumbs[0] = 'Promotores';
+				switch (basename($_SERVER['SCRIPT_NAME'])) {
+					case 'index.php':
+						$this->crumbs[1] = 'Listado';
+						break;
+					case 'nuevopromotor.php':
+						$this->crumbs[1] = 'Nuevo Promotor';
+						break;
+					default:
+						$this->crumbs[1] = '';
+						break;
+				}
+				$this->sidebar =
+						'<li'.$this->set_active_sidebar_tab('index.php').'>
+							<a href="'.HOST.'/Hotel/promotores/">
+								<span class="icon"><i class="fa fa-list"></i></span>
+								<span class="title">Promotores</span>
+								<span class="subtitle">Todos los Promotores</span>
+							</a>
+						</li>
+						<li'.$this->set_active_sidebar_tab('nuevopromotor.php').'>
+							<a href="'.HOST.'/Hotel/promotores/nuevopromotor">
+								<span class="icon"><i class="fa fa-user-plus"></i></span>
+								<span class="title">Nuevo promotor</span>
+								<span class="subtitle">Agregar</span>
+							</a>
+						</li>
+
+						';
+
+				break;
+
+
 				default:
 					$this->crumbs[0] = '';
 					$this->crumbs[1] = '';
@@ -628,11 +664,15 @@ class Includes extends FuncionesAcademia{
 
 			$html .=	'<li'.$this->set_active_tab('Hotel').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Hotel/"><i class="fa fa-home"></i></a></li>
 						
-						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Usuarios"><a href="'.HOST.'/Hotel/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
+						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Huespedes"><a href="'.HOST.'/Hotel/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
 
 						<li'.$this->set_active_tab('reservaciones').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/Hotel/reservaciones/"><i class="fa fa-calendar-check-o"></i></a></li>
 						';
 				}
+
+
+				$html .= 
+						'<li'.$this->set_active_tab('promotores').' data-toggle="tooltip" data-placement="right" title="Promotores"><a href="'.HOST.'/Hotel/promotores/"><i class="fa fa-users"></i></a></li>';
 
 			$html .=	'
 					</ul>

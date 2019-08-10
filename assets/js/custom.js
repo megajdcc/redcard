@@ -1653,9 +1653,11 @@ if($('#solicitudes').length){
 				});
 
 
+
 		}
-		
-		    
+	
+	// API DE CHAT ... 
+	 
           
 });
 

@@ -932,10 +932,90 @@ form[name="nueva-clase"] label{
 	font-family: 'Nexa book' !important;
 }
 
-form[name="new-categories-form"] .eliminar{
+form[name="new-categories-form"] .eliminar,
+form[name="new-cargo-form"] .eliminar{
 	padding: 0px;
 	background: transparent;
 	border: 0px;
 	width: 100px;
 	outline: none;
+}
+
+/* MODULO DE NUEVO PROMOTOR EN EL PANEL DEL HOTEL */
+
+.panel-newpromotor .title{
+	margin-bottom:2rem !important;
+}
+
+.panel-newpromotor .show-lista{
+	margin-bottom: 2rem;
+}
+.lista{
+	display: none;
+	transition:all 300ms !important ;
+
+}
+
+.lista-show{
+	display: flex !important;
+	flex-direction: column;
+	transition: all 300s !important;
+	height: auto;
+}
+
+.select-cargo{
+	display: flex;
+}
+
+.select-cargo span{
+	display: flex;
+	justify-content:center;
+	align-items: center;
+	margin: 0px;
+	padding: 0px;
+}
+
+.panel-newpromotor span>i{
+	/*height: 100%;*/
+	font-size: 13pt;
+}
+
+/*-------------------------------------------------*/
+/*         Modulo de lista de promotores           */
+/*-------------------------------------------------*/
+
+#promotores strong{
+	padding: 2px 5px;
+	width: 50px !important;
+	background: #453535;
+	color: white;
+	border-radius: 5px;
+}
+#promotores i{
+	margin: 0px;
+	padding: 0px;
+	font-size: 15pt;
+	color: black;
+}
+#promotores button{
+	padding: 4px 3px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 14pt;
+	margin: 0px;
+	border: 0px !important;
+	background: transparent;
+}
+#promotores strong[class="activo"]{
+	background: #13B658;
+}
+
+#promotores strong[class="comision"]{
+	background: #1D6C9A;
+	font-family: 'Myriad Bold';
+}
+
+.botonera{
+	display: flex;
 }
