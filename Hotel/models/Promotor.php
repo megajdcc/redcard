@@ -29,24 +29,129 @@ class Promotor
 								'username' =>'',
 								'email'    =>'',
 								'cargo'    =>'',
-								'activo'   =>false
-
+								'id_cargo' =>'',
+								'activo'   =>false,
+								'id'=>null
 								);
 
-		
-	function __construct(conexion $conexion)
+	
+	private $error = array('notificacion'=>'');
+	function __construct(conexion $conexion,int $idpromotor = null)
 	{
 		$this->conexion = $conexion->con;
 		$this->iduser = $_SESSION['user']['id_usuario'];
 		$this->hotel['id'] = $_SESSION['id_hotel'];
+
+
+		if(!is_null($idpromotor)){
+			$this->promotor['id'] = $idpromotor;
+			$this->cargarPromotor();
+		}
+
 	}
 
 	public function getNotificacion(){
+			$notificacion = null;
+		if(isset($_SESSION['notificacion']['success'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-success" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['success']).'
+			</div>';
+			unset($_SESSION['notificacion']['success']);
+		}
+		if(isset($_SESSION['notificacion']['info'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['info']).'
+			</div>';
+			unset($_SESSION['notificacion']['info']);
+		}
+		if($this->error['notificacion']){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-danger" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($this->error['notificacion']).'
+			</div>';
+		}
+		return $notificacion;
+	}
 
+	private function cargarPromotor(){
+
+
+		$sql = "SELECT p.activo,p.nombre,p.apellido,p.telefono,p.username,p.email,c.cargo,c.id as id_cargo from promotor as p join cargo as c on p.id_cargo = c.id 
+						where p.id = :promotor";
+
+
+		$stm = $this->conexion->prepare($sql);
+		$stm->bindParam(':promotor',$this->promotor['id'],PDO::PARAM_INT);
+
+		$stm->execute();
+
+
+		while($row = $stm->fetch(PDO::FETCH_ASSOC)){
+
+			$this->promotor['nombre']   = $row['nombre'];
+			$this->promotor['apellido'] = $row['apellido'];
+			$this->promotor['telefono'] = $row['telefono'];
+			$this->promotor['username'] = $row['username'];
+			$this->promotor['email']    = $row['email'];
+			$this->promotor['id_cargo'] = $row['id_cargo'];
+			$this->promotor['cargo'] = $row['cargo'];
+			$this->promotor['activo'] = $row['activo'];
+
+		}
 	}
 
 
 
+
+	public function getNombre(){
+
+		return _safe($this->promotor['nombre']);
+	}
+
+		public function getApellido(){
+
+		return _safe($this->promotor['apellido']);
+	}
+
+	public function getTelefono(){
+
+		return $this->promotor['telefono'];
+	}
+
+	public function getUsername(){
+
+		return _safe($this->promotor['username']);
+	}
+	public function getEmail(){
+
+		return _safe($this->promotor['email']);
+	}
+
+
+
+	public function getId(){
+		return $this->promotor['id'];
+	}
+
+	public function is_activo(){
+
+		if($this->promotor['activo']){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	public function newPromotor(array $datos){
 
@@ -83,6 +188,7 @@ class Promotor
 			$stm = $this->conexion->prepare($sql);
 			$stm->execute($datos);	
 			$this->conexion->commit();
+			$_SESSION['notificacion']['success'] = "Promotor Registrado exitosamente.!";
 			$result['peticion'] = true;
 			$result['mensaje'] = 'registro realizado exitosamente!';
 		} catch (\PDOException $e) {
@@ -96,7 +202,50 @@ class Promotor
 	}
 
 
+	public function updatePromotor(array $datos){
 
+		$result = array('peticion'=>false,
+						'mensaje'=>'');
+
+		$this->promotor['nombre']   = _safe($datos['nombre']);
+		$this->promotor['apellido'] = _safe($datos['apellido']);
+		$this->promotor['telefono'] = $datos['telefono'];
+		$this->promotor['username'] = _safe($datos['username']);
+		$this->promotor['id']    =$datos['id_promotor'];
+
+
+		$sql = "UPDATE promotor set nombre = :nombre, apellido =:apellido,telefono =:telefono,username =:username,id_hotel=:hotel
+					where id =:promotor";
+
+		if($this->conexion->inTransaction()){
+			$this->conexion->rollBack();
+
+		}
+
+		$this->conexion->beginTransaction();
+
+			$datos = array(':nombre'=>$this->promotor['nombre'],
+						':apellido'=>$this->promotor['apellido'],
+						':telefono'=>$this->promotor['telefono'],
+						':username'=>$this->promotor['username'],
+						':hotel'=>$this->hotel['id'],
+						':promotor'=>$this->promotor['id']);
+		try {
+			$stm = $this->conexion->prepare($sql);
+			$stm->execute($datos);	
+			$this->conexion->commit();
+			$_SESSION['notificacion']['success'] = "Promotor Modificado exitosamente.!";
+			$result['peticion'] = true;
+			$result['mensaje'] = 'registro realizado exitosamente!';
+		} catch (\PDOException $e) {
+			$this->conexion->rollBack();
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+			$result['peticion'] = false;
+			$result['mensaje'] = 'No se pudo realizar la modificación del promotor intentelo mas tarde!';
+		}
+			
+		return $result;
+	}
 
 	public function getPromotores(){
 
@@ -242,6 +391,8 @@ class Promotor
 				return false;
 			}
 
+
+			$_SESSION['notificacion']['success'] = "Se ha Eliminado exitosamente al promotor.";
 			return true;
 
 		}else{
@@ -301,12 +452,24 @@ class Promotor
 		$stm->execute();
 
 
-		while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
-			
-			echo "<option value='".$row['id']."'>".$row['cargo']."</option>";	
 
+		foreach ($stm->fetchAll(PDO::FETCH_ASSOC) as $key => $value) {
+
+				if($value['id'] == $this->promotor['id_cargo']){
+					echo "<option value='".$value['id']."' selected>".$value['cargo']."</option>";	
+				}else{
+					echo "<option value='".$value['id']."'>".$value['cargo']."</option>";	
+				}
+					
 		}
+	}
 
+	public function is_cargo(){
+		if(!empty($this->promotor['id_cargo'])){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	public function ListarCargos(){

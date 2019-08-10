@@ -606,6 +606,11 @@ class includes extends FuncionesAcademia{
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
+							<div class="header-button">
+								<a href="<?php echo HOST.'/Hotel/'; ?>" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Area de Promotores | Hoteles">
+									<i class="fa fa-black-tie"></i>
+								</a>
+							</div>
 
 							<?php  if(isset($_SESSION['user']['id_usuario'])){?>
 								 

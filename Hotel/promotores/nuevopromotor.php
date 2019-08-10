@@ -22,8 +22,12 @@
 	use Hotel\models\Promotor;
 
 	$includes = new Includes($conexion);
-	$promotor = new Promotor($conexion);
 
+	if(isset($_GET['id'])){
+			$promotor = new Promotor($conexion,$_GET['id']);
+	}else{
+			$promotor = new Promotor($conexion);
+	}
 
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
 			
@@ -68,7 +72,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<label for="nombre">Nombre: | <span class="required">*</span> </label>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="nombre" class="form-control" placeholder="Nombre del promotor" required>
+						<input type="text" name="nombre" class="form-control" value="<?php echo $promotor->getNombre(); ?>" placeholder="Nombre del promotor" required>
 					</div>
 				</div>
 
@@ -77,7 +81,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<label for="apellido">Apellido: | <span class="required">*</span> </label>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="apellido" class="form-control" placeholder="Apellido del promotor" required>
+						<input type="text" name="apellido" class="form-control" value="<?php echo $promotor->getApellido() ?>" placeholder="Apellido del promotor" required>
 					</div>
 				</div>
 
@@ -86,7 +90,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-phone"></i></span>
 						<span class="input-group-addon">+52 - </span>
-						<input type="tel" name="telefono" pattern="[0-9]{10}" class="form-control" placeholder="Tel&eacute;fono del promotor. Example: 3224518789">
+						<input type="tel" name="telefono" pattern="[0-9]{10}" class="form-control" value="<?php echo $promotor->getTelefono() ?>" placeholder="Tel&eacute;fono del promotor. Example: 3224518789">
 					</div>
 				</div>
 
@@ -101,7 +105,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<label for="username">Username: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="username" class="form-control" placeholder="Username" required>
+						<input type="text" name="username" class="form-control" value="<?php echo $promotor->getUsername() ?>" placeholder="Username" required>
 					</div>
 				</div>
 				
@@ -110,7 +114,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<label for="email">Email: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-						<input type="email" name="email" class="form-control" placeholder="Email del promotor example: emailpromotor@example.com" required>
+						<input type="email" name="email" class="form-control" value="<?php echo $promotor->getEmail() ?>" placeholder="Email del promotor example: emailpromotor@example.com" <?php  if($promotor->is_cargo()){
+							echo 'readonly';
+						}else{
+							echo 'required';
+						} ?>>
 					</div>
 				</div>
 
@@ -120,7 +128,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 
 						<span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
-						<select name="cargo" id="cargo" class="form-control" required>
+						<select name="cargo" id="cargo" class="form-control" <?php  if($promotor->is_cargo()){
+							echo 'readonly="true"';
+						}else{
+							echo 'required';
+						} ?>>
 							<option value="0">Seleccione</option>
 							<?php $promotor->getCargos(); ?>
 						</select>
@@ -135,13 +147,30 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		
 
 	<label>Los campos marcados con <span class="required">*</span> son requeridos.</label>
-
+	
 			
-			<input type="hidden" name="peticion" value="grabarpromotor">
 		<footer class="row">
 			<button type="submit" name="grabar" class="btn btn-success" data-toggle="tooltip" title="Se utliza tanto para guardar como para modificar datos"> <i class="fa fa-save"></i> Grabar</button>
-			<button type="submit" name="de-alta" class="btn btn-info" data-toggle="tooltip" title="Activar al promotor en el hotel"><i class="fa fa-child"></i> Dar de alta</button>
-			<button type="submit" name="delete" data-toggle="tooltip" title="Eliminar el promotor ? Importante si el promotor, tiene comisiones acumuladas no podr&aacute; eliminar a el mismo, hasta que el promotor haya retirado su comisi&oacute;n correspondiente" class="btn btn-warning"> <i class="fa fa-close"></i> Eliminar</button>
+
+			<?php 
+				if($promotor->is_activo()){
+					echo '<button type="button" name="disabled" data-id="'.$promotor->getId().'" class="btn btn-info" data-toggle="tooltip" title="Desactivar al promotor en el hotel"><i class="fa fa-child"></i>Desactivar promotor</button>';
+				}else if($promotor->is_activo() == false && !empty($promotor->is_cargo())){
+					echo '<button type="button" name="enabled" data-id="'.$promotor->getId().'"class="btn btn-info" data-toggle="tooltip" title="Activar al promotor en el hotel"><i class="fa fa-child"></i> Activar promotor</button>';
+				}
+
+			 
+			 	if(!empty($promotor->is_cargo())){
+			 		echo '<button type="button" name="delete" data-id="'.$promotor->getId().'" data-toggle="tooltip" title="Eliminar el promotor ? Importante si el promotor, tiene comisiones acumuladas no podr&aacute; eliminar a el mismo, hasta que el promotor haya retirado su comisi&oacute;n correspondiente" class="btn btn-warning"> <i class="fa fa-close"></i> Eliminar</button>';
+
+			 		echo '<input type="hidden" name="peticion" value="modificarpromotor">';
+			 		echo '<input type="hidden" name="id_promotor" value="'.$promotor->getId().'">';
+			 	}else{
+			 		echo '<input type="hidden" name="peticion" value="grabarpromotor">';
+			 	}
+			 ?>
+			
+			
 		</footer>
 
 		</form>
@@ -212,20 +241,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		// 
 		// 
 		
-		$.ajax({
-			url: '/Hotel/controller/peticiones.php',
-			type: 'POST',
-			dataType: 'JSON',
-			data: {peticion: 'cargarcargos'},
-		})
-		.done(function(response) {
-			if(response.peticion){
-
-			}
-		});
-		
-
-
 		$('.new-promotor').on('click',function(e){
 
 			var url = $(this).attr('data-url');
@@ -398,7 +413,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		$('form[name="form-newpromotor"]').bind('submit',function(e){
 
 			e.preventDefault();
-
+			
+	
 			var formu = new FormData(document.getElementById('form-newpromotor'));
 
 			// formu.append('peticion','grabarpromotor');
@@ -418,10 +434,18 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			})
 			.done(function(response) {
 				if(response.peticion){
-					$.alert(response.mensaje);
 
+					$('.panel-newpromotor').slideUp('slow',function(){
+						location.reload();
+					})
+					
 				}else{
-					$.alert(response,mensaje);
+					$.alert(response.mensaje);
+					$('button[name="grabar"]').removeAttr('disabled');
+					$('button[name="delete"]').removeAttr('disabled');
+					$('button[name="de-alta"]').removeAttr('disabled');
+					$('button[name="grabar"]').text('');
+					$('button[name="grabar"]').append('<i class="fa fa-save"></i> Grabar');
 
 				}
 			});
@@ -430,6 +454,103 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			return false;
 
 		});
+
+		$('button[name="delete"]').on('click',function(){
+
+			var idpromotor = $(this).attr('data-id');
+
+			$.confirm({
+				title:'Confirmar!',
+				content:'Esta seguro de Eliminar a este promotor?',
+				buttons:{
+					Si:function(){
+						$.ajax({
+							url: '/Hotel/controller/peticiones.php',
+							type: 'POST',
+							dataType: 'JSON',
+							data: {peticion: 'eliminarpromotor',id:idpromotor},
+						})
+						.done(function(response) {
+							if(response.peticion){
+								$('.panel-newpromotor').slideUp('slow',function(){
+									location.replace('/Hotel/promotores/nuevopromotor');
+								});
+								
+							}else{
+								$.alert(response.mensaje);
+							}
+						});
+						
+					},
+					No:function(){
+						$.alert('Ok! Lo puedes eliminar si deseas, en otro momento.');
+
+					}
+				}
+			});
+
+		});
+
+		$('button[name="disabled"]').on('click',function(){
+				var idpromotor = $(this).attr('data-id');
+
+				$.confirm({
+					title:'Confirm!',
+					content:'Esta seguro de desactivar a este promotor?',
+					buttons:{
+						Si:function(){
+							$.ajax({
+								url: '/Hotel/controller/peticiones.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data: {peticion: 'desactivarpromotor',id:idpromotor},
+							})
+							.done(function(response) {
+									if(response.peticion){
+										location.reload();
+									}else{
+										$.alert('El promotor no se pudo desactivar intentelo mas tarde...');
+									}
+							});
+							
+						},
+						No:function(){
+							$.alert('Ok! lo puedes desactivar despues.');
+						}
+					}
+				});
+			});
+
+		$('button[name="enabled"]').on('click',function(){
+				var idpromotor = $(this).attr('data-id');
+
+				$.confirm({
+					title:'Confirm!',
+					content:'Esta seguro de activar a este promotor?',
+					buttons:{
+						Si:function(){
+							$.ajax({
+								url: '/Hotel/controller/peticiones.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data: {peticion: 'activarpromotor',id:idpromotor},
+							})
+							.done(function(response) {
+									if(response.peticion){
+										$.alert('Promotor activado');
+										location.reload();
+									}else{
+										$.alert('El promotor no se pudo activar intentelo mas tarde...');
+									}
+							});
+							
+						},
+						No:function(){
+							$.alert('Ok! lo puedes activar despues.');
+						}
+					}
+				});
+			});
 
 
 

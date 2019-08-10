@@ -215,6 +215,17 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				});
 			});
 
+				$('.editar').on('click',function(){
+					var idpromotor = $(this).attr('data-id');
+
+
+					$('.lista-promotores').slideUp('slow',function(){
+						location.replace('/Hotel/promotores/nuevopromotor.php?id='+idpromotor);
+					});
+					
+
+				});
+
 
 		});
 	});

@@ -162,6 +162,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 		echo json_encode($response);
 
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'modificarpromotor'){
+
+		$response = array(
+				'peticion'=>false,
+				'mensaje'=>'',
+			);
+
+
+		$resultado = $promotor->updatePromotor($_POST);
+
+	
+		if($resultado['peticion']){
+			$response['peticion'] = true;
+			$response['mensaje']  = $resultado['mensaje'];
+		}else{
+			$response['mensaje']  = $resultado['mensaje'];
+		}
+
+		echo json_encode($response);
+
 	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'promotores'){
 
 		$resultado = array('data'=>$promotor->getPromotores());

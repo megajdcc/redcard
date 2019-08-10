@@ -7,3 +7,13 @@
 [07/Aug/2019 10:51:16 PM on Hotel\models\Promotor::newCargo on line 68] SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'id_hotel' cannot be null
 [07/Aug/2019 10:52:06 PM on Hotel\models\Promotor::newCargo on line 68] SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'id_hotel' cannot be null
 [09/Aug/2019 09:51:04 PM on Hotel\models\Promotor::activarpromotor on line 167] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM promotor set activo = ? where id =? && id_hotel =?' at line 1
+[10/Aug/2019 11:58:06 AM on Hotel\models\Promotor::updatePromotor on line 244] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+					where id =?' at line 1
+[10/Aug/2019 12:00:34 PM on Hotel\models\Promotor::updatePromotor on line 244] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+					where id =?' at line 1
+[10/Aug/2019 12:01:38 PM on Hotel\models\Promotor::updatePromotor on line 244] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+					where id =?' at line 1
+[10/Aug/2019 12:13:56 PM on Hotel\models\Promotor::updatePromotor on line 244] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+					where id =?' at line 1
+[10/Aug/2019 12:14:01 PM on Hotel\models\Promotor::updatePromotor on line 244] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')
+					where id =?' at line 1
