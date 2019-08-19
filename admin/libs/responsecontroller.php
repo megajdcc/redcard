@@ -76,6 +76,19 @@ class responsecontroller
 					$stm->execute();
 					$this->solicitante = $stm->fetchALL(PDO::FETCH_ASSOC);
 			break;
+
+			case 'Promotor':
+					$query = "select r.mensaje, p.nombre, p.apellido, p.username, '' as imagen, p.telefono as telefonofijo, '' as telefonomovil
+					from retiro as r join promotor as p on r.id_promotor = p.id 
+					where r.id = :solicitud";
+
+					$stm = $this->con->prepare($query);
+					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
+					$stm->execute();
+					$this->solicitante = $stm->fetchALL(PDO::FETCH_ASSOC);
+			break;
+
+
 			default:
 				return;
 				break;
@@ -131,6 +144,22 @@ class responsecontroller
 					$stm->execute();
 					$this->hotel = $stm->fetchALL(PDO::FETCH_ASSOC);
 			break;
+
+			case 'Promotor':
+					$query = "select h.nombre as nombrehotel, h.sitio_web,h.direccion, c.ciudad,e.estado,pa.pais
+						from retiro as r join promotor as p on r.id_promotor = p.id
+						join hotel as h on p.id_hotel = h.id
+						join ciudad as c on h.id_ciudad = c.id_ciudad 
+						join estado as e on c.id_estado = e.id_estado
+						join pais as pa on e.id_pais = pa.id_pais
+						where r.id = :solicitud";
+
+					$stm = $this->con->prepare($query);
+					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
+					$stm->execute();
+					$this->hotel = $stm->fetchALL(PDO::FETCH_ASSOC);
+			break;
+
 			default:
 				return;
 				break;
@@ -141,6 +170,8 @@ class responsecontroller
 
 		switch ($this->perfil) {
 			case 'Hotel':
+
+			$datos = array('banco' =>'','cuenta'=>'','clabe'=>'','swift'=>'','bancotarjeta'=>'','numerotarjeta'=>'','email_paypal'=>'');
 					
 				$query = "select p.banco as banco, p.cuenta, p.clabe, p.swift, p.banco_tarjeta as bancotarjeta, p.numero_tarjeta as numerotarjeta,p.email_paypal
 					from retiro as r join hotel as h  on r.id_hotel = h.id	
@@ -150,11 +181,28 @@ class responsecontroller
 					$stm = $this->con->prepare($query);
 					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
 					$stm->execute();
-					$this->pago = $stm->fetchALL(PDO::FETCH_ASSOC);
+					if($stm->rowCount() > 0){
+					while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+						$datos['banco']          = $row['banco'];
+						$datos['cuenta']         = $row['cuenta'];
+						settype($row['clabe'],'string');
+						$datos['clabe']          = $row['clabe'];
+						$datos['swift']          = $row['swift'];
+						$datos['bancotarjeta']  = $row['bancotarjeta'];
+						$datos['numerotarjeta'] = $row['numerotarjeta'];
+						$datos['email_paypal']   = $row['email_paypal'];
+					}
+				}else{
+					$this->pago = array();
+				}
+
+					$this->pago[] = $datos;
+					
 				
 			break;
 
 			case 'Franquiciatario':
+				$datos = array('banco' =>'','cuenta'=>'','clabe'=>'','swift'=>'','bancotarjeta'=>'','numerotarjeta'=>'','email_paypal'=>'');
 					$query = "select p.banco as banco, p.cuenta, p.clabe, p.swift, p.banco_tarjeta as bancotarjeta, p.numero_tarjeta as numerotarjeta,p.email_paypal
 					from retiro as r join franquiciatario as fr  on r.id_franquiciatario = fr.id	
 					join datospagocomision as p on fr.id_datospagocomision = p.id
@@ -163,12 +211,31 @@ class responsecontroller
 					$stm = $this->con->prepare($query);
 					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
 					$stm->execute();
-					$this->pago = $stm->fetchALL(PDO::FETCH_ASSOC);
+
+					if($stm->rowCount() > 0){
+					while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+						$datos['banco']          = $row['banco'];
+						$datos['cuenta']         = $row['cuenta'];
+						settype($row['clabe'],'string');
+						$datos['clabe']          = $row['clabe'];
+						$datos['swift']          = $row['swift'];
+						$datos['bancotarjeta']  = $row['bancotarjeta'];
+						$datos['numerotarjeta'] = $row['numerotarjeta'];
+						$datos['email_paypal']   = $row['email_paypal'];
+					}
+				}else{
+					$this->pago = array();
+				}
+
+					$this->pago[] = $datos;
+
+
+					
 
 			break;
 
 			case 'Referidor':
-					
+					$datos = array('banco' =>'','cuenta'=>'','clabe'=>'','swift'=>'','bancotarjeta'=>'','numerotarjeta'=>'','email_paypal'=>'');
 					$query = "select p.banco as banco, p.cuenta, p.clabe, p.swift, p.banco_tarjeta as bancotarjeta, p.numero_tarjeta as numerotarjeta,p.email_paypal
 					from retiro as r join referidor as rf  on r.id_referidor = rf.id	
 					join datospagocomision as p on rf.id_datospagocomision = p.id
@@ -177,7 +244,52 @@ class responsecontroller
 					$stm = $this->con->prepare($query);
 					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
 					$stm->execute();
-					$this->pago = $stm->fetchALL(PDO::FETCH_ASSOC);
+						if($stm->rowCount() > 0){
+						while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+						$datos['banco']          = $row['banco'];
+						$datos['cuenta']         = $row['cuenta'];
+						settype($row['clabe'],'string');
+						$datos['clabe']          = $row['clabe'];
+						$datos['swift']          = $row['swift'];
+						$datos['bancotarjeta']  = $row['bancotarjeta'];
+						$datos['numerotarjeta'] = $row['numerotarjeta'];
+						$datos['email_paypal']   = $row['email_paypal'];
+						}
+						}else{
+						$this->pago = array();
+						}
+						
+						$this->pago[] = $datos;
+			break;
+
+			case 'Promotor':
+						$datos = array('banco' =>'','cuenta'=>'','clabe'=>'','swift'=>'','bancotarjeta'=>'','numerotarjeta'=>'','email_paypal'=>'');
+
+					$query = "select dp.banco as banco, dp.cuenta, dp.clabe, dp.swift, dp.banco_tarjeta as bancotarjeta, dp.numero_tarjeta as numerotarjeta,dp.email_paypal
+					from retiro as r join promotor as p  on r.id_promotor = p.id	
+					left join datospagocomision as dp on p.id_datopagocomision = dp.id
+					where r.id = :solicitud";
+
+					$stm = $this->con->prepare($query);
+					$stm->bindParam(':solicitud',$this->solicitud,PDO::PARAM_INT);
+					$stm->execute();
+
+					if($stm->rowCount() > 0){
+					while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+						$datos['banco']          = $row['banco'];
+						$datos['cuenta']         = $row['cuenta'];
+						settype($row['clabe'],'string');
+						$datos['clabe']          = $row['clabe'];
+						$datos['swift']          = $row['swift'];
+						$datos['bancotarjeta']  = $row['bancotarjeta'];
+						$datos['numerotarjeta'] = $row['numerotarjeta'];
+						$datos['email_paypal']   = $row['email_paypal'];
+					}
+				}else{
+					$this->pago = array();
+				}
+
+					$this->pago[] = $datos;
 			break;
 			default:
 				return;

@@ -3,13 +3,6 @@
 <head>
 	
 	<?php 
-	  // use Hotel\models\ReportesVentas;
-
-	  // 	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php'; # Desarrollado por Alan Casillas. alan.stratos@hotmail.com
-	  // 	$con = new assets\libs\connection();
-
-	  // 	$estado = new ReportesVentas($con);
-
 
 	$fecha1 = date('g/m/Y h:i A', strtotime($this->busqueda['fechainicio']));
 
@@ -31,25 +24,48 @@
 	</table>
 </header>
  <main class="cuerpo">
-	<h2 class="title">Estado de Cuenta</h2>
 
-	<table width="50%" border="0">
+ 	<?php if (isset($_SESSION['promotor'])): ?>
+ 		<h2 class="title">Mi Estado de Cuenta</h2>
+ 	<?php else: ?>
+ 		<h2 class="title">Estado de Cuenta</h2>
+ 	<?php endif ?>
+	
+
+
+	<table width="90%" border="0" style="margin-bottom: 2rem">
 		<thead>
 			<tr>
 				<th>Hotel</th>
+
+			 	<?php if (isset($_SESSION['promotor'])): ?>
+			 		<th>Promotor</th>
+			 	<?php endif; ?>
+
 				<th colspan="2">Rango</th>
+				<th>Balance</th>
 				
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td><?php echo $this->getNombreHotel(); ?></td>
+				<?php if (isset($_SESSION['promotor'])): ?>
+			 		<td><?php echo $this->getPromotor(); ?></td>
+			 	<?php endif; ?>
+
 				<?php if(isset($this->busqueda['fechainicio']) && $this->busqueda['fechainicio'] == null){
 					echo "<td>Todo el historial</td>";
-				}else{?>
+				}else if(empty($this->busqueda['fechainicio'])){?>
+				
+				<td colspan="2">Sin rango</td>
+				
+			<?php }else{?>
 				<td><?php echo $this->busqueda['fechainicio'] ?></td>
 				<td><?php echo $this->busqueda['fechafin'] ?></td>
 			<?php } ?>
+			
+			<td><?php echo $this->getBalance()?></td>
 			</tr>
 		</tbody>
 	</table>

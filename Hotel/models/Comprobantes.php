@@ -23,8 +23,14 @@ class Comprobantes
 	);
 
 
+	private $promotor = 0 ;
 	
 	private $comprobantes = array();
+
+	private $error = array('notificacion' => null,
+								'fechainicio' => null,
+								'fechafin' => null);
+
 
 	private $preferencias = array(
 		'email-notificacion-retiro' =>null,
@@ -32,7 +38,13 @@ class Comprobantes
 
 	function __construct(connection $con){
 		$this->con = $con->con;
-		$this->hotel['id'] = $_SESSION['id_hotel'];
+		if(isset($_SESSION['promotor'])){
+			$this->promotor = $_SESSION['promotor']['id'];
+			$this->hotel['id'] = $_SESSION['promotor']['hotel'];			
+		}else{
+			$this->hotel['id'] = $_SESSION['id_hotel'];
+		}
+	
 		$this->cargarComprobantes();
 		$this->cargardatoshotel();
 		$this->cargarpreferencias();
@@ -75,15 +87,26 @@ class Comprobantes
 			}
 
 			$this->con->beginTransaction();
-			$query = "insert into retiro(mensaje,id_usuario_solicitud,monto,id_hotel) values(:mensaje,:usuario,:monto,:hotel)";
-			$monto = number_format((float)$post['monto'],2,'.',',');
 
+			if(isset($_SESSION['promotor'])){
+				$query = "INSERT INTO retiro(mensaje,monto,id_promotor) values(:mensaje,:monto,:promotor)";
+				
+				$datos = array(':mensaje'=>$post['mensaje'],
+								':monto'=>number_format((float)$post['monto'],2,'.',','),
+								':promotor'=>$this->promotor);
+			}else{
+				$query = "INSERT INTO retiro(mensaje,id_usuario_solicitud,monto,id_hotel) values(:mensaje,:usuario,:monto,:hotel)";
+
+				$datos = array(':mensaje'=>$post['mensaje'],
+								':user'=>$_SESSION['user']['id_usuario'],
+								':monto'=>number_format((float)$post['monto'],2,'.',','),
+								':promotor'=>$this->hotel['id']);
+
+			}
+			
 			try {
 					$stm = $this->con->prepare($query);
-					$stm->execute(array(':mensaje'=>$post['mensaje'],
-									':usuario'=>$_SESSION['user']['id_usuario'],
-									':monto'=>$post['monto'],
-									':hotel'=>$this->hotel['id']));
+					$stm->execute($datos);
 					$last_id = $this->con->lastInsertId();
 			} catch (\PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
@@ -91,12 +114,20 @@ class Comprobantes
 				return false;
 			}
 
-			$query2 = "insert into retirocomision(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
+			if(isset($_SESSION['promotor'])){
+				$query2 = "insert into retirocomision(negocio,usuario,id_retiro,perfil) value('Retiro de comisión','Retiro de comisión',:idretiro,:perfil)";
+
+				$datos = array(':idretiro'=>$last_id,':perfil'=>5);
+
+			}else{
+				$query2 = "insert into retirocomision(negocio,usuario,id_retiro,perfil) value('Retiro de comisión','Retiro de comisión',:idretiro,:perfil)";
+					$datos = array(':idretiro'=>$last_id,':perfil'=>1);
+			}
+			
 
 			try {
 				$stm = $this->con->prepare($query2);
-				$stm->bindParam(':idretiro',$last_id,PDO::PARAM_INT);
-				$stm->execute();
+				$stm->execute($datos);
 				$last_id_retiro = $this->con->lastInsertId();
 			} catch (\PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$e->getMessage());
@@ -104,21 +135,45 @@ class Comprobantes
 				return false;
 			}
 			
-			$query = "SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel order by bh.id desc limit 1";
+
+			if(isset($_SESSION['promotor'])){
+				$query = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_promotor = :promotor order by b.id desc limit 1";
+
+ 				$datos =array(':promotor'=>$this->promotor);
+
+			}else{
+				$query = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_hotel = :idhotel order by b.id desc limit 1";
+
+ 				$datos =array(':idhotel'=>$this->hotel['id']);
+
+			}
+			
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel'=>$this->hotel['id']));
+				$stm->execute($datos);
 				$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 				$balance = $ultimobalance - $post['monto'];
 
-				$query3 ="insert into balancehotel(balance,id_hotel,comision,id_retiro) value(:balance,:hotel,:comision,:retiro)";
+				if(isset($_SESSION['promotor'])){
+					$query3 ="insert into balance(balance,id_promotor,comision,id_retiro,perfil) value(:balance,:promotor,:comision,:retiro,:perf)";
+					$datos =array(':balance'=>$balance,':promotor'=>$this->promotor,
+													':comision'=>'-'.$post['monto'],
+													':retiro'=>$last_id_retiro,
+													':perf'=>5);
+				}else{
+					$query3 ="insert into balance(balance,id_hotel,comision,id_retiro,perfil) value(:balance,:hotel,:comision,:retiro,:perf)";
+					$datos =array(':balance'=>$balance,':hotel'=>$this->hotel['id'],
+													':comision'=>'-'.$post['monto'],
+													':retiro'=>$last_id_retiro,
+													':perf'=>1);
+				}
 				
 				try {
 						$stm = $this->con->prepare($query3);
-						$stm->execute(array(':balance'=>$balance,':hotel'=>$this->hotel['id'],
-													':comision'=>'-'.$post['monto'],
-													':retiro'=>$last_id_retiro));
+						$stm->execute($datos);
 						$this->con->commit();
 				} catch (\PDOException $e) {
 						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
@@ -126,7 +181,12 @@ class Comprobantes
 						return false;
 				}
 
-			$body_alt ='Has recibido una nueva solicitud de retiro del hotel '.$this->hotel['nombre'];
+			if(isset($_SESSION['promotor'])){
+				$body_alt ='Has recibido una nueva solicitud de retiro del promotor '.$_SESSION['promotor']['nombre']. ' del Hotel'.$this->getHotel($_SESSION['promotor']['hotel']);
+			}else{
+				$body_alt ='Has recibido una nueva solicitud de retiro del hotel '.$this->hotel['nombre'];
+			}
+			
 			
 			require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
 			$mail = new \PHPMailer;
@@ -147,27 +207,65 @@ class Comprobantes
 			// Hacerlo formato HTML
 			$mail->isHTML(true);
 			// Formato del correo
-			$mail->Subject = 'Solicitud de retiro de comisiones Hotel.';
+			
+			if(isset($_SESSION['promotor'])){
+				$mail->Subject = 'Solicitud de retiro de comisiones de promotor.';
+			}else{
+				$mail->Subject = 'Solicitud de retiro de comisiones Hotel.';
+			}
+			
 			$mail->Body    = $this->TemplateEmail($post['mensaje'],$monto);
 			$mail->AltBody = $body_alt;
 
 			if(!$mail->send()){
-				$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
+				$_SESSION['notificacion']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
 			}
+
+			$_SESSION['notificacion']['success'] = "Se ha realizado la solicitud de retiro con exito. Se le estar&aacute; informando por correo el estado del mismo.";
 			header('location: '.HOST.'/Hotel/comprobantes');
 			die();
 	}
 
 
-	private function cargarComprobantes(){
-		$query = "select  r.pagado,r.tipo_pago,r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
-					r.id_franquiciatario,r.id_hotel,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.id_usuario_aprobacion
-				from retiro as r join hotel as h on r.id_hotel = h.id
-							join usuario as u on  r.id_usuario_solicitud = u.id_usuario
-						where h.id = :hotel";
-		$stm = $this->con->prepare($query);
-		$stm->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
+	private function getHotel(int $idhotel){
+
+
+		$sql ="SELECT nombre from hotel where id = :idhotel";
+		$stm  = $this->con->prepare($sql);
+
+		$stm->bindParam(':idhotel',$idhotel,PDO::PARAM_INT);
+
 		$stm->execute();
+
+		return $stm->fetch(PDO::FETCH_ASSOC)['nombre'];
+
+	}
+
+	private function cargarComprobantes(){
+
+		if($this->promotor > 0){
+
+			$query = "select  r.pagado,r.tipo_pago,r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
+					r.id_franquiciatario,r.id_hotel,CONCAT(p.nombre,' ',p.apellido) as nombre, p.username,r.id_usuario_aprobacion
+					from retiro as r join promotor as p on r.id_promotor = p.id
+					where p.id = :promotor";
+
+			$datos = array(':promotor'=>$this->promotor);
+
+		}else{
+
+			$query = "select  r.pagado,r.tipo_pago,r.id, r.creado,r.actualizado,aprobado,r.recibo,r.monto,r.id_referidor,
+						r.id_franquiciatario,r.id_hotel,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.id_usuario_aprobacion
+						from retiro as r join hotel as h on r.id_hotel = h.id
+						join usuario as u on  r.id_usuario_solicitud = u.id_usuario
+						where h.id = :hotel";
+				$datos = array(':hotel'=>$this->hotel['id']);
+
+		}
+
+		$stm = $this->con->prepare($query);
+	
+		$stm->execute($datos);
 		return $this->comprobantes = $stm->fetchAll(PDO::FETCH_ASSOC);
 
 	}
@@ -196,66 +294,80 @@ public function getComprobantes(){
 
 
 	foreach ($this->comprobantes as $key => $value) {
-		$creado = $this->setFecha($value['creado']);
 
-		$usuarioaprobador = $this->getAprobador($value['id_usuario_aprobacion']);
-		$actualizado = $this->setFecha($value['actualizado']);
-		$monto = number_format((float)$value['monto'],2,'.',',');
+
+		if(empty($this->getAprobador($value['id_usuario_aprobacion']))){
+			$aprobador = 'Sin aprobar';
+		}else{
+			$aprobador = $this->getAprobador($value['id_usuario_aprobacion']);
+		}
+
+
+
+		$this->comprobantes[$key]['aprobador'] =$aprobador;
+
+		$this->comprobantes[$key]['actualizado'] = $this->setFecha($value['actualizado']);
+		$this->comprobantes[$key]['monto'] = number_format((float)$value['monto'],2,'.',',');
 
 		//$usuarioaprobador = $this->getUsuario($value['id_usuario_aprobacion']);
 		if($value['aprobado']){
-			$aprobado = "Si";
+			$this->comprobantes[$key]['aprobado'] = "Si";
 		}else{
-				$aprobado = "No";
+			$this->comprobantes[$key]['aprobado'] = "No";
 		}
+
 		$urlrecibo = HOST.'/assets/recibos/'.$value['recibo'];
 
-		$pagado = number_format((float)$value['pagado'],2,'.',',');
+		$this->comprobantes[$key]['pagado'] = number_format((float)$value['pagado'],2,'.',',');
 
 
-			$sql = "SELECT * from retiro_mensajes where id_retiro = :retiro";
+		$sql = "SELECT * from retiro_mensajes where id_retiro = :retiro";
 
-			$stm = $this->con->prepare($sql);
+		$stm = $this->con->prepare($sql);
 
-			$stm->bindParam(':retiro',$value['id']);
-			$stm->execute();
+		$stm->bindParam(':retiro',$value['id']);
+		$stm->execute();
 
-			$fila = $stm->fetch(PDO::FETCH_ASSOC);
+		$fila = $stm->fetch(PDO::FETCH_ASSOC);
 
-			$mensaje = false;
-			if($stm->rowCount()){
-				$mensaje = $fila['mensaje'];
+		$mensaje = false;
+
+		if($stm->rowCount() > 0){
+			$mensaje = $fila['mensaje'];
+		}
+
+		$btnmensaje = '';
+
+		if($mensaje){
+
+			if($fila['leido'] == 0){
+				$classms = 'fa fa-envelope';
+			}else{
+				$classms = 'fa fa-envelope-open';
 			}
 
-		?>
 
-			<tr id="<?php echo $value['id'];?>">
-				<td><?php echo '# '.$value['id'];?></td>
-				<td><?php echo $creado; ?></td>
-				<td><?php echo $actualizado; ?></td>
-				<td><?php echo $usuarioaprobador; ?></td>
-				<td><?php echo $aprobado; ?></td>
-				<td><?php echo $monto; ?></td>
-				<td><?php echo $pagado;  ?></td>
-				<td><?php 
-						if($aprobado == 'Si'){?>
-								<style >
-									.btn-comp{
-										display: flex;
-									}
-								</style>
-									<div class="btn-comp d-flex">
-											<?php if($mensaje){ ?>
-											<button class="btn btn-info mensaje" data-idmesage="<?php echo $fila['id']; ?>" data-mesaje="<?php echo $mensaje;?>" data-toggle="tooltip" title="Mensaje" data-placement="left"><i class="<?php 
-											if($fila['leido'] == 0){ echo 'fa fa-envelope';}else{echo 'fa fa-envelope-open';}
-											?>"></i></button>
-											<?php } ?>
-												<a class=" btn btn-warning archivo" href="<?php echo $urlrecibo; ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Descargar</a>
-									</div>
-				<?php  }?>
-				</td>
-			</tr>
-		<?php }
+			$btnmensaje = '<button class="btn btn-info mensaje" data-idmensaje="'.$fila['id'].'" data-mesaje="'.$mensaje.'" data-toggle="tooltip" title="Mensaje" data-placement="left"><i class="'.$classms.'"></i></button>';
+
+		}
+
+		if($this->comprobantes[$key]['aprobado'] == "Si"){
+
+			$this->comprobantes[$key]['baprobado'] = '<style>.btn-comp{ display: flex;}</style>
+								<div class="btn-comp d-flex">
+									'.$btnmensaje.'
+								<a class=" btn btn-warning archivo" href="'.$urlrecibo.'" target="_blank"><i class="fa fa-file-pdf-o"></i> Descargar</a>
+									</div>';
+		}else{
+			$this->comprobantes[$key]['baprobado'] = '<style>.btn-comp{ display: flex;}</style>
+								<div class="btn-comp d-flex">
+									'.$btnmensaje.'
+									</div>';
+		}
+
+	}
+
+	return $this->comprobantes;
 }
 
 
@@ -287,17 +399,51 @@ private function setFecha($fecha){
 	
 }
 
-
-
 public function getNotificacion(){
 
+	$notificacion = null;
+		if(isset($_SESSION['notificacion']['success'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-success" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['success']).'
+			</div>';
+			unset($_SESSION['notificacion']['success']);
+		}
+		if(isset($_SESSION['notificacion']['info'])){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($_SESSION['notificacion']['info']).'
+			</div>';
+			unset($_SESSION['notificacion']['info']);
+		}
+		if($this->error['notificacion']){
+			$notificacion .= 
+			'<div class="alert alert-icon alert-dismissible alert-danger" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<i class="fa fa-times" aria-hidden="true"></i>
+				</button>
+				'._safe($this->error['notificacion']).'
+			</div>';
+		}
+		return $notificacion;
+
 	
-	}
+}
 
 public function TemplateEmail($mensaje = null,$monto = null){
 
   		if($mensaje != null){
-  			$mensaje = "Mensaje del Hotel: ".$mensaje ;
+  			if(isset($_SESSION['promotor'])){
+  				$mensaje = "Mensaje del Promotor de hotel: ".$mensaje ;
+  			}else{
+  				$mensaje = "Mensaje del Hotel: ".$mensaje ;
+  			}
   		}
 
   		$html = '

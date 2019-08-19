@@ -476,12 +476,11 @@ $('#user-search-hotel .typeahead').typeahead({
 		
 	$('#user-search-reservacion-negocios .complete').typeahead(
 
-
 // Opciones de configuracion...
 		{
-			hint: false,
+			hint: true,
 			highlight: true,
-			minLength: 2,
+			minLength: 1,
 			autoselect: true,
 		},
 // conjunto de datos... 

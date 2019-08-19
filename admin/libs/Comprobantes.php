@@ -37,111 +37,150 @@ class Comprobantes
 
 	private function cargarData(){
 
-			$query = "(select r.id as solicitud, r.tipo_pago,r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado, 'Hotel' as perfil,u.imagen,r.recibo
-				from retiro as r 
-				join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
-				join retirocomision as rc on r.id = rc.id_retiro )
-				UNION
+			// $query = "(select r.id as solicitud, r.tipo_pago,r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado, 'Hotel' as perfil,u.imagen,r.recibo
+			// 	from retiro as r 
+			// 	join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
+			// 	join retirocomision as rc on r.id = rc.id_retiro )
+			// 	UNION
 				
-				(select r.id as solicitud,r.tipo_pago, r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado, 'Referidor' as perfil,u.imagen,r.recibo
-				from retiro as r 
-				join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
-				join retirocomisionreferidor as rc on r.id = rc.id_retiro )
+			// 	(select r.id as solicitud,r.tipo_pago, r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado, 'Referidor' as perfil,u.imagen,r.recibo
+			// 	from retiro as r 
+			// 	join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
+			// 	join retirocomisionreferidor as rc on r.id = rc.id_retiro )
 				
-				UNION
+			// 	UNION
 				
-				(select r.id as solicitud, r.tipo_pago,r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado , 'Franquiciatario' as perfil,u.imagen,r.recibo
-				from retiro as r 
-				join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
-				join retirocomisionfranquiciatario as rc on r.id = rc.id_retiro)
-				ORDER BY creado";
+		// UNION
+						// (select '2' as perfil, r.id as solicitud, r.tipo_pago,r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, u.username,r.monto,r.pagado,r.aprobado , 'Franquiciatario' as perfil,u.imagen,r.recibo
+						// from retiro as r 
+						// join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
+						// join retirocomisionfranquiciatario as rc on r.id = rc.id_retiro)
+						// ORDER BY creado
 
+
+			$query = "(select rc.perfil, r.id as solicitud, r.tipo_pago,r.creado,CONCAT(u.nombre,' ',u.apellido) as nombre, 
+						u.username,r.monto,r.pagado,r.aprobado,u.imagen,r.recibo
+						from retiro as r 
+						join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
+						join retirocomision as rc on r.id = rc.id_retiro )
+
+						UNION
+						(select rc.perfil, r.id as solicitud, r.tipo_pago,r.creado,CONCAT(p.nombre,' ',p.apellido) as nombre, 
+						p.username,r.monto,r.pagado,r.aprobado,'' as imagen,r.recibo
+						from retiro as r 
+						join promotor as p on r.id_promotor = p.id
+						join retirocomision as rc on r.id = rc.id_retiro)
+				
+				";
 		$stm = $this->con->prepare($query);
 		$stm->execute();
 		$this->solicitudes = $stm->fetchALL(PDO::FETCH_ASSOC);
 
 	}
 
-	public function ListarSolicitudes(){
+	public function getSolicitudes(){
 
 		$urlimg =  HOST.'/assets/img/user_profile/';
+
+
 		foreach($this->solicitudes as $key => $value) {
 
 
-			$monto = number_format((float)$value['monto'],2,',','.');
+			$this->solicitudes[$key]['monto'] = '$ '.number_format((float)$value['monto'],2,'.',',').' MXN';
+		
+			
 
 			$pago =$value['monto'];
 
 			if(empty($value['nombre'])){
-				$nombre = $value["username"];
+				$this->solicitudes[$key]['nombre'] = $value["username"];
 			}else{
-				$nombre = $value['nombre'];
+				$this->solicitudes[$key]['nombre'] = $value['nombre'];
  			}
+
+
+ 			switch ($value['perfil']) {
+ 				case 1:
+ 					$this->solicitudes[$key]['perfil'] = 'Hotel';
+ 					break;
+ 				case 2:
+ 					$this->solicitudes[$key]['perfil'] = 'Franquiciatario';
+ 					break;
+ 				case 3:
+ 					$this->solicitudes[$key]['perfil'] = 'Referidor';
+ 					break;
+ 				case 4:
+ 					$this->solicitudes[$key]['perfil'] = 'Sistema';
+ 					break;
+ 				case 5:
+ 					$this->solicitudes[$key]['perfil'] = 'Promotor';
+ 					break;
+ 				default:
+ 					$this->solicitudes[$key]['perfil'] = 'Sin establecerse';
+ 					break;
+ 			}
+
+
+
+
 
 			$fecha = date('d/m/Y g:i A', strtotime($value['creado']));
 
+			$this->solicitudes[$key]['fecha'] = $fecha;
+
 			if($value['aprobado'] == 1 ){
-				$aprobado = 'Aprobada';
+				$this->solicitudes[$key]['aprobado'] = 'Aprobada';
 			}else{
-				$aprobado = 'No aprobada';
+				$this->solicitudes[$key]['aprobado'] = 'No aprobada';
 			}
+
 			$foto         = $value['imagen'];
 			if(empty($foto) || is_null($foto)){
-				$foto = 'default.jpg';
-			}
 
-				$pagado = "Sin pagar";
-			if($aprobado == 'Aprobada'){
+				if($this->solicitudes[$key]['perfil'] == 'Promotor'){
+					$this->solicitudes[$key]['foto'] = '<div class="user user-md"><img src="'.$urlimg.'default.jpg'.'"></div>';
+				}else{
+					$this->solicitudes[$key]['foto'] = '<div class="user user-md">
+						<a href="'.HOST."/socio/".$value['username'].'" target="_blank"><img src="'.$urlimg.'default.jpg'.'"></a>
+					</div>';
+				}
 				
-				$pagado = '$ '.number_format((float)$value['pagado'],2,'.',',').' MXN';
-			
+			}else{
+				$this->solicitudes[$key]['foto'] = '<div class="user user-md">
+						<a href="'.HOST."/socio/".$value['username'].'" target="_blank"><img src="'.$urlimg.$foto.'"></a>
+					</div>';
 			}
 
+			$pagado = "Sin pagar";
+			if($value['aprobado'] == 1){
+				
+				$this->solicitudes[$key]['pagado'] =  '$ '.number_format((float)$value['pagado'],2,'.',',').' MXN';
 
-			$tipopago = 'Sin pagar';
+			
+			}else{
+				$this->solicitudes[$key]['pagado'] =  'Sin pagar';
+			}
 
+			$this->solicitudes[$key]['tipopago'] = 'Sin pagar';
 
-			if($aprobado == "Aprobada"){
+			if($this->solicitudes[$key]['aprobado'] == "Aprobada"){
 				if($value['tipo_pago'] == 1){
-				$tipopago = "Total";
-			}else if($value['tipo_pago'] == 2){
-				$tipopago = "Parcial";
+					$this->solicitudes[$key]['tipopago'] = "Total";
+				}else if($value['tipo_pago'] == 2){
+					$this->solicitudes[$key]['tipopago'] = "Parcial";
+				}
 			}
-			}
-			
 
-
-
-			
-			$perfil = $value['perfil'];
 			$urlarchivo = HOST.'/assets/recibos/'.$value['recibo'];
-			?>
-				<tr id="<?php echo $value['solicitud'] ?>">
-					<td><?php echo $key; ?></td>
-					<td>
-					<div class="user user-md">
-						<a href="<?php echo HOST."/socio/".$value['username']; ?>" target="_blank"><img src="<?php echo $urlimg.$foto;?>"></a>
-					</div>
-					</td>
-					<td><?php echo $nombre; ?></td>
-					<td><?php echo $perfil ?></td>
-					<td><?php echo '$'.$monto.' MXN'; ?></td>
-					<td><?php echo $pagado; ?></td>
-					<td><?php echo $tipopago; ?></td>
-					<td><?php echo $aprobado; ?></td>
-					<td><?php echo $fecha ?></td>
-					<td>
-						<?php 
-						if($aprobado == 'No aprobada'){	 ?>
-							<button type="button" data-pago="<?php echo $pago; ?>" class="btn btn-primary aprobar" data-path="<?php echo  _safe($_SERVER['REQUEST_URI']); ?>" data-id="<?php echo $value['solicitud']?>" data-perfil="<?php echo $perfil; ?>" data-fecha="<?php echo $fecha; ?>" data-monto="<?php echo '$ '.$monto.' MXN'; ?>"  > <i class="fa fa-check" ></i> Pagar</button>
-						<?php }else{?>
-								<button type="button" name='descargar' class="btn btn-warning " style="color:white !important;"><i class="fa fa-file-pdf-o"></i><a href="<?php echo $urlarchivo; ?>" target="_blank">Descargar</a></button>
-						<?php  } ?>						
-					</td>
-				</tr>
-			<?php  
 
+			if($this->solicitudes[$key]['aprobado'] == 'No aprobada'){
+							$this->solicitudes[$key]['btnaprobado'] = '<button type="button" data-pago="'.$pago.'" class="btn btn-primary aprobar" data-path="'._safe($_SERVER['REQUEST_URI']).'" data-id="'.$value['solicitud'].'" data-perfil="'.$this->solicitudes[$key]['perfil'].'" data-fecha="'.$fecha.'" data-monto="'.$this->solicitudes[$key]['monto'].'"  > <i class="fa fa-check" ></i> Pagar</button>';
+						}else{
+						$this->solicitudes[$key]['btnaprobado']	= '<button type="button" name="descargar" class="btn btn-warning " style="color:white !important;"><i class="fa fa-file-pdf-o"></i><a href="'.$urlarchivo.'" target="_blank">Descargar</a></button>';
+						  } 			
 		}
+
+		return $this->solicitudes;
 	}
 
 
@@ -158,9 +197,6 @@ class Comprobantes
 
 		try {
 			$stm = $this->con->prepare($sql);
-
-		
-
 			$stm->execute(array(':leido'=>1,':id'=>$idmesaje));
 
 			$this->con->commit();
@@ -275,6 +311,7 @@ class Comprobantes
 
 
 			switch ($post['perfil']) {
+
 				case 'Hotel':
 
 						$sql = "INSERT INTO retirocomision(negocio,usuario,id_retiro,condicion)values('Reembolso de resto por pago parcial','Resto pago parcial',:retiro,2)";
@@ -353,9 +390,89 @@ class Comprobantes
 
 					break;
 
+				case 'Promotor':
+
+						$sql = "INSERT INTO retirocomision(negocio,usuario,id_retiro,condicion,perfil)values('Reembolso de resto por pago parcial','Resto pago parcial',:retiro,2,5)";
+						
+						try {
+						
+						$stm = $this->con->prepare($sql);
+						
+						$stm->bindParam(':retiro',$post['idsolicitud'],PDO::PARAM_INT);
+						
+						$stm->execute();
+
+						$ultimoidretirocomision = $this->con->lastInsertId();
+						
+						} catch (PDOExection $e) {
+						
+						$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+						$this->con->rollBack();
+						return false;
+						
+						}
+
+						$sql = "SELECT id_promotor from retiro where id=:solicitud";
+
+						try {
+							$stm = $this->con->prepare($sql);
+
+							$stm->bindParam(':solicitud',$post['idsolicitud'],PDO::PARAM_INT);
+							$stm->execute();
+
+							$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+							$idpromotor = $fila['id_promotor'];
+
+						} catch (PDOExection $e) {
+
+							$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+							$this->con->rollBack();
+							return false;
+						}
+
+
+						$sql = "SELECT balance from balance where id_promotor =:promotor order by id desc limit 1";
+
+						$stm = $this->con->prepare($sql);
+
+						$stm->bindParam(':promotor',$idpromotor);
+
+						$stm->execute();
+
+						$fila = $stm->fetch(PDO::FETCH_ASSOC);
+
+						$ultimobalance = $fila['balance'];
+
+
+						$nuevobalance =  $ultimobalance + $montoregresar;
+
+						$sql = "INSERT into balance(balance,id_promotor,comision,id_retiro,perfil)values(:balance,:promotor,:comision,:retiro,5)";
+
+						$datos = array(':balance' =>$nuevobalance ,':promotor'=>$idpromotor,':comision'=>$montoregresar,':retiro'=>$ultimoidretirocomision);
+
+						try {
+							$stm = $this->con->prepare($sql);
+							$stm->execute($datos);
+
+							$this->con->commit();
+
+							return true;
+						} catch (PDOExection $e) {
+
+							$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+							$this->con->rollBack();
+							return false;
+							
+						}
+
+					break;
+
+
+
 				case 'Franquiciatario':
 
-					$sql = "INSERT INTO retirocomisionfranquiciatario(negocio,usuario,id_retiro,condicion)values('Reembolso de resto por pago parcial','Resto pago parcial',:retiro,2)";
+					$sql = "INSERT INTO retirocomision(negocio,usuario,id_retiro,condicion,perfil)values('Reembolso de resto por pago parcial','Resto pago parcial',:retiro,2,2)";
 						
 						try {
 						
@@ -396,7 +513,7 @@ class Comprobantes
 						}
 
 
-						$sql = "SELECT balance from balancefranquiciatario where id_franquiciatario =:fr order by id desc limit 1";
+						$sql = "SELECT balance from balance where id_franquiciatario =:fr order by id desc limit 1";
 
 						$stm = $this->con->prepare($sql);
 
@@ -411,7 +528,7 @@ class Comprobantes
 						$nuevobalance =  $ultimobalance + $montoregresar;
 
 
-						$sql = "INSERT into balancefranquiciatario(balance,id_franquiciatario,comision,id_retiro)values(:balance,:franquiciatario,:comision,:retiro)";
+						$sql = "INSERT into balance(balance,id_franquiciatario,comision,id_retiro)values(:balance,:franquiciatario,:comision,:retiro)";
 
 						$datos = array(':balance' =>$nuevobalance ,':franquiciatario'=>$idfranquiciatario,':comision'=>$montoregresar,':retiro'=>$ultimoidretirocomisionfranquiciatario);
 

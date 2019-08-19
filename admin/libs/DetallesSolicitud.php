@@ -93,7 +93,11 @@ class DetallesSolicitud {
 							'foto' => array('tmp' => null, 'name' => null, 'path' => null));
 	public function __construct(connection $con){
 		$this->con = $con->con;
-		$this->user['id'] = $_SESSION['user']['id_usuario'];
+
+		if(isset( $_SESSION['user']['id_usuario'])){
+			$this->user['id'] = $_SESSION['user']['id_usuario'];
+		}
+		
 		return;
 	}
 

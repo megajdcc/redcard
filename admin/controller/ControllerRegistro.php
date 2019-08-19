@@ -545,14 +545,9 @@ if(isset($_POST['solicitudcodigo'])){
 
 			$src = $carpeta.$nombrefile;
 
-			
-
 			$resultado = false;
 
-				$resultado =$comprobante->Aprobar($nombrefile, $_POST);
-
-
-			
+			$resultado =$comprobante->Aprobar($nombrefile, $_POST);
 
 			if($resultado){
 				$response['peticion'] = true;

@@ -25,8 +25,11 @@ if(!isset($_SESSION['perfil'])){
 }
 
 $Dashboard = new Dashboard($con);
+
 $includes = new Includes($con);
+
 $Comprobante = new Comprobantes($con);
+
 $home = new Home($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){

@@ -2,17 +2,11 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
-if(!isset($_SESSION['user'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
+if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESSION['user'])){
+		http_response_code(404);
+		include(ROOT.'/errores/404.php');
+		die();
 }
-
-if(!isset($_SESSION['perfil'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
-	}
 
 
 use Hotel\models\Usuarios;
@@ -348,9 +342,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 		}
 
-		
-
-
 		var datosTabla = null;
 
 			$('.cancelar-reserva').on('click',function(e){
@@ -528,7 +519,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			        {
 			        	orderable:false,targets:0
 			        }],
-			        order:[[0,'desc']]
+			        order:[[4,'asc']]
 			    });
 
 		    $('input[name="buscar"]').on('keyup',function(e){

@@ -146,7 +146,11 @@ class AfiliarHotel {
 
 	public function __construct($con){
 		$this->con = $con->con;
-		$this->register['user_id'] = $_SESSION['user']['id_usuario'];
+
+		if(isset( $_SESSION['user']['id_usuario'])){
+			$this->register['user_id']  = $_SESSION['user']['id_usuario'];
+		}
+		
 
 		$this->recapcha = new ReCaptcha('6LdeqKYUAAAAAKs_m1B6vwUCQsib2LbMgp1kTn-V');
 

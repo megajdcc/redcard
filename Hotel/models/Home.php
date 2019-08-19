@@ -32,6 +32,14 @@ class Home {
 		'status' => null
 		);
 
+	protected $perfiles = array(
+		'Hotel'           => 1,
+		'Franquiciatario' => 2,
+		'Referidor'       => 3,
+		'Sistema'         => 4,
+		'Promotor'        => 5
+	);
+
 	private $fechas = array(
 		'inicio' => null,
 		'fin'    =>null
@@ -47,15 +55,19 @@ class Home {
 
 	public function __construct(connection $con,$namehotel = null){
 		$this->con = $con->con;
-		$this->user['id'] = $_SESSION['user']['id_usuario'];
 
-		if(isset($_SESSION['id_hotel'])){
-			$this->CargarHotel($_SESSION['id_hotel']);
+		if(isset($_SESSION['promotor'])){
+			$this->user['id'] = $_SESSION['promotor']['id'];
+			$this->CargarHotel($_SESSION['promotor']['hotel']);
 		}else{
-			$this->CargarHotel();
+			$this->user['id'] = $_SESSION['user']['id_usuario'];
+				
+			if(isset($_SESSION['id_hotel'])){
+				$this->CargarHotel($_SESSION['id_hotel']);
+			}else{
+				$this->CargarHotel();
+			}
 		}
-		
-
 		return;
 	}
 
@@ -157,25 +169,52 @@ class Home {
 	public function getOperaciones(){
 
 		if($this->fechas['inicio'] and $this->fechas['fin']){
-						$sql="SELECT COUNT(nven.venta)
+			if(isset($_SESSION['promotor'])){
+					$sql="SELECT COUNT(nven.venta)
 						FROM negocio_venta as nven 
-						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-						where bh.id_hotel = :idhotel and nven.creado between :fecha1 and :fecha2";
-						$stmt = $this->con->prepare($sql);
-						$stmt->execute(array(':idhotel'=>$this->hotel['id'],
+						JOIN balance as b on nven.id_venta = b.id_venta
+						where b.id_promotor = :promotor and nven.creado between :fecha1 and :fecha2";
+
+						$datos = array(':promotor'=>$_SESSION['promotor']['id'],
 											':fecha1'=>$this->fechas['inicio'],
-											':fecha2'=>$this->fechas['fin'])); 
+											':fecha2'=>$this->fechas['fin']);
+			}else{
+				$sql="SELECT COUNT(nven.venta)
+						FROM negocio_venta as nven 
+						JOIN balance as bh on nven.id_venta = bh.id_venta
+						where bh.id_hotel = :idhotel and nven.creado between :fecha1 and :fecha2";
+
+						$datos = array(':idhotel'=>$this->hotel['id'],
+											':fecha1'=>$this->fechas['inicio'],
+											':fecha2'=>$this->fechas['fin']);
+
+			}
+					
+						$stmt = $this->con->prepare($sql);
+						$stmt->execute($datos); 
 						$number_of_rows = $stmt->fetchColumn();
 						$this->hotel['operations']=$number_of_rows;
 						return $number_of_rows;
 			}else{
+
+					if(isset($_SESSION['promotor'])){
 						$sql="SELECT COUNT(nven.venta)
 						FROM negocio_venta as nven 
-						JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-						where bh.id_hotel = :idhotel";
+						JOIN balance as b on nven.id_venta = b.id_venta
+						where b.id_promotor = :promotor and b.perfil = :p";
+						$datos = array(':promotor'=>$_SESSION['promotor']['id'],':p'=>$this->perfiles['Promotor']);
+					}	else{
+						$sql="SELECT COUNT(nven.venta)
+						FROM negocio_venta as nven 
+						JOIN balance as b on nven.id_venta = b.id_venta
+						where b.id_hotel = :idhotel and b.perfil =:perfilp";
+						$datos = array(':idhotel'=>$this->hotel['id'],':perfilp'=>$this->perfiles['Hotel']);
+					}
+
+						
 						$stmt = $this->con->prepare($sql);
 						
-						$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+						$stmt->execute($datos); 
 						$number_of_rows = $stmt->fetchColumn();
 						$this->hotel['operations']=$number_of_rows;
 						return $number_of_rows;
@@ -222,23 +261,54 @@ class Home {
 			return $html;
 
 		}else{
-			$sql=" SELECT (SELECT COUNT(ne.id_negocio)
-			   FROM negocio as ne where ne.situacion =1) as afiliados, 
-			 
-				 (COUNT(DISTINCT ne.id_negocio)) as operados,
-				 
-				 (COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
-				 FROM negocio as ne where ne.situacion =1) as porcentaje
-			 
-			 
-			 FROM
-			 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
-			join balancehotel as bh on nven.id_venta = bh.id_venta
-			INNER JOIN divisa as di ON nven.iso = di.iso
-			 where ne.situacion =1 and bh.id_hotel = :idhotel";
-					$stmt = $this->con->prepare($sql);
 
-			$stmt->execute(array(':idhotel'=>$this->hotel['id'])); 
+
+
+			if(isset($_SESSION['promotor'])){
+					$sql=" SELECT (SELECT COUNT(ne.id_negocio)
+					FROM negocio as ne where ne.situacion =1) as afiliados, 
+					
+					(COUNT(DISTINCT ne.id_negocio)) as operados,
+					
+					(COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+					FROM negocio as ne where ne.situacion =1) as porcentaje
+					
+					
+					FROM
+					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+					join balance as b on nven.id_venta = b.id_venta
+					INNER JOIN divisa as di ON nven.iso = di.iso
+					where ne.situacion =1 and b.id_promotor = :promotor and b.perfil = :p";
+
+
+					$datos = array(':promotor'=>$_SESSION['promotor']['id'],':p'=>$this->perfiles['Promotor']);
+
+
+			}else{
+					$sql=" SELECT (SELECT COUNT(ne.id_negocio)
+					FROM negocio as ne where ne.situacion =1) as afiliados, 
+					
+					(COUNT(DISTINCT ne.id_negocio)) as operados,
+					
+					(COUNT(DISTINCT ne.id_negocio)*100)/(SELECT COUNT(ne.id_negocio)
+					FROM negocio as ne where ne.situacion =1) as porcentaje
+					
+					
+					FROM
+					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+					join balance as b on nven.id_venta = b.id_venta
+					INNER JOIN divisa as di ON nven.iso = di.iso
+					where ne.situacion =1 and b.id_hotel = :idhotel and b.perfil = :p";
+				
+					$datos = array(':idhotel'=>$this->hotel['id'],':p'=>$this->perfiles['Hotel']);
+
+			}
+
+
+			
+			$stmt = $this->con->prepare($sql);
+
+			$stmt->execute($datos); 
 
 
 			$fila = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -365,26 +435,56 @@ class Home {
 	public function getPromedioConsumo(){
 
 		if($this->fechas['inicio'] and $this->fechas['fin']){
-			$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
-				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
-				join hotel as h on bh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2";
+
+			if(isset($_SESSION['promotor']['id'])){
+				$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
+				from negocio_venta as nv join balance as b on nv.id_venta = b.id_venta
+				where b.id_promotor = :promotor and b.perfil =:p and nv.creado between :fecha1 and :fecha2 ";
+
+				$datos = array(':promotor'=>$_SESSION['promotor']['id'],
+								':fecha1'=>$this->fechas['inicio'],
+								':fecha2'=>$this->fechas['fin'],
+								':p'=>$this->perfiles['Promotor']);
+			}else{
+
+				$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
+				from negocio_venta as nv join balance as b on nv.id_venta = b.id_venta
+				join hotel as h on b.id_hotel = h.id  
+				where h.id = :hotel and b.perfil =:p and nv.creado between :fecha1 and :fecha2 ";
+
+				$datos = array(':hotel'=>$this->hotel['id'],
+								':fecha1'=>$this->fechas['inicio'],
+								':fecha2'=>$this->fechas['fin'],
+								':p'=>$this->perfiles['Hotel']);
+
+			}
+			
 			$stmt = $this->con->prepare($sql);
-			$stmt->bindParam(':hotel',$this->hotel['id'], PDO::PARAM_INT);
-			$stmt->bindParam(':fecha1',$this->fechas['inicio'], PDO::PARAM_STR);
-			$stmt->bindParam(':fecha2',$this->fechas['fin'], PDO::PARAM_STR);
-			$stmt->execute(); 
+		
+			$stmt->execute($datos); 
 
 			$promedio = $stmt->fetch(PDO::FETCH_ASSOC)['promedio'];
 
 			$result=number_format((float)$promedio, 2, '.',',');
 			return $result;
 		}else{
-			$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
-				from negocio_venta as nv join balancehotel as bh on nv.id_venta = bh.id_venta
-				join hotel as h on bh.id_hotel = :hotel";
+
+			if(isset($_SESSION['promotor']['id'])){
+				$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
+				from negocio_venta as nv join balance as b on nv.id_venta = b.id_venta
+				where b.id_promotor = :promotor and b.perfil = :p";
+
+				$datos = array(':promotor'=>$_SESSION['promotor']['id'],':p'=>$this->perfiles['Promotor']);
+			}else{
+				$sql ="SELECT AVG(nv.venta) as promedio, (SELECT COUNT(venta) from negocio_venta) as nroventas 
+				from negocio_venta as nv join balance as b on nv.id_venta = b.id_venta
+				join hotel as h on b.id_hotel = :hotel and b.perfil =:p";
+
+				$datos = array(':hotel'=>$this->hotel['id'],':p'=>$this->perfiles['Hotel']);
+			}
+			
 			$stmt = $this->con->prepare($sql);
-			$stmt->bindParam(':hotel',$this->hotel['id'], PDO::PARAM_INT);
-			$stmt->execute(); 
+			$stmt->execute($datos); 
 
 			$promedio = $stmt->fetch(PDO::FETCH_ASSOC)['promedio'];
 
@@ -453,55 +553,108 @@ class Home {
 	public function getUsuariosParticipantes(){
 
 		if($this->fechas['inicio']){
-			$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
-				left join usuario as u on nv.id_usuario = u.id_usuario 
-				left join balancehotel as bh on nv.id_venta = bh.id_venta
-				left join hotel as h on bh.id_hotel = h.id
-				where h.id = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY nv.id_usuario ";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id']);
-		$stmt->bindParam(':fecha1',$this->fechas['inicio']);
-		$stmt->bindParam(':fecha2',$this->fechas['fin']);
+			if(isset($_SESSION['promotor'])){
+				$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+								left join usuario as u on nv.id_usuario = u.id_usuario 
+								left join balance as b on nv.id_venta = b.id_venta
+								where b.id_promotor = :promotor and nv.creado between :fecha1 and :fecha2 GROUP BY nv.id_usuario ";
+
+				$datos = array(':promotor'=>$_SESSION['promotor']['id'],':fecha1'=>$this->fechas['inicio'],':fecha2'=>$this->fechas['fin']);
+			}else{
+
+				$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+								left join usuario as u on nv.id_usuario = u.id_usuario 
+								left join balance as b on nv.id_venta = b.id_venta
+								left join hotel as h on b.id_hotel = h.id
+								where h.id = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY nv.id_usuario ";
+
+				$datos = array(':hotel'=>$this->hotel['id'],':fecha1'=>$this->fechas['inicio'],':fecha2'=>$this->fechas['fin']);
+
+			}
+			
+				$stmt = $this->con->prepare($sql);		
+				$stmt->execute($datos); 
+				$usuarios = $stmt->fetchAll();
+				return count($usuarios);
+		}else{
+
+
+				if(isset($_SESSION['promotor'])){
+					$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+						left join usuario as u on nv.id_usuario = u.id_usuario 
+						left join balance as b on nv.id_venta = b.id_venta
+						where b.id_promotor =:promotor and b.perfil =:p
+						GROUP BY nv.id_usuario";
+
+						$datos = array(':promotor'=>$_SESSION['promotor']['id'],':p'=>$this->perfiles['Promotor']);
+				}else{
+
+					$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
+						left join usuario as u on nv.id_usuario = u.id_usuario 
+						left join balance as b on nv.id_venta = b.id_venta
+						left join hotel as h on b.id_hotel = h.id
+						where h.id = :hotel and b.perfil =:p GROUP BY nv.id_usuario";
+						$datos = array(':hotel'=>$this->hotel['id'],':p'=>$this->perfiles['Hotel']);
+				}
 		
-		$stmt->execute(); 
-		$usuarios = $stmt->fetchAll();
-		return count($usuarios);
-	}else{
-		$sql="SELECT COUNT(nv.id_usuario) as usuarios from negocio_venta as nv
-				left join usuario as u on nv.id_usuario = u.id_usuario 
-				left join balancehotel as bh on nv.id_venta = bh.id_venta
-				left join hotel as h on bh.id_hotel = h.id
-				where h.id = :hotel GROUP BY nv.id_usuario";
-		$stmt = $this->con->prepare($sql);
-		$stmt->bindParam(':hotel',$this->hotel['id']);
-		$stmt->execute(); 
-		$usuarios = $stmt->fetchAll();
-		return count($usuarios);
-	}
+				$stmt = $this->con->prepare($sql);
+				$stmt->execute($datos); 
+				$usuarios = $stmt->fetchAll();
+				return count($usuarios);
+			}
 		
 	}
 
 	public function getTotalConsumoHuesped(int $idhotel =null, $fecha1 = null, $fecha2 = null){
 		if($fecha1){
-			$sql=" SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+
+			$this->setFecha1($fecha1);
+			$this->setFecha2($fecha2);
+
+			if(isset($_SESSION['promotor'])){
+				$sql=" SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
 	 					join usuario as u on nv.id_usuario = u.id_usuario 
-	 					join balancehotel as bh on nv.id_venta = bh.id_venta
-	 					where bh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY u.id_usuario";
+	 					join balance as b on nv.id_venta = b.id_venta
+	 					where b.id_promotor = :promotor and nv.creado between :fecha1 and :fecha2 GROUP BY u.id_usuario";
+
+	 			$datos = array(':promotor'=>$idhotel,':fecha1'=>$this->fechas['inicio'],':fecha2'=>$this->fechas['fin']);
+			}else{
+
+				$sql=" SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+	 					join usuario as u on nv.id_usuario = u.id_usuario 
+	 					join balance as b on nv.id_venta = b.id_venta
+	 					where b.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2 GROUP BY u.id_usuario";
+
+	 			$datos = array(':hotel'=>$idhotel,':fecha1'=>$this->fechas['inicio'],':fecha2'=>$this->fechas['fin']);
+
+			}
+			
 			$stmt = $this->con->prepare($sql);
-			$stmt->bindParam(':hotel',$idhotel);
-			$stmt->bindParam(':fecha1',$fecha1);
-			$stmt->bindParam(':fecha2',$fecha2);
-			$stmt->execute(); 
+			
+			$stmt->execute($datos); 
 			return $stmt;
 		}else{
-			$sql="SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
-	 					join usuario as u on nv.id_usuario = u.id_usuario 
-	 					join balancehotel as bh on nv.id_venta = bh.id_venta
-	 					where bh.id_hotel = :hotel GROUP BY u.id_usuario";
-			$stmt = $this->con->prepare($sql);
 
-			$stmt->bindParam(':hotel',$idhotel,PDO::PARAM_INT);
-			$stmt->execute(); 
+			if(isset($_SESSION['promotor'])){
+				$sql="SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+	 					join usuario as u on nv.id_usuario = u.id_usuario 
+	 					join balance as b on nv.id_venta = b.id_venta
+	 					where b.id_promotor = :promotor GROUP BY u.id_usuario";
+
+	 			$datos = array(':promotor'=>$idhotel);
+
+			}else{
+				$sql="SELECT SUM(nv.venta) as consumo, u.username as usuario from negocio_venta as nv 
+	 					join usuario as u on nv.id_usuario = u.id_usuario 
+	 					join balance as b on nv.id_venta = b.id_venta
+	 					where b.id_hotel = :hotel GROUP BY u.id_usuario";
+
+				$datos = array(':hotel'=>$idhotel);
+
+			}
+			
+			$stmt = $this->con->prepare($sql);
+			$stmt->execute($datos); 
 			return $stmt;
 		}
 			
@@ -513,7 +666,7 @@ class Home {
 		if($this->fechas['inicio']){
 			$sql="SELECT SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
 				join usuario as u on nv.id_usuario = u.id_usuario
-				join balancehotel as bh on nv.id_venta = bh.id_venta
+				join balance as bh on nv.id_venta = bh.id_venta
 				where bh.id_hotel = :hotel and nv.creado between :fecha1 and :fecha2";
 			$stmt = $this->con->prepare($sql);
 			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
@@ -526,7 +679,7 @@ class Home {
 		}else{
 			$sql="SELECT SUM(nv.bono_esmarties) as puntos from negocio_venta as nv
 				join usuario as u on nv.id_usuario = u.id_usuario
-				join balancehotel as bh on nv.id_venta = bh.id_venta
+				join balance as bh on nv.id_venta = bh.id_venta
 				where bh.id_hotel = :hotel";
 			$stmt = $this->con->prepare($sql);
 			$stmt->bindParam(':hotel',$this->hotel['id'],PDO::PARAM_INT);
@@ -756,32 +909,68 @@ class Home {
 	public function getConsumosPromedioCompra(int $hotel = null,$fecha1 = null, $fecha2 = null){
 
 		if($fecha1){
-			$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
+
+			if(isset($_SESSION['promotor'])){
+				$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
 				 FROM
 				 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 				 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
 				 INNER JOIN divisa as di ON nven.iso = di.iso
-				INNER JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-				where bh.id_hotel =:hotel and nven.creado between :fecha1 and :fecha2
+				INNER JOIN balance as b on nven.id_venta = b.id_venta
+				where b.id_promotor =:promotor and b.perfil =:p and nven.creado between :fecha1 and :fecha2
 				 GROUP BY usu.username";
+
+				 $datos = array(':promotor'=>$hotel,':p'=>$this->perfiles['Promotor'],':fecha1'=>$fecha1,':fecha2'=>$fecha2);
+
+			}else{
+
+				$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
+				 FROM
+				 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+				 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+				 INNER JOIN divisa as di ON nven.iso = di.iso
+				INNER JOIN balance as b on nven.id_venta = b.id_venta
+				where b.id_hotel =:hotel and b.perfil = :p and nven.creado between :fecha1 and :fecha2
+				 GROUP BY usu.username";
+
+
+				  $datos = array(':hotel'=>$hotel,':p'=>$this->perfiles['Hotel'],':fecha1'=>$fecha1,':fecha2'=>$fecha2);
+			
+			}
+			
 				$stm = $this->con->prepare($query);
-				$stm->bindParam(':hotel', $hotel, PDO::PARAM_INT);
-				$stm->bindParam(':fecha1', $fecha1, PDO::PARAM_STR);
-				$stm->bindParam(':fecha2', $fecha2, PDO::PARAM_STR);
-				$stm->execute();
+				
+				$stm->execute($datos);
 				return $stm; 
 		}else{
-			$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
+
+			if(isset($_SESSION['promotor'])){
+				$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
 				 FROM
 				 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 				 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
 				 INNER JOIN divisa as di ON nven.iso = di.iso
-				INNER JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-				where bh.id_hotel =:hotel
+				INNER JOIN balance as b on nven.id_venta = b.id_venta
+				where b.id_promotor =:promotor and b.perfil =:p
 				 GROUP BY usu.username";
+
+				 $datos = array(':promotor'=>$hotel,':p'=>$this->perfiles['Promotor']);
+			}else{
+				$query = "SELECT usu.username, CONCAT(usu.nombre,' ',usu.apellido) as huesped , AVG(nven.venta) as promedio, di.iso
+				 FROM
+				 negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+				 INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+				 INNER JOIN divisa as di ON nven.iso = di.iso
+				INNER JOIN balance as b on nven.id_venta = b.id_venta
+				where b.id_hotel =:hotel and b.perfil = :p
+				 GROUP BY usu.username";
+
+				 $datos = array(':hotel'=>$hotel,':p'=>$this->perfiles['Hotel']);
+			}
+			
 				$stm = $this->con->prepare($query);
-				$stm->bindParam(':hotel', $hotel, PDO::PARAM_INT);
-				$stm->execute();
+				
+				$stm->execute($datos);
 				return $stm; 
 		}
 		
@@ -791,32 +980,66 @@ class Home {
 	public function getConsumosPromedioNegocio(int $hotel = null,$fecha1 = null,$fecha2 = null){
 		
 		if($fecha1){
-			$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
+
+			if(isset($_SESSION['promotor'])){
+				$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
 					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 					INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
 					INNER JOIN negocio as n on nven.id_negocio = n.id_negocio
 					INNER JOIN divisa as di ON nven.iso = di.iso
-					INNER JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-					where bh.id_hotel =:hotel and nven.creado between :fecha1 and :fecha2
+					INNER JOIN balance as b on nven.id_venta = b.id_venta
+					where b.id_promotor =:promotor and b.perfil = :p and nven.creado between :fecha1 and :fecha2
 					GROUP BY n.nombre";
+
+
+					$datos = array(':promotor'=>$hotel,':p'=>$this->perfiles['Promotor'],':fecha1'=>$fecha1,':fecha2'=>$fecha2);
+			}else{
+				$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
+					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+					INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+					INNER JOIN negocio as n on nven.id_negocio = n.id_negocio
+					INNER JOIN divisa as di ON nven.iso = di.iso
+					INNER JOIN balance as b on nven.id_venta = b.id_venta
+					where b.id_hotel =:hotel and b.perfil =:p and nven.creado between :fecha1 and :fecha2
+					GROUP BY n.nombre";
+					$datos = array(':hotel'=>$hotel,':p'=>$this->perfiles['Hotel'],':fecha1'=>$fecha1,':fecha2'=>$fecha2);
+
+			}
+			
 					$stm = $this->con->prepare($query);
-					$stm->bindParam(':hotel', $hotel, PDO::PARAM_INT);
-					$stm->bindParam(':fecha1', $fecha1, PDO::PARAM_STR);
-					$stm->bindParam(':fecha2', $fecha2, PDO::PARAM_STR);
-					$stm->execute();
+					
+					$stm->execute($datos);
 					return $stm; 
 				}else{
-					$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
+
+					if(isset($_SESSION['promotor'])){
+						$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
 					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 					INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
 					INNER JOIN negocio as n on nven.id_negocio = n.id_negocio
 					INNER JOIN divisa as di ON nven.iso = di.iso
-					INNER JOIN balancehotel as bh on nven.id_venta = bh.id_venta
-					where bh.id_hotel =:hotel	
+					INNER JOIN balance as b on nven.id_venta = b.id_venta
+					where b.id_promotor =:promotor and b.perfil =:p
 					GROUP BY n.nombre";
+
+					$datos = array(':promotor'=>$hotel,':p'=>$this->perfiles['Promotor']);
+					}else{
+
+						$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
+					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
+					INNER JOIN usuario as usu on usu.id_usuario = nven.id_usuario
+					INNER JOIN negocio as n on nven.id_negocio = n.id_negocio
+					INNER JOIN divisa as di ON nven.iso = di.iso
+					INNER JOIN balance as b on nven.id_venta = b.id_venta
+					where b.id_hotel =:hotel and b.perfil = :p
+					GROUP BY n.nombre";
+
+					$datos = array(':hotel'=>$hotel,':p'=>$this->perfiles['Hotel']);
+					}
+					
 					$stm = $this->con->prepare($query);
-					$stm->bindParam(':hotel', $hotel, PDO::PARAM_INT);
-					$stm->execute();
+					
+					$stm->execute($datos);
 					return $stm; 
 				}
 			
@@ -831,21 +1054,45 @@ class Home {
 	public function getComisiones(){
 $pref = null;
 		if($this->fechas['inicio'] and $this->fechas['fin']){
-			$query  = "SELECT distinct(nven.iso) as divisa, (SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel1 and bh.creado between :fecha1 and :fecha2 order by bh.id desc limit 1) as balance
- 					FROM negocio_venta as nven 
- 					JOIN  balancehotel as bh on nven.id_venta = bh.id_venta
- 				where bh.id_hotel = :idhotel3 && bh.creado between :fecha3 and :fecha4";
 
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel1'=>$this->hotel['id'],
-									// ':idhotel2'=>$this->hotel['id'],
+
+			if(isset($_SESSION['promotor'])){
+				$query  = "SELECT distinct(nven.iso) as divisa, (SELECT  b.balance
+ 					from  balance as b 
+ 				where b.id_promotor = :promotor1 and b.creado between :fecha1 and :fecha2 order by b.id desc limit 1) as balance
+ 					FROM negocio_venta as nven 
+ 					JOIN  balance as b on nven.id_venta = b.id_venta
+ 				where b.id_promotor = :promotor2 and b.creado between :fecha3 and :fecha4";
+
+ 				$datos = array(':promotor1'=>$_SESSION['promotor']['id'],
+									':promotor2' =>$_SESSION['promotor']['id'],
+									':fecha1'    => $this->fechas['inicio'],
+									':fecha2'    =>$this->fechas['fin'],
+									':fecha3'    =>$this->fechas['inicio'],
+									':fecha4'    =>$this->fechas['fin']);
+			}else{
+
+				$query  = "SELECT distinct(nven.iso) as divisa, (SELECT  b.balance
+ 					from  balance as b 
+ 				where b.id_hotel = :idhotel1 and b.creado between :fecha1 and :fecha2 order by b.id desc limit 1) as balance
+ 					FROM negocio_venta as nven 
+ 					JOIN  balance as b on nven.id_venta = b.id_venta
+ 				where b.id_hotel = :idhotel3 and b.creado between :fecha3 and :fecha4";
+
+
+ 					$datos = array(':idhotel1'=>$this->hotel['id'],
 									':idhotel3'=>$this->hotel['id'],
 									':fecha1' => $this->fechas['inicio'],
 									':fecha2'=>$this->fechas['fin'],
 									':fecha3'=>$this->fechas['inicio'],
-									':fecha4'=>$this->fechas['fin'],));
+									':fecha4'=>$this->fechas['fin']);
+
+			}
+
+			
+
+				$stm = $this->con->prepare($query);
+				$stm->execute($datos);
 				
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
@@ -872,16 +1119,36 @@ $pref = null;
 		
 			return $html;
 		}else{
-			$query  = "SELECT nven.iso as divisa, (SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel =:idhotel1 order by bh.id desc limit 1) as balance
+
+			if(isset($_SESSION['promotor'])){
+				$query  = "SELECT nven.iso as divisa, (SELECT  b.balance
+ 					from  balance as b 
+ 				where b.id_promotor =:promotor1 order by b.id desc limit 1) as balance
  					FROM negocio_venta as nven 
- 					JOIN  balancehotel as bh on nven.id_venta = bh.id_venta
- 				where bh.id_hotel = :idhotel2 ";
+ 					JOIN  balance as b on nven.id_venta = b.id_venta
+ 				where b.id_promotor = :promotor2 and perfil =:p";
+ 				$datos = array(':promotor1'=>$_SESSION['promotor']['id'],
+				                    ':promotor2'=>$_SESSION['promotor']['id'],
+				                    ':p'=>$this->perfiles['Promotor']);
+
+
+			}else{
+
+				$query  = "SELECT nven.iso as divisa, (SELECT  b.balance
+ 					from  balance as b 
+ 				where b.id_hotel =:idhotel1 order by b.id desc limit 1) as balance
+ 					FROM negocio_venta as nven 
+ 					JOIN  balance as b on nven.id_venta = b.id_venta
+ 				where b.id_hotel = :idhotel2 and b.perfil =:p";
+ 				$datos = array(':idhotel1'=>$this->hotel['id'],
+				                    ':idhotel2'=>$this->hotel['id'],
+				                	':p'=>$this->perfiles['Hotel']);
+
+			}
+			
 
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel1'=>$this->hotel['id'],
-				                    ':idhotel2'=>$this->hotel['id']));
+				$stm->execute($datos);
 
 				while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
@@ -896,9 +1163,6 @@ $pref = null;
 					if($comision  > 0){
 						$pref .='<strong>'.$sign.$comision.' '.$row['divisa'].'</strong>';
 					}
-				
-
-
 				}
 		
 				$html = $pref;
@@ -912,11 +1176,25 @@ $pref = null;
 	}
 
 	public function getBalance(){
-		$query  = "SELECT  bh.balance as balance
- 					from  balancehotel as bh 
- 				where bh.id_hotel = :idhotel order by bh.id desc limit 1";
+
+		if(isset($_SESSION['promotor'])){
+			$query  = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_promotor = :promotor order by b.id desc limit 1";
+
+ 				$datos = array(':promotor'=>$_SESSION['promotor']['id']);
+
+		}else{
+
+			$query  = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_hotel = :idhotel order by b.id desc limit 1";
+
+ 				$datos = array(':idhotel'=>$this->hotel['id']);
+		}
+		
 				$stm = $this->con->prepare($query);
-				$stm->execute(array(':idhotel'=>$this->hotel['id']));
+				$stm->execute($datos);
 				return $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 	}
 

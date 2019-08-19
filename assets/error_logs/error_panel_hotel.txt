@@ -1,0 +1,12 @@
+[14/Aug/2019 03:11:30 PM on Hotel\models\Reservacion::reservar on line 626] cURL Error (28): Operation timed out after 4000 milliseconds with 0 bytes received
+[14/Aug/2019 06:36:07 PM on Hotel\models\Reservacion::reservar on line 645] cURL Error (28): Resolving timed out after 4515 milliseconds
+[17/Aug/2019 10:37:04 AM on Hotel\models\Reservacion::reservar on line 633] SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`redcard`.`reservacion`, CONSTRAINT `fk_hotel_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION)
+[17/Aug/2019 10:37:37 AM on Hotel\models\Reservacion::reservar on line 633] SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`redcard`.`reservacion`, CONSTRAINT `fk_hotel_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION)
+[17/Aug/2019 12:54:56 PM on Hotel\models\Reservacion::reservar on line 633] SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`redcard`.`reservacion`, CONSTRAINT `fk_hotel_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION)
+[17/Aug/2019 12:59:15 PM on Hotel\models\Reservacion::reservar on line 646] HTTP Error (401): Unauthorized
+[17/Aug/2019 04:04:43 PM on Hotel\models\Reservacion::reservar on line 858] HTTP Error (401): Unauthorized
+[17/Aug/2019 04:11:19 PM on Hotel\models\Reservacion::reservar on line 869] cURL Error (28): Operation timed out after 4000 milliseconds with 0 bytes received
+[18/Aug/2019 04:06:22 PM on Hotel\models\Reservacion::reservar on line 869] HTTP Error (401): Unauthorized
+[18/Aug/2019 04:09:26 PM on Hotel\models\Reservacion::reservar on line 869] HTTP Error (401): Unauthorized
+[18/Aug/2019 04:10:14 PM on Hotel\models\Reservacion::reservar on line 869] HTTP Error (401): Unauthorized
+[18/Aug/2019 04:11:44 PM on Hotel\models\Reservacion::reservar on line 869] HTTP Error (401): Unauthorized

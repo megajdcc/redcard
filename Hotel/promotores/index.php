@@ -1,6 +1,6 @@
 <?php 
 
-	require_once $_SERVER['DOCUMENT_ROOT'].'assets/libs/init.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 
 	$conexion = new \assets\libs\connection; 
 

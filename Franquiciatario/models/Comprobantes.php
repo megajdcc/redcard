@@ -110,7 +110,7 @@ public function procesarretiro(array $post){
 				return false;
 			}
 
-			$query2 = "insert into retirocomisionfranquiciatario(negocio,usuario,id_retiro) value('Retiro de comisión','Retiro de comisión',:idretiro)";
+			$query2 = "insert into retirocomision(negocio,usuario,id_retiro,perfil) value('Retiro de comisión','Retiro de comisión',:idretiro,2)";
 
 			try {
 					$stm = $this->con->prepare($query2);
@@ -124,14 +124,14 @@ public function procesarretiro(array $post){
 			}
 			
 			$query = "SELECT  bf.balance as balance
- 					from  balancefranquiciatario as bf
+ 					from  balance as bf
  				where bf.id_franquiciatario = :idfranquiciatario order by bf.id desc limit 1";
 				$stm = $this->con->prepare($query);
 					$stm->execute(array(':idfranquiciatario'=>$this->franquiciatario['id']));
 				$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 				$balance = $ultimobalance - $post['monto'];
 
-				$query3 ="insert into balancefranquiciatario(balance,id_franquiciatario,comision,id_retiro) value(:balance,:franquiciatario,:comision,:retiro)";
+				$query3 ="insert into balance(balance,id_franquiciatario,comision,id_retiro) value(:balance,:franquiciatario,:comision,:retiro)";
 				
 				try {
 						$stm = $this->con->prepare($query3);

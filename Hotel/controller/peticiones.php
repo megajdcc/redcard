@@ -7,10 +7,14 @@ $con = new assets\libs\connection();
 use Hotel\models\NuevoUsuario;
 use Hotel\models\Reservacion;
 use Hotel\models\Promotor;
+use Hotel\models\ReportesVentas;
+use Hotel\models\Comprobantes;
 
+$reporte = new ReportesVentas($con);
 $promotor = new Promotor($con);
 $reservacion = new Reservacion($con);
 $newuser = new NuevoUsuario($con);
+$comprobante = new Comprobantes($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){	
 
@@ -25,8 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 		$resultado = $newuser->setData($_POST,true);
 
-		if($resultado){
+		if(count($resultado)){
 			$response['peticion'] = true;
+			$response['mensaje'] = $resultado['mensaje'];
+		}else{
+			$response['mensaje'] = 'No se pudo realizar el registro en este momento, por favor intentelo mas tarde.';
 		}
 
 
@@ -77,6 +84,46 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		if(count($resultado) > 0){
 		
 			$response['data'] = $resultado;
+		}
+
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarestadocuenta'){
+
+		$response = array(
+			'data'     =>''
+			 );
+
+		$reporte->CargarData($_POST['rango1'],$_POST['rango2']);
+
+		$resultado = $reporte->getEstadoCuenta();
+
+		if(count($resultado) > 0){
+		
+			$response['data'] = $resultado;
+
+		}
+
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarcomprobante'){
+
+		$response = array(
+			'data'     =>''
+			 );
+
+		$reporte->CargarData();
+
+		$resultado = $comprobante->getComprobantes();
+
+		if(count($resultado) > 0){
+		
+			$response['data'] = $resultado;
+
 		}
 
 
@@ -224,7 +271,85 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		echo json_encode($response);
 
 	}
-	
+
+
+
+	// VERIFICACION DE EMAIL USUARIO PROMOTOR 
+	// 
+	// 
+		
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'verificarcuentapromotor'){
+
+		$result = $promotor->isPromotor($_POST['emailpromotor']);
+
+
+		if($result['peticion']){
+			if($result['verificado']){
+				$result['mensaje'] = "Estimado! ya el correo esta verificado, intente recuperando la contraseña, o solicite al administrador del hotel restauración de clave.";
+			}
+		}
+
+		echo json_encode($result);
+
+	}
+
+
+	// PETICION PARA MODIFICAR DATOS DE PROMOTOR
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'updatepromotor'){
+
+		$response = array('peticion' =>false);
+
+		$result = $promotor->updatePromotorPanel($_POST);
+
+
+		if($result){
+			$response['peticion'] = true;
+		}
+
+		echo json_encode($response);
+
+	}
+
+
+
+	// PETICION PARA MODIFICAR LA CONTRASENA
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'updatepassword'){
+
+		$result = $promotor->updatepassword($_POST);
+
+		echo json_encode($result);
+
+	}
+
+
+	// PETICION PARA MODIFICAR O ESTABLECER LOS DATOS DE COMISION
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'datoscomision'){
+
+		$result = $promotor->datoscomision($_POST);
+
+		echo json_encode($result);
+
+	}
+
+
+	// PETICION PARA CAPTURAR LOS DATOS DE PAGO DE COMISION
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'getDatosPagoComision'){
+
+
+		$response = array('peticion' =>false,'data'=>null);
+
+		$result = $promotor->getDatosPagoComision();
+
+		if(count($result) > 0 ){
+			$response['peticion'] = true;
+			$response['data'] = $result;
+		}
+
+		echo json_encode($response);
+
+	}
+
+
 
 }
 

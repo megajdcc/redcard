@@ -749,9 +749,9 @@ class Home {
 	public function getComisiones(){
 		if($this->fechas['inicio'] and $this->fechas['fin']){
 			
-			$query  = "SELECT nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 and bf.creado between :fecha3 and :fecha4 order by bf.id desc limit 1) as balance
-								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
-								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN :fecha1 and :fecha2";
+			$query  = "SELECT nv.iso  as divisa, (select bf.balance as balance from balance as b where b.id_franquiciatario  = :fr1 and b.creado between :fecha3 and :fecha4 order by b.id desc limit 1) as balance
+								from negocio_venta as nv join balance as b on nv.id_venta = bf.id_venta
+								where b.id_franquiciatario = :fr2 and b.creado BETWEEN :fecha1 and :fecha2";
 
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
@@ -789,9 +789,9 @@ class Home {
 			return $html;
 
 		}else{
-			$query  = "SELECT nv.iso  as divisa, (select bf.balance as balance from balancefranquiciatario as bf where bf.id_franquiciatario  = :fr1 order by bf.id desc limit 1) as balance
-								from negocio_venta as nv join balancefranquiciatario as bf on nv.id_venta = bf.id_venta
-								where bf.id_franquiciatario = :fr2 and bf.creado BETWEEN bf.creado and now()";
+			$query  = "SELECT nv.iso  as divisa, (select b.balance as balance from balance as b where b.id_franquiciatario  = :fr1 order by b.id desc limit 1) as balance
+								from negocio_venta as nv join balance as b on nv.id_venta = b.id_venta
+								where b.id_franquiciatario = :fr2 and b.creado BETWEEN b.creado and now() and b.perfil = 2";
 
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':fr1'=>$this->franquiciatario['id'],
@@ -829,7 +829,7 @@ class Home {
 
 	public function getBalance(){
 		$query  = "SELECT  bf.balance as balance
- 					from  balancefranquiciatario as bf
+ 					from  balance as bf
  				where bf.id_franquiciatario = :idfranquiciatario order by bf.id desc limit 1";
 				$stm = $this->con->prepare($query);
 				$stm->execute(array(':idfranquiciatario'=>$this->franquiciatario['id']));

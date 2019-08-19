@@ -27,17 +27,11 @@
 		}
 	}
 
-	if(!isset($_SESSION['perfil'])){
-			http_response_code(404);
-			include(ROOT.'/errores/404.php');
-			die();
-	}
-	
-	if(!isset($_SESSION['user'])){
-			http_response_code(404);
-			include(ROOT.'/errores/404.php');
-			die();
-	}
+if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESSION['user'])){
+		http_response_code(404);
+		include(ROOT.'/errores/404.php');
+		die();
+}
 
 	$home = new Home($con);
 
@@ -284,7 +278,7 @@
 				event.preventDefault();
 
 				$('.guardar-users').attr('disabled', 'disabled');
-				$('.guardar-users').text('Guardando por favor espere...');
+				$('.guardar-users').text('Guardando, espere...');
 				var email    = $('input[name="email"]').val();
 				var nombre   = $('input[name="nombre"]').val();
 				var apellido = $('input[name="apellido"]').val();
@@ -323,10 +317,24 @@
 					$('input[name="apellido"]').val('');
 					$('input[name="telefono"]').val('');
 
-					$.alert('Usuario registrado exitosamente');
+					$.alert(response.mensaje);
 					$('#modal-afiliar-new-usuario-reservacion').modal('hide');
-					$('input[name="referral"]').val(nombre+apellido);
+					$('input[name="referral"]').val('');
 				}else{
+
+					$('.guardar-users').removeAttr('disabled');
+					$('.guardar-users').text('');
+					$('.guardar-users').append('<i class="fa fa-save"></i>Guardar');
+
+					
+					$('input[name="email"]').val('');
+					$('input[name="nombre"]').val('');
+					$('input[name="apellido"]').val('');
+					$('input[name="telefono"]').val('');
+
+					$.alert(response.mensaje);
+					$('#modal-afiliar-new-usuario-reservacion').modal('hide');
+					$('input[name="referral"]').val('');
 					
 				}
 			});

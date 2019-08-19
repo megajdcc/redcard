@@ -1,6 +1,6 @@
 <?php 
 
-	require_once $_SERVER['DOCUMENT_ROOT'].'assets/libs/init.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 
 
 	if(!isset($_SESSION['perfil'])){
@@ -58,91 +58,91 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		Si desea eliminar a un promotor de su hotel y el mismo tiene comisiones acumuladas, deber&aacute; notificar al mismo, solicitar el retiro del total de comisiones acumuladas.</li>
 		</ul>
 		<form action="<?php echo HOST.'/Hotel/promotores/nuevopromotor.php' ?>" method="POST" name="form-newpromotor" id="form-newpromotor">
-		<div class="row">
+			<div class="row">
+				
+
+
+				<section class="col-xs-12 col-lg-6">
+					
+
+					<h3 class="title">Datos personales</h3>
+
+
+					<div class="form-group">
+						<label for="nombre">Nombre: | <span class="required">*</span> </label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="text" name="nombre" class="form-control" value="<?php echo $promotor->getNombre(); ?>" placeholder="Nombre del promotor" required>
+						</div>
+					</div>
+
+
+					<div class="form-group">
+						<label for="apellido">Apellido: | <span class="required">*</span> </label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="text" name="apellido" class="form-control" value="<?php echo $promotor->getApellido() ?>" placeholder="Apellido del promotor" required>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="telefono">Tel&eacute;fono:</label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+							<span class="input-group-addon">+52 - </span>
+							<input type="tel" name="telefono" pattern="[0-9]{10}" class="form-control" value="<?php echo $promotor->getTelefono() ?>" placeholder="Tel&eacute;fono del promotor. Example: 3224518789">
+						</div>
+					</div>
+
+
+				</section>
+
+				<section class="col-xs-12 col-lg-6">
+
+					<h3 class="title">Datos de usuario</h3>
+					
+					<div class="form-group" data-toggle="tooltip" title="El nombre de usuario(username), se podr&aacute; utilizar para que el promotor pueda iniciar sesi&oacute;n en el panel del hotel.">
+						<label for="username">Username: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="text" name="username" class="form-control" value="<?php echo $promotor->getUsername() ?>" placeholder="Username" required>
+						</div>
+					</div>
+					
+
+					<div class="form-group" data-toggle="tooltip" title="El email al igual que el nombre de usuario(username), se podr&aacute; utilizar para que el promotor pueda iniciar sesi&oacute;n en el panel del hotel.">
+						<label for="email">Email: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+							<input type="email" name="email" class="form-control" value="<?php echo $promotor->getEmail() ?>" placeholder="Email del promotor example: emailpromotor@example.com" <?php  if($promotor->is_cargo()){
+								echo 'readonly';
+							}else{
+								echo 'required';
+							} ?>>
+						</div>
+					</div>
+
+					<div class="form-group" data-toggle="tooltip" title="El cargo es una representaci&oacute;n de cada hotel, Es utilizada para diferenciar a los departamentos, y para ">
+						<label for="email">Cargo: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
+						<div class="input-group select-cargo">
+
+
+							<span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
+							<select name="cargo" id="cargo" class="form-control" <?php  if($promotor->is_cargo()){
+								echo 'readonly="true"';
+							}else{
+								echo 'required';
+							} ?>>
+								<option value="0">Seleccione</option>
+								<?php $promotor->getCargos(); ?>
+							</select>
+							<button class="btn btn-info new-cargo" type="button">New Cargo</button>
+						</div>
+
+					</div>
+				</section>
 			
-
-
-			<section class="col-xs-12 col-lg-6">
-				
-
-				<h3 class="title">Datos personales</h3>
-
-
-				<div class="form-group">
-					<label for="nombre">Nombre: | <span class="required">*</span> </label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="nombre" class="form-control" value="<?php echo $promotor->getNombre(); ?>" placeholder="Nombre del promotor" required>
-					</div>
-				</div>
-
-
-				<div class="form-group">
-					<label for="apellido">Apellido: | <span class="required">*</span> </label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="apellido" class="form-control" value="<?php echo $promotor->getApellido() ?>" placeholder="Apellido del promotor" required>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="telefono">Tel&eacute;fono:</label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-phone"></i></span>
-						<span class="input-group-addon">+52 - </span>
-						<input type="tel" name="telefono" pattern="[0-9]{10}" class="form-control" value="<?php echo $promotor->getTelefono() ?>" placeholder="Tel&eacute;fono del promotor. Example: 3224518789">
-					</div>
-				</div>
-
-
-			</section>
-
-			<section class="col-xs-12 col-lg-6">
-
-				<h3 class="title">Datos de usuario</h3>
-				
-				<div class="form-group" data-toggle="tooltip" title="El nombre de usuario(username), se podr&aacute; utilizar para que el promotor pueda iniciar sesi&oacute;n en el panel del hotel.">
-					<label for="username">Username: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-user"></i></span>
-						<input type="text" name="username" class="form-control" value="<?php echo $promotor->getUsername() ?>" placeholder="Username" required>
-					</div>
-				</div>
-				
-
-				<div class="form-group" data-toggle="tooltip" title="El email al igual que el nombre de usuario(username), se podr&aacute; utilizar para que el promotor pueda iniciar sesi&oacute;n en el panel del hotel.">
-					<label for="email">Email: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-						<input type="email" name="email" class="form-control" value="<?php echo $promotor->getEmail() ?>" placeholder="Email del promotor example: emailpromotor@example.com" <?php  if($promotor->is_cargo()){
-							echo 'readonly';
-						}else{
-							echo 'required';
-						} ?>>
-					</div>
-				</div>
-
-				<div class="form-group" data-toggle="tooltip" title="El cargo es una representaci&oacute;n de cada hotel, Es utilizada para diferenciar a los departamentos, y para ">
-					<label for="email">Cargo: | <span class="required">*</span> <i class="fa fa-question-circle text-secondary"></i></label>
-					<div class="input-group select-cargo">
-
-
-						<span class="input-group-addon"><i class="fa fa-black-tie"></i></span>
-						<select name="cargo" id="cargo" class="form-control" <?php  if($promotor->is_cargo()){
-							echo 'readonly="true"';
-						}else{
-							echo 'required';
-						} ?>>
-							<option value="0">Seleccione</option>
-							<?php $promotor->getCargos(); ?>
-						</select>
-						<button class="btn btn-info new-cargo" type="button">New Cargo</button>
-					</div>
-
-				</div>
-			</section>
-		
-		</div>
+			</div>
 
 		
 
@@ -177,8 +177,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	
 	</div>
 
-
-	<div class="modal" id="modal-afiliar-cargo" tabindex="-1" role="dialog">
+<div class="modal" id="modal-afiliar-cargo" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">

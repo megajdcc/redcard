@@ -94,11 +94,19 @@ class Reservacion
 		}else{
 			return false;
 		}
-	
-
-
+		
 		if(!$foruser){
-			$this->hotel = $_SESSION['id_hotel'];
+
+			if(isset($_SESSION['id_hotel'])){
+
+				$this->hotel = $_SESSION['id_hotel'];
+
+			}else if(isset($_SESSION['promotor'])){
+
+				$this->hotel = $_SESSION['promotor']['hotel'];
+
+			}
+			
 			$this->cargar();
 		}
 
@@ -124,6 +132,7 @@ class Reservacion
 
 
 	public function cargar(int $filtro = 0 ,array $datos = null){
+
 		$this->filtro = $filtro;
 
 		$sql1 = "SELECT n.nombre from negocio as n where n.id_negocio = :negocio";
@@ -133,32 +142,66 @@ class Reservacion
 		$stm->execute();
 
 		$this->restaurant = $stm->fetch(PDO::FETCH_ASSOC)['nombre'];
-		switch ($filtro) {
 
+
+		switch ($this->filtro) {
 			case 0:
 				
 				if($datos['restaurant'] !=0 ){
 
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
+
+					if(isset($_SESSION['promotor'])){
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and r.fecha = :fecha and n.id_negocio  = :restaurant and r.id_promotor = :promotor";
+							$datos = array( 
+								':fecha'      => date('Y-m-d'),
+								':hotel'      => $_SESSION['promotor']['hotel'],
+								':restaurant' => $datos['restaurant'],
+								':promotor'   => $_SESSION['promotor']['id']
+							);
+					}else{
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona, r.id_promotor from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
 					where r.id_hotel = :hotel and r.fecha = :fecha and n.id_negocio  = :restaurant";
 
 					$datos = array(
-							':fecha' =>date('Y-m-d'),
-							':hotel' =>  $this->hotel,
-							':restaurant' =>$datos['restaurant']
-					);
+								':fecha' =>date('Y-m-d'),
+								':hotel' =>  $this->hotel,
+								':restaurant' =>$datos['restaurant']
+							);
+					}
 
 
 				}else{
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
+
+					if(isset($_SESSION['promotor'])){
+							$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona 
+						from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and r.fecha = :fecha and r.id_promotor = :promotor";
+
+						$datos = array(':fecha'      =>date('Y-m-d'),
+							':hotel'    => $_SESSION['promotor']['hotel'],
+							':promotor' => $_SESSION['promotor']['id']
+							);
+					}else{
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
 					where r.id_hotel = :hotel and r.fecha = :fecha";
-					$datos = array(':fecha'      =>date('Y-m-d'),':hotel' =>  $this->hotel);
+					
+						$datos = array(':fecha'      =>date('Y-m-d'),':hotel' =>  $this->hotel);
+					}
+					
+				
 				}
 
 					try {
@@ -175,30 +218,69 @@ class Reservacion
 			case 1:
 
 				if($datos['restaurant'] !=0){
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and day(r.fecha) = :diaanterior and n.id_negocio  = :restaurant";
 
-						$datos = array(
+
+					if(isset($_SESSION['promotor'])){
+
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,r.id_promotor, n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and day(r.fecha) = :diaanterior and n.id_negocio  = :restaurant and r.id_promotor = :promotor";
+
+							$datos = array(
+							':diaanterior' =>date('d')-1,
+							':restaurant'  =>$datos['restaurant'],
+							':hotel'       =>  $_SESSION['promotor']['hotel'],
+							':promotor'    => $_SESSION['promotor']['id']);
+					}else{
+
+							$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona, r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and day(r.fecha) = :diaanterior and n.id_negocio  = :restaurant";
+
+							$datos = array(
 							':diaanterior'=>date('d')-1,
 							':restaurant'=>$datos['restaurant'],
 							':hotel' =>  $this->hotel
 						);
 
+					}
+					
+
+					
+
 				}else{
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and day(r.fecha) = :diaanterior";
 
-						$datos = array(
+					if(isset($_SESSION['promotor'])){
+
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona, r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and day(r.fecha) = :diaanterior and r.id_promotor = :promotor";
+
+							$datos = array(
+								':diaanterior' =>date('d')-1,
+								':hotel'       =>  $_SESSION['promotor']['hotel'],
+								':promotor'    => $_SESSION['promotor']['id']);
+
+					}else{
+
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and day(r.fecha) = :diaanterior";
+							
+							$datos = array(
 							':diaanterior'=>date('d')-1,
-							':hotel' =>  $this->hotel
-						);
+							':hotel' =>  $this->hotel);
 
+					}
+					
 				}
 
 				try {
@@ -212,30 +294,67 @@ class Reservacion
 			
 			case 2:
 				if($datos['restaurant'] !=0){
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
+
+					if(isset($_SESSION['promotor'])){
+
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona, r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and month(r.fecha) = :mes and n.id_negocio  = :restaurant and r.id_promotor =:promotor";
+
+						$datos = array(
+							':mes' => date('m'),
+							':restaurant'=>$datos['restaurant'],
+							':hotel' =>  $_SESSION['promotor']['hotel'],
+							':promotor'=>$_SESSION['promotor']['id']
+						);
+
+					}else{
+
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join usuario as u on r.usuario_solicitante = u.id_usuario
 					where r.id_hotel = :hotel and month(r.fecha) = :mes and n.id_negocio  = :restaurant";
 
-						$datos = array(
+					$datos = array(
 							':mes' => date('m'),
 							':restaurant'=>$datos['restaurant'],
 							':hotel' =>  $this->hotel
 						);
 
+					}
 				}else{
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and month(r.fecha) = :mes";
 
-						$datos = array(
-							':mes' => date('m'),
-							':hotel' =>  $this->hotel
-						);
+						if(isset($_SESSION['promotor'])){
 
+							$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+							r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+							join negocio as n on r.id_restaurant = n.id_negocio
+							join usuario as u on r.usuario_solicitante = u.id_usuario
+							where r.id_hotel = :hotel and month(r.fecha) = :mes and r.id_promotor = :promotor";
+
+							$datos = array(
+								':mes'      => date('m'),
+								':hotel'    => $_SESSION['promotor']['hotel'],
+								':promotor' => $_SESSION['promotor']['id']
+							);
+
+						}else{
+
+							$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+							r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+							join negocio as n on r.id_restaurant = n.id_negocio
+							join usuario as u on r.usuario_solicitante = u.id_usuario
+							where r.id_hotel = :hotel and month(r.fecha) = :mes";
+
+							$datos = array(
+								':mes' => date('m'),
+								':hotel' =>  $this->hotel
+							);
+
+						}
 				}
 
 				try {
@@ -248,30 +367,66 @@ class Reservacion
 
 			case 3:
 				if($datos['restaurant'] !=0){
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and month(r.fecha) = :mesanterior and n.id_negocio  = :restaurant";
+
+
+					if(isset($_SESSION['promotor'])){
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+							r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+							join negocio as n on r.id_restaurant = n.id_negocio
+							join usuario as u on r.usuario_solicitante = u.id_usuario
+							where r.id_hotel = :hotel and month(r.fecha) = :mesanterior and n.id_negocio  = :restaurant and r.id_promotor =:promotor";
+
+						$datos = array(
+							':mesanterior' => date('m') -1,
+							':restaurant'  => $datos['restaurant'],
+							':hotel'       => $_SESSION['promotor']['hotel'],
+							':promtor'     => $_SESSION['promotor']['id']
+							);
+
+					}else{
+
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+							r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersonam,r.id_promotor from reservacion as r 
+							join negocio as n on r.id_restaurant = n.id_negocio
+							join usuario as u on r.usuario_solicitante = u.id_usuario
+							where r.id_hotel = :hotel and month(r.fecha) = :mesanterior and n.id_negocio  = :restaurant";
 
 						$datos = array(
 							':mesanterior' => date('m') -1,
 							':restaurant'=>$datos['restaurant'],
 							':hotel' =>  $this->hotel
-						);
+							);
+					}
 
 				}else{
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and month(r.fecha) = :mesanterior";
+
+
+					if(isset($_SESSION['promotor'])){
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and month(r.fecha) = :mesanterior and r.id_promotor = :promotor";
+
+						$datos = array(
+							':mesanterior' => date('m') -1,
+							':hotel'       => $_SESSION['promotor']['hotel'],
+							':promotor'    => $_SESSION['promotor']['id']
+						);
+
+					}else{
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and month(r.fecha) = :mesanterior";
 
 						$datos = array(
 							':mesanterior' => date('m') -1,
 							':hotel' =>  $this->hotel
 						);
 
+					}
 				}
 
 				try {
@@ -289,32 +444,75 @@ class Reservacion
 				$this->busqueda['fechafin'] = $datos['rango2'];
 
 				if($datos['restaurant'] !=0){
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2) and n.id_negocio  = :restaurant";
 
-						$datos = array(
+					if(isset($_SESSION['promotor'])){
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2) and n.id_negocio  = :restaurant and r.id_promotor = :promotor";
+
+							$datos = array(
+							':fecha1'     => $this->busqueda['fechainicio'], 
+							':fecha2'     => $this->busqueda['fechafin'],
+							':restaurant' => $datos['restaurant'],
+							':hotel'      => $_SESSION['promotor']['hotel'],
+							':promotor'    => $_SESSION['promotor']['id']
+
+						);
+
+
+					}else{
+
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2) and n.id_negocio  = :restaurant";
+
+							$datos = array(
 							':fecha1' => $this->busqueda['fechainicio'], 
 							':fecha2' => $this->busqueda['fechafin'],
 							':restaurant'=>$datos['restaurant'],
 							':hotel' =>  $this->hotel
 						);
 
+					}
+					
+
+					
+
 				}else{
-					$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
-					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona from reservacion as r 
-					join negocio as n on r.id_restaurant = n.id_negocio
-					join usuario as u on r.usuario_solicitante = u.id_usuario
-					where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2)";
+
+					if(isset($_SESSION['promotor'])){
+
+						$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2) and r.id_promotor = :promotor";
+
+						$datos = array(
+							':fecha1'   => $this->busqueda['fechainicio'], 
+							':fecha2'   => $this->busqueda['fechafin'],
+							':hotel'    => $_SESSION['promotor']['hotel'],
+							':promotor' => $_SESSION['promotor']['id']
+						);
+
+					}else{
+
+						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and (r.fecha between :fecha1 and :fecha2)";
 
 						$datos = array(
 							':fecha1' => $this->busqueda['fechainicio'], 
 							':fecha2' => $this->busqueda['fechafin'],
 							':hotel' =>  $this->hotel
 						);
-
+					}
 				}
 
 				try {
@@ -338,15 +536,26 @@ class Reservacion
 	public function getDataReservacacionAnualMensual(){
 
 
-		$sql = "SELECT count(r.id) as reservaciones,r.status,month(r.fecha) as mes 
+		if(isset($_SESSION['promotor'])){
+			$sql = "SELECT count(r.id) as reservaciones,r.status,month(r.fecha) as mes 
+					from reservacion r
+					where r.id_promotor = :promotor and year(r.fecha) = year(now())
+					group by r.status, monthname(r.fecha) order by month(r.fecha)";
+
+				$datos = array(':promotor'=>$_SESSION['promotor']['id']);
+		}else{
+			$sql = "SELECT count(r.id) as reservaciones,r.status,month(r.fecha) as mes 
 					from reservacion r
 					where r.id_hotel = :hotel and year(r.fecha) = year(now())
 						group by r.status, monthname(r.fecha) order by month(r.fecha)";
 
-		$stm = $this->conec->prepare($sql);
-		$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
+						$datos = array(':hotel'=>$this->hotel);
+		}
+		
 
-		$stm->execute();
+		$stm = $this->conec->prepare($sql);
+
+		$stm->execute($datos);
 
 
 		$cancelados = array('name'=>'Cancelados','description'=>'Reservaciones Canceladas en el mes','color'=>'#652770','data'=>array());
@@ -450,20 +659,37 @@ class Reservacion
 
 		$this->cargar($datos['filtro'],$datos);
 
-		$sql = "SELECT u.username, concat(u.nombre,' ',u.apellido) as nombrecompleto from usuario as u join reservacion as r on u.id_usuario = r.usuario_registrante
-				where u.id_usuario =:registrante";
+
+		
+		
 
 		for ($i=0; $i < count($this->catalogo); $i++) { 
 
+			if(isset($_SESSION['promotor'])){
+				$sql = "SELECT p.username, concat(p.nombre,' ',p.apellido) as nombrecompleto from promotor as p join reservacion as r on p.id = r.id_promotor
+				where p.id =:registrante";
+					$datos = array(':registrante'=>$this->catalogo[$i]['usuario_registrante']);
+			}else{
 
+
+				if($this->catalogo[$i]['id_promotor']  != 0 || $this->catalogo[$i]['id_promotor'] != null){
+					$sql = "SELECT p.username, concat('Promotor ',p.nombre,' ',p.apellido) as nombrecompleto from promotor as p join reservacion as r on p.id = r.id_promotor
+					where p.id =:registrante";
+					$datos = array(':registrante'=>$this->catalogo[$i]['id_promotor']);
+				}else{
+				$sql = "SELECT u.username, concat(u.nombre,' ',u.apellido) as nombrecompleto from usuario as u join reservacion as r on u.id_usuario = r.usuario_registrante
+					where u.id_usuario =:registrante";
+					$datos = array(':registrante'=>$this->catalogo[$i]['usuario_registrante']);
+				}
+			}
 
 			if(empty($this->catalogo[$i]['nombrecompleto'])){
 				$this->catalogo[$i]['nombrecompleto'] = $this->catalogo[$i]['username'];
 			}
 
 			$stm = $this->conec->prepare($sql);
-			$stm->bindParam(':registrante',$this->catalogo[$i]['usuario_registrante'],PDO::PARAM_INT);
-			$stm->execute();
+			
+			$stm->execute($datos);
 
 			if($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
@@ -586,23 +812,43 @@ class Reservacion
 
 		}else{
 
-			$sql = "INSERT INTO reservacion(fecha,numeropersona,observacion,id_hotel,id_restaurant,usuario_registrante,usuario_solicitante,hora)
+
+			if(isset($_SESSION['promotor'])){
+				$sql = "INSERT INTO reservacion(fecha,numeropersona,observacion,id_hotel,id_restaurant,id_promotor,usuario_solicitante,hora)
+							values(:fecha,:numeropersona,:observacion,:hotel,:restaurant,:promotor,:solicitante,:hora)";
+							$datos = array(
+											':fecha'         => $this->fecha,
+											':numeropersona' => $this->numpersonas,
+											':observacion'   => $this->observaciones,
+											':hotel'         => $_SESSION['promotor']['hotel'],
+											':restaurant'    => $this->idrestaurant,
+											':promotor'   => $_SESSION['promotor']['id'],
+											':solicitante'   => $this->idsocio,
+											':hora'          => $this->hora
+											);
+			}else{
+				
+				$sql = "INSERT INTO reservacion(fecha,numeropersona,observacion,id_hotel,id_restaurant,usuario_registrante,usuario_solicitante,hora)
 							values(:fecha,:numeropersona,:observacion,:hotel,:restaurant,:registrante,:solicitante,:hora)";
+							$datos = array(
+											':fecha'         => $this->fecha,
+											':numeropersona' => $this->numpersonas,
+											':observacion'   => $this->observaciones,
+											':hotel'         => $this->hotel,
+											':restaurant'    => $this->idrestaurant,
+											':registrante'   => $this->usuarioregistrante,
+											':solicitante'   => $this->idsocio,
+											':hora'          => $this->hora
+											);
+
+			}
+			
 			$this->conec->beginTransaction();
 							
 			try {
 
 				$stm = $this->conec->prepare($sql);
-				$stm->execute(array(
-					':fecha'         => $this->fecha,
-					':numeropersona' => $this->numpersonas,
-					':observacion'   => $this->observaciones,
-					':hotel'         => $this->hotel,
-					':restaurant'    => $this->idrestaurant,
-					':registrante'   => $this->usuarioregistrante,
-					':solicitante'   => $this->idsocio,
-					':hora'          => $this->hora
-					));
+				$stm->execute($datos);
 				
 				$last_id = $this->conec->lastInsertId();
 				$this->conec->commit();

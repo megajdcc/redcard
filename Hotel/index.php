@@ -19,19 +19,11 @@
 			}
 	}
 
-	if(!isset($_SESSION['perfil'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
+	if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESSION['user'])){
+		http_response_code(404);
+		include(ROOT.'/errores/404.php');
+		die();
 	}
-	
-	if(!isset($_SESSION['user'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
-	}
-
-
 
 	$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array('options' => array('default' => 1, 'min_range' => 1)));
 	$rpp = 20;
@@ -113,8 +105,16 @@ if(isset($_POST['cambiar-hotel'])){
 			<div class="col-sm-4">
 				
 				<!-- TRES CUADROS >>> -->
-					<div class="statusbox">
-						<h2>Total Comisiones Hotel</h2>
+					<div class="statusbox" data-toggle="tooltip" title="El total de comisiones acumuladas hasta la fecha de hoy.">
+						<?php if (!isset($_SESSION['promotor'])): ?>
+							<h2>Total Comisiones Hotel</h2>
+						<?php else: ?>
+							<h2>Mis Comisiones</h2>
+						<?php endif ?>
+						
+							
+				
+						
 							<div class="statusbox-content">
 									<?php echo $home->getComisiones();?>
 							</div><!-- /.statusbox-content -->
@@ -146,31 +146,35 @@ if(isset($_POST['cambiar-hotel'])){
 
 		
 		
-
-			
-				<div class="row">
-
-					<!-- NEgocios deudores -->
-					<div class="col-sm-4 h-100">
-						<div class="statusbox">
-							<h2>Negocio Deudores</h2>
-							<div class="statusbox-content total-adeudo">
-								<strong><?php echo $home->getNegociosDeudores();?></strong>
-							</div><!-- /.statusbox-content -->
-						</div>
-					</div>
-			
-				<!-- Total Adeudo -->
-				<div class="col-sm-4 h-100">
-					<div class="statusbox">
-						<h2>Total Adeudos</h2>
-						<div class="statusbox-content total-adeudo">
-							<strong><?php echo $home->getTotalComisionAdeudo();?></strong>
-						</div><!-- /.statusbox-content -->
-					</div>
 		
-				</div>
-			</div>
+
+			<?php if (!isset($_SESSION['promotor'])): ?>
+								<div class="row">
+								
+								<!-- NEgocios deudores -->
+								<div class="col-sm-4 h-100">
+								<div class="statusbox">
+								<h2>Negocio Deudores</h2>
+								<div class="statusbox-content total-adeudo">
+								<strong><?php echo $home->getNegociosDeudores();?></strong>
+								</div><!-- /.statusbox-content -->
+								</div>
+								</div>
+								
+								<!-- Total Adeudo -->
+								<div class="col-sm-4 h-100">
+								<div class="statusbox">
+								<h2>Total Adeudos</h2>
+								<div class="statusbox-content total-adeudo">
+								<strong><?php echo $home->getTotalComisionAdeudo();?></strong>
+								</div><!-- /.statusbox-content -->
+								</div>
+								
+								</div>
+								</div>
+			<?php endif ?>
+			
+			
 					
 					
 				
@@ -200,8 +204,16 @@ if(isset($_POST['cambiar-hotel'])){
 
 							<script>
 							$(document).ready(function() {
+
 								
-								var idhotel = "<?php echo $home->hotel['id'];?>"
+								var promotor = 0 ;
+								var idhotel = 0;
+								promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+								if(promotor > 0){
+									idhotel = promotor;
+								}else{
+									idhotel = "<?php echo $home->hotel['id'] ?>";
+								}
 
 								var fecha1 = "<?php echo $home->getFechaInicio(); ?>"
 								var fecha2 = "<?php echo $home->getFechaFin(); ?>"
@@ -265,8 +277,17 @@ if(isset($_POST['cambiar-hotel'])){
 								
 							<script>
 							$(document).ready(function() {
+
+						
 								
-								var idhotel = "<?php echo $home->hotel['id'];?>"
+								var promotor = 0 ;
+								var idhotel = 0;
+								promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+								if(promotor > 0){
+									idhotel = promotor;
+								}else{
+									idhotel = "<?php echo $home->hotel['id'] ?>";
+								}
 
 								$.ajax({
 								url: "/Hotel/controller/grafica.php",
@@ -338,7 +359,13 @@ if(isset($_POST['cambiar-hotel'])){
 								<script>
 								$(document).ready(function() {
 									
-									var idhotel = "<?php echo $home->hotel['id'];?>"
+									var promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+									var idhotel = 0;
+								if(promotor > 0){
+									idhotel = promotor;
+								}else{
+									idhotel = "<?php echo $home->hotel['id'] ?>";
+								}
 									var fecha1 = "<?php echo $home->getFechaInicio(); ?>"
 									var fecha2 = "<?php echo $home->getFechaFin(); ?>"
 									$.ajax({
@@ -400,7 +427,13 @@ if(isset($_POST['cambiar-hotel'])){
 									<script>
 								$(document).ready(function() {
 									
-									var idhotel = "<?php echo $home->hotel['id'];?>"
+									var promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+									var idhotel = 0;
+								if(promotor > 0){
+									idhotel = promotor;
+								}else{
+									idhotel = "<?php echo $home->hotel['id'] ?>";
+								}
 									
 									$.ajax({
 										url: '/Hotel/controller/grafica.php',
@@ -492,7 +525,16 @@ if(isset($_POST['cambiar-hotel'])){
 						<script>
 						$(document).ready(function() {
 							
-							var idhotel = "<?php echo $home->hotel['id'];?>";
+								
+							var promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+							var idhotel = 0;
+							
+							if(promotor > 0){
+								idhotel = promotor;
+							}else{
+								idhotel = "<?php echo $home->hotel['id'] ?>";
+							}
+
 							var fecha1 = "<?php echo $home->getFechaInicio(); ?>";
 							var fecha2 = "<?php echo $home->getFechaFin(); ?>";
 
@@ -568,7 +610,15 @@ if(isset($_POST['cambiar-hotel'])){
 						<script>
 						$(document).ready(function() {
 							
-							var idhotel = "<?php echo $home->hotel['id'];?>"
+							var promotor  = "<?php if(isset($_SESSION['promotor'])){echo $_SESSION['promotor']['id'];}?>";
+							var idhotel = 0;
+							
+							if(promotor > 0){
+								idhotel = promotor;
+							}else{
+								idhotel = "<?php echo $home->hotel['id'] ?>";
+							}
+
 							$.ajax({
 								url: '/Hotel/controller/grafica.php',
 								type: 'POST',
@@ -648,38 +698,39 @@ if(isset($_POST['cambiar-hotel'])){
 
 		
 		</div>
-		<div class="row">
-		
-			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>Puntos generados</h2>
-					<div class="statusbox-content">
-						<strong>$<?php echo $home->getPuntosGenerados();?></strong>
-						<strong>MXN</strong>
-					</div><!-- /.statusbox-content -->
-				</div>
-			</div>
-			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>puntos canjeados</h2>
-					<div class="statusbox-content">
-						<strong>$<?php echo $home->getPuntosCanjeados();?></strong>
-						<strong>MXN</strong>
-					</div><!-- /.statusbox-content -->
-				</div>
-			</div>
-			<div class="col-sm-3">
-				<div class="statusbox">
-					<h2>regalos entregados</h2>
-					<div class="statusbox-content">
-						<strong><?php echo $home->getRegalosEntregados();?></strong>
-					</div><!-- /.statusbox-content -->
-				</div>
-			</div>
-		</div>
 
+	<?php if (!isset($_SESSION['promotor'])): ?>
+					<div class="row">
+					
+						<div class="col-sm-3">
+							<div class="statusbox">
+								<h2>Puntos generados</h2>
+								<div class="statusbox-content">
+									<strong>$<?php echo $home->getPuntosGenerados();?></strong>
+									<strong>MXN</strong>
+								</div><!-- /.statusbox-content -->
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="statusbox">
+								<h2>puntos canjeados</h2>
+								<div class="statusbox-content">
+									<strong>$<?php echo $home->getPuntosCanjeados();?></strong>
+									<strong>MXN</strong>
+								</div><!-- /.statusbox-content -->
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="statusbox">
+								<h2>regalos entregados</h2>
+								<div class="statusbox-content">
+									<strong><?php echo $home->getRegalosEntregados();?></strong>
+								</div><!-- /.statusbox-content -->
+							</div>
+						</div>
+					</div>
 
-		<div class="row">
+					<div class="row">
 
 				<div class="col-sm-8">
 					<div class="statusbox ttconsumosusuarios" id="grafica4">
@@ -877,6 +928,12 @@ if(isset($_POST['cambiar-hotel'])){
 				</div>
 		</div>
 	
+	
+	<?php endif ?>
+		
+
+
+		
 
 			
 		

@@ -1,14 +1,14 @@
 <?php 
-
-
-
 namespace negocio\libs;
-use assets\libs\connection;
+use \assets\libs\connection;
+use \assets\libs\Balance;
 use PDO;
+use PDOException;
 use DateTime;
 use DateInterval;
-class sales_new_sale {
-	private $con;
+class sales_new_sale extends Balance{
+	
+
 	private $user = array(
 		'id' => null
 	);
@@ -17,16 +17,7 @@ class sales_new_sale {
 		'balance' => null,
 		'status' => null
 	);
-	private $sale = array(
-		'id' => null,
-		'username' => null,
-		'total' => null,
-		'commission' => null,
-		'eSmarties' => null,
-		'referral_id' => null,
-		'referral_commission' => 0,
-		'certificate_id' => null
-	);
+	
 	private $currencies = array();
 	private $certificates = array();
 	private $reserved = array();
@@ -46,7 +37,8 @@ class sales_new_sale {
 		);
 
 	public function __construct(connection $con){
-		$this->con = $con->con;
+		parent::__construct($con);	
+
 		$this->user['id'] = $_SESSION['user']['id_usuario'];
 		$this->business['id'] = $_SESSION['business']['id_negocio'];
 		$this->load_data();
@@ -125,43 +117,52 @@ class sales_new_sale {
 		$fechaactual = $fecha->getTimestamp();
 		$result = false;
 
-		$sql  = "SELECT r.id, concat(r.fecha,' ',r.hora) as fecha, r.hora, u.id_usuario, u.username from reservacion as r 
+		$sql  = "SELECT r.id_hotel,r.id_promotor,r.usuario_registrante, r.id, concat(r.fecha,' ',r.hora) as fecha, r.hora, u.id_usuario, u.username from reservacion as r 
 					left join usuario as u on r.usuario_solicitante = u.id_usuario
 			        where r.status = 0 and u.id_usuario = :usersolicitante and r.id_restaurant = :negocio";
-
+		
         try {
+        	
         	$stm = $this->con->prepare($sql);
         	$stm->execute(array(':usersolicitante'=> $this->sale['id'], ':negocio' => $this->business['id']));
-        } catch (\PDOException $e) {
-        	$this->error_log(__METHOD__,__LINE__,$e->getMessage);
+
+
+		        if($stm->rowCount() > 0 ){
+
+		        	while($row  =$stm->fetch(PDO::FETCH_ASSOC)){
+		        		
+
+		        		$fechar2 = new DateTime($row['fecha']);
+		        		$fecha3 = new DateTime($row['fecha']);
+
+		        		$this->is_reserva = true;
+		        		$this->reservacion['id'] = $row['id'];
+		        		if(!is_null($row['id_promotor'])){
+		        			$this->reservacion['registrante'] = $row['id_promotor'];
+		        		}
+		        		
+
+		        		// $fecha2 = $fechar2->format('Y-m-d g:i A');
+
+		        		 // echo $fechar2->getTimestamp()."<br>";
+
+		        		$fecha3->add(new DateInterval('P5D'));
+		        		// echo $fecha3->getTimestamp();
+
+
+						if(($fechar2->getTimestamp() <= $fecha3->getTimestamp()) and ($fechaactual >= $fechar2->getTimestamp())){
+							$result = true;
+							$this->reserva['id_reserva'] = $row['id'];
+							$this->reserva['fecha'] = $fechar2->format('Y-m-d');
+						} 
+		        	} 
+		        }
+
+        } catch (\PDOException $ex) {
+        	$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
         	$result = false;	        	
         }
 
-  		
-
-        if($stm->rowCount() > 0 ){
-
-        	while($row  =$stm->fetch(PDO::FETCH_ASSOC)){
-        		
-
-        		$fechar2 = new DateTime($row['fecha']);
-        		$fecha3 = new DateTime($row['fecha']);
-
-        		// $fecha2 = $fechar2->format('Y-m-d g:i A');
-
-        		 // echo $fechar2->getTimestamp()."<br>";
-
-        		$fecha3->add(new DateInterval('P5D'));
-        		// echo $fecha3->getTimestamp();
-
-
-				if(($fechar2->getTimestamp() <= $fecha3->getTimestamp()) and ($fechaactual >= $fechar2->getTimestamp())){
-					$result = true;
-					$this->reserva['id_reserva'] = $row['id'];
-					$this->reserva['fecha'] = $fechar2->format('Y-m-d');
-				} 
-        	} 
-        }
         return $result;
 	}
 
@@ -205,7 +206,9 @@ class sales_new_sale {
 	}
 
 	private function create_sale(){
+
 		$afterwards = $this->business['balance'] - $this->sale['eSmarties'];
+		
 		if($afterwards < -500){
 			$query = "UPDATE negocio SET situacion = 2 WHERE id_negocio = :id_negocio";
 			try{
@@ -219,6 +222,7 @@ class sales_new_sale {
 			$this->error['error'] = 'Has excedido el límite de crédito permitido ($500) y tu negocio se ha suspendido automáticamente. Contacta a Travel Points.';
 			return false;
 		}
+
 		if($this->sale['certificate_id']){
 			$query = "INSERT INTO usar_certificado (
 				id_usuario,
@@ -263,6 +267,8 @@ class sales_new_sale {
 				}
 			}
 		}
+
+
 		foreach ($this->reserved as $key => $value) {
 			if($value == 0){
 				$query = "SELECT ne.id_certificado, ne.disponibles, (SELECT COUNT(*) FROM usar_certificado uc WHERE uc.id_certificado = ne.id_certificado AND uc.situacion != 0) as usados, ne.situacion FROM usar_certificado uc INNER JOIN negocio_certificado ne ON uc.id_certificado = ne.id_certificado WHERE uc.id_uso = :id_uso";
@@ -298,6 +304,7 @@ class sales_new_sale {
 				return false;
 			}
 		}
+
 		$query = "INSERT INTO negocio_venta (
 			id_usuario, 
 			id_negocio, 
@@ -324,6 +331,7 @@ class sales_new_sale {
 		}else{
 			$valor = $this->sale['total'];
 		}
+
 		$params = array(
 			':id_usuario' => $this->sale['id'],
 			':id_negocio' => $this->business['id'],
@@ -338,10 +346,11 @@ class sales_new_sale {
 			$stmt = $this->con->prepare($query);
 			$stmt->execute($params);
 			$idventa = $this->con->lastInsertId();
-			$this->registrarbalancesistema($idventa);
-			$this->registrarbalancehotel($idventa);
-			$this->registrarbalancefranquiciatario($idventa);
-			$this->registrarbalancereferidor($idventa);
+
+			$this->newBalanceSistema($idventa,$this->sale['eSmarties']);
+			$this->newBalanceHotel($idventa,$this->sale['eSmarties']);
+			$this->newBalanceFranquiciatario($idventa);
+			$this->newBalanceReferidor($idventa);
 			
 		}catch(\PDOException $ex){
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
@@ -366,7 +375,9 @@ class sales_new_sale {
 			$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
+
 		if($this->sale['referral_id'] && $this->sale['referral_commission']){
+
 			$query = "UPDATE usuario SET esmarties = esmarties + :esmarties WHERE id_usuario = :id_usuario";
 			$params = array(':esmarties' => $this->sale['referral_commission'],':id_usuario' => $this->sale['referral_id']);
 			try{
@@ -376,159 +387,12 @@ class sales_new_sale {
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				return false;
 			}
+
 		}
 		$_SESSION['notification']['success'] = 'Venta registrada exitosamente.';
 		header('Location: '.HOST.'/negocio/ventas/');
 		die();
 		return;
-	}
-
-
-
-	private function registrarbalancesistema(int $idventa){
-
-
-				
-					$ultimobalance = $this->capturarultimobalancesistema();
-					$comisionsistema = $this->sale['eSmarties'];
-					
-					$balance = $comisionsistema + $ultimobalance;
-
-					$query = "insert into balancesistema(balance,id_venta,comision) values(:balance,:venta,:comision)";
-					$stm  = $this->con->prepare($query);
-					$stm->execute(array(':balance'=>$balance,
-										':venta'=>$idventa,':comision'=>$comisionsistema));
-				
-	}
-
-	private function registrarbalancehotel(int $idventa){
-
-		$query = 'SELECT h.id as hotel, h.comision from 
-						hotel as h join huespedhotel as hh on h.id = hh.id_hotel
-							join huesped as hu on hh.id_huesped = hu.id
-							where hu.id_usuario = :usuario';
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':usuario'=>$this->sale['id']));
-
-				$filas = $stm->fetch(PDO::FETCH_ASSOC);
-				$idhotel = $filas['hotel'];
-				$comisionhotel = $filas['comision'];
-
-				if($idhotel > 0){
-				
-					$ultimobalance = $this->capturarultimobalancehotel($idhotel);
-					$comisionhotelnew = ($this->sale['eSmarties'] * $comisionhotel / 100);
-					$balance = $comisionhotelnew + $ultimobalance;
-
-					$query = "insert into balancehotel(balance,id_hotel,id_venta,comision) values(:balance,:hotel,:venta,:comision)";
-					$stm  = $this->con->prepare($query);
-					$stm->execute(array(':balance'=>$balance,':hotel'=>$idhotel,
-										':venta'=>$idventa,':comision'=>$comisionhotelnew));
-				}
-		}
-
-	private function registrarbalancefranquiciatario(int $idventa){
-
-		$query = 'SELECT fr.id as franquiciatario, fr.comision from 
-						franquiciatario as fr join hotel as h on fr.id_hotel  = h.id 
-							join huespedhotel as hh on h.id = hh.id_hotel 
-							join huesped as hu on hh.id_huesped = hu.id 
-							where hu.id_usuario = :usuario';
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':usuario'=>$this->sale['id']));
-
-				$filas = $stm->fetch(PDO::FETCH_ASSOC);
-				$idfranquiciatario = $filas['franquiciatario'];
-				$comisionfranquiciatario = $filas['comision'];
-
-				if($idfranquiciatario > 0){
-				
-					$ultimobalance = $this->capturarultimobalancefranquiciatario($idfranquiciatario);
-					$comisionfranquiciatarionew = ($this->sale['eSmarties'] * $comisionfranquiciatario / 100);
-					$balance = ($this->sale['eSmarties'] * $comisionfranquiciatario / 100) + $ultimobalance;
-
-					$query = "insert into balancefranquiciatario(balance,id_franquiciatario,id_venta,comision) values(:balance,:franquiciatario,:venta,:comision)";
-					$stm  = $this->con->prepare($query);
-					$stm->execute(array(':balance'=>$balance,':franquiciatario'=>$idfranquiciatario,
-										':venta'=>$idventa,':comision'=>$comisionfranquiciatarionew));
-				}
-		}
-
-	private function registrarbalancereferidor(int $idventa){
-
-		$query = 'SELECT rf.id as referidor, rf.comision from 
-						referidor as rf join hotel as h on rf.id_hotel  = h.id 
-							join huespedhotel as hh on h.id = hh.id_hotel 
-							join huesped as hu on hh.id_huesped = hu.id 
-							where hu.id_usuario = :usuario';
-
-				$stm = $this->con->prepare($query);
-				$stm->execute(array(':usuario'=>$this->sale['id']));
-
-				$filas = $stm->fetch(PDO::FETCH_ASSOC);
-				$idReferidor = $filas['referidor'];
-				$comisionreferidor = $filas['comision'];
-
-				if($idReferidor > 0){
-				
-					$ultimobalance = $this->capturarultimobalancereferidor($idReferidor);
-					$comisionreferidornew = ($this->sale['eSmarties'] * $comisionreferidor / 100);
-					$balance = ($this->sale['eSmarties'] * $comisionreferidor / 100) + $ultimobalance;
-
-					$query = "insert into balancereferidor(balance,id_referidor,id_venta,comision) values(:balance,:referidor,:venta,:comision)";
-					$stm  = $this->con->prepare($query);
-					$stm->execute(array(':balance'=>$balance,':referidor'=>$idReferidor,
-										':venta'=>$idventa,':comision'=>$comisionreferidornew));
-				}
-				
-		}
-
-	private function capturarultimobalancehotel(int $idhotel){
-		$query = "SELECT balance from balancehotel where id_hotel =:hotel order by id desc LIMIT 1";
-		$stm = $this->con->prepare($query);
-		$stm->execute(array(':hotel'=>$idhotel));
-		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-		if($balance > 0){
-			return $balance;
-		}else{
-			return 0;
-		}
-	}
-
-	private function capturarultimobalancesistema(){
-		$query = "SELECT balance from balancesistema order by id desc LIMIT 1";
-		$stm = $this->con->prepare($query);
-		$stm->execute();
-		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-		if($balance > 0){
-			return $balance;
-		}else{
-			return 0;
-		}
-	}
-
-	private function capturarultimobalancefranquiciatario(int $idfranquiciatario){
-		$query = "SELECT balance from balancefranquiciatario where id_franquiciatario =:franquiciatario order by id desc LIMIT 1";
-		$stm = $this->con->prepare($query);
-		$stm->execute(array(':franquiciatario'=>$idfranquiciatario));
-		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-		if($balance > 0){
-			return $balance;
-		}else{
-			return 0;
-		}
-	}
-
-	private function capturarultimobalancereferidor(int $idreferidor){
-		$query = "SELECT balance from balancereferidor where id_referidor =:referidor order by id desc LIMIT 1";
-		$stm = $this->con->prepare($query);
-		$stm->execute(array(':referidor'=>$idreferidor));
-		$balance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
-		if($balance > 0){
-			return $balance;
-		}else{
-			return 0;
-		}
 	}
 
 	private function set_user($username = null){
@@ -856,7 +720,7 @@ class sales_new_sale {
 	}
 
 	private function error_log($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\sales_new_sale.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'/assets/error_logs/sales_new_sale.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
 		return;
 	}

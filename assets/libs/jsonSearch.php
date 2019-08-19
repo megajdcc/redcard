@@ -13,24 +13,29 @@ class jsonSearch {
 	public function getRestaurantes($busquedad  = null){
 
 
+			if($this->con->inTransaction()){
+				$this->con->rollBack();
+			}
+			$busqueda = "%".$busquedad."%";
 			$sql = "SELECT n.id_negocio, n.nombre, np.preferencia as imagen,n.breve from negocio as n 
 				left JOIN preferencia p ON p.llave = 'business_header'
 				left JOIN negocio_preferencia np ON n.id_negocio = np.id_negocio AND np.id_preferencia = p.id_preferencia
 				 right JOIN negocio_categoria as nc on n.id_categoria = 1
-				where n.situacion = 1  && n.nombre LIKE :nombre || n.breve LIKE :breve group by n.nombre";
-
-
+				where n.situacion = 1  && n.nombre LIKE :param || n.breve LIKE :param1  group by n.nombre";
 
 			try {
 				
 				$stm = $this->con->prepare($sql);
-				$stm->execute(array(':nombre'=>'%'.$busquedad.'%', ':breve'=>'%'.$busquedad.'%'));
-			} catch (PDOException $e) {
+				$stm->bindParam(':param',$busqueda,PDO::PARAM_STR);
+				$stm->bindParam(':param1',$busqueda,PDO::PARAM_STR);
+				$stm->execute();
+			} catch (\PDOException $e) {
 				return false;
 			}
 
+			// echo $busqueda;
 			$datos = array();
-			while($row = $stm->fetch()){
+			while($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
 				if(!$row['nombre']){
 					$row['display'] = '';

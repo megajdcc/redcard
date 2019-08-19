@@ -122,19 +122,19 @@ class ReportesVentas{
 
 				// echo var_dump($this->busqueda);
 						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bf.comision, bf.balance,nv.creado 
-						FROM balancefranquiciatario as bf 
+						FROM balance as bf 
 						LEFT JOIN negocio_venta as nv on bf.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 						where bf.id_franquiciatario = :fr1 and bf.id_venta != 0  and bf.creado between :fecha1 and :fecha2 ORDER BY creado ASC)
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bf.balance,bf.creado
-						from retiro as r join retirocomisionfranquiciatario as rr on r.id = rr.id_retiro join balancefranquiciatario as bf on rr.id = bf.id_retiro
+						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as bf on rr.id = bf.id_retiro
 						where bf.id_franquiciatario = :fr2  and rr.condicion = 2 and bf.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
 						UNION
 						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, bfr.balance,bfr.creado
-						from retirocomisionfranquiciatario as rr left join retiro as r on rr.id_retiro = r.id left join balancefranquiciatario as bfr on rr.id = bfr.id_retiro
+						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as bfr on rr.id = bfr.id_retiro
 						where bfr.id_franquiciatario = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 and bfr.creado between :fecha5 and :fecha6)
 
 							order by creado";
@@ -154,19 +154,19 @@ class ReportesVentas{
 							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else{
 						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bf.comision, bf.balance,nv.creado 
-						FROM balancefranquiciatario as bf 
+						FROM balance as bf 
 						LEFT JOIN negocio_venta as nv on bf.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 						where bf.id_franquiciatario = :fr1 and bf.id_venta != 0 ORDER BY creado ASC)
 						UNION 
 						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bf.balance,bf.creado
-						from retiro as r join retirocomisionfranquiciatario as rr on r.id = rr.id_retiro join balancefranquiciatario as bf on rr.id = bf.id_retiro
+						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as bf on rr.id = bf.id_retiro
 						where bf.id_franquiciatario = :fr2 and rr.condicion =1)
 						UNION
 						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, bfr.balance,bfr.creado
-						from retirocomisionfranquiciatario as rr left join retiro as r on rr.id_retiro = r.id left join balancefranquiciatario as bfr on rr.id = bfr.id_retiro
+						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as bfr on rr.id = bfr.id_retiro
 						where bfr.id_franquiciatario = :fr3 and r.tipo_pago = 2 and rr.condicion = 2 )
 						order by creado";
 
@@ -253,7 +253,7 @@ class ReportesVentas{
 
 	public function getEstadoCuenta(){
 		
-		$query = "select max(balance) as balance from balancefranquiciatario";
+		$query = "select max(balance) as balance from balance";
 
 		$stm = $this->con->prepare($query);
 

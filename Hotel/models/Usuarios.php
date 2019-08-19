@@ -41,9 +41,11 @@ class Usuarios {
 
 		$this->con = $con->con;
 
-		$this->user['id'] = $_SESSION['user']['id_usuario'];
-
-		
+		if(isset($_SESSION['promotor'])){
+			$this->user['id'] = $_SESSION['promotor']['id'];
+		}else{
+			$this->user['id'] = $_SESSION['user']['id_usuario'];
+		}
 
 		$this->hotel['id'] = $_SESSION['id_hotel'];
 		$this->Cargar();

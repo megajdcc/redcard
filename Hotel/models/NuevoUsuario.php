@@ -1,8 +1,12 @@
 <?php 
-
-
 namespace Hotel\models;
 use assets\libs\connection;
+
+require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as mailerexception;
+
 use PDO;
 
 class NuevoUsuario {
@@ -23,7 +27,11 @@ class NuevoUsuario {
 	public function __construct(connection $con){
 		$this->con = $con->con;
 
-		$this->hotel = $_SESSION['id_hotel'];
+		if(isset($_SESSION['id_hotel'])){
+			$this->hotel = $_SESSION['id_hotel'];
+		}
+
+		
 	}
 
 	public function setData(array $post,bool $reserva = false){
@@ -40,10 +48,12 @@ class NuevoUsuario {
 			$this->apellido = $post['apellido'];
 			$this->telefono = $post['telefono'];
 			if($this->username && $this->email){
-				$this->register(true);
-				return true;
+				$result =  $this->register(true);
+				return $result;
 			}
-			return false;
+				$resultado = array('mensaje'=>'No se pudo realizar el registro, intentelo de nuevo mas tarde!.',
+							'peticion'=>false);
+			return $resultado;
 
 
 		}else{
@@ -127,12 +137,14 @@ class NuevoUsuario {
 								':rol'      => 8,
 								 ));
 
-			    	$lastId = $this->con->lastInsertId();
+			    $lastId = $this->con->lastInsertId();
 				
 			} catch (\PDOException $e) {
 				$this->error_log(__METHOD__,__LINE__,$ex->getMessage());
 				$this->con->rollBack();
-				return false;
+					$resultado = array('mensaje'=>'No se pudo realizar el registro',
+							'peticion'=>false);
+				return $resultado;
 			}
 
 		}else{
@@ -168,54 +180,6 @@ class NuevoUsuario {
 
 	}
 
-		// Registramos al usuario como Huesped..
-		// 
-		
-
-		// $sql = "SELECT count(*) FROM huesped where id_usuario =:usuario";
-		// $stm = $this->con->prepare($sql);
-		// $stm->execute(array(':usuario'=>$lastId));
-		// $fila = $stm->fetch(PDO::FETCH_ASSOC);
-
-		// if($stm->rowCount() > 0){
-
-		// 	$nombrehotel = $this->getHotel();
-		// 	$idhuesped = $fila['id'];
-
-
-		// 	try {
-
-		// 		$sql = "UPDATE huesped set hotel = :hotel where id=:h";
-		// 		$stm = $this->con->prepare($sql);
-		// 		$stm->bindParam(':hotel',$nombrehotel,PDO::PARAM_STR);
-		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
-		// 		$stm->execute();
-
-		// 	}catch (PDOException $e){
-
-		// 		$this->con->rollBack();
-		// 		return false;
-
-		// 	}
-
-		// 	$sql = "UPDATE huespedhotel set id_hotel =:hotel where id_huesped=:h";
-
-		// 	try {
-				
-		// 		$stm = $this->con->prepare($sql);
-		// 		$stm->bindParam(':hotel',$this->hotel,PDO::PARAM_INT);
-		// 		$stm->bindParam(':h',$idhuesped,PDO::PARAM_INT);
-
-		// 		$stm->execute();
-
-		// 	}catch (PDOException $e) {
-
-		// 		$this->con->rollBack();
-		// 		return false;
-
-		// 	}
-
-		// }else{
 
 			$nombrehotel = $this->getHotel();
 
@@ -274,32 +238,37 @@ class NuevoUsuario {
 
 		$body_alt =
 			'Bienvenido a Travel Points '.$this->username.'. El registro de esta cuenta no necesita verificación.';
-		require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libraries/phpmailer/PHPMailerAutoload.php';
-		$mail = new \PHPMailer;
-		$mail->CharSet = 'UTF-8';
-		// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
-		$mail->isSMTP();
-		$mail->Host = 'single-5928.banahosting.com';
-		$mail->SMTPAuth = true;
-		$mail->SMTPSecure = 'ssl';
-		$mail->Port = 465;
-		// El correo que hará el envío
-		$mail->Username = 'notification@travelpoints.com.mx';
-		$mail->Password = '20464273jd';
+		
+		$mail = new PHPMailer(true);
+		try {
+				$mail->CharSet = 'UTF-8';
+				// $mail->SMTPDebug = 3; // CONVERSACION ENTRE CLIENTE Y SERVIDOR
+				$mail->isSMTP();
+				$mail->Host = 'single-5928.banahosting.com';
+				$mail->SMTPAuth = true;
+				$mail->SMTPSecure = 'ssl';
+				$mail->Port = 465;
+				// El correo que hará el envío
+				$mail->Username = 'notification@travelpoints.com.mx';
+				$mail->Password = '20464273jd';
 
-		$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
-		// El correo al que se enviará
-		$mail->addAddress($this->email);
-		// Hacerlo formato HTML
-		$mail->isHTML(true);
-		// Formato del correo
-		$mail->Subject = 'Confirmación de correo electrónico.';
-		$mail->Body    = $this->email_template($this->email, $hash,$this->username);
-		$mail->AltBody = $body_alt;
+				$mail->setFrom('notification@travelpoints.com.mx', 'Travel Points');
+				// El correo al que se enviará
+				$mail->addAddress($this->email);
+				// Hacerlo formato HTML
+				$mail->isHTML(true);
+				// Formato del correo
+				$mail->Subject = 'Confirmación de correo electrónico.';
+				$mail->Body    = $this->email_template($this->email, $hash,$this->username);
+				$mail->AltBody = $body_alt;
 
-		if(!$mail->send()){
-			$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
+				if(!$mail->send()){
+					$_SESSION['notification']['info'] = 'El correo de aviso no se pudo enviar debido a una falla en el servidor. Intenta solicitando un nuevo correo de confirmación.';
+				}
+		} catch (mailerexception $e) {
+			$this->error_log(__METHOD__,__METHOD__,$mail->ErrorInfo);
 		}
+	
 
 		
 		if(!$reserva){
@@ -308,8 +277,10 @@ class NuevoUsuario {
 			header('Location: '.HOST.'/Hotel/usuarios/nuevousuario');
 			die();
 		}else{
-			$_SESSION['notification']['success'] = '¡Felicidades! El usuario ha sido registrado exitosamente, notificale que se le ha enviado un correo a la siguiente dirección:  '.$this->email.'. Es necesario que verifique su cuenta desde el correo enviado, para poder iniciar sesión, Es necesario que el mismo este verificado para poder gozar de los beneficios del programa de referidos.';
-			return true;
+			// $_SESSION['notification']['success'] = '¡Felicidades! El usuario ha sido registrado exitosamente, notificale que se le ha enviado un correo a la siguiente dirección:  '.$this->email.'. Es necesario que verifique su cuenta desde el correo enviado, para poder iniciar sesión, Es necesario que el mismo este verificado para poder gozar de los beneficios del programa de referidos.';
+			$resultado = array('mensaje'=>'¡Felicidades! El usuario ha sido registrado exitosamente, notificale que se le ha enviado un correo a la siguiente dirección:  '.$this->email.'. Es necesario que verifique su cuenta desde el correo enviado, para poder iniciar sesión, Es necesario que el mismo este verificado para poder gozar de los beneficios del programa de referidos.',
+							'peticion'=>true);
+			return $resultado;
 		}
 		
 	}

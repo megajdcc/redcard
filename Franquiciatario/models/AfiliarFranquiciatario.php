@@ -148,7 +148,10 @@ class AfiliarFranquiciatario {
 
 	public function __construct($con){
 		$this->con = $con->con;
-		$this->registrar['id_usuario'] = $_SESSION['user']['id_usuario'];
+		if(isset($_SESSION['user']['id_usuario'])){
+			$this->registrar['id_usuario'] = $_SESSION['user']['id_usuario'];
+		}
+		
 	
 	}
 

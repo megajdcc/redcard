@@ -15,7 +15,8 @@
     "require": {
         "paypal/rest-api-sdk-php": "*",
         "google/recaptcha"       : "^1.2",
-        "printnode/printnode-php": "dev-master"
+        "printnode/printnode-php": "dev-master",
+        "phpmailer/phpmailer": "^6.0"
        
     },
     "autoload":{

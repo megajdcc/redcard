@@ -1,17 +1,11 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'].'/assets/libs/init.php';
 $con = new assets\libs\connection();
 
-if(!isset($_SESSION['user'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
+if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESSION['user'])){
+		http_response_code(404);
+		include(ROOT.'/errores/404.php');
+		die();
 }
-
-if(!isset($_SESSION['perfil'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
-	}
 
 
 use Hotel\models\Usuarios;

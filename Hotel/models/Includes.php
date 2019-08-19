@@ -27,71 +27,104 @@ class Includes extends FuncionesAcademia{
 	private $sidebar = null;
 	private $crumbs = array();
 	
+	private $promotor = false;
 
+	private $classpromotor = null;
 	private $hoteles = array('id' =>null ,
 								'nombrehotel'=>null,
 								'otroshoteles'=>array());
 
 
+	private $rol = 'promotor';
 
-	public function __construct(connection $con){
+
+	public function __construct(connection $con,bool $login = false){
+
 		$this->con = $con->con;
 		$this->conection = $con;
 
 		parent::__construct($this->conection,'Hotel');
+	
+		if(!$login){
+			if(isset($_SESSION['promotor'])){
+				$this->promotor = true;
 
-		$this->user['id'] = $_SESSION['user']['id_usuario'];
+				$this->user['id'] = $_SESSION['promotor']['id'];
 
-		$this->load_data();
-		$this->load_sidebar();
+				$this->classpromotor = new Promotor($con,$this->user['id']);
+
+			}else{
+				$this->user['id'] = $_SESSION['user']['id_usuario'];
+				$this->rol = $_SESSION['user']['id_rol'];
+			}
+			
+			$this->load_data();
+			$this->load_sidebar();
+		}
 
 		return;
-
 
 	}
 
 	private function load_data(){
+
+		if($this->promotor){
+			$query = "SELECT p.username, p.nombre, p.apellido,p.id_hotel,c.cargo FROM promotor as p 
+					join cargo as c on p.id_cargo = c.id					
+					WHERE p.id = :usuario";
+		}else{
+			$query = "SELECT username, imagen, nombre, apellido, id_rol FROM usuario WHERE id_usuario = :usuario";
+		}
 		
-		$query = "SELECT username, imagen, nombre, apellido, id_rol FROM usuario WHERE id_usuario = :id_usuario";
 		try{
 			$stmt = $this->con->prepare($query);
-			$stmt->bindValue(':id_usuario', $this->user['id'], PDO::PARAM_INT);
+			$stmt->bindValue(':usuario', $this->user['id'], PDO::PARAM_INT);
 			$stmt->execute();
 		}catch(\PDOException $ex){
 			$this->catch_errors(__METHOD__,__LINE__,$ex->getMessage());
 			return false;
 		}
 		if($row = $stmt->fetch()){
+
 			$this->user['username'] = _safe($row['username']);
-	
+			$this->user['image'] = 'default.jpg';
 			if(!empty($row['imagen'])){
 				$this->user['image'] = _safe($row['imagen']);
-			}else{
-				$this->user['image'] = 'default.jpg';
 			}
+
 			if(!empty($row['nombre']) && !empty($row['apellido'])){
 				$this->user['alias'] = _safe($row['nombre'].' '.$row['apellido']);
 			}else{
 				$this->user['alias'] = $this->user['username'];
 			}
-			$rol = $row['id_rol'];
-
-
-			if($rol == 1){
-				$this->user['rol'] = "Super Administrador";
-			}else if($rol == 2){
-				$this->user['rol'] = "Administrador";
+			
+			if($this->promotor){
+				$this->user['rol']= $row['cargo'];
 			}else{
-				$this->user['rol'] = "Operador";
+				$rol = $row['id_rol'];
+				if($rol == 1){
+					$this->user['rol'] = "Super Administrador";
+				}else if($rol == 2){
+					$this->user['rol'] = "Administrador";
+				}else{
+					$this->user['rol'] = "Operador";
+				}
 			}
-
 		}
 
 
 		// Hoteles Data
-		$query = "SELECT h.id as idhoteles, h.nombre as nombrehotel FROM hotel h 
+		
+		if($this->promotor){
+			$query = "SELECT h.id as idhoteles, h.nombre as nombrehotel FROM hotel h 
+			INNER JOIN promotor p ON h.id = p.id_hotel
+			WHERE p.id = :usuario";
+		}else{
+			$query = "SELECT h.id as idhoteles, h.nombre as nombrehotel FROM hotel h 
 			INNER JOIN solicitudhotel sh ON h.id = sh.id_hotel
 			WHERE sh.id_usuario = :usuario";
+		}
+
 		try{
 			$stmt = $this->con->prepare($query);
 			$stmt->bindValue(':usuario',$this->user['id'], PDO::PARAM_INT);
@@ -104,7 +137,7 @@ class Includes extends FuncionesAcademia{
 			if($_SESSION['id_hotel']  == $row['idhoteles']){
 				$this->hoteles['nombrehotel'] = _safe($row['nombrehotel']);
 			}else{
-					$this->hoteles['otroshoteles'][$row['idhoteles']] = _safe($row['nombrehotel']);
+				$this->hoteles['otroshoteles'][$row['idhoteles']] = _safe($row['nombrehotel']);
 				
 			}
 		}
@@ -500,7 +533,7 @@ class Includes extends FuncionesAcademia{
 														<div class="user-image">
 															<img src="'.HOST.'/assets/img/user_profile/'.$this->user['image'].'">';
 											
-												$html .='</div><!-- /.user-image -->
+												$html .='</div>
 														<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
 													</button>
 													<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -510,8 +543,8 @@ class Includes extends FuncionesAcademia{
 												$html .= 
 														'<li><a href="'.HOST.'/logout">Logout | Cerrar sesi&oacute;n</a></li>
 													</ul>
-												</div><!-- /.dropdown -->
-											</div><!-- /.header-nav-user -->
+												</div>
+											</div>
 											';
 											}else{
 												$html .=
@@ -618,14 +651,28 @@ class Includes extends FuncionesAcademia{
 													</div><!-- /.user-image -->
 													<span class="header-nav-user-name">'.$this->user['alias'].'</span> <i class="fa fa-chevron-down"></i>
 												</button>
-												<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-													<li><a href="'.HOST.'/socio/">Mi inicio</a></li>
-													<li><a href="'.HOST.'/socio/perfil/">Mi perfil</a></li>
+												<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">';
+
+												if (!$this->promotor) {
+													$html .= '<li><a href="'.HOST.'/socio/">Mi inicio</a></li>
+													<li><a href="'.HOST.'/socio/perfil">Mi perfil</a></li>
 													';
-				
-											$html .= 
-													'<li><a href="'.HOST.'/logout">Cerrar sesi&oacute;n</a></li>
-												</ul>
+												}else{
+													$html .= '<li><a href="'.HOST.'/Hotel/perfil/">Mi perfil</a></li>
+													';
+												}
+											
+											if($this->promotor){
+
+												$html .= '<li><a href="'.HOST.'/Hotel/cerrar">Cerrar sesi&oacute;n</a></li>';
+											}else{
+												
+												$html .= '<li><a href="'.HOST.'/logout">Cerrar sesi&oacute;n</a></li>';
+											}
+
+
+
+											$html .='</ul>
 											</div><!-- /.dropdown -->
 										</div><!-- /.header-nav-user -->
 										'.$this->gethoteles().'
@@ -642,8 +689,15 @@ class Includes extends FuncionesAcademia{
 								</h1>
 
 								<h1 class="logo-esmart">
-								<span class="header-text">'.$_SESSION['nombrehotel']. ' | Código: '.$_SESSION['codigohotel'].'</span></h1>
-							</div>
+								<span class="header-text">'.$_SESSION['nombrehotel']. ' | Código: '.$_SESSION['codigohotel'].'</span></h1>';
+
+								if($this->promotor){
+									$html.= '<h1 class="logo-esmart">
+									<span class="header-text">'.strtoupper($this->classpromotor->getCargo()).'</span>
+								</h1>';
+								}
+
+							$html .='</div>
 							<!-- /.header-statusbar-left -->
 							<div class="header-statusbar-right">
 								<ul class="breadcrumb">
@@ -660,7 +714,7 @@ class Includes extends FuncionesAcademia{
 						<div class="wrapper-admin">
 							<div class="sidebar-admin">
 					<ul>';
-				if($_SESSION['user']['id_rol'] != 9){
+				if($this->rol != 'promotor'){
 
 			$html .=	'<li'.$this->set_active_tab('Hotel').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Hotel/"><i class="fa fa-home"></i></a></li>
 						
@@ -668,12 +722,20 @@ class Includes extends FuncionesAcademia{
 
 						<li'.$this->set_active_tab('reservaciones').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/Hotel/reservaciones/"><i class="fa fa-calendar-check-o"></i></a></li>
 						';
+				}else{
+					$html .=	'<li'.$this->set_active_tab('Hotel').' data-toggle="tooltip" data-placement="right" title="Inicio"><a href="'.HOST.'/Hotel/"><i class="fa fa-home"></i></a></li>
+						
+						<li'.$this->set_active_tab('usuarios').' data-toggle="tooltip" data-placement="right" title="Huespedes"><a href="'.HOST.'/Hotel/usuarios/"><i class="fa fa-user-circle-o"></i></a></li>
+
+						<li'.$this->set_active_tab('reservaciones').' data-toggle="tooltip" data-placement="right" title="Reservaciones"><a href="'.HOST.'/Hotel/reservaciones/"><i class="fa fa-calendar-check-o"></i></a></li>
+						';
 				}
 
+				if(!$this->promotor){
+					$html .= '<li'.$this->set_active_tab('promotores').' data-toggle="tooltip" data-placement="right" title="Promotores"><a href="'.HOST.'/Hotel/promotores/"><i class="fa fa-users"></i></a></li>';
+				}
 
-				$html .= 
-						'<li'.$this->set_active_tab('promotores').' data-toggle="tooltip" data-placement="right" title="Promotores"><a href="'.HOST.'/Hotel/promotores/"><i class="fa fa-users"></i></a></li>';
-
+			
 			$html .=	'
 					</ul>
 				</div><!-- /.sidebar-admin-->
@@ -709,24 +771,24 @@ class Includes extends FuncionesAcademia{
 		$ano = date('Y');
 		$html ='</div><!-- /.container-fluid -->
 
-													</div><!-- /.content-admin-main-inner -->
+				</div><!-- /.content-admin-main-inner -->
 
-													</div><!-- /.content-admin-main -->
+				</div><!-- /.content-admin-main -->
 													
 
-													<div class="content-admin-footer">
-													<div class="container-fluid">
-													<div class="content-admin-footer-inner">
-													&copy; '.$ano.' Todos los derechos reservados.
-													</div><!-- /.content-admin-footer-inner -->
-													</div><!-- /.container-fluid -->
-													</div><!-- /.content-admin-footer  -->
-													</div><!-- /.content-admin-wrapper -->
-													</div><!-- /.content-admin -->
-													</div><!-- /.wrapper-admin -->
-													</div><!-- /.outer-admin -->
-													</div><!-- /.main -->
-													</div><!-- /.page-wrapper -->
+				<div class="content-admin-footer">
+				<div class="container-fluid">
+				<div class="content-admin-footer-inner">
+				&copy; '.$ano.' Todos los derechos reservados.
+				</div><!-- /.content-admin-footer-inner -->
+				</div><!-- /.container-fluid -->
+				</div><!-- /.content-admin-footer  -->
+				</div><!-- /.content-admin-wrapper -->
+				</div><!-- /.content-admin -->
+				</div><!-- /.wrapper-admin -->
+				</div><!-- /.outer-admin -->
+				</div><!-- /.main -->
+				</div><!-- /.page-wrapper -->
 													
 													<script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
 													<script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
@@ -762,6 +824,43 @@ class Includes extends FuncionesAcademia{
 												return $html;
 	}
 
+
+	public function get_link_footer(){
+		$html = '
+													<script src="'.HOST.'/assets/js/moment.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/js/map.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/collapse.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/carousel.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/transition.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/dropdown.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tooltip.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/tab.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/alert.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-sass/javascripts/bootstrap/modal.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/colorbox/jquery.colorbox-min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/flot/jquery.flot.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/flot/jquery.flot.spline.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-slider/js/bootstrap-slider.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/libraries/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+													<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNWsVH2kmknm6knGSRKDuzGeMWM1PT6gA&amp;libraries=weather,geometry,visualization,places,drawing" type="text/javascript"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/infobox.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/markerclusterer.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-google-map/jquery-google-map.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/owl.carousel/owl.carousel.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/font-awesome/js/fontawesome.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js"></script>
+													<script type="text/javascript" src="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.js"></script>
+
+													<script type="text/javascript" src="'.HOST.'/assets/js/typeahead.bundle.js"></script>
+													<script src="'.HOST.'/assets/js/superlist.js" type="text/javascript"></script>
+													<script src="'.HOST.'/assets/js/custom.js" type="text/javascript"></script>
+													</body>
+													</html>';
+		return $html;
+
+	}
 	private function catch_errors($method, $line, $error){
 		file_put_contents(ROOT.'\assets\error_logs\admin_includes.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		return;

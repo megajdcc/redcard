@@ -607,7 +607,7 @@ class includes extends FuncionesAcademia{
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="<?php echo HOST.'/Hotel/'; ?>" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Area de Promotores | Hoteles">
+								<a href="<?php echo HOST.'/Hotel/login'; ?>" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="&Aacute;rea de Promotores | Hoteles">
 									<i class="fa fa-black-tie"></i>
 								</a>
 							</div>

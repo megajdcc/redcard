@@ -15,6 +15,7 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         array (
             'Psr\\Log\\' => 8,
             'PrintNode\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'F' => 
         array (
@@ -38,6 +39,10 @@ class ComposerStaticInit2059540af7a6ab68fcfab77d9f6db0a7
         'PrintNode\\' => 
         array (
             0 => __DIR__ . '/..' . '/printnode/printnode-php/src/PrintNode',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'FontLib\\' => 
         array (

@@ -8,13 +8,7 @@ use Hotel\models\Comprobantes;
 use Hotel\models\Dashboard;
 use Hotel\models\Home;
 
-if(!isset($_SESSION['user'])){
-	http_response_code(404);
-	include(ROOT.'/errores/404.php');
-	die();
-}
-
-if(!isset($_SESSION['perfil'])){
+if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESSION['user'])){
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');
 	die();
@@ -53,7 +47,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						<table  id="comprobante" class="display" cellspacing="0" width="100%">
 					<thead>
 						<tr>
-							<th>#</th>
+							
 							<th>Fecha de solicitud</th>
 							<th>Fecha de aprobación</th>
 							<th>Aprobada por</th>
@@ -65,52 +59,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					</thead>
 					
 					<tbody>
-						
-						<?php echo $Comprobante->getComprobantes();?>
+						<!-- <?php //echo $Comprobante->getComprobantes();?> -->
 					</tbody>
 				</table>
 					</section>
 				</div>
 
-				<script>
-					
-					$(document).ready(function() {
-						$('.mensaje').click(function(event) {
-							
-							var mensaje = $(this).attr('data-mesaje');
 
-							var idmensaje = $(this).attr('data-idmesage');
-
-
-							$.ajax({
-								url: '/admin/controller/ControllerRegistro.php',
-								type: 'POST',
-								dataType: 'JSON',
-								data: {solicitud: 'mensajeleido',idm:idmensaje},
-							})
-							.done(function(response) {
-
-								if(response.peticion){
-									alert(mensaje);
-									location.reload();
-								}else{
-
-								}
-								
-							})
-							.fail(function() {
-								console.log("error");
-							})
-							.always(function() {
-								console.log("complete");
-							});
-							
-
-						
-
-						});
-					});
-				</script>
 			
 				
 				<div class="row contenedor-solicitud">
@@ -199,19 +154,26 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			<?php } ?>
 				</div>
 			</div>
-			
-	
+
+
+
 <script>
+	
+$(document).ready(function() {
+		var t;
+		cargarcomprobante();
 
-
-	$(document).ready(function() {
-								var slider = new Slider('#slide');
+		if($('#slide').length){
+				var slider = new Slider('#slide');
 								var valorslider = slider.getValue();
 								slider.on("slide", function(sliderValue){
 								valorslider = sliderValue;
 								document.getElementById('val-slider').textContent = "     $ "+sliderValue + " MXN";
 								$('.enviar').attr('data-comision',sliderValue);
 								});
+		}
+
+	
 															
 			$('.enviar').click(function(){
 
@@ -234,18 +196,81 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							console.log("error");
 						})
 			});
+		
 
-			
-    });
+		$('form[name="form-filtro"]').bind('submit',function(e){
+			e.preventDefault();
+			t.ajax.reload(null,false);
+			return false;
+		});
 
-		 var t = $('#comprobante').DataTable( {
-					"paging"        :         false,
-					"scrollY"       :        "400px",
-					"scrollCollapse": true,
-			         "language": {
+		$('form[name="form-filtro"]').bind('submit',function(e){
+				
+			$('.f1').val(getRango1());
+			$('.f2').val(getRango2());
+
+			return true;
+		});
+
+		$('.clear').on('click',function(){
+			$('input[name="date_start"]').val('');
+			 $('input[name="date_end"]').val('');
+			 t.ajax.reload(null,'');
+		});
+
+		function getRango1(){
+			return $('input[name="date_start"]').val();
+		}
+		function getRango2(){
+			return $('input[name="date_end"]').val();
+		}
+
+
+		function cargarcomprobante(){
+
+
+// 							<th>Fecha de solicitud</th>
+// 							<th>Fecha de aprobación</th>
+// 							<th>Aprobada por</th>
+// 							<th>Aprobado</th>
+// 							<th>Monto a retirar</th>
+// 							<th>Monto Recibido</th>	
+// 							<th></th>
+// 							
+			t = $('#comprobante').DataTable({
+					paging        	:true,
+					lengthChange	:false,
+					scrollY      	:400,
+					scrollCollapse	:true,
+					ordering		:true,
+					
+					dom:'lrtip',
+					ajax:{
+						url:'/Hotel/controller/peticiones.php',
+						type:'POST',
+						dataType:'JSON',
+						data:function(d){
+							d.peticion ='cargarcomprobante';
+							d.rango1 = getRango1();
+							d.rango2 = getRango2();
+						}
+					},
+					
+					columns:[
+						 		
+						 		{data:'creado'},
+						 		{data:'actualizado'},
+						 		{data:'aprobador'},
+						 		{data:'aprobado'},
+						 		{data:'monto'},
+						 		{data:'pagado'},
+						 		{data:'baprobado'}
+						 		
+					 		],
+			         language:{
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
 			                        "info": "",
-			                        "infoEmpty": "No se encontro ningún comprobante",
+			                        "infoEmpty": "Sin registro",
 			                        "infoFiltered": "(filtrada de _MAX_ registros)",
 			                        "search": "Buscar: ",
 			                        "paginate": {
@@ -253,13 +278,74 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			                            "previous":   "Anterior"
 			                        },
 			                    },
-			        "columnDefs": [ {
-			            "searchable": true,
-			            "orderable": true,
-			            "targets": 0
-			        } ],
-			        "order": [[ 0, 'asc' ]]
-			    } );
+			        columnsDefs:[{
+			        	orderable:true,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,
+			        	targets:0,
+			        	width:'50px'
+			        },
+			        {
+			        	orderable:false,targets:0
+			        }],
+			        order:[[0,'desc']]
+			    });
+
+		}
+			
+		t.on('draw',function(){
+			$('.mensaje').click(function(event) {
+							
+							var mensaje = $(this).attr('data-mesaje');
+
+							var idmensaje = $(this).attr('data-idmensaje');
+
+
+							$.ajax({
+								url: '/admin/controller/ControllerRegistro.php',
+								type: 'POST',
+								dataType: 'JSON',
+								data: {solicitud: 'mensajeleido',idm:idmensaje},
+							})
+							.done(function(response) {
+
+								if(response.peticion){
+									$.alert({title:"Mensaje del pagador!",content:mensaje});
+									t.ajax.reload(null,false);
+								}
+								
+							})
+							.fail(function() {
+								console.log("error");
+							})
+							.always(function() {
+								console.log("complete");
+							});
+			});
+		});
+
+		    $('input[name="buscar"]').on('keyup',function(e){
+
+					t.search(this.value).draw();
+			   });		
+});
 </script>
+
 </div>
 <?php echo $footer = $includes->get_admin_footer(); ?>

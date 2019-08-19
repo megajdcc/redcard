@@ -66,13 +66,11 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		<thead>
             <tr>
             	
-            	
             	<th>#</th>
-            	<th></th>
-            	<th>Solicitante</th>
+               	<th>Solicitante</th>
                 <th>Perfil</th>
                 <th>Monto Solicitud</th>
-                <th>Mondo Pagado</th>
+                <th>Monto Pagado</th>
                 <th>Tipo Pago</th>
                 <th>Aprobada</th>
                 <th>Fecha solicitud</th>
@@ -83,44 +81,248 @@ echo $navbar = $includes->get_admin_navbar(); ?>
         </thead>
 
         <tbody>
-   			<?php echo $comprobante->ListarSolicitudes(); ?>
+   			
         </tbody>
     </table>
 
 
 
 
-    <script>
-    	$(document).ready(function(){
+<script>
+$(document).ready(function(){
+
+    	var t;
+		cargarcomprobante();
+
+		function cargarcomprobante(){
+
+	//  			<th>Solicitante</th>
+    //              <th>Perfil</th>
+    //              <th>Monto Solicitud</th>
+    //              <th>Mondo Pagado</th>
+    //              <th>Tipo Pago</th>
+    //              <th>Aprobada</th>
+    //              <th>Fecha solicitud</th>
+    //              <th></th>
+
+
+			t = $('#comprobantes').DataTable({
+					paging        	:false,
+					lengthChange	:false,
+					scrollY      	:400,
+					scrollCollapse	:true,
+					ordering		:true,
+					
+					dom:'lrtip',
+					ajax:{
+						url:'/admin/controller/peticiones.php',
+						type:'POST',
+						dataType:'JSON',
+						data:function(d){
+							d.peticion ='cargarcomprobante';
+						}
+					},
+					
+					columns:[
+						 		{data:'solicitud',width:'20'},
+						 		{data:'nombre'},
+						 		{data:'perfil'},
+						 		{data:'monto'},
+						 		{data:'pagado'},
+						 		{data:'tipopago'},
+						 		{data:'aprobado'},
+						 		{data:'fecha'},
+						 		{data:'btnaprobado'}
+						 		
+					 		],
+			         language:{
+			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
+			                        "info": "",
+			                        "infoEmpty": "Sin registro",
+			                        "infoFiltered": "(filtrada de _MAX_ registros)",
+			                        "search": "Buscar: ",
+			                        "paginate": {
+			                            "next":       "Siguiente",
+			                            "previous":   "Anterior"
+			                        },
+			                    },
+			        columnsDefs:[{
+			        	orderable:true,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,targets:0
+			        },
+			        {
+			        	orderable:false,
+			        	targets:0,
+			        	width:'50px'
+			        },
+			        {
+			        	orderable:false,targets:0
+			        }],
+			        order:[[0,'desc']]
+			    });
+
+		}
+		
+
+		    $('input[name="buscar"]').on('keyup',function(e){
+
+					t.search(this.value).draw();
+			   });
+
+
+		t.on('draw',function(){
+
+
+			$('.aprobar').click(function(){
+
+				var solicitud = $(this).attr('data-id');
+
+				var path = "/admin/libs/responsecontroller.php";
+				var perfil = $(this).attr('data-perfil');
+				var fecha = $(this).attr('data-fecha');
+				var monto = $(this).attr('data-monto');
+
+				$('#formulario-pago').append('<input type="hidden" name="perfil" value="'+perfil+'">');
+
+				$('#montopagar').attr('max',$(this).attr('data-pago'));
+				$('#montopagar').change();
+				
+				$.ajax({
+					url: path,
+					type: 'POST',
+					dataType: 'json',
+					data: {solicitud: solicitud,perfil:perfil},
+				})
+				.done(function(response) {
+
+					var nombre        = response.solicitante[0].nombre;
+					var apellido      = response.solicitante[0].apellido;
+					var telefonofijo  = response.solicitante[0].telefonofijo;
+					var telefonomovil = response.solicitante[0].telefonomovil;
+					var mensaje = response.solicitante[0].mensaje;
+
+
+					if(response.hotel[0].nombrehotel !=null){
+						var nombrehotel = response.hotel[0].nombrehotel;
+					}
+
+
+					if(response.hotel[0].sitio_web !=null){
+						var sitioweb    = response.hotel[0].sitio_web;
+					}
+
+					if(response.hotel[0].direccion !=null){
+							var direccion   = response.hotel[0].direccion;
+					}
+
+					if(response.hotel[0].pais !=null){
+						var pais        = response.hotel[0].pais;
+					}
+
+					if(response.hotel[0].estado !=null){
+						var estado      = response.hotel[0].estado;
+					}
+				
+					
+					if(response.hotel[0].ciudad !=null){
+						var ciudad      = response.hotel[0].ciudad;
+					}
+				
+					
+					
+
+					if(response.pagocomision[0].banco !=null){
+						var banco         = response.pagocomision[0].banco;
+
+					}
+
+
+					if(response.pagocomision[0].cuenta !=null){
+						var cuenta        = response.pagocomision[0].cuenta;
+
+					}
+					
+					if(response.pagocomision[0].clabe !=null){
+							var clabe         = response.pagocomision[0].clabe;
+					}
+					
+
+					if(response.pagocomision[0].swift !=null){
+						var swift         = response.pagocomision[0].swift;
+					}
+
+
+					if(response.pagocomision[0].bancotarjeta !=null){
+						var bancotarjeta  = response.pagocomision[0].bancotarjeta;
+					}
+					
+					if(response.pagocomision[0].numerotarjeta !=null){
+						var numerotarjeta = response.pagocomision[0].numerotarjeta;
+					}
+
+					if(response.pagocomision[0].email_paypal !=null){
+						var emailpaypal   = response.pagocomision[0].email_paypal;
+					}
+										
+				
 
 
 
-	   var t = $('#comprobantes').DataTable( {
-		"paging"        :false,
-		"scrollY"       :400,
-		"scrollX"       :true,
-		"scrollCollapse": true,
-         "language": {
-                        "lengthMenu": "Mostrar _MENU_ Registros por pagina",
-                        "info": "",
-                        "infoEmpty": "No se encontro ningúna solicitud",
-                        "infoFiltered": "(filtrada de _MAX_ registros)",
-                        "search": "Buscar:",
-                        "paginate": {
-                            "next":       "Siguiente",
-                            "previous":   "Anterior"
-                        },
-                    },
-        "columnDefs": [ {
-            "searchable": true,
-            "orderable": true,
-            "targets": 0
-        } ],
-        "order": [[ 0, 'asc' ]]
+
+						$('#nrosolicitud').attr('value',solicitud);
+						$('.nombre').attr('value',nombre);
+						$('.apellido').attr('value',apellido);
+						$('.telefonomovil').attr('value',telefonomovil);
+						$('.telefonofijo').attr('value',telefonofijo);
+						$('.nrosolicitud').text(solicitud);
+						$('.mensaje').text(mensaje);
+						$('.fechasolicitud').text(fecha);
+						$('.monto').text(monto);
+
+						$('.nombrehotel').attr('value',nombrehotel);
+						$('.sitioweb').attr('value',sitioweb);
+						$('.direccion').attr('value',direccion);
+						$('.pais').attr('value',pais);
+						$('.estado').attr('value',estado);
+						$('.ciudad').attr('value',ciudad);
+
+						$('.banco').attr('value',banco);
+						$('.cuenta').attr('value',cuenta);
+						$('.clabe').attr('value',clabe);
+						$('.swift').attr('value',swift);
+						$('.bancotarjeta').attr('value',bancotarjeta);
+						$('.numerotarjeta').attr('value',numerotarjeta);
+						$('.emailpaypal').attr('value',emailpaypal);
+						
+						$('#solicitud').modal('show');
+				})
+				.fail(function() {
+					console.log("error");
+				})
+				
+    			
+    		});
+
+    		$('.cerrarmodal').click(function(){
+    			$('#solicitud').modal('hide');
+    		});
+		});	
     });
-
-    	});
-    </script>
+</script>
 
 
 			
@@ -520,153 +722,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			.always(function() {
 				console.log("complete");
 			});
-			
-
-
-
-
-
 			return false;
 
 		});
 
 
 
-			$('.aprobar').click(function(){
 
-				var solicitud = $(this).attr('data-id');
-				var path = "/admin/libs/responsecontroller.php";
-				var perfil = $(this).attr('data-perfil');
-				var fecha = $(this).attr('data-fecha');
-				var monto = $(this).attr('data-monto');
-
-				$('#formulario-pago').append('<input type="hidden" name="perfil" value="'+perfil+'">');
-
-				$('#montopagar').attr('max',$(this).attr('data-pago'));
-				$('#montopagar').change();
-				
-				$.ajax({
-					url: path,
-					type: 'POST',
-					dataType: 'json',
-					data: {solicitud: solicitud,perfil:perfil},
-				})
-				.done(function(response) {
-
-					var nombre        = response.solicitante[0].nombre;
-					var apellido      = response.solicitante[0].apellido;
-					var telefonofijo  = response.solicitante[0].telefonofijo;
-					var telefonomovil = response.solicitante[0].telefonomovil;
-					var mensaje = response.solicitante[0].mensaje;
-
-
-					if(response.hotel[0].nombrehotel !=null){
-						var nombrehotel = response.hotel[0].nombrehotel;
-					}
-
-
-					if(response.hotel[0].sitio_web !=null){
-						var sitioweb    = response.hotel[0].sitio_web;
-					}
-
-					if(response.hotel[0].direccion !=null){
-							var direccion   = response.hotel[0].direccion;
-					}
-
-					if(response.hotel[0].pais !=null){
-						var pais        = response.hotel[0].pais;
-					}
-
-					if(response.hotel[0].estado !=null){
-						var estado      = response.hotel[0].estado;
-					}
-				
-					
-					if(response.hotel[0].ciudad !=null){
-						var ciudad      = response.hotel[0].ciudad;
-					}
-				
-					
-					
-
-					if(response.hotel[0].banco !=null){
-						var banco         = response.pagocomision[0].banco;
-
-					}
-
-
-					if(response.hotel[0].cuenta !=null){
-						var cuenta        = response.pagocomision[0].cuenta;
-
-					}
-					
-					if(response.hotel[0].clabe !=null){
-							var clabe         = response.pagocomision[0].clabe;
-					}
-					
-
-					if(response.hotel[0].swift !=null){
-						var swift         = response.pagocomision[0].swift;
-					}
-
-
-					if(response.hotel[0].bancotarjeta !=null){
-						var bancotarjeta  = response.pagocomision[0].bancotarjeta;
-					}
-					
-					if(response.hotel[0].numerotarjeta !=null){
-						var numerotarjeta = response.pagocomision[0].numerotarjeta;
-					}
-
-					if(response.hotel[0].email_paypal !=null){
-						var emailpaypal   = response.pagocomision[0].email_paypal;
-					}
-
-
-					
-					
-					
-
-
-
-
-						$('#nrosolicitud').attr('value',solicitud);
-						$('.nombre').attr('value',nombre);
-						$('.apellido').attr('value',apellido);
-						$('.telefonomovil').attr('value',telefonomovil);
-						$('.telefonofijo').attr('value',telefonofijo);
-						$('.nrosolicitud').text(solicitud);
-						$('.mensaje').text(mensaje);
-						$('.fechasolicitud').text(fecha);
-						$('.monto').text(monto);
-
-						$('.nombrehotel').attr('value',nombrehotel);
-						$('.sitioweb').attr('value',sitioweb);
-						$('.direccion').attr('value',direccion);
-						$('.pais').attr('value',pais);
-						$('.estado').attr('value',estado);
-						$('.ciudad').attr('value',ciudad);
-
-						$('.banco').attr('value',banco);
-						$('.cuenta').attr('value',cuenta);
-						$('.clabe').attr('value',clabe);
-						$('.swift').attr('value',swift);
-						$('.bancotarjeta').attr('value',bancotarjeta);
-						$('.numerotarjeta').attr('value',numerotarjeta);
-						$('.emailpaypal').attr('value',emailpaypal);
-						
-						$('#solicitud').modal('show');
-				})
-				.fail(function() {
-					console.log("error");
-				})
-				
-    			
-    		});
-
-    		$('.cerrarmodal').click(function(){
-    			$('#solicitud').modal('hide');
-    		});
 				
 		});	
 		</script>

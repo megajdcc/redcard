@@ -41,11 +41,13 @@ class ReportesVentas{
 	public $estadocuenta = array();
 
 	function __construct(connection $con){
+
 		$this->con = $con->con;
  		$this->hotel['id']  = $_SESSION['id_hotel'];
 		$this->CargarData();
 		$this->DatosHotel();
 		return;
+
 	}
 
 	//  METHODOS DE CLASS
@@ -64,6 +66,7 @@ class ReportesVentas{
 
 		$this->setNombreHotel($fila['nombrehotel']);
 		$this->setComisionHotel($fila['comision']);
+
 	}
 
 	private function setNombreHotel(string $nombrehotel){
@@ -73,16 +76,22 @@ class ReportesVentas{
 	}
 
 	private function setComisionHotel(int $comision){
+
 		$this->hotel['comision'] = $comision;
+
 	}
 
 
 	public function getNombreHotel(){
+
 		return $this->hotel['nombre'];
+
 	}
 
 	public function getComisionHotel(){
+
 		return $this->hotel['comision'];
+
 	}
 
 	public function getFecha1(){
@@ -91,78 +100,188 @@ class ReportesVentas{
 	}
 
 	public function getFecha2(){
+
 		return $this->negocios['fecha_fin'];
+
 	}
 
 	private function setFecha1($fecha){
+
 		$this->negocios['fecha_inicio'] = $fecha;
+
 	}
 
 	private function setFecha2($fecha){
+
 		$this->negocios['fecha_fin'] = $fecha;
+
 	}
 
-	public function CargarData(){
+	public function getBalance(){
 
-			if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin'])){
+		if(isset($_SESSION['promotor'])){
+				$query  = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_promotor = :promotor and b.perfil=5 order by b.id desc limit 1";
+
+ 				$datos = array(':promotor'=>$_SESSION['promotor']['id']);
+				
+			}else{
+				$query  = "SELECT  b.balance as balance
+ 					from  balance as b 
+ 				where b.id_hotel = :hotel and b.perfil = 1 order by b.id desc limit 1";
+
+ 				$datos = array(':hotel'=>$this->hotel['id']);
+
+			}
+				$stm = $this->con->prepare($query);
+				$stm->execute($datos);
+				return  '$'.number_format((float)$stm->fetch(PDO::FETCH_ASSOC)['balance'],2,',','.').' MXN';
+	}
+
+
+
+	public function getPromotor(){
+
+
+		$sql = "SELECT concat(nombre,' ',apellido) as promotor from promotor where id=:promotor";
+
+		$stm = $this->con->prepare($sql);
+		$stm->bindParam(':promotor',$_SESSION['promotor']['id'],PDO::PARAM_INT);
+
+		$stm->execute();
+
+		return $stm->fetch(PDO::FETCH_ASSOC)['promotor']; 
+	}
+	public function CargarData(string $fecha1 = null, string $fecha2 = null){
+
+			if(!is_null($fecha1) and !is_null($fecha2) and !empty($fecha1) and !empty($fecha2)){
+
+				$this->setFechainicio($fecha1);
+				$this->setFechafin($fecha2);
 
 				// echo var_dump($this->busqueda);
-				// 
-		$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bh.comision, bh.balance,nv.creado 
-						FROM balancehotel as bh 
-						LEFT JOIN negocio_venta as nv on bh.id_venta = nv.id_venta
+				
+				if(isset($_SESSION['promotor'])){
+					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+											FROM balance as b 
+											LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
+											LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+											LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
+											where b.id_promotor = :promotor1  and nv.creado between :fecha1 and :fecha2 and b.id_venta != 0 and b.perfil = 5 ORDER BY creado ASC)
+											UNION 
+											(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+											from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
+											where b.id_promotor = :promotor2 and rr.condicion =1 and b.perfil = 5 and b.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+											UNION
+											(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+											CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
+											from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
+											where b.id_promotor = :promotor3 and b.perfil = 5 and r.tipo_pago = 2 and rr.condicion = 2 and b.creado between :fecha5 and :fecha6)
+
+											order by creado";
+
+					$datos = array(':promotor1'=>$_SESSION['promotor']['id'],
+							        ':promotor2'=>$_SESSION['promotor']['id'],
+							        ':promotor3'=>$_SESSION['promotor']['id'],
+									':fecha1' => $this->busqueda['fechainicio'],
+									':fecha2' => $this->busqueda['fechafin'],
+									':fecha3' => $this->busqueda['fechainicio'],
+									':fecha4' => $this->busqueda['fechafin'],
+									':fecha5' => $this->busqueda['fechainicio'],
+									':fecha6' => $this->busqueda['fechafin']
+									);	
+
+				}else{
+
+					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+						FROM balance as b 
+						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
-						where bh.id_hotel = :hotel1  and nv.creado between :fecha1 and :fecha2 and bh.id_venta != 0 ORDER BY creado ASC)
+						where b.id_hotel = :hotel1  and nv.creado between :fecha1 and :fecha2 and b.id_venta != 0 ORDER BY creado ASC)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bh.balance,bh.creado
-						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balancehotel as bh on rr.id = bh.id_retiro
-						where bh.id_hotel = :hotel2 and rr.condicion =1 and bh.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
+						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
+						where b.id_hotel = :hotel2 and rr.condicion =1 and b.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
 						UNION
 						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
-						CONCAT('+',r.monto - r.pagado) as comision, bh.balance,bh.creado
-						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balancehotel as bh on rr.id = bh.id_retiro
-						where bh.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 and bh.creado between :fecha5 and :fecha6)
+						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
+						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
+						where b.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 and b.creado between :fecha5 and :fecha6)
 
 						order by creado";
-							$stm = $this->con->prepare($query);
-							$stm->execute(array(':hotel1'=>$this->hotel['id'],
-							                    ':hotel2'=>$this->hotel['id'],
-							                    ':hotel3'=>$this->hotel['id'],
-												':fecha1' => $this->busqueda['fechainicio'],
-												':fecha2' => $this->busqueda['fechafin'],
-												':fecha3' => $this->busqueda['fechainicio'],
-												':fecha4' => $this->busqueda['fechafin'],
-												':fecha5' => $this->busqueda['fechainicio'],
-												':fecha6' => $this->busqueda['fechafin']
-											));
 
-							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+					$datos = array(':hotel1'=>$this->hotel['id'],
+							        ':hotel2'=>$this->hotel['id'],
+							        ':hotel3'=>$this->hotel['id'],
+									':fecha1' => $this->busqueda['fechainicio'],
+									':fecha2' => $this->busqueda['fechafin'],
+									':fecha3' => $this->busqueda['fechainicio'],
+									':fecha4' => $this->busqueda['fechafin'],
+									':fecha5' => $this->busqueda['fechainicio'],
+									':fecha6' => $this->busqueda['fechafin']
+									);	
+
+				}
+
+				$stm = $this->con->prepare($query);
+				$stm->execute($datos);
+
+				$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else{
-			$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bh.comision, bh.balance,nv.creado 
-						FROM balancehotel as bh 
-						LEFT JOIN negocio_venta as nv on bh.id_venta = nv.id_venta
+
+			if(isset($_SESSION['promotor'])){
+				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+						FROM balance as b
+						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
-						where bh.id_hotel = :hotel1 and bh.id_venta != 0)
+						where b.id_promotor = :promotor1 and b.id_venta != 0)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, bh.balance,bh.creado
-						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balancehotel as bh on rr.id = bh.id_retiro
-						where bh.id_hotel = :hotel2 and rr.condicion =1)
+						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
+						where b.id_promotor = :promotor2 and rr.condicion =1)
 						UNION
 						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
-						CONCAT('+',r.monto - r.pagado) as comision, bh.balance,bh.creado
-						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balancehotel as bh on rr.id = bh.id_retiro
-						where bh.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 )
+						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
+						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
+						where b.id_promotor = :promotor3 and r.tipo_pago = 2 and rr.condicion = 2 )
 						ORDER BY creado ";
 
-			$stm = $this->con->prepare($query);
-			$stm->execute(array(':hotel1'=>$this->hotel['id'],
+
+				$datos = array(':promotor1'=>$_SESSION['promotor']['id'],
+								':promotor2'=>$_SESSION['promotor']['id'],
+								':promotor3'=>$_SESSION['promotor']['id']);
+
+			}else{
+				
+				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+						FROM balance as b 
+						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
+						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
+						where b.id_hotel = :hotel1 and b.id_venta != 0)
+						UNION 
+						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
+						where b.id_hotel = :hotel2 and rr.condicion =1)
+						UNION
+						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
+						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
+						where b.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 )
+						ORDER BY creado ";
+
+				$datos = array(':hotel1'=>$this->hotel['id'],
 								':hotel2'=>$this->hotel['id'],
-								':hotel3'=>$this->hotel['id'],
-								// ':hotel4'=>$this->hotel['id'],
-								// ':hotel5'=>$this->hotel['id']
-							));
+								':hotel3'=>$this->hotel['id']);
+
+
+			}
+			
+			$stm = $this->con->prepare($query);
+			$stm->execute($datos);
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}
 	
@@ -204,12 +323,7 @@ class ReportesVentas{
 
 	public function mostrarpdf(array $post){
 
-
-		$this->setFechainicio($post['date_start']);
-		$this->setFechafin($post['date_end']);
-
-		$this->CargarData();
-		
+			$this->CargarData($post['date_start'],$post['date_end']);
 
 			ob_start();
 			require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/estadocuenta.php');
@@ -243,54 +357,42 @@ class ReportesVentas{
 
 	}
 
-	public function getEstadoCuenta(){
+public function getEstadoCuenta(){
 		
-		$query = "select max(balance) as balance from balancehotel";
-
-		$stm = $this->con->prepare($query);
-
-		$stm->execute();
-
-		$ultimobalance = $stm->fetch(PDO::FETCH_ASSOC)['balance'];
 		
 		foreach ($this->estadocuenta as $key => $value) {
 			
-			// $fecha = date('d/m/Y h:m:s', strtotime($value['creado']));
-			 $fecha = $value['creado'];
-			 // settype($value['venta'],'double');
+			// // $fecha = date('d/m/Y h:m:s', strtotime($value['creado']));
+			//  $fecha = $value['creado'];
+			//  // settype($value['venta'],'double');
 
-			 $venta = number_format((float)$value['venta'],2,'.',',');
+			$venta = number_format((float)$value['venta'],2,'.',',');
+	
 			  if($venta < 0){
-			  	$venta = '<strong class="negativo">$'.$venta.'</strong>';
+			  	$this->estadocuenta[$key]['venta'] = '<strong class="negativo">$'.$venta.'</strong>';
 			  }else{
-			  	$venta = '$'.$venta;
+			  	$this->estadocuenta[$key]['venta']= '$'.$venta;
 			  }
+
 			  if($value['comision'] < 0){
 			  	
-			  	$comision = '<strong class="negativo">$'.$value["comision"].'</strong>';
+			  	$this->estadocuenta[$key]['comision'] = '<strong class="negativo">$'.$value["comision"].'</strong>';
 			  }else{
-			  	$comision = '$'.number_format((float)$value['comision'],2,'.',',');
+			  	$this->estadocuenta[$key]['comision'] = '$'.number_format((float)$value['comision'],2,'.',',');
 			  }
+			
 			if(!empty($value['nombre'])){
-				$nombre = $value['nombre'];
+				$this->estadocuenta[$key]['nombre'] = $value['nombre'];
 			}else{
-				$nombre = $value['username'];
+				$this->estadocuenta[$key]['nombre'] = $value['username'];
 			}
 
-			
-			?>
-			
 
-		 		<tr class="estado">
-					<td class="b1"><?php echo $fecha ?></td>
-					<td class="b1"><?php echo $value['negocio'] ?></td>
-					<td class="b1"><?php echo $nombre ?></td>
-					<td class="b1"><?php echo $venta; ?></td>
-					<td class="b1"><?php echo $comision; ?></td>
-					<td class="b2">$<?php echo number_format((float)$value['balance'],2,'.',',')?></td>
-				</tr>
-<?php  }
+			$this->estadocuenta[$key]['balance'] = number_format((float)$value['balance'],2,'.',',');
 	}
+
+	return $this->estadocuenta;
+}
 
 
 	

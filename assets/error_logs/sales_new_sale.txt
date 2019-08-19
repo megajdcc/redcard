@@ -1,0 +1,1 @@
+[14/Aug/2019 2:57:25 PM | Method: negocio\libs\sales_new_sale::isReserva | Line: 162] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.id_registrante' in 'field list'

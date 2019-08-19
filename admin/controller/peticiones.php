@@ -6,6 +6,9 @@ $con = new assets\libs\connection();
 
 use admin\libs\Reservacion;
 use \admin\libs\Academia;
+use \admin\libs\Comprobantes;
+
+$comprobante = new Comprobantes($con);
 $academia = new Academia($con);
 $reservacion = new Reservacion($con);
 
@@ -21,6 +24,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			 );
 
 		$resultado = $reservacion->getDatos($_POST);
+
+		if(count($resultado) > 0){
+		
+			$response['data'] = $resultado;
+		}
+
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarcomprobante'){
+
+		$response = array(
+			
+			'data'     =>''
+			 );
+
+		$resultado = $comprobante->getSolicitudes();
 
 		if(count($resultado) > 0){
 		
