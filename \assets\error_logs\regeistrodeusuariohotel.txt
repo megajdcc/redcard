@@ -1,5 +1,0 @@
-[28/May/2019 07:39:48 AM on Hotel\models\NuevoUsuario::register on line 99] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[28/May/2019 07:44:43 AM on Hotel\models\NuevoUsuario::register on line 99] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[28/May/2019 07:44:53 AM on Hotel\models\NuevoUsuario::register on line 99] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[28/May/2019 07:44:57 AM on Hotel\models\NuevoUsuario::register on line 99] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
-[28/May/2019 07:46:24 AM on Hotel\models\NuevoUsuario::register on line 99] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined

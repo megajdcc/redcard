@@ -1,8 +1,0 @@
-[29/Apr/2019 11:32:33 AM | Method: assets\libs\index_load::load_businesses | Line: 46] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio' doesn't exist
-[29/Apr/2019 11:32:33 AM | Method: assets\libs\index_load::load_certificates | Line: 67] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_certificado' doesn't exist
-[29/Apr/2019 11:32:33 AM | Method: assets\libs\index_load::load_events | Line: 90] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_evento' doesn't exist
-[29/Apr/2019 11:32:33 AM | Method: assets\libs\index_load::load_categories | Line: 252] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_categoria' doesn't exist
-[29/Apr/2019 11:38:43 AM | Method: assets\libs\index_load::load_businesses | Line: 46] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio' doesn't exist
-[29/Apr/2019 11:38:44 AM | Method: assets\libs\index_load::load_certificates | Line: 67] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_certificado' doesn't exist
-[29/Apr/2019 11:38:44 AM | Method: assets\libs\index_load::load_events | Line: 90] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_evento' doesn't exist
-[29/Apr/2019 11:38:44 AM | Method: assets\libs\index_load::load_categories | Line: 252] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'redcard.negocio_categoria' doesn't exist

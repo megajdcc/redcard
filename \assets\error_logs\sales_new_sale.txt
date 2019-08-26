@@ -1,7 +1,0 @@
-[28/May/2019 9:33:04 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:33:13 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:33:24 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:33:45 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:34:19 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:34:32 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
-[28/May/2019 9:43:50 AM | Method: negocio\libs\sales_new_sale::create_sale | Line: 272] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'hh.id_hotel' in 'on clause'
