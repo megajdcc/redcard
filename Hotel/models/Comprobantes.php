@@ -42,7 +42,10 @@ class Comprobantes
 			$this->promotor = $_SESSION['promotor']['id'];
 			$this->hotel['id'] = $_SESSION['promotor']['hotel'];			
 		}else{
-			$this->hotel['id'] = $_SESSION['id_hotel'];
+			if(isset($_SESSION['id_hotel'])){
+				$this->hotel['id'] = $_SESSION['id_hotel'];
+			}
+			
 		}
 	
 		$this->cargarComprobantes();

@@ -606,11 +606,7 @@ class includes extends FuncionesAcademia{
 									<i class="fa fa-question"></i>
 								</a>
 							</div>
-							<div class="header-button">
-								<a href="<?php echo HOST.'/Hotel/login'; ?>" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="&Aacute;rea de Promotores | Hoteles">
-									<i class="fa fa-black-tie"></i>
-								</a>
-							</div>
+							
 
 							<?php  if(isset($_SESSION['user']['id_usuario'])){?>
 								 
@@ -786,6 +782,8 @@ class includes extends FuncionesAcademia{
 					
 						<h2>Gana con Travel Points</h2>
 						<p><a href="'.HOST.'/afiliar-hotel"><i">Afilia tu Hotel</a></p>
+						<h4>Promotores</h4>
+						<p><a href="'.HOST.'/Hotel/login" data-toggle="tooltip" data-placement="bottom" title="Área de Promotores | Hoteles"><i class="fa fa-black-tie"></i> Área de promotores</a></p>
 						
 					
 					</div><!-- /.col-* -->
@@ -794,6 +792,8 @@ class includes extends FuncionesAcademia{
 						<p><a href="'.HOST.'/afiliar-negocio">Afilia tu negocio</a></p>
 						<p><a href="'.HOST.'/por-que-afiliarme">¿Por qu&eacute; afiliarme?</a></p>
 					</div><!-- /.col-* -->
+
+
 					<div class="col-xs-12 col-sm-5">
 						<h2>Contacto</h2>
 						<p>

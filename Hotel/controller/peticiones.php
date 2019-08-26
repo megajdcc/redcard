@@ -10,11 +10,15 @@ use Hotel\models\Promotor;
 use Hotel\models\ReportesVentas;
 use Hotel\models\Comprobantes;
 
-$reporte = new ReportesVentas($con);
+
+
+
 $promotor = new Promotor($con);
 $reservacion = new Reservacion($con);
 $newuser = new NuevoUsuario($con);
 $comprobante = new Comprobantes($con);
+
+	$reporte = new ReportesVentas($con);
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){	
 

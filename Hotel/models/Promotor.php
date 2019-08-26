@@ -1062,7 +1062,7 @@ class Promotor
 	}
 
 	private function error_log($method, $line, $error){
-		file_put_contents(ROOT.'assets/error_logs/panelhotel.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'/assets/error_logs/panelhotel.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		foreach ($this->errors as $key => $value){
 			$this->errors[$key] = null;
 		}

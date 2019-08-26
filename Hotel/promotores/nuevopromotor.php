@@ -136,7 +136,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 								<option value="0">Seleccione</option>
 								<?php $promotor->getCargos(); ?>
 							</select>
-							<button class="btn btn-info new-cargo" type="button">New Cargo</button>
+							<button class="btn btn-info new-cargo" type="button">Crear cargo</button>
 						</div>
 
 					</div>
@@ -195,7 +195,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							<label for="categoria">Cargo</label>
 							<div class="input-group categoria">
 								<strong class="input-group-addon"><i class="fa fa-edit"></i></strong>
-								<input  type="text" id="cargo" name="l-cargo" class="form-control" placeholder="Nueva Cargo" autocomplete="off" required>
+								<input  type="text" id="cargo" name="l-cargo" class="form-control" placeholder="Nuevo Cargo" autocomplete="off" required>
 							</div>
 						</div>
 		      		</div>

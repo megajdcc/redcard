@@ -108,7 +108,7 @@ echo $header = $includes->get_no_indexing_header($properties);
 							<form action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" name="form-login-promotor" method="POST">
 								
 								<div class="form-group">
-									<label for="username-email">Username || Email</label>
+									<label for="username-email">Nombre de usuario || Email</label>
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-user"></i></span>
 										<input type="text" name="username-email" class="form-control" placeholder="Username or email." required>

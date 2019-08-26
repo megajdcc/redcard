@@ -606,6 +606,7 @@ class Reservacion
 						for ($i=1; $i <= 12 ; $i++) { 
 							foreach ($canceladosd as $key => $value) {
 								if($key == $i){
+									settype($canceladosd[$i],'integer');
 									$cancelados['data'][$i] = $canceladosd[$i];
 								}else{
 
@@ -620,6 +621,7 @@ class Reservacion
 
 							foreach ($consumadosd as $key => $value) {
 								if($key == $i){
+									settype($consumadosd[$i],'integer');
 									$consumados['data'][$i] = $consumadosd[$i];
 								}else{
 
@@ -634,6 +636,7 @@ class Reservacion
 
 							foreach ($agendadosd as $key => $value) {
 								if($key == $i){
+									settype($agendadosd[$i],'integer');
 									$agendados['data'][$i] = $agendadosd[$i];
 								}else{
 

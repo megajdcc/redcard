@@ -62,7 +62,7 @@ class Comprobantes
 						u.username,r.monto,r.pagado,r.aprobado,u.imagen,r.recibo
 						from retiro as r 
 						join usuario as u on r.id_usuario_solicitud  = u.id_usuario 
-						join retirocomision as rc on r.id = rc.id_retiro )
+						join retirocomision as rc on r.id = rc.id_retiro)
 
 						UNION
 						(select rc.perfil, r.id as solicitud, r.tipo_pago,r.creado,CONCAT(p.nombre,' ',p.apellido) as nombre, 
@@ -70,6 +70,7 @@ class Comprobantes
 						from retiro as r 
 						join promotor as p on r.id_promotor = p.id
 						join retirocomision as rc on r.id = rc.id_retiro)
+						ORDER BY creado
 				
 				";
 		$stm = $this->con->prepare($query);

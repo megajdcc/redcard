@@ -43,9 +43,20 @@ class ReportesVentas{
 	function __construct(connection $con){
 
 		$this->con = $con->con;
- 		$this->hotel['id']  = $_SESSION['id_hotel'];
+
+		if(isset($_SESSION['id_hotel'])){
+			$this->hotel['id']  = $_SESSION['id_hotel'];
+		}
+ 		
+ 		if(isset($_SESSION['promotor'])){
+ 			$this->hotel['id']  = $_SESSION['promotor']['hotel'];
+ 		}
+
 		$this->CargarData();
-		$this->DatosHotel();
+		if(!is_null($this->hotel['id'])){
+			$this->DatosHotel();
+		}
+		
 		return;
 
 	}
@@ -163,18 +174,18 @@ class ReportesVentas{
 				// echo var_dump($this->busqueda);
 				
 				if(isset($_SESSION['promotor'])){
-					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+					$query = "(select b.id, ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
 											FROM balance as b 
 											LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 											LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 											LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 											where b.id_promotor = :promotor1  and nv.creado between :fecha1 and :fecha2 and b.id_venta != 0 and b.perfil = 5 ORDER BY creado ASC)
 											UNION 
-											(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+											(select  b.id, rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
 											from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
 											where b.id_promotor = :promotor2 and rr.condicion =1 and b.perfil = 5 and b.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
 											UNION
-											(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+											(select b.id,'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 											CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
 											from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
 											where b.id_promotor = :promotor3 and b.perfil = 5 and r.tipo_pago = 2 and rr.condicion = 2 and b.creado between :fecha5 and :fecha6)
@@ -194,18 +205,18 @@ class ReportesVentas{
 
 				}else{
 
-					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+					$query = "(select b.id, ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
 						FROM balance as b 
 						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 						where b.id_hotel = :hotel1  and nv.creado between :fecha1 and :fecha2 and b.id_venta != 0 ORDER BY creado ASC)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						(select  b.id,rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
 						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
 						where b.id_hotel = :hotel2 and rr.condicion =1 and b.creado between :fecha3 and :fecha4 ORDER BY creado ASC)
 						UNION
-						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						(select b.id,'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
 						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
 						where b.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 and b.creado between :fecha5 and :fecha6)
@@ -232,18 +243,18 @@ class ReportesVentas{
 		}else{
 
 			if(isset($_SESSION['promotor'])){
-				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+				$query = "(select b.id,ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
 						FROM balance as b
 						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 						where b.id_promotor = :promotor1 and b.id_venta != 0)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						(select  b.id, rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
 						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
 						where b.id_promotor = :promotor2 and rr.condicion =1)
 						UNION
-						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						(select b.id, 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
 						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
 						where b.id_promotor = :promotor3 and r.tipo_pago = 2 and rr.condicion = 2 )
@@ -256,18 +267,18 @@ class ReportesVentas{
 
 			}else{
 				
-				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
+				$query = "(select b.id, ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, b.comision, b.balance,nv.creado 
 						FROM balance as b 
 						LEFT JOIN negocio_venta as nv on b.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
 						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario
 						where b.id_hotel = :hotel1 and b.id_venta != 0)
 						UNION 
-						(select  rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
+						(select  b.id, rr.negocio, rr.usuario as username ,  rr.usuario as nombre ,CONCAT('-',r.monto) as venta,CONCAT('-',r.monto) as comision, b.balance,b.creado
 						from retiro as r join retirocomision as rr on r.id = rr.id_retiro join balance as b on rr.id = b.id_retiro
 						where b.id_hotel = :hotel2 and rr.condicion =1)
 						UNION
-						(select 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
+						(select b.id, 'Reembolso' as negocio, 'Resto pago parcial' as username , 'reembolso', CONCAT('+',r.monto - r.pagado) as venta,
 						CONCAT('+',r.monto - r.pagado) as comision, b.balance,b.creado
 						from retirocomision as rr left join retiro as r on rr.id_retiro = r.id left join balance as b on rr.id = b.id_retiro
 						where b.id_hotel = :hotel3 and r.tipo_pago = 2 and rr.condicion = 2 )

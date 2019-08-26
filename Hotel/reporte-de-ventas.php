@@ -116,6 +116,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					<thead>
 						<tr>
 						
+						<th>#</th>
 						<th>Fecha</th>
 						<th>Negocio</th>
 						<th>Usuario</th>
@@ -176,7 +177,7 @@ $(document).ready(function() {
 		function cargarestadocuenta(){
 
 			t = $('#estadodecuenta').DataTable({
-					paging        	:true,
+					paging        	:false,
 					lengthChange	:false,
 					scrollY      	:400,
 					scrollCollapse	:true,
@@ -195,7 +196,7 @@ $(document).ready(function() {
 					},
 					
 					columns:[
-						 		
+						 		{data:'id'},
 						 		{data:'creado'},
 						 		{data:'negocio'},
 						 		{data:'nombre'},

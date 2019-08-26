@@ -153,7 +153,7 @@ class ReportesVentas{
 
 							$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else{
-						$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bf.comision, bf.balance,nv.creado 
+				$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bf.comision, bf.balance,nv.creado 
 						FROM balance as bf 
 						LEFT JOIN negocio_venta as nv on bf.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 

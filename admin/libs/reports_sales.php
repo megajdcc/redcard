@@ -10,6 +10,7 @@ use \Dompdf\Options;
 use PDO;
 
 class reports_sales {
+
 	private $con;
 
 	public $usuario = null,$negocio = null;
@@ -84,6 +85,7 @@ class reports_sales {
 			$stm->execute();
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && !empty($this->usuario) && !empty($this->negocio)){
+
 					$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
 						FROM balance as bs
 						LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
@@ -103,6 +105,8 @@ class reports_sales {
 								':usuario1' => $this->usuario,
 								':negocio1' => $this->negocio));
 			$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+			
 		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && !empty($this->usuario) && empty($this->negocio)){
 							$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
 										FROM balancesistema as bs
