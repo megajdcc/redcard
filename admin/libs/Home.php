@@ -594,10 +594,10 @@ public function getVentasPromedioNegocios($fecha1 = null,$fecha2 = null){
 				return $stm;
 	}else{
 				$query = "SELECT n.nombre as negocio , AVG(nven.venta) as promedio, di.iso FROM
-					negocio_venta as nven INNER JOIN nPegocio as ne ON ne.id_negocio = nven.id_negocio
+					negocio_venta as nven INNER JOIN negocio as ne ON ne.id_negocio = nven.id_negocio
 					INNER JOIN negocio as n on nven.id_negocio = n.id_negocio
 					INNER JOIN divisa as di ON nven.iso = di.iso
-					GROUP BY n.nombre, di.iso";
+					GROUP BY n.nombre";
 					
 				$stm = $this->conection->prepare($query);
 				$stm->execute();
