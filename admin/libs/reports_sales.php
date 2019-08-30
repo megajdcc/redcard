@@ -52,13 +52,13 @@ class reports_sales {
 				// 
 		$query = "
 					(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
-											FROM balancesistema as bs
+											FROM balance as bs
 											LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
 											LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
-											LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.creado BETWEEN :fecha1 and :fecha2)
+											LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where bs.perfil = 4 and nv.creado BETWEEN :fecha1 and :fecha2)
 					UNION 
 						(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
-											from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+											from retirocomisionsistema as rr  join balance as bs on rr.id = bs.id_retiro where bs.perfil = 4 and bs.creado BETWEEN :fecha3 and :fecha4
 						)
 											ORDER BY creado 
 					";
@@ -90,10 +90,10 @@ class reports_sales {
 						FROM balance as bs
 						LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
 						LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
-						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and nv.id_negocio = :negocio1 and bs.perfil = 4 and  nv.creado BETWEEN :fecha1 and :fecha2)
+						LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and nv.id_negocio = :negocio1 and bs.perfil = 4 and bs.perfil = 4 and  nv.creado BETWEEN :fecha1 and :fecha2)
 						UNION 
 						(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
-						from retirocomisionsistema as rr  join balance as bs on rr.id = bs.id_retiro where bs.perfil = 4 and   bs.creado BETWEEN :fecha3 and :fecha4
+						from retirocomisionsistema as rr  join balance as bs on rr.id = bs.id_retiro where bs.perfil = 4 and  bs.perfil = 4 and  bs.creado BETWEEN :fecha3 and :fecha4
 						)
 						ORDER BY creado ";
 
@@ -109,13 +109,13 @@ class reports_sales {
 			
 		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && !empty($this->usuario) && empty($this->negocio)){
 							$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
-										FROM balancesistema as bs
+										FROM balance as bs
 										LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
 										LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
-										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and nv.creado BETWEEN :fecha1 and :fecha2  )
+										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_usuario = :usuario1 and bs.perfil = 4 and nv.creado BETWEEN :fecha1 and :fecha2  )
 												UNION 
 												(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
-												from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+												from retirocomisionsistema as rr  join balance as bs on rr.id = bs.id_retiro where bs.perfil = 4 and bs.creado BETWEEN :fecha3 and :fecha4
 												)
 												ORDER BY creado 
 												";
@@ -129,13 +129,13 @@ class reports_sales {
 												$this->estadocuenta = $stm->fetchAll(PDO::FETCH_ASSOC);
 		}else if(!empty($this->busqueda['fechainicio']) && !empty($this->busqueda['fechafin']) && empty($this->usuario) && !empty($this->negocio)){
 							$query = "(select ne.nombre as negocio, u.username, CONCAT(u.nombre,' ',u.apellido) as nombre, nv.venta, bs.comision, bs.balance,nv.creado 
-										FROM balancesistema as bs
+										FROM balance as bs
 										LEFT JOIN negocio_venta as nv on bs.id_venta = nv.id_venta
 										LEFT JOIN negocio as ne on nv.id_negocio = ne.id_negocio 
-										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_negocio = :negocio1 and nv.creado BETWEEN :fecha1 and :fecha2  )
+										LEFT JOIN usuario as u on nv.id_usuario = u.id_usuario where nv.id_negocio = :negocio1 and bs.perfil = 4 and nv.creado BETWEEN :fecha1 and :fecha2  )
 												UNION 
 												(select  'Retiro Comision' as negocio, 'Retiro Comision' as username, 'Retiro Comision' as nombre, CONCAT('-',rr.monto) as venta, CONCAT('-',rr.monto) as comision,bs.balance,bs.creado
-												from retirocomisionsistema as rr  join balancesistema as bs on rr.id = bs.id_retiro where bs.creado BETWEEN :fecha3 and :fecha4
+												from retirocomisionsistema as rr  join balance as bs on rr.id = bs.id_retiro where bs.perfil = 4 and bs.creado BETWEEN :fecha3 and :fecha4
 												)
 												ORDER BY creado 
 												";

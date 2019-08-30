@@ -89,7 +89,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 								</select>
 
 						
-								<form class="col-lg-6" method="post" name="imprimir" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
+								<form class="col-lg-12 col-xs-12" method="post" name="imprimir" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" target="_blank">
 							
 							<div class="form-group">				
 								<input type="hidden" name="rango1" value="">

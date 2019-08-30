@@ -1656,10 +1656,42 @@ if($('#solicitudes').length){
 		}
 	
 	// API DE CHAT ... 
-	 
+	// 
+	// 
+	var valordefault = false; 
+$('.btn-largue-mod').on('click',function(){
+		// alert($(window).width());
+		if($(window).width() <= 655){
+			
+				if(valordefault){
+				$('.sidebar-secondary-admin').removeClass('sidebar-secondary-admin-show');
+				$('.sidebar-admin').removeClass('sidebar-admin-show');
+				 valordefault = false;
+			}else{
+				$('.sidebar-secondary-admin').addClass('sidebar-secondary-admin-show');
+				$('.sidebar-admin').addClass('sidebar-admin-show');
+				 valordefault = true;
+			}
+		}else{
+
+				if(valordefault){
+				$('.sidebar-secondary-admin').removeClass('sidebar-secondary-admin-show');
+				 valordefault = false;
+			}else{
+				$('.sidebar-secondary-admin').addClass('sidebar-secondary-admin-show');
+				 valordefault = true;
+			}
+		}
+
+		
+
+	});
+
+	
           
 });
 
+	 
 // Tabs
 // Abrir el tab con link directo
 // var url = document.location.toString();

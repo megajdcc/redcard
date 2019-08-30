@@ -226,11 +226,6 @@ class Balance
 										':venta'=>$idventa,':comision'=>$comisionreferidornew,':perfilp'=>$this->perfiles['Referidor']));
 				}
 		}
-
-		
-
-
-
 	
 }
 

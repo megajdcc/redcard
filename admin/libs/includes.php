@@ -710,7 +710,9 @@ class includes {
 		</div><!-- /.header-wrapper -->
 		<div class="header-statusbar">
 			<div class="header-statusbar-inner">
+			<button class="btn-largue-mod"><i class="fa fa-bars"></i></button>
 				<div class="header-statusbar-left">
+
 					<h1 class="logo-esmart">
 						<span class="header-text ">Panel de control</span>
 					</h1>

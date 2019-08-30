@@ -37,7 +37,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 <?php echo $con->get_notify();?>
 
 <div class="row">
-	<div class="background-white p20 mb50 col-sm-12">
+	<div class="background-white p20 mb50 col-xs-12 col-sm-12">
 		<?php  echo $iata->getNotificacion();?>
 		<div class="page-title">
 			<h1>Codigo Iata Aeroportuaria
@@ -62,8 +62,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 				
 				}
 			</script>
-				<form class="pull-right" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" onsubmit="return ValidarIata()">
-					<table  id="iatas" class="display" cellspacing="0" width="98%">
+				<form class="" method="post" action="<?php echo _safe($_SERVER['REQUEST_URI']);?>" onsubmit="return ValidarIata()">
+					<table  id="iatas" class="display" cellspacing="0" width="100">
 					<thead>
 			            <tr>
 			            	

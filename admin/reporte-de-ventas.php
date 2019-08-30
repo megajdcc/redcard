@@ -166,7 +166,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 						</h1>
 					</div>
 
-			<table  id="estadodecuenta" class="display" cellspacing="0" width="100%">
+			<table  id="estadodecuenta" class="display" cellspacing="0" width="100">
 					<thead>
 						<tr>
 						
