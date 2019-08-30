@@ -733,15 +733,18 @@ class includes extends FuncionesAcademia{
 		</div><!-- /.header-wrapper -->
 		<div class="header-statusbar">
 				<div class="header-statusbar-inner">
-				<button class="btn-largue-mod"><i class="fa fa-bars"></i></button>
 
-				<div class="header-statusbar-left">
+				<div class="row">
+				<button class="btn-largue-mod col-xs-2 col-sm-1 col-md-1 "><i class="fa fa-bars"></i></button>
+
+				<div class="header-statusbar-left header-negocio col-xs-8 col-sm-4 col-md-6">
 					<h1 class="logo-esmart">
 						
 						<span class="header-text">'.$this->business['name'].'</span>
 					</h1>
 				</div><!-- /.header-statusbar-left -->
-				<div class="header-statusbar-right">
+
+				<div class="header-statusbar-right col-xs-12 hidden-xs col-sm-3 col-md-3">
 					<ul class="breadcrumb">
 						<li class="hidden-xs hidden-sm"><a href="'.HOST.'/negocio/">Administrar Negocio</a></li>
 						<li class="hidden-xs hidden-sm">'._safe($this->crumbs[0]).'</li>
@@ -749,9 +752,11 @@ class includes extends FuncionesAcademia{
 					</ul>
 				</div><!-- /.header-statusbar-right -->
 
-				<article class="header-ayuda" style="margin-left:10rem;">
+				<article class="header-ayuda col-xs-2 d-xs-none hidden-xs col-sm-3 col-md-2">
 					<button class="btn-academia">Academia  |  <i class="fa fa-graduation-cap"></i><span class="fa fa-bars"></span></button>
 				</article>
+
+				</div>
 
 			</div><!-- /.header-statusbar-inner -->
 		</div><!-- /.header-statusbar -->

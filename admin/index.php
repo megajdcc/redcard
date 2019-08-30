@@ -118,7 +118,7 @@ echo $navbar = $includes->get_admin_navbar();
 
 		<div class="row">
 			
-			<div class="col-sm-3 col-lg-3">
+			<div class="col-12 col-sm-3 col-lg-3">
 
 				<?php echo $home->getVentas();?>
 				<div class="statusbox">
@@ -611,7 +611,7 @@ echo $navbar = $includes->get_admin_navbar();
 			</div>
 
 		
-		<div class="row">
+		<!-- <div class="row"> -->
 
 			<div class="col-sm-3">
 				<div class="statusbox">
@@ -631,7 +631,8 @@ echo $navbar = $includes->get_admin_navbar();
 					</div><!-- /.statusbox-content -->
 				</div>
 			</div>
-			</div>
+
+	
 
 			<div class="col-sm-3">
 				<div class="statusbox">

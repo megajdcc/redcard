@@ -7463,7 +7463,14 @@ ul.dropdown-menu li a {
 .header-statusbar {
   background-color: #363636;
   color: #fff;
-  padding: 15px 20px 10px 20px; }
+  padding: 10px 10px 10px 10px; 
+}
+@media (min-width: 760px){
+  .header-statusbar {
+
+  padding: 15px 20px 10px 20px; 
+}
+}
   .header-statusbar .breadcrumb {
     background-color: transparent;
     border-radius: 0px;
@@ -7496,8 +7503,12 @@ ul.dropdown-menu li a {
 .header-statusbar-left{
    justify-content: flex-start !important;
     flex:1 1 320px;
-    margin: 1rem 0px;
+    /*margin: 1rem 0px;*/
+    padding: 0px;
+    height: 100%;
+    align-items: center;
 }
+
 
 /*@media (max-width: */
 .header-statusbar-left, .header-statusbar-right {
@@ -7514,7 +7525,9 @@ ul.dropdown-menu li a {
   /*margin-left: auto;*/
    /*flex:1 1 300px;*/
    /*background: white;*/
-  margin-right: 3rem;
+  /*margin-right: 3rem;*/
+  height: 100%;
+  align-items: center;
 }
 
 .header-statusbar-search {
@@ -10629,8 +10642,22 @@ h2.widgettitle {
       vertical-align: top;
       overflow-y: auto;
       height: 100vh;
-      padding: 10px 20px;
+      /*padding: 10px 20px;*/
       flex:1 1 auto !important;
+    }
+
+    .content-admin .container-fluid{
+      padding: 5px 5px;
+    }
+  
+  .header-statusbar-inner .row{
+    width:100%;
+  }
+    @media (min-width: 400px){
+
+    .content-admin .container-fluid{
+      padding: 15px 15px;
+    }
     }
 
   .content-admin h3 {
@@ -11148,7 +11175,7 @@ a.view-all {
 }
 .logo-esmart {
   font-family: 'Binary', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  line-height: 16px;
+  /*line-height: 16px;*/
 }
 .logo-club {
   font-family: 'Absara', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -11406,8 +11433,9 @@ margin-bottom: 0;
   font-family: 'Myriad Regular';
   font-size: 22px;
   margin: -15px 0 0 25px;
-  display: inline-block;
-  vertical-align: middle; }
+  /*display: inline-block;*/
+  vertical-align: middle; 
+}
 
 .header-statusbar-search {
   vertical-align: middle;

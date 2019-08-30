@@ -683,8 +683,10 @@ class Includes extends FuncionesAcademia{
 					</div><!-- /.header-wrapper -->
 					<div class="header-statusbar">
 						<div class="header-statusbar-inner">
-						<button class="btn-largue-mod"><i class="fa fa-bars"></i></button>
-							<div class="header-statusbar-left">
+
+						<div class="row">
+						<button class="btn-largue-mod col-xs-2 col-sm-2 col-md-1"><i class="fa fa-bars"></i></button>
+							<div class="header-statusbar-left col-xs-10 col-sm-8 col-md-7">
 								<h1 class="logo-esmart">
 									<span class="header-text ">Panel de control</span>
 								</h1>
@@ -700,13 +702,15 @@ class Includes extends FuncionesAcademia{
 
 							$html .='</div>
 							<!-- /.header-statusbar-left -->
-							<div class="header-statusbar-right">
+							<div class="header-statusbar-right col-xs-12 d-xs-none col-sm-2 col-md-4">
 								<ul class="breadcrumb">
 								
 									<li class="hidden-xs hidden-sm">'.$this->crumbs[0].'</li>
 									<li>'.$this->crumbs[1].'</li>
 								</ul>
 							</div><!-- /.header-statusbar-right -->
+
+							</div>
 						</div><!-- /.header-statusbar-inner -->
 					</div><!-- /.header-statusbar -->
 				</header><!-- /.header -->
