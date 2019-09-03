@@ -224,7 +224,10 @@ width: 100%;
 	/*overflow: hidden;*/
 	height: 150px;
 }
-
+.caja-new-disponibilidad table{
+	/*display: flex;*/
+	/*flex-wrap: wrap;*/
+}
 .caja-new-disponibilidad header section
 {
 	display: flex;

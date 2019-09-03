@@ -421,7 +421,7 @@ class Includes extends FuncionesAcademia{
 				<meta name="googlebot-image" content="none" />
 				<meta name="robots" content="none" />
 
-				<link href="http://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
+				<link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet" type="text/css" />
 
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/font-awesome/css/font-awesome.min.css"/>
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/owl.carousel/assets/owl.carousel.css"/>
@@ -434,13 +434,16 @@ class Includes extends FuncionesAcademia{
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css"/>
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css"/>
 				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css"/>
+				<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/css/responsive.dataTables.min.css"/>
 					<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.css"/>
 
 				
 
-
+				
 				<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 				<script src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+				<script src="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/js/dataTables.responsive.min.js"></script>
+
 				<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/data.js"></script>
 				<script src="'.HOST.'/assets/libraries/Highcharts/modules/exporting.js"></script>
@@ -620,7 +623,7 @@ class Includes extends FuncionesAcademia{
 
 								
 										$html .='<div class="header-button">
-											<a href="http://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
+											<a href="https://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 												<i class="fa fa-facebook"></i>
 											</a>
 										</div>
@@ -633,7 +636,7 @@ class Includes extends FuncionesAcademia{
 										<ul class="header-nav-primary nav nav-pills collapse navbar-collapse">
 											<li class="visible-xs"><a href="'.HOST.'/que-es-travel-points">¿Qu&eacute; es Travel Points?</a></li>
 											
-											<li class="visible-xs"><a href="http://www.facebook.com" target="_blank">Travel points Facebook</a></li>
+											<li class="visible-xs"><a href="https://www.facebook.com" target="_blank">Travel points Facebook</a></li>
 											<li class="visible-xs"><a href="'.HOST.'/contacto">Contacta Travel points</a></li>
 										</ul>
 										<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".header-nav-primary">
@@ -702,7 +705,7 @@ class Includes extends FuncionesAcademia{
 
 							$html .='</div>
 							<!-- /.header-statusbar-left -->
-							<div class="header-statusbar-right col-xs-12 d-xs-none col-sm-2 col-md-4">
+							<div class="header-statusbar-right col-xs-12 hidden-xs col-sm-2 col-md-4">
 								<ul class="breadcrumb">
 								
 									<li class="hidden-xs hidden-sm">'.$this->crumbs[0].'</li>

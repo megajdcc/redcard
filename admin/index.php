@@ -25,6 +25,7 @@ if(!isset($_SESSION['user']['admin_authorize'])){
 }
 
 $businesses = new admin\libs\business_dashboard($con);
+
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(isset($_POST['pdf'])){
 		$businesses->get_businesses_pdf();

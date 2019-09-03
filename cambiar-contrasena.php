@@ -7,6 +7,7 @@ $password = new assets\libs\change_password($con);
 
 $email = filter_input(INPUT_GET, 'email', FILTER_VALIDATE_EMAIL);
 $hash = filter_input(INPUT_GET, 'codigo');
+
 if($email && strlen($hash) == 32){
 	$validation = $password->validate_hash($email, $hash);
 	if(!$validation){
@@ -14,6 +15,7 @@ if($email && strlen($hash) == 32){
 		include(ROOT.'/errores/404.php');
 		die();
 	}
+
 }else{
 	http_response_code(404);
 	include(ROOT.'/errores/404.php');

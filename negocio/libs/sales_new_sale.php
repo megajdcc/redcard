@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use DateTime;
 use DateInterval;
+
 class sales_new_sale extends Balance{
 	
 
@@ -115,6 +116,8 @@ class sales_new_sale extends Balance{
 
 		$fecha = new DateTime();
 		$fechaactual = $fecha->getTimestamp();
+
+
 		$result = false;
 
 		$sql  = "SELECT r.id_hotel,r.id_promotor,r.usuario_registrante, r.id, concat(r.fecha,' ',r.hora) as fecha, r.hora, u.id_usuario, u.username from reservacion as r 
@@ -148,6 +151,9 @@ class sales_new_sale extends Balance{
 
 		        		$fecha3->add(new DateInterval('P5D'));
 		        		// echo $fecha3->getTimestamp();
+		        		$fechar2->sub(new DateInterval('PT03H'));
+
+
 
 
 						if(($fechar2->getTimestamp() <= $fecha3->getTimestamp()) and ($fechaactual >= $fechar2->getTimestamp())){
@@ -168,7 +174,6 @@ class sales_new_sale extends Balance{
 
 	public function submit_sale(array $post){
 
-
 		$this->set_user($post['username']);
 		$this->set_total($post['total']);
 		$this->set_currency($post['currency']);
@@ -178,6 +183,7 @@ class sales_new_sale extends Balance{
 		if($this->isReserva()){
 
 			$sql = "UPDATE reservacion set status = 1 where id=:reservacion";
+
 			$this->con->beginTransaction();
 			try {
 				$stm = $this->con->prepare($sql);
@@ -194,15 +200,19 @@ class sales_new_sale extends Balance{
 		if(isset($post['use_cert'])){
 			$this->set_certificates($post['use_cert']);
 		}
+
 		if(!array_filter($this->error)){
 			$this->create_sale();
 			return true;
 		}
+
 		if($this->business['status'] != 1){
 			return false;
 		}
+
 		$this->error['warning'] = 'Uno o más campos tienen errores. Por favor revísalos cuidadosamente.';
 		return false;
+
 	}
 
 	private function create_sale(){

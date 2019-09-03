@@ -714,7 +714,7 @@ class manage_home {
 	}
 
 	private function catch_errors($method, $line, $error){
-		file_put_contents(ROOT.'\assets\error_logs\business_index.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		file_put_contents(ROOT.'/assets/error_logs/business_index.txt', '['.date('d/M/Y h:i:s A').' on '.$method.' on line '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
 		return;
 	}
 }

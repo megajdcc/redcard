@@ -61,7 +61,7 @@ class Reservacion extends Reports
 
 					if($datos['restaurant'] !=0 and $datos['hotel'] == 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -74,7 +74,7 @@ class Reservacion extends Reports
 					}else if($datos['restaurant'] !=0 and $datos['hotel'] != 0){
 
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -89,7 +89,7 @@ class Reservacion extends Reports
 					}else if($datos['restaurant'] ==0 and $datos['hotel'] != 0){
 
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -102,7 +102,7 @@ class Reservacion extends Reports
 
 					}else{
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -122,7 +122,7 @@ class Reservacion extends Reports
 			case 1:
 				if($datos['restaurant'] !=0 and $datos['hotel'] == 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -135,7 +135,7 @@ class Reservacion extends Reports
 
 					}else if($datos['restaurant'] !=0 and $datos['hotel'] != 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -148,7 +148,7 @@ class Reservacion extends Reports
 						);
 					}else if($datos['restaurant'] ==0 and $datos['hotel'] != 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -159,7 +159,7 @@ class Reservacion extends Reports
 							':hotel'       =>$datos['hotel']);
 					}else{
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -181,7 +181,7 @@ class Reservacion extends Reports
 
 				if($datos['restaurant'] !=0 and $datos['hotel'] == 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -193,7 +193,7 @@ class Reservacion extends Reports
 						);
 				}else if($datos['restaurant'] !=0 and $datos['hotel'] != 0){
 					$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -206,7 +206,7 @@ class Reservacion extends Reports
 						);
 					}else if($datos['restaurant'] ==0 and $datos['hotel'] != 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -218,7 +218,7 @@ class Reservacion extends Reports
 						);
 					}else{
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -243,7 +243,7 @@ class Reservacion extends Reports
 
 					if($datos['restaurant'] !=0 and $datos['hotel'] == 0){
 							$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -255,7 +255,7 @@ class Reservacion extends Reports
 							);
 					}else if($datos['restaurant'] !=0 and $datos['hotel'] != 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -268,7 +268,7 @@ class Reservacion extends Reports
 							);
 					}else if($datos['restaurant'] ==0 and $datos['hotel'] != 0){
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -280,7 +280,7 @@ class Reservacion extends Reports
 							);
 					}else{
 						$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -305,7 +305,7 @@ class Reservacion extends Reports
 
 				if($datos['restaurant'] !=0 and $datos['hotel'] == 0){
 					$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -318,7 +318,7 @@ class Reservacion extends Reports
 					);
 				}else if($datos['restaurant'] !=0 and $datos['hotel'] != 0){
 					$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+						concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 						join usuario as u on r.usuario_solicitante = u.id_usuario
 						left join hotel as h on r.id_hotel = h.id
 						left join negocio as n on r.id_restaurant = n.id_negocio
@@ -332,7 +332,7 @@ class Reservacion extends Reports
 
 					}else if($datos['restaurant'] ==0 and $datos['hotel'] != 0){
 							$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-							concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+							concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id ,r.id_promotor from reservacion as r 
 							join usuario as u on r.usuario_solicitante = u.id_usuario
 							left join hotel as h on r.id_hotel = h.id
 							left join negocio as n on r.id_restaurant = n.id_negocio
@@ -345,7 +345,7 @@ class Reservacion extends Reports
 						);
 					}else{
 							$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
-							concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id from reservacion as r 
+							concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
 							join usuario as u on r.usuario_solicitante = u.id_usuario
 							left join hotel as h on r.id_hotel = h.id
 							left join negocio as n on r.id_restaurant = n.id_negocio
@@ -364,6 +364,24 @@ class Reservacion extends Reports
 					} catch (\PDOException $e) {
 					// echo $e->getMessage();
 					}
+				break;
+
+				case 5:
+				$sql = "SELECT n.nombre as negocio, r.creado, concat(r.fecha,' ', r.hora) as fecha, h.nombre as hotel, u.username, 
+							concat(u.nombre, ' ', u.apellido) as nombrecompleto,r.usuario_registrante, r.numeropersona,r.status, r.id,r.id_promotor  from reservacion as r 
+							join usuario as u on r.usuario_solicitante = u.id_usuario
+							left join hotel as h on r.id_hotel = h.id
+							left join negocio as n on r.id_restaurant = n.id_negocio
+							";
+							
+					try {
+						$stm = $this->conec->prepare($sql);
+						$stm->execute();
+					
+					} catch (\PDOException $e) {
+					// echo $e->getMessage();
+					}
+
 				break;
 			
 			default:
@@ -413,6 +431,9 @@ class Reservacion extends Reports
 		$sql = "SELECT u.username, concat(u.nombre,' ',u.apellido) as nombrecompleto from usuario as u join reservacion as r on u.id_usuario = r.usuario_registrante
 				where u.id_usuario =:registrante";
 
+
+		$sql2 = "SELECT concat('Promotor - ',p.nombre,' ',p.apellido) as nombrecompleto FROM promotor  as p where id = :p";
+
 		for ($i=0; $i < count($this->catalogo); $i++) { 
 
 			if(empty($this->catalogo[$i]['hotel'])){
@@ -420,21 +441,49 @@ class Reservacion extends Reports
 			}
 
 
+			if(!is_null($this->catalogo[$i]['id_promotor'])){
 
-			$stm = $this->conec->prepare($sql);
-			$stm->bindParam(':registrante',$this->catalogo[$i]['usuario_registrante'],PDO::PARAM_INT);
-			$stm->execute();
+					$stm = $this->conec->prepare($sql2);
+					$stm->execute(array(':p'=>$this->catalogo[$i]['id_promotor']));
+
+					if($row = $stm->fetch(PDO::FETCH_ASSOC)){
+				
+						$this->catalogo[$i]['usuario_registrante'] = $row['nombrecompleto'];
+					
+					}
+
+
+			}else{
+
+				$stm = $this->conec->prepare($sql);
+				$stm->bindParam(':registrante',$this->catalogo[$i]['usuario_registrante'],PDO::PARAM_INT);
+				$stm->execute();
 
 			if($row = $stm->fetch(PDO::FETCH_ASSOC)){
 
 				if(empty($row['nombrecompleto'])){
-					$this->catalogo[$i]['usuario_registrante'] = $row['username'];
+
+						$this->catalogo[$i]['usuario_registrante'] = $row['username'];
+
+					}else{
+
+						$this->catalogo[$i]['usuario_registrante'] = $row['nombrecompleto'];
+
+					}
+					
 				}else{
-					$this->catalogo[$i]['usuario_registrante'] = $row['nombrecompleto'];
+
+					$this->catalogo[$i]['usuario_registrante'] = 'directo';
+
 				}
-			}else{
-				$this->catalogo[$i]['usuario_registrante'] = 'directo';
+
 			}
+
+			
+
+		
+
+
 
 
 			switch ($this->catalogo[$i]['status']) {
@@ -482,12 +531,17 @@ class Reservacion extends Reports
 
 	public function getReservaConcierge(){
 
-		$sql = "SELECT count(r.id) as reservas, u.username, concat(u.nombre, ' ', u.apellido) as nombrecompleto from reservacion as r 
+			$sql = "(SELECT count(r.id) as reservas, u.username, concat(u.nombre, ' ', u.apellido) as nombrecompleto from reservacion as r 
 			JOIN usuario as u on r.usuario_registrante = u.id_usuario
-            group by u.id_usuario";
+			
+			group by u.username)
+			UNION
+			(SELECT count(r.id) as reservas,p.username, concat('Promotor  - ',p.nombre, ' ', p.apellido) as nombrecompleto
+			from reservacion as r join promotor as p on r.id_promotor = p.id
+			group by p.username
+			) ";
 
             $stm = $this->conec->prepare($sql);
-
             $stm->execute();
             return $stm;
 

@@ -605,8 +605,17 @@ class includes extends FuncionesAcademia{
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
-	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
+
+
+	
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/css/responsive.dataTables.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.css" />
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/js/dataTables.responsive.min.js"></script>
+
+
+
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
 
 	<link src="'.HOST.'/assets/libraries/bootstrap/css/bootstrap.css"/>

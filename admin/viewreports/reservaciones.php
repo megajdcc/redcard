@@ -87,6 +87,7 @@
 			<tr>
 				<th>Fecha Registro</th>
 				<th>Fecha Reserva</th>
+				<th>Hotel</th>
 				<th>Negocio</th>
 				<th>Solicitante</th>
 				<th>Registrante</th>
@@ -103,6 +104,8 @@
 			$creado   = _safe($valores['creado']);
 			$negocio  = _safe($valores['negocio']);
 
+			$hotel = str_replace('(Sin hotel)',' ',$valores['hotel']);
+
 			$usuario  =	$valores['nombrecompleto'];
 			if(empty($valores['nombrecompleto'])){
 				$usuario = $valores['username'];
@@ -110,30 +113,20 @@
 		
 			$registrante = $valores['usuario_registrante'];
 
-			switch ($valores['status']) {
-				case 0:
-					$status   ='Agendada';
-					break;
-				
-				case 1:
-					$status   ='Consumada';
-					break;
-				case 3:
-					$status   ='Cancelada';
-					break;
-			}
+		
 			
 			$fecha    = _safe($valores['fecha']);	
 
-			?>
+			?> 
 
 			<tr id="<?php echo $valores['id']?>">
 				<td><?php echo $creado ?></td>
 				<td><?php echo $fecha ?></td>
+				<td><?php echo $hotel; ?></td>
 				<td><?php echo $negocio ?></td>
 				<td><?php echo $usuario; ?></td>
 				<td><?php echo $registrante; ?></td>
-				<td><?php echo $status; ?></td>
+				<td><?php echo  $valores['status']; ?></td>
             </tr>
 
             	

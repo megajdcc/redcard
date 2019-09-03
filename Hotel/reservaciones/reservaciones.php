@@ -77,7 +77,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 							<div class="btn-group btn-group-toggle filtro" data-toggle="buttons"  aria-label="decision filtro">
 								
 								<select class="btn-group form-control d-inline-flex" id="del" name="del">
-									<option value="0" selected>Dia</option>
+									<option value="5" selected>Todos</option>
+									<option value="0">Dia</option>
 									<option value="1">Dia Anterior</option>
 									<option value="2">Mes</option>
 									<option value="3">Mes Anterior</option>
@@ -201,7 +202,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			</div>
 
 			<div class="row">
-					<table  id="listareservaciones" class="display" cellspacing="0" width="100%">
+					<table  id="listareservaciones" class="display nowrap" cellspacing="0" width="100%">
 
 						<thead>
 							<tr>
@@ -447,11 +448,12 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		
 
 		 var t = $('#listareservaciones').DataTable({
-					paging        	:true,
+					paging        	:false,
 					lengthChange	:false,
 					scrollY      	:400,
 					scrollCollapse	:true,
 					ordering		:true,
+					responsive:true,
 					
 					dom:'lrtip',
 					ajax:{
@@ -471,10 +473,10 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					
 					columns:[
 						 		
-						 		{data:'negocio'},
-						 		{data:'nombrecompleto'},
+						 		{data:'negocio',responsivePriority:1},
+						 		{data:'nombrecompleto',responsivePriority:1},
 						 		{data:'usuario_registrante'},
-						 		{data:'status'},
+						 		{data:'status',responsivePriority:1},
 						 		{data:'fecha'},
 						 		{data:'numeropersona'},
 						 		

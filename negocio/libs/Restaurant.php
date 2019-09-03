@@ -59,7 +59,7 @@ class Restaurant {
 	public $filtro = 0;
 	public $hotel = null;
 
-	private $error = array('notificacion' => null, 'fechainicio' => null, 'fechafin' => null);
+	private $error = array('notificacion' => null, 'fechainicio' => null, 'fechafin' => null,'error'=>'');
 
 	function __construct(conec $conecction){
 		
@@ -130,11 +130,24 @@ class Restaurant {
 
 	public function desfaseReserv(){
 
-		$sql = "UPDATE reservacion set status = 4 where id_restaurant = :negocio and fecha > ADDDATE(fecha,INTERVAL 5 day)";
+		$sql = "UPDATE reservacion set status = 3 where id_restaurant = :negocio and now() > ADDDATE(fecha,INTERVAL 5 day) and status = 0";
 
-		$stm = $this->con->prepare($sql);
-		$stm->bindParam(':negocio', $this->restaurant['id'],PDO::PARAM_INT);
-		$stm->execute();
+		$this->con->beginTransaction();
+				
+		try {
+			
+			$stm = $this->con->prepare($sql);
+			$stm->bindParam(':negocio', $this->restaurant['id'],PDO::PARAM_INT);
+			$stm->execute();
+			$this->con->commit();
+
+		} catch (\PDOException $e) {
+			
+			$this->con->rollBack();
+			$this->error_log(__METHOD__,__LINE__,$e->getMessage());
+		
+		}
+		
 	}
 
 
@@ -961,6 +974,13 @@ class Restaurant {
 		$dompdf->stream($titulo.'.pdf',$dato);
 
 	}
+
+	private function error_log($method, $line, $error){
+		file_put_contents(ROOT.'/assets/error_logs/restaurant.txt', '['.date('d/M/Y g:i:s A').' | Method: '.$method.' | Line: '.$line.'] '.$error.PHP_EOL,FILE_APPEND);
+		$this->error['error'] = 'Parece que tenemos errores técnicos, disculpa las molestias. Intentalo más tarde.';
+		return;
+	}
+
 }
 
  ?>

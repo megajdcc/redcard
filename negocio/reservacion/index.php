@@ -48,6 +48,19 @@ echo $navbar = $includes->get_navbar(); ?>
 			<div class="page-title">
 				<h1>Lista de Reservaciones</h1>
 			</div>
+
+			<div class="alert alert-info alert-dismissible" role="alert" style="padding: 5px 10px; border-radius: 10px;">
+
+				
+				<span class="fa fa-info"> </span>
+				<strong>   Importante saber! </strong>
+				Las reservaciones con más de 5 días sin haberse considerado se cancelan automáticamente.
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close" >
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+
 			<div class="row">
 					<div class="col-sm-12 filtros">
 					<h3 class="form form-control">Filtre por</h3>
@@ -59,6 +72,7 @@ echo $navbar = $includes->get_navbar(); ?>
 							$('.btn-selec').on('click',function(e){
 
 								$('#collapseDos').collapse('hide');
+
 							
 
 							
@@ -187,13 +201,14 @@ echo $navbar = $includes->get_navbar(); ?>
 										</div>
 									</div>
 				</div>
-				<table  id="listareservaciones" class="display" cellspacing="0" width="100%">
+				<table  id="listareservaciones" class="display nowrap" width="100%">
 					<thead>
 						<tr>
 							<th>#</th>
+							<th>Solicita</th>
 							<th>Fecha</th>
 							<th>Hotel</th>
-							<th>Solicita</th>
+							
 							<th>Personas</th>
 							<th>Status</th>
 							<th>Observaciones</th>
@@ -274,11 +289,16 @@ echo $navbar = $includes->get_navbar(); ?>
 
 		// tabla dinamica de reservaciones Negocios...
 		 var reservaciones = $('#listareservaciones').DataTable( {
-					paging        	:true,
+					paging        	:false,
 					lengthChange	:false,
 					scrollY      	:400,
 					scrollCollapse	:true,
 					ordering		:true,
+					responsive      :{
+						details:{
+							display: $.fn.dataTable.Responsive.display.childRow
+						}
+					},
 					dom:'lrtip',
 					ajax:{
 						url:'/negocio/Controller/peticiones.php',
@@ -294,16 +314,17 @@ echo $navbar = $includes->get_navbar(); ?>
 						}
 					},
 					columns:[
-						 		{data:'id'},
-						 		{data:'fecha'},
-						 		{data:'hotel'},
-						 		{data:'username'},
-						 		{data:'numeropersona'},
-						 		{data:'status'},
-						 		{data:'observacion'},
-						 		{data:'btncancelar'}
+						 		{data:'id',responsivePriority:1},
+						 		{data:'username',responsivePriority:1},
+						 		{data:'fecha',responsivePriority:2},
+						 		{data:'hotel',responsivePriority:2},
+						 		{data:'numeropersona',responsivePriority:2},
+						 		{data:'status',responsivePriority:1},
+						 		{data:'observacion',responsivePriority:2},
+						 		{data:'btncancelar',responsivePriority:1}
 
 					 		],
+
 			        language: {
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
 			                        "info": "",
@@ -361,7 +382,7 @@ echo $navbar = $includes->get_navbar(); ?>
 		 							$('#soundnotification').remove();
 		 						}
 
-								reservaciones.ajax.reload(null,true);
+								reservaciones.ajax.reload(null,false);
 								
 								if(cantidad < reservaciones.data().count()){
 									$(soundnotificatio).appendTo('body');

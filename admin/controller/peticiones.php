@@ -19,7 +19,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarreservaciones'){
 
 		$response = array(
-			
 			'data'     =>''
 			 );
 
@@ -28,6 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		if(count($resultado) > 0){
 		
 			$response['data'] = $resultado;
+			
 		}
 
 

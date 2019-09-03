@@ -112,7 +112,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		</div>
 	</div> -->
 
-	<table  id="estadodecuenta" class="display" cellspacing="0" width="100%">
+	<table  id="estadodecuenta" class="display nowrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 						
@@ -177,13 +177,14 @@ $(document).ready(function() {
 		function cargarestadocuenta(){
 
 			t = $('#estadodecuenta').DataTable({
-					paging        	:false,
-					lengthChange	:false,
-					scrollY      	:400,
-					scrollCollapse	:true,
-					ordering		:true,
+					paging        :false,
+					lengthChange  :false,
+					scrollY       :400,
+					scrollCollapse:true,
+					ordering      :true,
+					responsive    : true,
 					
-					dom:'lrtip',
+					dom           :'lrtip',
 					ajax:{
 						url:'/Hotel/controller/peticiones.php',
 						type:'POST',
@@ -196,13 +197,13 @@ $(document).ready(function() {
 					},
 					
 					columns:[
-						 		{data:'id'},
-						 		{data:'creado'},
-						 		{data:'negocio'},
-						 		{data:'nombre'},
-						 		{data:'venta'},
-						 		{data:'comision'},
-						 		{data:'balance'}
+									{data:'id'},
+									{data:'creado'},
+									{data:'negocio'},
+									{data:'nombre'},
+									{data:'venta',responsivePriority:1},
+									{data:'comision'},
+									{data:'balance'}
 						 		
 					 		],
 			         language:{

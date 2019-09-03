@@ -82,7 +82,8 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		
 							
 								<select class="btn-group form-control d-inline-flex" id="del" name="del">
-									<option value="0" selected>Dia</option>
+									<option value="5" selected>Todos</option>
+									<option value="0">Dia</option>
 									<option value="1">Dia Anterior</option>
 									<option value="2">Mes</option>
 									<option value="3">Mes Anterior</option>
@@ -239,7 +240,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 									</div>
 				</div>
 				<div class="row">
-						<table  id="listareservacionesd" class=" col-lg-12 display" cellspacing="0" width="100%">
+						<table  id="listareservaciones" class=" col-lg-12 display" cellspacing="0" width="100%">
 						<thead>
 							<tr>
 								<th></th>
@@ -613,12 +614,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 		});
 		
 
-		 var t = $('#listareservacionesd').DataTable( {
+		 var t = $('#listareservaciones').DataTable( {
 					paging        	:true,
 					lengthChange	:false,
 					scrollY      	:400,
 					scrollCollapse	:true,
 					ordering		:true,
+					responsive:true,
 					
 					dom:'lrtip',
 					ajax:{
@@ -637,14 +639,14 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					},
 					
 					columns:[
-						 		{data:'id'},
-						 		{data:'fecha'},
-						 		{data:'hotel'},
-						 		{data:'negocio'},
-						 		{data:'usuario_registrante'},
-						 		{data:'username'},
-						 		{data:'numeropersona'},
-						 		{data:'status'}
+						 		{data:'id',responsivePriority:1},
+						 		{data:'fecha',responsivePriority:2,width:'200'},
+						 		{data:'hotel',responsivePriority:2},
+						 		{data:'negocio',responsivePriority:1},
+						 		{data:'usuario_registrante',responsivePriority:2},
+						 		{data:'username',responsivePriority:1},
+						 		{data:'numeropersona',responsivePriority:2},
+						 		{data:'status',responsivePriority:1}
 					 		],
 			         language:{
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
@@ -657,32 +659,6 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			                            "previous":   "Anterior"
 			                        },
 			                    },
-			        columnsDefs:[{
-			        	orderable:true,targets:0
-			        },
-			        {
-			        	orderable:false,targets:0
-			        },
-			        {
-			        	orderable:false,targets:0
-			        },
-			        {
-			        	orderable:false,targets:0
-			        },
-			        {
-			        	orderable:false,targets:0
-			        },
-			        {
-			        	orderable:false,targets:0
-			        },
-			        {
-			        	orderable:false,
-			        	targets:0,
-			        	width:'50px'
-			        },
-			        {
-			        	orderable:false,targets:0
-			        }],
 			        order:[[0,'desc']]
 
 			        

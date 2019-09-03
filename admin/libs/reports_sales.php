@@ -165,7 +165,7 @@ class reports_sales {
 			 $fecha = $value['creado'];
 			 // settype($value['venta'],'double');
 
-			 $venta = number_format((float)$value['venta'],2,',','.');
+			 $venta = number_format((float)$value['venta'],2,'.',',');
 
 			  if($venta < 0){
 
@@ -179,9 +179,9 @@ class reports_sales {
 
 			  if($value['comision'] < 0){
 			  	
-			  	$comision = '<strong class="negativo">$'.number_format((float)$value["comision"],2,',','.').'</strong>';
+			  	$comision = '<strong class="negativo">$'.number_format((float)$value["comision"],2,'.',',').'</strong>';
 			  }else{
-			  	$comision = '$'.number_format((float)$value["comision"],2,',','.');
+			  	$comision = '$'.number_format((float)$value["comision"],2,'.',',');
 			  }
 			if(!empty($value['nombre'])){
 				$nombre = $value['nombre'];

@@ -180,6 +180,7 @@ class Reservacion
 				}else{
 
 					if(isset($_SESSION['promotor'])){
+
 							$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
 						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona 
 						from reservacion as r 
@@ -191,6 +192,7 @@ class Reservacion
 							':hotel'    => $_SESSION['promotor']['hotel'],
 							':promotor' => $_SESSION['promotor']['id']
 							);
+
 					}else{
 						$sql = "SELECT r.usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
 					r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
@@ -522,6 +524,44 @@ class Reservacion
 					// echo $e->getMessage();
 					}
 
+
+				break;
+
+			case 5:
+					if(isset($_SESSION['promotor'])){
+
+					$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel and r.id_promotor = :promotor";
+
+						$datos = array(
+							':hotel'    => $_SESSION['promotor']['hotel'],
+							':promotor' => $_SESSION['promotor']['id']
+						);
+
+				}else{
+
+					$sql = "SELECT r.id_promotor as usuario_registrante,r.id,r.creado,n.nombre as negocio,u.username as username,concat(u.nombre,' ',u.apellido) as nombrecompleto,
+						r.status,concat(r.fecha,' ',r.hora) as fecha,r.observacion,r.numeropersona,r.id_promotor from reservacion as r 
+						join negocio as n on r.id_restaurant = n.id_negocio
+						join usuario as u on r.usuario_solicitante = u.id_usuario
+						where r.id_hotel = :hotel";
+
+						$datos = array(
+							':hotel'    => $_SESSION['promotor']['hotel']
+						);
+
+				}
+
+				try {
+						$stm = $this->conec->prepare($sql);
+						$stm->execute($datos);
+					} catch (\PDOException $e) {
+					// echo $e->getMessage();
+					}
+					
 
 				break;
 

@@ -44,7 +44,7 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 
 				<div class="row">
 					<section class="col-xs-12 table-comprobantes">
-						<table  id="comprobante" class="display" cellspacing="0" width="100%">
+				<table  id="comprobante" class="display nowrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							
@@ -238,11 +238,12 @@ $(document).ready(function() {
 // 							<th></th>
 // 							
 			t = $('#comprobante').DataTable({
-					paging        	:true,
+					paging        	:false,
 					lengthChange	:false,
 					scrollY      	:400,
 					scrollCollapse	:true,
 					ordering		:true,
+					responsive:true,
 					
 					dom:'lrtip',
 					ajax:{
@@ -258,13 +259,13 @@ $(document).ready(function() {
 					
 					columns:[
 						 		
-						 		{data:'creado'},
-						 		{data:'actualizado'},
-						 		{data:'aprobador'},
-						 		{data:'aprobado'},
-						 		{data:'monto'},
-						 		{data:'pagado'},
-						 		{data:'baprobado'}
+						 		{data:'creado',responsivePriority:1},
+						 		{data:'actualizado',responsivePriority:4},
+						 		{data:'aprobador',responsivePriority:3},
+						 		{data:'aprobado',responsivePriority:1},
+						 		{data:'monto',responsivePriority:1},
+						 		{data:'pagado',responsivePriority:1},
+						 		{data:'baprobado',responsivePriority:2}
 						 		
 					 		],
 			         language:{
@@ -310,8 +311,7 @@ $(document).ready(function() {
 		}
 			
 		t.on('draw',function(){
-			$('.mensaje').click(function(event) {
-							
+			$('.mensaje').click(function(event) {						
 							var mensaje = $(this).attr('data-mesaje');
 
 							var idmensaje = $(this).attr('data-idmensaje');
@@ -328,6 +328,8 @@ $(document).ready(function() {
 								if(response.peticion){
 									$.alert({title:"Mensaje del pagador!",content:mensaje});
 									t.ajax.reload(null,false);
+								}else{
+									$.alert({title:"Mensaje del pagador!",content:mensaje});
 								}
 								
 							})
@@ -339,6 +341,7 @@ $(document).ready(function() {
 							});
 			});
 		});
+
 
 		    $('input[name="buscar"]').on('keyup',function(e){
 

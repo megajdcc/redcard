@@ -67,7 +67,7 @@ echo $navbar = $includes->get_navbar();
 				</div>
 
 				<div class="row">
-					<div class=" col-lg-12 caja-new-disponibilidad">
+					<div class="col-lg-12 caja-new-disponibilidad">
 						<table>
 							<thead>
 								<th>Nuevo Horario</th>

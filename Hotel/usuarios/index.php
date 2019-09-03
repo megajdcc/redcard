@@ -38,13 +38,13 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 			<div class="page-title">
 				<h1>Huespedes del Hotel</h1>
 			</div>
-				<table  id="hotelusuarios" class="display" cellspacing="0" width="100%">
+				<table  id="hotelusuarios" class="display nowrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 						
 						<th>#</th>
 						<th>Foto</th>
-						<th>Username</th>
+						<th data-priority="1">Username</th>
 						<th>Travel Points</th>
 						<th>Nombre</th>
 						<th>Apellido</th>
@@ -61,13 +61,14 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	</div>
 </div>
 
-<?php echo $usuarios->Modal(); ?>
+<?php //echo $usuarios->Modal(); ?>
 
 <script>
 
 				 var t = $('#hotelusuarios').DataTable( {
 					"paging"        :         false,
 					"scrollY"       :        "400px",
+					responsive:true,
 					"scrollCollapse": true,
 			         "language": {
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",

@@ -539,15 +539,25 @@ class includes {
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-fileinput/fileinput.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/bootstrap-slider/css/bootstrap-slider.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css" />
-	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/datatables.min.css" />
+
+
+
+
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/css/responsive.dataTables.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/css/dataTables.bootstrap4.css" />
+
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/superlist.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="'.HOST.'/assets/css/travelpoints.css" />
 	<link rel="stylesheet" href="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.css" />
 	
 	<script src="'.HOST.'/assets/js/jquery.js" type="text/javascript"></script>
 <script src="'.HOST.'/assets/libraries/jquery-confirm/dist/jquery-confirm.min.js"></script>
-	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="'.HOST.'/assets/libraries/bootstrap/js/popper.min.js"></script>
+
+		<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="'.HOST.'/assets/libraries/datatables/Responsive-2.2.2/js/dataTables.responsive.min.js"></script>
+
 	
 
 	<script src="'.HOST.'/assets/libraries/Highcharts/highcharts.js"></script>
