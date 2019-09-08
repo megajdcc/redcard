@@ -301,10 +301,10 @@ class responsecontroller
 	public function getDatos(){
 		
 		$response = array(
-			"result"  => false,
-			"solicitante"   => null,
-			"hotel" =>null,
-			"pagocomision" =>null
+			"result"       => false,
+			"solicitante"  => null,
+			"hotel"        => null,
+			"pagocomision" => null
 		);
 
 		if(count($this->solicitante) > 0 && count($this->hotel) > 0){

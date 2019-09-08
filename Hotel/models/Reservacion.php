@@ -550,7 +550,7 @@ class Reservacion
 						where r.id_hotel = :hotel";
 
 						$datos = array(
-							':hotel'    => $_SESSION['promotor']['hotel']
+							':hotel'    => $this->hotel
 						);
 
 				}

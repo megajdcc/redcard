@@ -750,12 +750,12 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 
 
 	if($fecha1){
-		$query = "SELECT balance as total,'Hotel' as perfil from balance as bh where bh.perfil = 1 and bh.creado between :fecha1 and :fecha2 order by bh.id desc limit 1
+		$query = "(SELECT balance as total,'Hotel' as perfil from balance as bh where bh.perfil = 1 and bh.creado between :fecha1 and :fecha2 )
 			UNION
-			SELECT  balance as total, 'Franquiciatario' as perfil from balance as bfr where bfr.perfil = 2 and  bfr.creado between :fecha3 and :fecha4 order by bfr.id desc limit 1
+			(SELECT  balance as total, 'Franquiciatario' as perfil from balance as bfr where bfr.perfil = 2 and  bfr.creado between :fecha3 and :fecha4)
 			UNION
-			SELECT  balance as total,'Referidor' as perfil from balance as brf where brf.perfil = 3 and 
-			brf.creado between :fecha5 and :fecha6 order by brf.id desc limit 1";
+			(SELECT  balance as total,'Referidor' as perfil from balance as brf where brf.perfil = 3 and 
+			brf.creado between :fecha5 and :fecha6 )";
 
 				$stm = $this->conection->prepare($query);
 				$stm->bindParam(':fecha1',$fecha1);
@@ -769,11 +769,11 @@ public function getComisionPerfiles($fecha1 = null, $fecha2 = null){
 				return $stm;
 	}else{
 
-		$query = "(SELECT sum(comision) as total,'Hotel' as perfil from balancehotel as bh )
+		$query = "(SELECT sum(comision) as total,'Hotel' as perfil from balance as bh where perfil =1 )
 			UNION
-			(SELECT sum(comision) as total, 'Franquiciatario' as perfil from balancefranquiciatario as bfr order by bfr.id desc limit 1)
+			(SELECT sum(comision) as total, 'Franquiciatario' as perfil from balance where perfil = 2)
 			UNION
-			(SELECT sum(comision) as total,'Referidor' as perfil from balancereferidor as brf  order by brf.id desc limit 1)";
+			(SELECT sum(comision) as total,'Referidor' as perfil from balance where perfil = 3)";
 
 			$stm = $this->conection->prepare($query);
 			$stm->execute();
@@ -865,7 +865,7 @@ public function getPuntosCanjeados(){
 
 	if($this->fechas['inicio'] != null){
 		
-		$query = 'SELECT SUM(nv.bono_esmarties) AS total FROM usar_certificado where creado between :fecha1 and :fecha2';
+		$query = 'SELECT SUM(precio) AS total FROM venta_tienda where creado between :fecha1 and :fecha2';
 		$stm = $this->conection->prepare($query);
 		$stm->bindParam(':fecha1',$this->fechas['inicio']);
 		$stm->bindParam(':fecha2',$this->fechas['fin']);

@@ -92,18 +92,22 @@ class Comprobantes
 			$this->con->beginTransaction();
 
 			if(isset($_SESSION['promotor'])){
+
 				$query = "INSERT INTO retiro(mensaje,monto,id_promotor) values(:mensaje,:monto,:promotor)";
 				
 				$datos = array(':mensaje'=>$post['mensaje'],
 								':monto'=>number_format((float)$post['monto'],2,'.',','),
 								':promotor'=>$this->promotor);
+
 			}else{
+
 				$query = "INSERT INTO retiro(mensaje,id_usuario_solicitud,monto,id_hotel) values(:mensaje,:usuario,:monto,:hotel)";
 
 				$datos = array(':mensaje'=>$post['mensaje'],
-								':user'=>$_SESSION['user']['id_usuario'],
+								':usuario'=>$_SESSION['user']['id_usuario'],
 								':monto'=>number_format((float)$post['monto'],2,'.',','),
-								':promotor'=>$this->hotel['id']);
+								':hotel'=>$this->hotel['id']);
+
 
 			}
 			
