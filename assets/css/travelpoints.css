@@ -1179,7 +1179,7 @@ form[name="new-cargo-form"] .eliminar{
 		display: flex;
 		position: relative !important;
 		left: 0px !important;
-		flex: 0 1 240px;
+		flex: 0 0 240px;
 		/*width: 400px !important;*/
 	}
 	.sidebar-secondary-admin ul{

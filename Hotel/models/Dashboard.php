@@ -1,9 +1,12 @@
 <?php 
 namespace Hotel\models;
+
 use assets\libs\connection;
 use PDO;
 
+
 class Dashboard {
+
 	private $con;
 	private $user = array('id' => null);
 	private $businesses = array();
@@ -36,7 +39,6 @@ class Dashboard {
 		} catch (\Exception $e) {
 			
 		}
-		
 		return;
 	}
 

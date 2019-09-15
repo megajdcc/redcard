@@ -7,11 +7,13 @@ $con = new assets\libs\connection();
 use admin\libs\Reservacion;
 use \admin\libs\Academia;
 use \admin\libs\Comprobantes;
+use admin\libs\Printers;
 
 $comprobante = new Comprobantes($con);
 $academia = new Academia($con);
 $reservacion = new Reservacion($con);
 
+$impresora = new Printers($con);
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){	
@@ -153,6 +155,50 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		}
 
 		echo json_encode($response);
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'cargarimpresoras'){
+
+		$response = array(
+			'data'     =>''
+			 );
+
+		$resultado = $impresora->getDatos();
+
+		if(count($resultado) > 0){
+		
+			$response['data'] = $resultado;
+			
+		}
+
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'establecerimpresora'){
+
+		$response = array(
+			'peticion'     =>false
+			 );
+
+		if($impresora->establecerimpresora($_POST)){
+			$response['peticion'] = true;
+		}
+
+		echo json_encode($response);
+
+
+	}else if(isset($_POST['peticion']) && $_POST['peticion'] == 'quitarhotel'){
+
+		$response = array(
+			'peticion'     =>false
+			 );
+
+		if($impresora->quitarhotel($_POST)){
+			$response['peticion'] = true;
+		}
+
+		echo json_encode($response);
+
 
 	}
 }

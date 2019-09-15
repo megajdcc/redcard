@@ -438,7 +438,18 @@ class includes {
 								<span class="title">Preferencias</span>
 								<span class="subtitle">Del sistema</span>
 							</a>
-						</li>';
+						</li>
+
+
+						<li'.$this->set_active_sidebar_tab('Printers.php').'>
+							<a href="'.HOST.'/admin/preferencias/Printers">
+								<span class="icon"><i class="fa fa-print"></i></span>
+								<span class="title">Impresoras</span>
+								<span class="subtitle">de hoteles</span>
+							</a>
+						</li>
+
+						';
 					}
 				break;
 
@@ -665,7 +676,7 @@ class includes {
 								</a>
 							</div>
 							<div class="header-button">
-								<a href="https://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
+								<a href="s://www.facebook.com/TravelPointsMX" target="_blank" class="header-button-inner blue" data-toggle="tooltip" data-placement="bottom" title="Travel Points Facebook">
 									<i class="fa fa-facebook"></i>
 								</a>
 							</div>

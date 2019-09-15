@@ -795,7 +795,6 @@ class Reservacion
 
 		if($this->conec->inTransaction()){
 			$this->conec->rollBack();
-
 		}
 
 		$this->numpersonas   = $datos['totalperson'];
@@ -1205,36 +1204,57 @@ class Reservacion
 
 		// echo var_dump($printers[2]);
 
-		$printJob->printer = $printers[2];
 
-		$printJob->contentType = "pdf_base64";
-		$url = file_get_contents(ROOT.'/assets/reports/reservaciones/'.$titulo);
+		for ($i=0; $i <count($printers); $i++) { 
+				
+				if($printers[$i]->id == $this->getImpresora()){
+						$printJob->printer = $printers[$i];
+							$printJob->contentType = "pdf_base64";
+							$url = file_get_contents(ROOT.'/assets/reports/reservaciones/'.$titulo);
 
-		// $url = preg_replace("/ /","%20",$url);
-		// 
-		// $url = str_replace("https","http",$url);
-		$printJob->content = base64_encode($url);
-		$printJob->options = array(
-					'pages'=>'',
-					);
-		$printJob->source = "Travel Points";
-		$printJob->title = 'TravelPointsreservacion.pdf';
+							// $url = preg_replace("/ /","%20",$url);
+							// 
+							// $url = str_replace("https","http",$url);
+							$printJob->content = base64_encode($url);
+							$printJob->options = array(
+										'pages'=>'',
+										);
+							$printJob->source = "Travel Points";
+							$printJob->title = 'TravelPointsreservacion.pdf';
 
-		$response = $request->post($printJob);
-
-
-		$statusCode = $response->getStatusCode();
-
-
-		$statusMessage = $response->getStatusMessage();
+							$response = $request->post($printJob);
 
 
+							$statusCode = $response->getStatusCode();
+
+
+							$statusMessage = $response->getStatusMessage();
+							return true;
+				}
+		}
+
+		return false;
+	
 		// echo $statusCode . '<br>' . $statusMessage; 
-
-		return true;
 	
 	}
 
+	public function getImpresora(){
+
+		$sql = 'SELECT impresora from hotel where id =:hote';
+	
+		$stm = $this->con->prepare($sql);
+		$stm->execute([':hote'=>$this->hotel]);
+
+		if($row = $stm->fetch(PDO::FETCH_ASSOC)){
+
+			return $row['impresora']; 
+		
+		}else{
+			return null;
+		}
+
+	}
 	public function getRestaurant($negocio){
 		$sql = "SELECT n.nombre as negocio, concat(n.direccion,' ',c.ciudad,' ',e.estado,' ',p.pais) as direccion, nt.telefono  from negocio as n join negocio_telefono as nt
 						on n.id_negocio = nt.id_negocio 
