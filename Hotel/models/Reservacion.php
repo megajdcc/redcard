@@ -8,6 +8,9 @@ use \Dompdf\Positioner;
 use assets\libs\connection;
 use CURL;
 
+use \PrintNode\Credentials;
+use \PrintNode\Request;
+use \PrintNode\PrintJob;
 use PDO;
 /**
  * @author Crespo Jhonatan
@@ -23,8 +26,7 @@ class Reservacion
 	//  Propidades de clase 
 
 
-	
-
+	private $API_KEY = 'wJsRsXri4oSXWD_5IzT9XEGE-3rfw5fEZz0pmg4uXhI';
 	private $id = 0;
 	private $idsocio = 0 ;
 	private $socioname = null;
@@ -111,25 +113,17 @@ class Reservacion
 		}
 
 
-		if(!defined('PRINTNODE_APIKEY')){
-			define('PRINTNODE_APIKEY','wJsRsXri4oSXWD_5IzT9XEGE-3rfw5fEZz0pmg4uXhI');
-		}
+		
 		
 
 
 		if($impresion){
 			$this->cargarUltimo();
 		}
-
-		
 	}
 
 
 	// GETTERS Y SETTERS 
-
-
-
-
 
 	public function cargar(int $filtro = 0 ,array $datos = null){
 
@@ -702,10 +696,6 @@ class Reservacion
 
 		$this->cargar($datos['filtro'],$datos);
 
-
-		
-		
-
 		for ($i=0; $i < count($this->catalogo); $i++) { 
 
 			if(isset($_SESSION['promotor'])){
@@ -746,7 +736,9 @@ class Reservacion
 			}
 			if($this->catalogo[$i]['status'] == 0 || $this->catalogo[$i]['status'] == 2){
 
-				$this->catalogo[$i]['impresion'] = '<form action="'.HOST.'/Hotel/reservaciones/reservaciones.php" method="POST" target="_blank"><button type="submit" name="imprimir" data-toggle="tooltip" title="Descargar ticket para su impresión" data-placement="left" value="'.$this->catalogo[$i]['id'].'" class="btn btn-info impresion"><i class="fa fa-print"></i></button></form>';
+				$this->catalogo[$i]['impresion'] = '<button type="button" name="imprimir" data-id-reservacion="'.$this->catalogo[$i]['id'].'" class="btn btn-info impresion" data-toggle="tooltip" title="Reimprimir tiket de reservación" data-placement="left"><i class="fa fa-print"></i></button>';
+
+
 							$this->catalogo[$i]['cancelar']	 = '<button type="button" class="btn btn-danger cancelar" data-toggle="tooltip" title="Cancelar reservación" data-id="'.$this->catalogo[$i]['id'] .'" data-placement="left"><i class="fa fa-close"></i></button>';
 							}else{
 							$this->catalogo[$i]['cancelar']	 = '';
@@ -937,9 +929,12 @@ class Reservacion
 		$stm->execute();
 
 		while($row = $stm->fetch(PDO::FETCH_ASSOC)){
+
 			if(substr($row['telefono'], 0,2) != '52'){
 				$row['telefono'] = '52'.$row['telefono'];
 			}
+
+			$row['telefono'] = str_replace(['(',')',' ','-','.'],'',$row['telefono']);
 
 
 
@@ -973,6 +968,8 @@ class Reservacion
 				if(!empty($row['nombrecompleto'])){
 					$nombre = $row['nombrecompleto'];
 				}
+
+				$row['telefononegocio'] = str_replace(['(',')',' ','-','.'],'',$row['telefononegocio']);
 				$this->telefononegocio = $row['telefononegocio'];
 
 				$this->mensaje = 'TravelPoints: New reservation, client '.$nombre.' date '.$row['fechareserva'].'. Personas '.$row['numeropersona'].',hotel '.$row['hotel'].'. all details in travelpoints.com.mx';
@@ -1052,6 +1049,7 @@ class Reservacion
 	} 
 
 	private function cargarUltimo(){
+
 		$sql = "SELECT r.numeropersona, r.id, u.username, concat(u.nombre,' ',u.apellido) as nombrecompleto, n.nombre as negocio,n.direccion, date_format(r.fecha,'%d/%M/%Y') as fecha, 
 			r.hora, h.nombre as hotel, r.usuario_registrante from reservacion as r 
 					join usuario as u on r.usuario_solicitante = u.id_usuario 
@@ -1104,7 +1102,7 @@ class Reservacion
 	private function cargarReservar(int $reserva){
 
 		$sql = "SELECT r.numeropersona, r.id, u.username, concat(u.nombre,' ',u.apellido) as nombrecompleto, n.nombre as negocio,n.direccion, date_format(r.fecha,'%d/%M/%Y') as fecha, 
-			r.hora, h.nombre as hotel, r.usuario_registrante from reservacion as r 
+			r.hora, h.nombre as hotel, r.usuario_registrante,r.id_promotor from reservacion as r 
 					join usuario as u on r.usuario_solicitante = u.id_usuario 
 					join negocio as n on r.id_restaurant = n.id_negocio
 					join hotel as h on r.id_hotel = h.id 
@@ -1116,27 +1114,43 @@ class Reservacion
                     $stm->execute();
 
 
-                    $sql1 = "SELECT u.username,concat(u.nombre,' ',u.apellido) as concierge from usuario u 
-                    			where u.id_usuario = :concierge";
-
-                    	
-
                     foreach ($stm->fetchAll(PDO::FETCH_ASSOC) as $key => $value) {
-                    	$stmt = $this->conec->prepare($sql1);
-                    	 $stmt->bindParam(':concierge',$value['usuario_registrante'],PDO::PARAM_INT);
-                    	 $stmt->execute();
+
+                    		if(!is_null($value['id_promotor'])){
+                    			 $sql1 = "SELECT p.username, concat(p.nombre,' ',p.apellido) as promoto from promotor p 
+                    			where p.id = :promoto";
+                    			$datos = [':promoto' => $value['id_promotor']];
+                    		}else{
+                    			 $sql1 = "SELECT u.username,concat(u.nombre,' ',u.apellido) as concierge from usuario u 
+                    			where u.id_usuario = :concierge";
+                    			$datos = [':concierge' => $value['usuario_registrante']];
+                    		}
+
+                    		$stmt = $this->conec->prepare($sql1);
+                    	 	$stmt->execute($datos);
 
                     	 if($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-                    	 	if(empty($row['concierge'])){
-                    	 		 $this->ticket['concierge'] = $row['username'];
+                    	 	if(isset($row['promoto'])){
+
+                    	 					if(empty($row['promoto'])){
+													$this->ticket['promotor'] = $row['username'];
+												}else{
+													$this->ticket['promotor'] = $row['promoto'];
+												}
                     	 	}else{
-                    	 		 $this->ticket['concierge'] = $row['concierge'];
+												if(empty($row['concierge'])){
+													$this->ticket['concierge'] = $row['username'];
+												}else{
+													$this->ticket['concierge'] = $row['concierge'];
+												}
                     	 	}
+                    	 	
                     	 }
 
 							$this->ticket['ticket']            = $value['id'];
 							$this->ticket['username']          = $value['username'];
 							$this->ticket['nombrecompleto']    = $value['nombrecompleto'];
+
 							$this->ticket['negocio']           = $value['negocio'];
 							$this->ticket['direccion-negocio'] = $value['direccion'];
 							$this->ticket['fecha']             = $value['fecha'];
@@ -1154,11 +1168,104 @@ class Reservacion
 		return $this->ticket;
 	}
 
-	public function imprimir(int $reservacion = 0){
+
+	public function setId(int $reservacion = 0 ){
+		
+		$this->id = $reservacion;
+
+		$this->cargarReservar($this->id);
+
+	}
+
+	public function reimprimir(){
+
 
 		ob_start();
 
-		require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/comprobante-reservacion.php');
+		require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/reimpresion_reserva.php');
+
+		$html = ob_get_clean();
+
+		$option = new Options();
+		$option->isPhpEnabled(true);
+		$option->isRemoteEnabled(true);
+		$option->setIsHtml5ParserEnabled(true);
+			
+		$dompdf = new pdf($option);
+
+		$dompdf->loadHtml($html);
+		$dompdf->setPaper('mia');
+		$dompdf->render();
+		$dato = array('Attachment' => 0);
+		$titulo = "Travel Points: Ticket Reimpresion-Reservacion.pdf";
+		// $dompdf->stream($titulo.'.pdf',$dato);
+		$pdf = $dompdf->output();
+		file_put_contents(ROOT.'/assets/reports/reservaciones/'.$titulo, $pdf);
+
+
+
+		// Mandamos a reimprimir archivo...
+		// 
+		$credenciales = new Credentials();
+		$credenciales->setApiKey($this->API_KEY);
+
+		$request = new Request($credenciales);
+
+
+		$computers = $request->getComputers();
+		$printers = $request->getPrinters();
+		$printJobs = $request->getPrintJobs();
+
+		$printJob = new PrintJob();
+
+			
+		 					if($this->getImpresora() !=0){
+		 							$printJob->printer = $this->getImpresora();
+									$printJob->contentType = "pdf_base64";
+									$url = file_get_contents(ROOT.'/assets/reports/reservaciones/'.$titulo);
+
+								// $url = preg_replace("/ /","%20",$url);
+								// 
+								// $url = str_replace("https","http",$url);
+								$printJob->content = base64_encode($url);
+								$printJob->options = array(
+											'pages'=>'',
+											);
+
+								$printJob->source = "Travel Points";
+								$printJob->title = 'TravelPointsreservacionreimpresion.pdf';
+
+								$response = $request->post($printJob);
+
+								$statusCode = $response->getStatusCode();
+
+
+								$statusMessage = $response->getStatusMessage();
+								if($statusCode != 201){
+									return ['peticion'=>false,
+									'mensaje'=>  'Upss! Ocurrio un error en la impresion problema en la red, intentalo de nuevo. <br>'.$statusCode.' - '. $statusMessage];
+								}else{
+									return ['peticion'=>false,
+									'mensaje'=>  'Se ha enviado a impresion el ticket de reservación.<br>'.$statusCode.' - '. $statusMessage];
+								}
+								
+								}else{
+										return ['peticion'=>false,
+									'mensaje'=>'Este hotel no tiene asociada ninguna impresora, comunicate con el administrador de TravelPoints y dile que te establesca una impresora para asi poder imprimir ticket de reservaciones'];
+								}
+					 	
+
+	
+
+
+	}
+	public function imprimir(int $reservacion = 0){
+
+		$this->cargarReservar($reservacion);
+
+		ob_start();
+
+		require_once($_SERVER['DOCUMENT_ROOT'].'/Hotel/viewreports/reimpresion_reserva.php');
 
 		$context = stream_context_create([
 				'ssl'=>[
@@ -1186,13 +1293,13 @@ class Reservacion
 		file_put_contents(ROOT.'/assets/reports/reservaciones/'.$titulo, $pdf);
 
 
-		$credenciales = new \PrintNode\Credentials();
-		$credenciales->setApiKey(PRINTNODE_APIKEY);
+		$credenciales = new Credentials();
+		$credenciales->setApiKey($this->API_KEY);
 		// $credenciales->setEmailPassword('megajdcc2009@gmail.com','20464273jd');
 
 		 // $credenciales = new \PrintNode\ApiKey(PRINTNODE_APIKEY);
 		// 
-		$request = new \PrintNode\Request($credenciales);
+		$request = new Request($credenciales);
 
 		$computers = $request->getComputers();
 		$printers = $request->getPrinters();
@@ -1200,38 +1307,41 @@ class Reservacion
 
 
 
-		$printJob = new \PrintNode\PrintJob();
+		$printJob = new PrintJob();
 
 		// echo var_dump($printers[2]);
 
 
-		for ($i=0; $i <count($printers); $i++) { 
-				
-				if($printers[$i]->id == $this->getImpresora()){
-						$printJob->printer = $printers[$i];
-							$printJob->contentType = "pdf_base64";
-							$url = file_get_contents(ROOT.'/assets/reports/reservaciones/'.$titulo);
+		if($this->getImpresora() != 0){
+
+				$printJob->printer = $this->getImpresora();
+				$printJob->contentType = "pdf_base64";
+				$url = file_get_contents(ROOT.'/assets/reports/reservaciones/'.$titulo);
 
 							// $url = preg_replace("/ /","%20",$url);
 							// 
 							// $url = str_replace("https","http",$url);
-							$printJob->content = base64_encode($url);
-							$printJob->options = array(
+				$printJob->content = base64_encode($url);
+				$printJob->options = array(
 										'pages'=>'',
 										);
-							$printJob->source = "Travel Points";
-							$printJob->title = 'TravelPointsreservacion.pdf';
+				$printJob->source = "Travel Points";
+				$printJob->title = 'TravelPointsreservacion.pdf';
 
-							$response = $request->post($printJob);
-
-
-							$statusCode = $response->getStatusCode();
+				$response = $request->post($printJob);
 
 
-							$statusMessage = $response->getStatusMessage();
-							return true;
-				}
+				$statusCode = $response->getStatusCode();
+
+
+				$statusMessage = $response->getStatusMessage();
+				return true;
+
+		}else{
+			$_SESSION['notification']['info'] = 'Este hotel no tiene impresora asociada, para la impresion de los ticket, informa al administrador de TravelPoints para que te establescan una!';
 		}
+
+
 
 		return false;
 	
@@ -1243,7 +1353,14 @@ class Reservacion
 
 		$sql = 'SELECT impresora from hotel where id =:hote';
 	
-		$stm = $this->con->prepare($sql);
+		$stm = $this->conec->prepare($sql);
+
+		if (isset($_SESSION['promtor'])) {
+			$this->hotel = $_SESSION['promotor']['hotel'];
+		}else{
+			$this->hotel = $_SESSION['id_hotel'];
+		}
+
 		$stm->execute([':hote'=>$this->hotel]);
 
 		if($row = $stm->fetch(PDO::FETCH_ASSOC)){
@@ -1251,10 +1368,25 @@ class Reservacion
 			return $row['impresora']; 
 		
 		}else{
-			return null;
+			return 0;
 		}
 
 	}
+
+	public function getIdHotel(){
+
+		if(isset($_SESSION['promotor'])){
+			return $_SESSION['promotor']['hotel'];
+		}else{
+				return $_SESSION['id_hotel'];
+		}
+	
+	}
+
+	public function setHotel(int $idHotel){
+		$this->hotel = $idHotel;
+	}
+
 	public function getRestaurant($negocio){
 		$sql = "SELECT n.nombre as negocio, concat(n.direccion,' ',c.ciudad,' ',e.estado,' ',p.pais) as direccion, nt.telefono  from negocio as n join negocio_telefono as nt
 						on n.id_negocio = nt.id_negocio 

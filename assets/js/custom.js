@@ -280,6 +280,7 @@ $(document).ready(function() {
 
 	$('.reservar').on('click',function(){
 		
+		$('.reservar').text('Reservando por favor espere!');
 		return confirm('¿Esta seguro de publicar esta reservación ?');
 		 
 	});
@@ -478,9 +479,9 @@ $('#user-search-hotel .typeahead').typeahead({
 
 // Opciones de configuracion...
 		{
-			hint: true,
-			highlight: true,
-			minLength: 1,
+			hint      : true,
+			highlight : true,
+			minLength : 1,
 			autoselect: true,
 		},
 // conjunto de datos... 
@@ -508,6 +509,7 @@ $('#user-search-hotel .typeahead').typeahead({
 		}
 
 		if($('#fechadelareserva').length){
+
 			$('#fechadelareserva').attr('title','Seleccione la fecha solicitada, si el campo no se puede seleccionar es debido a que el negocio no tiene horas disponibles para ese dia de la semana en particular.');
 			
 		}
@@ -532,7 +534,7 @@ $('#user-search-hotel .typeahead').typeahead({
 													$('#fechareservacion').datetimepicker({
 													format:'LL',
 													locale:'es',
-													minDate:new Date()-1,
+													minDate:new Date(),
 													useCurrent:false,
 													 daysOfWeekDisabled:response.data,
 													});

@@ -353,6 +353,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 	}
 
+	// PETICION PARA REIMPRIMIR EL TICKET DE RESERVACION
+	if(isset($_POST['peticion']) && $_POST['peticion'] == 'imprimir_tiket_reserva'){
+
+
+		$response = array('peticion' =>false,
+								'mensaje'=>'');
+
+		$reservacion->setId($_POST['reservacion']);
+		$reservacion->setHotel($_POST['idhotel']);
+
+		$result = $reservacion->reimprimir();	
+
+		if(count($result) > 0 ){
+			$response['peticion'] = $result['peticion'];
+			$response['mensaje'] = $result['mensaje'];
+		}
+
+		echo json_encode($response);
+
+	}
 
 
 }

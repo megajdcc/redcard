@@ -11,7 +11,6 @@ use assets\libs\connection;
  * @since 30/06/2019
  */
 class Reservacion {
-	
 
 	private $conexion = null;
 	private $idsocio = null;
@@ -42,6 +41,10 @@ class Reservacion {
 			if(substr($row['telefono'], 0,2) != '52'){
 				$row['telefono'] = '52'.$row['telefono'];
 			}
+				$row['telefono'] = str_replace([' ','(',')','-'],'',$row['telefono']);
+					
+
+			
 				$this->telefonosocio = $row['telefono'];
 
 				$this->mensaje = 'TravelPoints: New reservation, date '.$row['fecha'].'. Personas '.$row['numeropersona'].',restaurant '.$row['negocio'].'. all details in travelpoints.com.mx';
@@ -75,8 +78,10 @@ class Reservacion {
 					$numeronegocio  = $stmt->fetch(PDO::FETCH_ASSOC)['telefono'];
 
 					if(substr($numeronegocio, 0,2) != '52'){
-						$numeronegocio = '52'.$row['telefono'];
+						$numeronegocio = '52'.$numeronegocio;
 					}
+
+					$numeronegocio = str_replace([' ','(',')','-'],'',$numeronegocio);
 
 					$this->telefononegocio  = $numeronegocio;
 

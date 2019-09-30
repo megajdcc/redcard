@@ -473,16 +473,15 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 					
 					columns:[
 						 		
-						 		{data:'negocio',responsivePriority:1},
+						 		{data:'negocio',responsivePriority:2},
 						 		{data:'nombrecompleto',responsivePriority:1},
 						 		{data:'usuario_registrante'},
 						 		{data:'status',responsivePriority:1},
 						 		{data:'fecha'},
 						 		{data:'numeropersona'},
-						 		
-						 		{data:'observacion'},
-						 		{data:'impresion'},
-						 		{data:'cancelar'}
+						 		{data:'observacion',responsivePriority:1},
+						 		{data:'impresion',responsivePriority:1},
+						 		{data:'cancelar',responsivePriority:1}
 					 		],
 			         language:{
 			                        "lengthMenu": "Mostar _MENU_ registros por pagina",
@@ -566,6 +565,50 @@ echo $navbar = $includes->get_admin_navbar(); ?>
 	
 
 				});
+
+
+			 $('.impresion').click(function(){
+
+			 			var idreservacion = $(this).attr('data-id-reservacion');
+			 			var hotel = "<?php echo $reserva->getIdHotel(); ?>";
+			 			$.alert({
+			 				title:'Confirmation!',
+			 				content:'Esta seguro de reimprimir esta reservación?',
+			 				buttons:{
+			 					
+			 					Si:function(){
+			 						$.ajax({
+			 							url: '/Hotel/controller/peticiones.php',
+			 							type: 'post',
+			 							dataType: 'json',
+			 							data: {peticion: 'imprimir_tiket_reserva',reservacion:idreservacion,idhotel:hotel},
+			 						})
+			 						.done(function(response) {
+			 								if(response.peticion){
+			 									$.alert({
+			 										title:"Mensaje!",
+			 										content:response.mensaje
+			 									});
+			 								}else{
+			 									$.alert({
+			 										title:"Mensaje!",
+			 										content:response.mensaje
+			 									});
+			 								}
+			 						});
+			 					},
+
+			 					No:function(){
+			 						$.alert({
+			 							title:'Mensaje!',
+			 							content:"Estimado si por alguna razon el ticket de reservación, no salió de forma correcta ya sea porque se acabo el papel o la tinta. No dude en reimprimir el ticket y entregarla al reservante."
+			 						});
+			 					}
+
+			 			}
+			 		});
+
+			 });
 
 		 	$('.observaciones').click(function(){
 				$.alert({

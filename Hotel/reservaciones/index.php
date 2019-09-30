@@ -19,7 +19,6 @@
 
 		if(isset($_POST['reservar'])){
 			$reservacion->reservar($_POST);
-
 		}
 
 		if(isset($_POST['imprimir'])){
@@ -47,8 +46,7 @@ if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESS
 	<div class="row">
 		<div class="col-sm-12 ">
 			<?php echo $home->getNotificacion();?>
-
-
+	
 			<script >
 				$(document).ready(function() {
 					
@@ -64,10 +62,10 @@ if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESS
 					<script >
 						
 						$(document).ready(function() {
-							$('#user-search-reservacion').bind('submit',function(e){
-								$('.reservar').attr('disabled', 'disabled');
-								return true;
-							});
+							// $('#reservacion').bind('submit',function(e){
+							// 	$('.reservar').attr('disabled', 'disabled');
+							// 	return true;
+							// });
 						});
 					</script>
 
@@ -114,7 +112,7 @@ if(!isset($_SESSION['perfil']) && !isset($_SESSION['promotor']) && !isset($_SESS
 								$('#fechareservacion').datetimepicker({
 													format:'LL',
 													locale:'es',
-													minDate:new Date()-1,
+													minDate:new Date()-2,
 													useCurrent:false,
 													// daysOfWeekDisabled:diasdisponibles(),
 													});
